@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import glob
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -83,7 +84,12 @@ def load_meetingbank(limit: int, split: str = "validation") -> list[MeetingRecor
             if not line.strip():
                 continue
             row = json.loads(line)
-            rec = meetingbank_record(f"mbank-{row['uid']}", row["transcript"], split="train")
+            # MeetingBank uids contain spaces ("...CB 118618"), and the id becomes a
+            # filename. A space there survives every Python path API and then breaks the
+            # first unquoted shell expansion downstream — which is exactly how two meetings
+            # were silently skipped mid-run. Sanitise at the source.
+            uid = re.sub(r"[^A-Za-z0-9._-]+", "_", str(row["uid"]))
+            rec = meetingbank_record(f"mbank-{uid}", row["transcript"], split="train")
             if rec.n_lines >= 20:
                 out.append(rec)
             if len(out) >= limit:

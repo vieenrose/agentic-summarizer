@@ -248,3 +248,17 @@ def test_padding_keeps_the_trap_between_setup_and_revision() -> None:
 
     m = build_meeting("t", "en", "reversal", padding=40)
     assert m.setup_at < m.trap_at < m.revision_at
+
+
+def test_meeting_ids_are_filename_safe() -> None:
+    """MeetingBank uids contain spaces; an id becomes a filename.
+
+    A space survives every Python path API and then breaks the first unquoted shell
+    expansion downstream — two meetings were silently skipped mid-run before this.
+    """
+    import re
+
+    for uid in ("SeattleCityCouncil_03142016_CB 118618", "a/b:c*d"):
+        safe = re.sub(r"[^A-Za-z0-9._-]+", "_", uid)
+        assert " " not in safe and "/" not in safe and ":" not in safe
+        assert safe, "sanitising must not empty the id"

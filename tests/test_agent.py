@@ -328,3 +328,44 @@ def test_vetoed_ops_are_not_counted_as_malformed() -> None:
         parse_transcript(EXAMPLE), model, budget=20, op_filter=lambda op, c: "judge: UNSUPPORTED"
     )
     assert trace.valid_op_rate is None, "no ops reached the harness, so GT1 has no denominator"
+
+
+def test_step_filter_judges_ops_together() -> None:
+    """Per-op vetoing serialises network calls; a step filter sees them all at once.
+
+    Measured: the judge filter added ~19s per step as 5 sequential HTTPS round-trips while
+    both GPUs sat idle. The ops of a step are independent, so they can go concurrently.
+    """
+    seen: list[int] = []
+
+    def batch(ops, chunk):
+        seen.append(len(ops))
+        kept = [o for o in ops if getattr(o, "section", None) != "DECISIONS"]
+        vetoed = [
+            (o, "judge: UNSUPPORTED")
+            for o in ops
+            if getattr(o, "section", None) == "DECISIONS"
+        ]
+        return kept, vetoed
+
+    model = Scripted(
+        "ADD DECISIONS - dropped [0:00]\nADD TOPICS - kept [0:00]\nADD OPEN - kept too [0:00]",
+        default="NOP",
+    )
+    trace = run_cursor(parse_transcript(EXAMPLE), model, budget=20, step_filter=batch)
+    assert seen[0] == 3, "all of a step's ops must reach the filter in one call"
+    assert trace.state.bullets("DECISIONS") == []
+    assert len(trace.state.bullets("TOPICS")) == 1
+    assert trace.steps[0].vetoed == (("ADD DECISIONS - dropped [0:00]", "judge: UNSUPPORTED"),)
+
+
+def test_step_filter_takes_precedence_over_op_filter() -> None:
+    model = Scripted("ADD TOPICS - x [0:00]", default="NOP")
+    trace = run_cursor(
+        parse_transcript(EXAMPLE),
+        model,
+        budget=20,
+        op_filter=lambda op, c: "should not run",
+        step_filter=lambda ops, c: (ops, []),
+    )
+    assert len(trace.state.bullets("TOPICS")) == 1

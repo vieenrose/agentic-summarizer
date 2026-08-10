@@ -20,7 +20,15 @@ from .prompts import PROMPT_VERSION, build_step_prompt, system_prompt
 from .state import NotesState
 from .transcript import Utterance
 
-__all__ = ["OpFilter", "Step", "StepBudgetExceeded", "Trace", "Usage", "run_cursor"]
+__all__ = [
+    "OpFilter",
+    "Step",
+    "StepBudgetExceeded",
+    "StepFilter",
+    "Trace",
+    "Usage",
+    "run_cursor",
+]
 
 # SYS ~250 + STATE <= 600 + CHUNK 2048 ~= 2.9k in, inside the 4k window (CLAUDE.md §8).
 STEP_BUDGET = 4096
@@ -32,6 +40,11 @@ ModelFn = Callable[[str, str], str]
 #: can verify — see `train/gen_traces.py`. Kept out of `guards.py` on purpose: the guards are
 #: deterministic and model-free (CLAUDE.md §5.3), and a judge is neither.
 OpFilter = Callable[[Op, Chunk], str | None]
+
+#: Step-level form of the same hook: given all of a step's ops, return (kept, [(op, reason)]).
+#: Preferred when the veto costs a network round-trip — a step's ops are independent, so they
+#: can be verified concurrently, and a per-op filter forces them into sequence.
+StepFilter = Callable[[list[Op], Chunk], tuple[list[Op], list[tuple[Op, str]]]]
 
 
 class StepBudgetExceeded(RuntimeError):
@@ -146,6 +159,7 @@ def run_cursor(
     token_len=heuristic_token_len,
     state: NotesState | None = None,
     op_filter: OpFilter | None = None,
+    step_filter: StepFilter | None = None,
 ) -> Trace:
     """Stream `utterances` past `model`, curating one NOTES state.
 
@@ -176,7 +190,10 @@ def run_cursor(
         ops = parse_ops(raw)
 
         vetoed: list[tuple[str, str]] = []
-        if op_filter is not None:
+        if step_filter is not None:
+            ops, rejected = step_filter(ops, chunk)
+            vetoed = [(render_op(op), reason) for op, reason in rejected]
+        elif op_filter is not None:
             kept: list[Op] = []
             for op in ops:
                 reason = op_filter(op, chunk)

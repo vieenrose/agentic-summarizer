@@ -23,6 +23,7 @@ import json
 import os
 import sys
 from collections.abc import Callable
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
@@ -83,10 +84,12 @@ def make_judge_filter(
             if isinstance(op, (Add, Upd)):
                 return verify(op.bullet, op.anchor)
             if isinstance(op, Cmp):
-                for bullet in op.bullets:
-                    reason = verify(bullet.text, bullet.anchor)
-                    if reason is not None:
-                        return reason
+                # Independent claims, so verify them together rather than in sequence.
+                with ThreadPoolExecutor(max_workers=len(op.bullets) or 1) as pool:
+                    reasons = list(
+                        pool.map(lambda b: verify(b.text, b.anchor), op.bullets)
+                    )
+                return next((r for r in reasons if r is not None), None)
             return None
         except Exception as exc:  # a judge outage must not silently unfilter the run
             if log is not None:
@@ -94,6 +97,32 @@ def make_judge_filter(
             return None
 
     return op_filter
+
+
+def make_batch_judge_filter(utterances, judge, model, *, log=None, workers: int = 8):
+    """Judge every op of a step concurrently.
+
+    Measured: teacher inference is ~20s per step and the judge filter added ~19s more, run as
+    5 sequential HTTPS round-trips at ~3.8s each — with both GPUs idle throughout. The calls
+    are independent (each verifies a different bullet), so serialising them was pure waste.
+    Verifying a step's ops together removes almost all of it.
+
+    Returns a *step* filter: given the step's ops, return the subset to keep plus the vetoes.
+    """
+    per_op = make_judge_filter(utterances, judge, model, log=log)
+
+    def step_filter(ops, chunk):
+        if not ops:
+            return [], []
+        with ThreadPoolExecutor(max_workers=min(workers, len(ops))) as pool:
+            reasons = list(pool.map(lambda op: per_op(op, chunk), ops))
+        kept = [op for op, reason in zip(ops, reasons, strict=False) if reason is None]
+        vetoed = [
+            (op, reason) for op, reason in zip(ops, reasons, strict=False) if reason is not None
+        ]
+        return kept, vetoed
+
+    return step_filter
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -186,8 +215,8 @@ def main(argv: list[str] | None = None) -> int:
                     file=sys.stderr,
                 )
             judge_errors: list[str] = []
-            op_filter = (
-                make_judge_filter(
+            step_filter = (
+                make_batch_judge_filter(
                     utterances, judge_client, args.judge_model, log=judge_errors
                 )
                 if judge_client is not None
@@ -201,7 +230,7 @@ def main(argv: list[str] | None = None) -> int:
                     budget=args.budget,
                     step_budget=args.step_budget,
                     token_len=token_len,
-                    op_filter=op_filter,
+                    step_filter=step_filter,
                 )
             except StepBudgetExceeded as exc:
                 print(f"[traces] SKIPPED {path.name}: {exc}", file=sys.stderr)

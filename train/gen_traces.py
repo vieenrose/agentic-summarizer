@@ -139,7 +139,7 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
 
     from voxsum.backends.llama_server import OP_GRAMMAR, LlamaServer
-    from voxsum.chunker import heuristic_token_len
+    from voxsum.chunker import heuristic_token_len, iter_chunks
 
     token_len = heuristic_token_len if args.heuristic_tokens else student_token_len(args.tokenizer)
     model = LlamaServer(
@@ -173,7 +173,18 @@ def main(argv: list[str] | None = None) -> int:
     with args.out.open("w", encoding="utf-8") as sink:
         for path in args.transcripts:
             utterances = parse_transcript(path.read_text(encoding="utf-8"))
-            print(f"[traces] {path.name}: {len(utterances)} lines", flush=True)
+            n_chunks = len(list(iter_chunks(utterances, budget=args.budget, token_len=token_len)))
+            print(f"[traces] {path.name}: {len(utterances)} lines, {n_chunks} chunks", flush=True)
+            if n_chunks < 2:
+                # A single-chunk meeting cannot teach revision: the model sees the setup and
+                # the later contradiction together and can simply ADD the final state, so no
+                # UPD/DEL is ever the correct answer. Revision-dense synthetic meetings are
+                # short by design, so they need a smaller --budget than real transcripts.
+                print(
+                    f"[traces] WARNING {path.name} fits in one chunk at budget {args.budget}: "
+                    "it teaches no cross-chunk revision. Lower --budget for short meetings.",
+                    file=sys.stderr,
+                )
             judge_errors: list[str] = []
             op_filter = (
                 make_judge_filter(

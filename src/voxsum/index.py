@@ -19,7 +19,15 @@ from dataclasses import dataclass
 
 from .transcript import Utterance, sec_to_clock
 
-__all__ = ["Evidence", "SNIPPET_CHARS", "TranscriptIndex", "tokenise"]
+__all__ = ["EVIDENCE_ORDER", "Evidence", "SNIPPET_CHARS", "TranscriptIndex", "tokenise"]
+
+#: Pinned evidence ordering. NOT cosmetic: judging identical bullets with identical evidence
+#: under four orderings moved FAITH by 0.60 and flipped 30% of verdicts (RESULTS.md) — larger
+#: than the 0.5 tie band the ship gates use. Ordering must therefore be identical across arms
+#: and across runs, or a comparison partly measures presentation. Changing this value
+#: invalidates comparison with every number recorded before the change; bump PROMPT_VERSION
+#: alongside it if you ever do.
+EVIDENCE_ORDER = "anchor_first"
 
 SNIPPET_CHARS = 120
 NEIGHBOURHOOD = 3  # +/- lines around the anchor (§7.1: FAITH-anchor is anchor +/- 3 lines)
@@ -173,6 +181,7 @@ class TranscriptIndex:
                     break
                 have.add(extra.anchor)
                 tail.append(extra)
-        # Neighbourhood first: it is what FAITH-anchor would see, so a judge reading in
-        # order encounters the anchored evidence before the retrieved evidence.
+        # Neighbourhood first (EVIDENCE_ORDER = "anchor_first"): it is what FAITH-anchor
+        # would see, so a judge reading in order encounters the anchored evidence before the
+        # retrieved evidence. The ordering is pinned — see EVIDENCE_ORDER.
         return head + tail

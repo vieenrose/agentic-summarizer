@@ -312,3 +312,20 @@ def test_claim_mode_keeps_the_anchor_line_when_search_has_hits() -> None:
     assert any(e.anchor == 150 for e in ev), "the anchor line was dropped by the split"
     # Retrieval still gets its reserved share; this is the separation §7.1 exists to draw.
     assert any(not e.from_anchor_neighbourhood for e in ev)
+
+
+def test_evidence_order_is_pinned() -> None:
+    """Order is a measured variance source (0.60 FAITH, 30% verdict flips), not a style choice.
+
+    Pinning it in code means a comparison cannot silently measure presentation instead of the
+    systems. Changing EVIDENCE_ORDER invalidates comparison with previously recorded numbers.
+    """
+    from voxsum.index import EVIDENCE_ORDER
+
+    assert EVIDENCE_ORDER == "anchor_first"
+
+
+def test_evidence_order_is_deterministic(index: TranscriptIndex) -> None:
+    a = index.evidence_for("Vendor contract approved", 180, mode="claim")
+    b = index.evidence_for("Vendor contract approved", 180, mode="claim")
+    assert [e.anchor for e in a] == [e.anchor for e in b]

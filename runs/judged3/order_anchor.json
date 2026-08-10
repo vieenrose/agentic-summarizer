@@ -1,0 +1,250 @@
+{
+  "rows": [
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "cursor",
+      "bullet": "Evidence session on coronavirus impact on health and social services for children and young people",
+      "verdicts": {
+        "anchor_first": "SUPPORTED",
+        "chronological": "SUPPORTED",
+        "reversed": "SUPPORTED",
+        "retrieved_first": "SUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "cursor",
+      "bullet": "Children's mental health to be a priority in the recovery plan",
+      "verdicts": {
+        "anchor_first": "UNSUPPORTED",
+        "chronological": "UNSUPPORTED",
+        "reversed": "UNSUPPORTED",
+        "retrieved_first": "UNSUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "cursor",
+      "bullet": "Expanded definition of vulnerable children to be published",
+      "verdicts": {
+        "anchor_first": "SUPPORTED",
+        "chronological": "UNSUPPORTED",
+        "reversed": "SUPPORTED",
+        "retrieved_first": "UNSUPPORTED"
+      },
+      "stable": false
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "cursor",
+      "bullet": "Check if UN reports on children's rights change operational guidance",
+      "verdicts": {
+        "anchor_first": "SUPPORTED",
+        "chronological": "SUPPORTED",
+        "reversed": "SUPPORTED",
+        "retrieved_first": "SUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "cursor",
+      "bullet": "Write to committee regarding review of unexpected deaths among children",
+      "verdicts": {
+        "anchor_first": "UNSUPPORTED",
+        "chronological": "SUPPORTED",
+        "reversed": "UNSUPPORTED",
+        "retrieved_first": "UNSUPPORTED"
+      },
+      "stable": false
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "cursor",
+      "bullet": "Deputy Minister to provide note on additional vs continuity third sector funding",
+      "verdicts": {
+        "anchor_first": "UNSUPPORTED",
+        "chronological": "UNSUPPORTED",
+        "reversed": "SUPPORTED",
+        "retrieved_first": "UNSUPPORTED"
+      },
+      "stable": false
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "cursor",
+      "bullet": "Note on when the task and finish group will report",
+      "verdicts": {
+        "anchor_first": "UNSUPPORTED",
+        "chronological": "UNSUPPORTED",
+        "reversed": "UNSUPPORTED",
+        "retrieved_first": "UNSUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "cursor",
+      "bullet": "Monitoring of parents and carers avoiding healthcare for non-COVID conditions",
+      "verdicts": {
+        "anchor_first": "UNSUPPORTED",
+        "chronological": "UNSUPPORTED",
+        "reversed": "UNSUPPORTED",
+        "retrieved_first": "UNSUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "cursor",
+      "bullet": "Launching youth survey to assess pandemic's impact on children",
+      "verdicts": {
+        "anchor_first": "UNSUPPORTED",
+        "chronological": "SUPPORTED",
+        "reversed": "UNSUPPORTED",
+        "retrieved_first": "UNSUPPORTED"
+      },
+      "stable": false
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "cursor",
+      "bullet": "Implementing data collection to monitor child protection and safeguarding",
+      "verdicts": {
+        "anchor_first": "SUPPORTED",
+        "chronological": "SUPPORTED",
+        "reversed": "SUPPORTED",
+        "retrieved_first": "SUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "baseline",
+      "bullet": "The coronavirus childcare assistance scheme provides free care for critical workers and vulnerable children",
+      "verdicts": {
+        "anchor_first": "SUPPORTED",
+        "chronological": "SUPPORTED",
+        "reversed": "SUPPORTED",
+        "retrieved_first": "SUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "baseline",
+      "bullet": "Planning for perinatal facilities will not be based on current usage declines",
+      "verdicts": {
+        "anchor_first": "SUPPORTED",
+        "chronological": "SUPPORTED",
+        "reversed": "SUPPORTED",
+        "retrieved_first": "UNSUPPORTED"
+      },
+      "stable": false
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "baseline",
+      "bullet": "Expand and publish the definition of vulnerable children",
+      "verdicts": {
+        "anchor_first": "UNSUPPORTED",
+        "chronological": "UNSUPPORTED",
+        "reversed": "UNSUPPORTED",
+        "retrieved_first": "UNSUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "baseline",
+      "bullet": "The meeting will be extended until 3:10 p.m.",
+      "verdicts": {
+        "anchor_first": "SUPPORTED",
+        "chronological": "SUPPORTED",
+        "reversed": "SUPPORTED",
+        "retrieved_first": "SUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "baseline",
+      "bullet": "The committee resolved to meet in private for the remainder of the meeting.",
+      "verdicts": {
+        "anchor_first": "SUPPORTED",
+        "chronological": "SUPPORTED",
+        "reversed": "SUPPORTED",
+        "retrieved_first": "SUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "baseline",
+      "bullet": "Vaughan Gething to check if UN reports change current operational guidance",
+      "verdicts": {
+        "anchor_first": "UNSUPPORTED",
+        "chronological": "UNSUPPORTED",
+        "reversed": "SUPPORTED",
+        "retrieved_first": "SUPPORTED"
+      },
+      "stable": false
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "baseline",
+      "bullet": "Government to share the unexpected deaths review report with the committee",
+      "verdicts": {
+        "anchor_first": "UNSUPPORTED",
+        "chronological": "UNSUPPORTED",
+        "reversed": "UNSUPPORTED",
+        "retrieved_first": "UNSUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "baseline",
+      "bullet": "Deputy Minister to provide a note on the amount of additional funding",
+      "verdicts": {
+        "anchor_first": "UNSUPPORTED",
+        "chronological": "UNSUPPORTED",
+        "reversed": "UNSUPPORTED",
+        "retrieved_first": "UNSUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "baseline",
+      "bullet": "Publish expanded definition of vulnerable children this week",
+      "verdicts": {
+        "anchor_first": "SUPPORTED",
+        "chronological": "SUPPORTED",
+        "reversed": "SUPPORTED",
+        "retrieved_first": "SUPPORTED"
+      },
+      "stable": true
+    },
+    {
+      "meeting": "qmsum-16abbdf7b3f2",
+      "system": "baseline",
+      "bullet": "Deputy Minister to provide a note on the task and finish group's reporting date",
+      "verdicts": {
+        "anchor_first": "UNSUPPORTED",
+        "chronological": "UNSUPPORTED",
+        "reversed": "UNSUPPORTED",
+        "retrieved_first": "UNSUPPORTED"
+      },
+      "stable": true
+    }
+  ],
+  "orderings": [
+    "anchor_first",
+    "chronological",
+    "reversed",
+    "retrieved_first"
+  ]
+}

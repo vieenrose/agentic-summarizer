@@ -272,3 +272,30 @@ Consequences:
 self-contained by construction. Part of the 18% is therefore an artifact of the split, and the
 true human rate is higher than measured. n = 5 and 6 sentences across 2 meetings. The direction
 is large enough to act on; the magnitude is not precise.
+
+---
+
+## Judge evidence ordering is a first-class variance source
+
+Identical bullets, **identical evidence sets**, four presentation orders
+(`eval/order_sensitivity.py`, 20 bullets, anchor mode, `gpt-oss-20b`):
+
+| ordering | supported | FAITH-equivalent |
+|---|---|---|
+| `retrieved_first` | 8/20 | 2.60 |
+| `anchor_first` (pinned) | 9/20 | 2.80 |
+| `chronological` | 10/20 | 3.00 |
+| `reversed` | 11/20 | **3.20** |
+
+**Spread 0.60 — larger than the 0.5 tie band the ship gates are judged against — and 30% of
+bullets (6/20) flip verdict on ordering alone.** An unpinned ordering could therefore
+manufacture a GT2 pass or erase one without any change to the systems.
+
+Pinned as `EVIDENCE_ORDER = "anchor_first"` in `src/voxsum/index.py`, asserted in the test
+suite. The spec does not mention evidence ordering; this is an amendment. Changing the value
+invalidates comparison with every number recorded before the change.
+
+Two things worth noting about what this measures. The 0.60 is *within-arm* noise, so it does
+not by itself bias a paired comparison — provided both arms are judged under the same order,
+which pinning guarantees. And it is larger than the 0.50 per-meeting judge noise measured
+earlier, which means **presentation contributes more variance than resampling the judge does**.

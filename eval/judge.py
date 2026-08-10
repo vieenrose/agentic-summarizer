@@ -44,6 +44,12 @@ from voxsum.transcript import clock_to_sec, parse_transcript, sec_to_clock  # no
 
 ENDPOINT = "https://api.together.xyz/v1/chat/completions"
 
+# OpenCode Go: a second provider, OpenAI-compatible, reached with `opencode-go/<model>`.
+# Flat-rate subscription rather than per-token, so `PRICES` records 0.0 and the USD budget
+# guard does not constrain it — the real limits are the plan's $12/5h, $30/week, $60/month.
+OPENCODE_GO_ENDPOINT = "https://opencode.ai/zen/go/v1/chat/completions"
+OPENCODE_GO_PREFIX = "opencode-go/"
+
 # USD per 1M tokens, from the Together model list. Used for accounting only — verify
 # against the live list before quoting a cost.
 PRICES = {
@@ -51,6 +57,10 @@ PRICES = {
     "openai/gpt-oss-120b": (0.15, 0.60),
     "deepseek-ai/DeepSeek-V4-Flash-0731": (0.14, 0.28),
     "Prism-ML/Ternary-Bonsai-27B": (0.0, 0.0),
+    # OpenCode Go — subscription, not per-token. Verified 3/3 on the planted-inversion probe.
+    "opencode-go/deepseek-v4-pro": (0.0, 0.0),
+    "opencode-go/glm-5.2": (0.0, 0.0),
+    "opencode-go/kimi-k3": (0.0, 0.0),
 }
 
 PANEL = {
@@ -104,6 +114,10 @@ class TogetherJudge:
     """Together.ai chat client hardened for the three traps this project has hit."""
 
     api_key: str
+    #: OpenCode Go key, for `opencode-go/*` models. Defaults to the environment.
+    opencode_go_key: str = field(
+        default_factory=lambda: os.environ.get("OPENCODE_GO_API_KEY", "")
+    )
     spend: Spend = field(default_factory=Spend)
     budget_usd: float = 1.00
     # High by default: all three judges reason before answering, and Bonsai burns ~1000
@@ -159,11 +173,25 @@ class TogetherJudge:
                 ],
             }
         ).encode()
+        endpoint, key = ENDPOINT, self.api_key
+        if model.startswith(OPENCODE_GO_PREFIX):
+            endpoint = OPENCODE_GO_ENDPOINT
+            key = self.opencode_go_key
+            if not key:
+                raise SystemExit(
+                    f"{model} needs OPENCODE_GO_API_KEY (or opencode_go_key) to be set"
+                )
+            body = body.replace(
+                json.dumps(model).encode(),
+                json.dumps(model[len(OPENCODE_GO_PREFIX) :]).encode(),
+                1,
+            )
+
         request = urllib.request.Request(
-            ENDPOINT,
+            endpoint,
             data=body,
             headers={
-                "Authorization": f"Bearer {self.api_key}",
+                "Authorization": f"Bearer {key}",
                 "Content-Type": "application/json",
                 # Together 403s the default python-urllib User-Agent.
                 "User-Agent": "voxsum-eval/0.1",

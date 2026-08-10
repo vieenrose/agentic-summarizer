@@ -299,3 +299,30 @@ Two things worth noting about what this measures. The 0.60 is *within-arm* noise
 not by itself bias a paired comparison — provided both arms are judged under the same order,
 which pinning guarantees. And it is larger than the 0.50 per-meeting judge noise measured
 earlier, which means **presentation contributes more variance than resampling the judge does**.
+
+## Additional qualified judges (OpenCode Go)
+
+A second provider (`https://opencode.ai/zen/go/v1`, OpenAI-compatible, flat-rate subscription
+rather than per-token) was probed with the same planted-inversion set. Reached as
+`opencode-go/<model>`; requires `OPENCODE_GO_API_KEY`.
+
+| model | family | probe | notes |
+|---|---|---|---|
+| `deepseek-v4-pro` | DeepSeek | **3/3** | stronger sibling of the Flash model already judging COVER/SYNTH |
+| `glm-5.2` | Zhipu | **3/3** | **Chinese-native**; answered the zh-TW inversion in 27 tokens, the most efficient verdict of any judge tested |
+| `kimi-k3` | Moonshot | **3/3** | |
+| `grok-4.5` | xAI | — | `503 Endpoint is unavailable` |
+
+`glm-5.2` is the interesting addition rather than merely another vote: every current panel
+member is Western-trained, and the project's measured weak spot is **zh-TW** decision
+inversions. A Chinese-native judge is a materially different instrument on exactly that
+failure mode.
+
+**Not adopted into the default panel, on latency.** These models take ~10 s for a trivial call
+against ~1 s for `gpt-oss-20b`. A judged tier is bullets x meetings x 2 modes x 2 systems —
+roughly 300-500 calls — so a 10x latency multiplier turns a 10-minute judging pass into over an
+hour. They are wired in and available per-call, and the natural use is a **targeted zh-TW
+second opinion with `glm-5.2`**, where the instrument difference is worth the wall-clock.
+
+Cost accounting records them at $0.00 because the plan is flat-rate; the real constraints are
+the subscription's $12/5h, $30/week, $60/month.

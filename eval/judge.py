@@ -50,6 +50,17 @@ ENDPOINT = "https://api.together.xyz/v1/chat/completions"
 OPENCODE_GO_ENDPOINT = "https://opencode.ai/zen/go/v1/chat/completions"
 OPENCODE_GO_PREFIX = "opencode-go/"
 
+# Local llama-server judges, addressed as `local:<port>/<name>`. Two reasons to prefer these
+# over an API for an eval instrument, in order of importance:
+#
+#   1. **Frozen weights.** A provider can change a hosted model without notice, which silently
+#      invalidates comparison with every number recorded before the change. Pinning a snapshot
+#      id (`-0731`) mitigates that; a local GGUF removes it.
+#   2. Free, and no per-call latency — a judged tier is 300-500 calls.
+#
+# The name after the port is recorded in reports for provenance; llama-server ignores it.
+LOCAL_PREFIX = "local:"
+
 # USD per 1M tokens, from the Together model list. Used for accounting only — verify
 # against the live list before quoting a cost.
 PRICES = {
@@ -62,6 +73,10 @@ PRICES = {
     "opencode-go/glm-5.2": (0.0, 0.0),
     "opencode-go/kimi-k3": (0.0, 0.0),
 }
+
+def _price(model: str) -> tuple[float, float]:
+    """Local judges are free by construction; everything else comes from the table."""
+    return (0.0, 0.0) if model.startswith(LOCAL_PREFIX) else PRICES.get(model, (0.0, 0.0))
 
 PANEL = {
     "faith": "openai/gpt-oss-20b",
@@ -92,7 +107,7 @@ class Spend:
     by_model: dict[str, float] = field(default_factory=dict)
 
     def add(self, model: str, in_tok: int, out_tok: int) -> None:
-        cin, cout = PRICES.get(model, (0.0, 0.0))
+        cin, cout = _price(model)
         cost = in_tok / 1e6 * cin + out_tok / 1e6 * cout
         self.calls += 1
         self.input_tokens += in_tok
@@ -174,7 +189,12 @@ class TogetherJudge:
             }
         ).encode()
         endpoint, key = ENDPOINT, self.api_key
-        if model.startswith(OPENCODE_GO_PREFIX):
+        if model.startswith(LOCAL_PREFIX):
+            # `local:8090/qwen3.6-27b-nvfp4` -> http://127.0.0.1:8090
+            port = model[len(LOCAL_PREFIX) :].split("/", 1)[0]
+            endpoint = f"http://127.0.0.1:{port}/v1/chat/completions"
+            key = "local"
+        elif model.startswith(OPENCODE_GO_PREFIX):
             endpoint = OPENCODE_GO_ENDPOINT
             key = self.opencode_go_key
             if not key:

@@ -179,3 +179,56 @@ The spec's inherited ±0.4–0.5 is confirmed — but two corrections matter mor
 Two methodology bugs were found and fixed while producing this table — recall was understated
 2x by counting unchanged bullets as planted inversions, and noise was pooled across meetings.
 Both were in the measurement, not the judges.
+
+---
+
+## First paired CURSOR vs map-reduce run (n=2, directional only)
+
+Teacher-driven both arms (`gemma-4-31B-it` Q8, thinking on), same 2 QMSum meetings, same
+2048-token chunks, same token instrument. Judge: `gpt-oss-20b` for FAITH/INVERT,
+`DeepSeek-V4-Flash` for COVER/SYNTH, second opinion off for speed.
+
+| metric | Δ (cursor − baseline) | W/L/T | verdict |
+|---|---|---|---|
+| FAITH-claim | +0.31 ±0.09 | 0/0/2 | directional |
+| FAITH-anchor | −0.01 ±0.45 | 0/0/2 | level |
+| COVER | +0.50 ±0.50 | 1/0/1 | directional |
+| SYNTH | **+1.00 ±0.00** | **2/0/0** | directional |
+| INVERT | none, either arm | — | — |
+| GT4 prefill | **1.12x** | — | **PASS** |
+
+GT2/GT3 are **WITHHELD** at n=2 against the spec's n=20. GT4 needs no judge, so it stands.
+
+### Three retrieval variants produced three different answers on identical notes
+
+`evidence_for(mode="claim")` is specified as neighbourhood ∪ whole-transcript lexical top-k.
+
+| variant | FAITH-claim | FAITH-anchor | unsupported | INVERT |
+|---|---|---|---|---|
+| v1 — `(near + found)[:6]` discarded the search entirely | 2.65 | 2.18 | 10 | NO |
+| v2 — reserved slots, but `near[:3]` **excluded the anchor line** | 1.71 | 2.18 | 12 | **YES** |
+| v3 — anchor-first ordering + reserved slots (correct) | **3.12** | **2.65** | **7** | NO |
+
+Four lessons, all of them about the instrument rather than the systems:
+
+1. **A ±3 neighbourhood yields 7 candidates for a budget of 6, so a naive concatenation
+   silently deleted the whole-transcript search on every call.** FAITH-claim was FAITH-anchor
+   under another name — defeating the separation §7.1 exists to draw.
+2. **v2's `INVERT: YES` was an artifact.** Denying a bullet its own anchor line made the judge
+   call CONTRADICTED on claims whose support it had been refused. A broken retriever
+   manufactured a false inversion — the opposite of the failure mode first suspected, and a
+   reminder that a 0%-tolerance metric can fail in both directions.
+3. **The FAITH-anchor deficit (−0.66) was entirely retrieval artifact**, collapsing to −0.01
+   once retrieval was correct. A structural hypothesis — that anchor mode must penalise
+   arc-spanning synthesised bullets — was refuted independently (claim-SUPPORTED /
+   anchor-UNSUPPORTED: cursor 3/36, baseline 1/19; a difference of one to two bullets). The
+   *mechanism* is real and visible in one bullet ("Children's mental health to be a priority
+   in the recovery plan"); the *magnitude* is noise at this scale. Re-test at n=20.
+4. **The judge is order-sensitive.** For anchors away from the transcript edges, v2 and v3
+   hand anchor mode the *same six lines* and differ only in order — anchor line first. FAITH
+   -anchor still moved 2.18 → 2.65. Evidence ordering is a variance source the spec does not
+   mention and must now be held fixed across arms and runs.
+
+Every number above is labelled by the retrieval variant that produced it. v1 and v2 results
+are retained in `runs/judged/` and `runs/judged2/` as evidence of the artifacts, and must not
+be compared against v3 or against each other.

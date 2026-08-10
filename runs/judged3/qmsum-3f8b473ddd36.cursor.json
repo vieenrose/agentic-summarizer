@@ -1,0 +1,398 @@
+{
+  "meeting_id": "qmsum-3f8b473ddd36",
+  "system": "cursor",
+  "faith_claim": 3.3157894736842106,
+  "faith_anchor": 3.526315789473684,
+  "cover": 5,
+  "synth": 3,
+  "inverted": false,
+  "unsupported": 8,
+  "judges": {
+    "faith": "openai/gpt-oss-20b",
+    "cover": "deepseek-ai/DeepSeek-V4-Flash-0731",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.00481638,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "Conceptual design and component discussion for a remote control prototype",
+      "anchor": 452,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Adopt voice recognition and omit touch screen",
+      "anchor": 1510,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Use solar power with a small backup battery",
+      "anchor": 1568,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Pod-like rubbery shape with multiple color options",
+      "anchor": 2296,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Traditional rubber buttons with 4-way layout",
+      "anchor": 2134,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Target market: 18-35 year olds",
+      "anchor": 2175,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Share in-house voice recognition technology details",
+      "anchor": 1281,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Build prototype using prototype building materials",
+      "anchor": 2337,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Nathan to define basic look, feel, and broad constraints",
+      "anchor": 2296,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Ron to design layout for voice recognition and side menu",
+      "anchor": 2337,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Ron to check product evaluation with pilots",
+      "anchor": 2337,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Decide whether to seek additional manufacturers for more options",
+      "anchor": 340,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Selection of final case material and shape",
+      "anchor": 1747,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Component design and manufacturer limitations",
+      "anchor": 108,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Energy source options",
+      "anchor": 125,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Case materials and shapes",
+      "anchor": 182,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Visible light signaling gimmick",
+      "anchor": 243,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Manufacturer constraints vs. time constraints",
+      "anchor": 340,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "User interface concepts and voice recognition",
+      "anchor": 696,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Conceptual design and component discussion for a remote control prototype",
+      "anchor": 452,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Adopt voice recognition and omit touch screen",
+      "anchor": 1510,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Use solar power with a small backup battery",
+      "anchor": 1568,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Pod-like rubbery shape with multiple color options",
+      "anchor": 2296,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Traditional rubber buttons with 4-way layout",
+      "anchor": 2134,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Target market: 18-35 year olds",
+      "anchor": 2175,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Share in-house voice recognition technology details",
+      "anchor": 1281,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Build prototype using prototype building materials",
+      "anchor": 2337,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Nathan to define basic look, feel, and broad constraints",
+      "anchor": 2296,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Ron to design layout for voice recognition and side menu",
+      "anchor": 2337,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Ron to check product evaluation with pilots",
+      "anchor": 2337,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Decide whether to seek additional manufacturers for more options",
+      "anchor": 340,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Selection of final case material and shape",
+      "anchor": 1747,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Component design and manufacturer limitations",
+      "anchor": 108,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Energy source options",
+      "anchor": 125,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Case materials and shapes",
+      "anchor": 182,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Visible light signaling gimmick",
+      "anchor": 243,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Manufacturer constraints vs. time constraints",
+      "anchor": 340,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "User interface concepts and voice recognition",
+      "anchor": 696,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    }
+  ]
+}

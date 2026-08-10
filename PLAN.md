@@ -5,12 +5,17 @@ Where this file and the spec disagree, the spec wins until an amendment listed i
 
 ---
 
-## 0. Model change: FunctionGemma-270M as primary student
+## 0. Locked decisions (2026-08-10)
 
-Proposal: make **`google/functiongemma-270m-it`** the primary student, with
-Qwen3.5-0.8B retained as the fallback rung. Rationale, and what it forces us to amend.
+| decision | value |
+|---|---|
+| **base SLM** | **`google/functiongemma-270m-it` — LOCKED.** No fallback rung. If it cannot clear the gates, the outcome is the spec's own negative-result path (ship map-reduce, publish agency-at-270M as measured), not a model swap |
+| **transcript source** | authentic audio → **MOSS-Transcribe-Diarize 0.9B** → transcript v1 (§1a). Weights already cached locally |
+| **teacher** | two-tier: frontier API teacher for the agency-dense seed, local `gemma-4-26B-A4B-it` for volume (§2b) |
+| **judge** | **`Qwen3.5-9B`+ as primary** — non-Gemma, non-teacher (§0.1). `gemma-4-E2B-it` retained as a secondary, reported separately |
+| **hardware** | 2× RTX 5090 32 GB (Blackwell) — bf16 native, so Unsloth's float16-infinity workaround is **not needed**. Verify Unsloth/triton carry `sm_120` kernels; torch 2.10+cu128 is installed |
 
-### Why it fits CURSOR unusually well
+### Why FunctionGemma-270M fits CURSOR unusually well
 
 | property | consequence for us |
 |---|---|
@@ -33,27 +38,66 @@ or a second pass — all of which target the metrics we're actually gated on.
 meeting-level arc. Secondary risk: zh-TW generation quality at this scale is unproven for us
 (the vocab is multilingual; the *capability* is not established).
 
-Mitigation: **G1 (spec §7.6) is the go/no-go, run on both students before any long-doc eval.**
-Both rungs are built against the same harness, so the swap is a config line. We keep the
-0.8B rung alive until 270M clears G1 with the correct decision chain.
+With the base locked, the mitigation is **data, not model substitution**: G1 (spec §7.6) stays
+the go/no-go, and a G1 failure buys one honest data iteration (denser agency traces, §2b)
+before the negative-result path is invoked.
 
-### Amendments this forces — need your decision
+### Amendments to the spec this forces
 
-1. **Judge contamination (blocking for reported numbers).** Spec §7 mandates a gemma-4 judge
-   *because* Qwen teachers distilled the student. A Gemma-3 student makes gemma-4 the
-   **same family as the student** — self-preference bias, the exact failure the rule exists to
-   prevent. The rule should generalize to: *judge family ∉ {student family, teacher family}*.
-   Options: (a) judge = Qwen3.5-large + teacher = gemma-4/Claude; (b) keep gemma-4 judge, add a
-   third-family cross-check judge on the 6-meeting micro-cell and report both. I recommend (b)
-   plus (a) for the ship-gate run — see §6.
+1. **Judge family — RESOLVED.** Spec §7 mandates a gemma-4 judge *because* Qwen teachers
+   distilled the student. A Gemma-3 student makes gemma-4 the **same family as the student** —
+   self-preference bias, the exact failure the rule exists to prevent. The rule generalizes to
+   *judge family ∉ {student family, teacher family}*. With student = Gemma and teacher =
+   Gemma/API, the Qwen ban is void: **primary judge = Qwen3.5-9B or larger**, with
+   `gemma-4-E2B-it` kept as a secondary and reported separately (its scores are expected to be
+   biased *upward*; that direction must be stated whenever it is quoted).
 2. **Op wire format (spec §5.1).** Emit ops as FunctionGemma function calls
    (`<start_function_call>call:ADD{...}<end_function_call>`) rather than the `ADD SECTION - …`
    text grammar, to ride the post-training. The NOTES v2 output contract (§3) is unaffected —
    the harness renders it. Requires rewriting §5.0/§5.1 as tool declarations.
-3. **Efficiency baseline (§8, GT4).** Per-step budget is recomputed for 32k context; the
-   ≤ +25% prefill gate must be re-derived against the *same* map-reduce baseline model, or it
-   compares two different models and means nothing. Baseline stays 0.8B-vs-0.8B **and** we add
-   270M-vs-270B-baseline; report both.
+3. **Efficiency baseline (§8, GT4).** Per-step budget is recomputed for 32k context, and the
+   ≤ +25% prefill gate is re-derived **270M-CURSOR vs 270M-map-reduce** — same model both
+   sides, or the comparison measures the model swap instead of the architecture.
+
+---
+
+## 1a. Transcript collection (directive 1)
+
+**Status of local assets:** MOSS-Transcribe-Diarize 0.9B weights are cached; **no meeting audio
+is on this box**, so acquisition is real work, not a download.
+
+**Pipeline (implemented):** `tools/transcribe_moss.py` → `voxsum.ingest_moss` → v1.
+MOSS emits `[start][Sxx]text[end]` with float seconds; the converter renumbers `S01…` to
+`S1…` **by first appearance** (MOSS labels are relative and need not start at 1 or be dense),
+floors seconds to the v1 clock, merges adjacent same-speaker segments across gaps < 2 s
+(MOSS segments at phrase granularity; v1 wants utterances), and collapses embedded newlines —
+one utterance per line is a hard rule. Raw MOSS output is retained alongside each transcript so
+a conversion bug can be re-fixed without re-running the GPU.
+
+**Sourcing, in priority order:**
+
+1. **en, real:** public-record council/committee meetings (the same provenance as MeetingBank,
+   which is council-derived) — long, genuinely contested, decisions and actions actually
+   happen. Licence: public record; record the source URL per meeting.
+2. **zh-TW, real — the gap that matters.** The spec's own caveat (§7.8) is that the zh pool is
+   monologic VCSum, so **contested zh-TW is unmeasured**. This is the one place authentic audio
+   buys something no dataset gives us: Taiwanese public-body proceedings (legislative/council
+   committee sessions, publicly broadcast) are multi-speaker, contested, and zh-TW. Getting
+   even 6–10 of these retires the largest caveat in the project.
+3. **Own recordings** if any internal meetings can be used — consent required, and they cannot
+   be published, so they may be train-only, never in a released eval set.
+
+**Quality gate before a transcript enters any set** (`tools/vet_transcript.py`, P0):
+parses as v1; ≥ 2 speakers for the contested sets; speaker-label churn below a threshold
+(diarization thrash is the failure mode that would silently poison ACTIONS attribution —
+"name: what they will do" is only as good as the label); no line over ~3k chars unsplit;
+duration and token count recorded; language tagged. **Spot-check a 5-minute window per meeting
+against the audio by hand** — ASR error is invisible to every downstream judge, which will
+happily score a faithful summary of a mistranscription as faithful.
+
+Split discipline: every meeting gets an ID and a `split` field at ingest
+(`train` / `t1` / `t2` / `micro`), asserted disjoint in CI (§2). Synthetic zh T2 concatenations
+stay labelled `synthetic` per §7.8.
 
 ---
 
@@ -128,8 +172,44 @@ Two things this must not get wrong:
 Splits: training meetings **disjoint from T1, T2, and the micro-cell** (§7.5) — assert this in
 CI by meeting ID, not by trust.
 
-Teacher choice interacts with amendment §0.1. If the judge stays gemma-4, the teacher should
-**not** be gemma-4.
+### 2b. Teacher choice (directive 3)
+
+The teacher is not being asked to summarize. It is being asked to **demonstrate agency on our
+op set** — to look at STATE and a chunk and decide *this earlier decision is now wrong, revise
+it*. That capability is what we are distilling, and it is the scarcest thing in the pipeline: a
+teacher that only ever emits ADD produces a student that can only ever emit ADD, and GT3 is
+lost before training starts.
+
+So the selection criterion is **not** general benchmark strength but: given STATE + chunk,
+does it (a) emit valid ops in our declared-tool format, (b) *revise* rather than append when
+the chunk contradicts STATE, (c) keep a SUMMARY that reads as an arc rather than a pile, and
+(d) do all of it in zh-TW as well as en.
+
+**Two-tier plan:**
+
+- **Tier A — agency seed (frontier API teacher, e.g. Claude Opus).** A few hundred steps,
+  deliberately selected for the hard cases: contradiction/revision points, deadline changes,
+  action reassignment, cap-exceeded CMP steps, and the end-of-meeting bottom-line SUMMARY
+  rewrite. Small, expensive, hand-audited. This set defines what "good agency" looks like.
+- **Tier B — volume (local `gemma-4-26B-A4B-it`, already cached).** The bulk of steps, on the
+  cheap: MoE so decode is fast, runs on one 5090, and — being Gemma-family — its op text
+  tokenizes identically to the student's own vocabulary, which removes a class of
+  distillation mismatch. **Few-shot it with Tier A examples** so its revision behaviour is
+  anchored to the audited standard rather than to its own defaults.
+
+**Screen the teacher before spending on volume.** Run each candidate over ~30 steps drawn from
+known-revision points and measure: valid-op rate through the real harness, UPD-vs-ADD rate at
+contradiction points, and raw anchor-copy accuracy. A teacher below ~90% valid-op or that
+appends instead of revising is disqualified — cheap to check, and catches the failure that
+would otherwise only surface as a mysterious GT3 miss after a full training run.
+
+**Both tiers are validated by the harness, never trusted.** A teacher step is kept only if its
+ops parse, validate, and survive the guards (§6). Tier A additionally gets a human pass;
+disagreements between Tier A and Tier B on overlapping steps are the highest-value thing to
+read when SYNTH underperforms.
+
+Teacher ∈ {Gemma-family, API} and judge = Qwen keeps *judge ∉ {student, teacher}* satisfied
+(§0.1).
 
 ## 3. Fine-tuning with Unsloth
 
@@ -205,12 +285,11 @@ test, win/loss/tie counts. The n=6 micro-cell is **directional only** and never 
 
 ## 7. Open questions for you
 
-1. **Judge family** — amendment §0.1. My recommendation: keep gemma-4 for continuity, add a
-   Qwen3.5-large cross-check judge on the micro-cell + the final T1/T2 run, and report both
-   families. Cheap insurance against a self-preference artifact invalidating GT3.
-2. **Training hardware** — what GPU is available? bf16 is mandatory (Ampere+). If it's a T4 or
-   a Colab free tier, we take Unsloth's float16 workaround path and I'd plan accordingly.
-3. **Teacher model** — local (gemma-4-27B / Ternary-Bonsai-27B, already in the eval stack) or
-   an API teacher? Trace generation is ~40 calls × N meetings; the cost/quality call is yours.
-4. **Data access** — are VCSum / MeetingBank / QMSum already downloaded somewhere on this box,
-   or is acquisition part of P1?
+1. **Audio sourcing** — no meeting audio is on this box. Do you have recordings (internal, with
+   consent, or already-collected public proceedings), or should P1 start by collecting public
+   council / legislative sessions? The **zh-TW contested** ones are the high-value item (§1a).
+2. **Tier-A teacher budget** — a frontier API teacher for the agency seed is the single highest-
+   leverage spend in the plan (~a few hundred steps). Approve, or run Tier B only and accept a
+   weaker ceiling on GT3?
+3. **VCSum / MeetingBank / QMSum** — not found locally. Download as the base pool (they still
+   provide T1 regression and en volume), or go audio-first for everything?

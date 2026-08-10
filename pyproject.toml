@@ -1,0 +1,30 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "voxsum-agentic"
+version = "0.1.0"
+description = "Agentic meeting-transcript summarizer (CURSOR protocol) for sub-1B SLMs"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+# Kept out of the core deps so the harness stays importable (and testable) without a GPU.
+asr = ["torch>=2.6", "transformers>=4.57", "librosa", "soundfile", "accelerate"]
+train = ["unsloth", "trl", "datasets", "peft"]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]

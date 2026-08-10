@@ -210,3 +210,41 @@ def test_build_sample_carries_prompt_version() -> None:
 
     sample = build_sample({"meeting": "m", "lang": "en", "target": "NOP", "user": "x"})
     assert sample["prompt_version"] == PROMPT_VERSION
+
+
+# --- revision meetings must span chunks -----------------------------------------
+
+@pytest.mark.parametrize("budget", [512, 2048])
+def test_setup_and_revision_land_in_different_chunks(budget: int) -> None:
+    """The whole point of these meetings, and the easiest thing to get silently wrong.
+
+    Unpadded they are ~137 tokens, so at any production chunk budget the model sees the setup
+    and its later contradiction together and can just ADD the final state — UPD is never the
+    correct answer and the meeting teaches nothing. Three separate bugs in this project have
+    come from short meetings meeting large chunks.
+    """
+    from voxsum.chunker import iter_chunks
+    from voxsum.synth import build_set
+
+    for meeting in build_set(chunk_budget=budget):
+        chunks = list(iter_chunks(list(meeting.utterances), budget=budget))
+        setup = [i for i, c in enumerate(chunks) if c.has_line(meeting.setup_at)]
+        revision = [i for i, c in enumerate(chunks) if c.has_line(meeting.revision_at)]
+        assert setup and revision, f"{meeting.meeting_id}: planted lines missing"
+        assert max(setup) < min(revision), (
+            f"{meeting.meeting_id}: setup and revision share a chunk at budget {budget}"
+        )
+
+
+def test_unpadded_meetings_are_still_compact() -> None:
+    """Default (no chunk_budget) stays small — the screen and unit tests rely on it."""
+    from voxsum.synth import build_meeting
+
+    assert len(build_meeting("t", "en", "reversal").utterances) < 20
+
+
+def test_padding_keeps_the_trap_between_setup_and_revision() -> None:
+    from voxsum.synth import build_meeting
+
+    m = build_meeting("t", "en", "reversal", padding=40)
+    assert m.setup_at < m.trap_at < m.revision_at

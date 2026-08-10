@@ -91,9 +91,9 @@ def load_meetingbank(limit: int, split: str = "validation") -> list[MeetingRecor
     return out
 
 
-def load_synth() -> list[MeetingRecord]:
+def load_synth(chunk_budget: int = 0) -> list[MeetingRecord]:
     out: list[MeetingRecord] = []
-    for m in build_set():
+    for m in build_set(chunk_budget=chunk_budget):
         out.append(
             MeetingRecord(
                 meeting_id=m.meeting_id,
@@ -121,6 +121,13 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--meetingbank", type=int, default=0, help="max MeetingBank segments")
     p.add_argument("--no-synth", action="store_true")
     p.add_argument(
+        "--synth-chunk-budget",
+        type=int,
+        default=2048,
+        help="pad synthetic revision meetings so setup and revision land in different chunks "
+        "at this budget. 0 disables padding, which makes them teach no cross-chunk revision.",
+    )
+    p.add_argument(
         "--manifest-only",
         action="store_true",
         help="re-scan --out (e.g. after adding MOSS transcripts) and rewrite the manifest",
@@ -131,7 +138,7 @@ def main(argv: list[str] | None = None) -> int:
     records: list[MeetingRecord] = []
     if not args.manifest_only:
         if not args.no_synth:
-            records += load_synth()
+            records += load_synth(args.synth_chunk_budget)
         if args.qmsum:
             records += load_qmsum(args.qmsum)
         if args.meetingbank:

@@ -177,8 +177,19 @@ def _beats(
     return [*opening, *body[:2], *trap_beats, ("filler", "S3", ""), *body[2:], *closing]
 
 
-def build_meeting(meeting_id: str, lang: str, kind: str, *, variant: int = 0) -> SynthMeeting:
-    """One revision-dense meeting. `variant` rotates subject, trap and owners."""
+def build_meeting(
+    meeting_id: str, lang: str, kind: str, *, variant: int = 0, padding: int = 0
+) -> SynthMeeting:
+    """One revision-dense meeting. `variant` rotates subject, trap and owners.
+
+    `padding` inserts filler lines between the setup and the revision so the two land in
+    DIFFERENT chunks at a given chunk budget. This is the whole point of these meetings: if
+    the model sees the setup and its later contradiction together, it can simply ADD the
+    final state and UPD is never the correct answer — the meeting teaches nothing.
+
+    Sizing: an unpadded meeting is ~137 tokens, so it fits whole inside any production chunk
+    budget. `padding_for(budget)` computes the filler needed to force a split.
+    """
     if kind not in REVISION_KINDS:
         raise ValueError(f"unknown revision kind: {kind!r}")
     if lang not in _FILLER:
@@ -192,6 +203,16 @@ def build_meeting(meeting_id: str, lang: str, kind: str, *, variant: int = 0) ->
 
     subject, trap = subject_pair[idx], trap_pair[idx]
     beats = _beats(lang, kind, subject, trap, (owner_a[idx], owner_b[idx]))
+
+    # Insert padding immediately before the revision beat, so setup and revision are pushed
+    # into different chunks while the trap still sits between them.
+    if padding > 0:
+        revision_at = next(i for i, b in enumerate(beats) if b[0] == "revision")
+        beats = [
+            *beats[:revision_at],
+            *[("filler", "S2", "")] * padding,
+            *beats[revision_at:],
+        ]
 
     filler = cycle(_FILLER[lang])
     utterances: list[Utterance] = []
@@ -219,15 +240,35 @@ def build_meeting(meeting_id: str, lang: str, kind: str, *, variant: int = 0) ->
     )
 
 
-def build_set(*, en_per_kind: int = 2, zh_per_kind: int = 4) -> list[SynthMeeting]:
+def padding_for(budget: int) -> int:
+    """Filler lines needed so setup and revision fall in different chunks at `budget`.
+
+    A filler line costs roughly 12 tokens rendered. Two full chunks of filler are inserted so
+    the split survives the chunker's 2-line overlap, which is what makes a naive one-chunk
+    estimate fail (at budget 128 the revision leaks back into chunk 0).
+    """
+    return max(2 * budget // 12, 0)
+
+
+def build_set(
+    *, en_per_kind: int = 2, zh_per_kind: int = 4, chunk_budget: int = 0
+) -> list[SynthMeeting]:
     """The revision-dense set. zh-TW is oversampled by default — see the module docstring.
 
-    Defaults give 8 en + 16 zh = 24 meetings, each ~12 lines, covering all four kinds.
+    Defaults give 8 en + 16 zh = 24 meetings covering all four kinds. Pass `chunk_budget` to
+    pad each meeting so its setup and revision land in different chunks at that budget;
+    without it the meetings are ~137 tokens and fit whole inside any production chunk, which
+    makes them teach no cross-chunk revision at all.
     """
+    padding = padding_for(chunk_budget) if chunk_budget else 0
     out: list[SynthMeeting] = []
     for lang, per_kind in (("en", en_per_kind), ("zh-TW", zh_per_kind)):
         for kind in REVISION_KINDS:
             for v in range(per_kind):
                 tag = "en" if lang == "en" else "zh"
-                out.append(build_meeting(f"synth-{tag}-{kind}-{v}", lang, kind, variant=v))
+                out.append(
+                    build_meeting(
+                        f"synth-{tag}-{kind}-{v}", lang, kind, variant=v, padding=padding
+                    )
+                )
     return out

@@ -1,0 +1,14 @@
+TITLE:
+SUMMARY:
+- 倉庫整併方案通過 [5:30]
+DECISIONS:
+- 倉庫整併方案通過 [5:30]
+- 否決倉庫整併方案 [2:30]
+ACTIONS:
+- S3 to recompute costs using latest shipping numbers [3:00]
+- S2 to send revised scheme by March 14 [6:00]
+- Four月底前完成場地勘查 [7:00]
+OPEN:
+-
+TOPICS:
+- 倉庫整併方案 [5:30]

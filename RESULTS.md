@@ -467,3 +467,56 @@ chunks are also a distribution shift from the 2048-token training chunks.
 zh v6-7) at budget 2048, plus 4 meetings traced at **budget 128** (the screen's exact chunk
 distribution). Retrain at 5 epochs on the merged set, then re-screen. If G1 still fails,
 the plan's negative-result path applies (promote Qwen3.5-0.8B, or ship map-reduce).
+
+---
+
+## Qwen3.5-0.8B promotion (PLAN §4): screen-en G1 PASSES (2026-08-10)
+
+The 270M failed G1 after four SFT iterations (v1-v4); the failure mode was state-conditioning:
+the model emitted UPD calls with hallucinated prefixes against an empty STATE, and appended
+contradictory bullets at revision points. Per PLAN §4's locked rule ("do not spend three
+cycles rescuing the small model") the student was **promoted to Qwen3.5-0.8B**, re-using the
+same teacher traces with the text-grammar targets (`tools/build_sft_qwen.py`).
+
+**Stack fixes for Qwen (all recorded for the next machine):**
+
+1. Qwen3.5's tokenizer is a **Qwen3VLProcessor**: positional `tokenizer(text)` lands in the
+   `images` slot (base64 padding errors) — call with `text=`; its output carries a batch dim
+   (unwrap); eos_token is the training-only `<EOS_TOKEN>` — the chat template's real
+   terminator is `<|im_end|>`.
+2. **unsloth replaces `trl.SFTConfig`/`trl.SFTTrainer` in-place**; its trainer wrapper rebuilds
+   the args from flat params, and trl's rebuild path uses `TrainingArguments.to_dict()` which
+   **deliberately obfuscates token strings** (`<EOS_TOKEN>`) — the rebuilt config then fails
+   trl's own eos validation. Fix: construct the *replaced* `trl.SFTConfig` (keeps trl's
+   isinstance check true, so no rebuild happens) and the real `SFTTrainer` (import from
+   `trl.trainer.sft_trainer`).
+3. **GGUF export needs `--no-mtp`** for Qwen3.5 (the converter asserts MTP layers exist).
+4. 0.8B full FT needs ~10 GB: train on a GPU without the teacher alongside.
+
+**G1 screen (greedy, text grammar, Q4_K_M):**
+
+| | en | zh-TW |
+|---|---|---|
+| decision chain | **PASS** | FAIL (append, not UPD) |
+| both deadlines | **PASS** | PASS |
+| 100% anchored | **PASS** | PASS |
+| trap absent | **PASS** | PASS |
+| valid-op | 100% | 100% |
+| revised via UPD | PASS | PASS |
+
+**Two eval-integrity fixes that mattered as much as the model:**
+
+- The screen/arms clients sent `temperature=1.0` (LlamaServer default) — the eval was a
+  lottery. **Eval clients are now greedy (temp 0)**; reproducibility first.
+- **Trap bullets passed the judge filter** when phrased as claims the transcript literally
+  supports ("Coffee machine discussion [150]" — the trap line did raise it). The G1 screen
+  requires the trap to stay out of the notes; traces teaching trap-reporting teach the
+  screen's exact failure. New `tools/filter_traps.py` removes trap-mentioning ops from all
+  trace files (23 ops found across waves 1-5). **The judge filter checks verifiability, not
+  scope discipline — the trap rule is a harness-side filter, not a judge job.**
+
+**Data iteration that fixed en**: `combined` screen-structured meetings added to
+`voxsum.synth` (rejection chain + TWO static deadlines + trap in the G1 screen's beat order)
+and traced at budget 128. The training set never demonstrated the full screen combination
+before. zh still needs more reps (known zh asymmetry, RESULTS.md) — +12 combined meetings in
+trace.

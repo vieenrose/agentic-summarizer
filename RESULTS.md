@@ -105,3 +105,31 @@ python eval/screen.py                               # thinking off
 ```
 
 Exit code 0 = G1 passed on every language screened.
+
+---
+
+## GT4 (prefill ≤ +25%) — measured on the harness, no model required
+
+Both arms are instrumented with the same `Usage` counter and the same `token_len`, over the
+same windows, so the prefill comparison is attributable rather than estimated.
+
+| condition | chunk fill | prefill vs map-reduce | GT4 |
+|---|---|---|---|
+| empty STATE, 2048-token chunks | 78–99% | +12% | PASS |
+| **saturated STATE**, well-packed chunks | 91–99% | +20–23% | PASS |
+| **saturated STATE**, long-turn transcript *(before packing fix)* | 73% | **+27%** | **FAIL** |
+| saturated STATE, long-turn transcript *(after fix)* | 98% | +21% | PASS |
+
+Three things this exposed, all fixed or recorded:
+
+1. **A GT4 number is meaningless unless quoted at production chunk size.** CURSOR's SYS is
+   ~314 tokens against the map step's ~100, so at a 128-token chunk the fixed cost is most
+   of the prompt and the ratio exceeds 2x. It falls to ~1.1x at 2048. Pinned as a test.
+2. **Wasted chunk room was costing GT4 the gate.** A long monologue line that would not fit
+   left the chunk ~73% full, inflating the step count, and every extra step pays SYS +
+   STATE again. The chunker now splits such a line into the *remaining* room: fill 73% →
+   98%, steps 39 → 27, ratio 1.27 → 1.21. This matters most for exactly the transcripts the
+   spec flags — VCSum zh runs to ~2.6k chars per line.
+3. **A saturated STATE block is ~700 tokens, above §8's "≤ 600" assumption.** GT4 clears at
+   2048 with the packing fix, but the margin is thin: if bullet caps or the SYS prompt grow,
+   GT4 is the first gate to break and it will break quietly. Both facts are pinned as tests.

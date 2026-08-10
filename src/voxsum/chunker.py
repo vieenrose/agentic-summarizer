@@ -124,6 +124,17 @@ def iter_chunks(
         while i < len(lines):
             cost = token_len(lines[i].render()) + 1
             if current and used + cost > budget:
+                room = budget - used
+                # A long monologue line that will not fit leaves the chunk part-empty, and
+                # that waste is not free: it inflates the number of steps, and every step
+                # pays SYS + STATE again. On long-turn transcripts (VCSum zh runs to ~2.6k
+                # chars per line) it cost ~27% of the chunk and pushed GT4 over its +25%
+                # bound. So split the line here and carry the remainder rather than
+                # yielding a three-quarters-full chunk.
+                pieces = _split_long(lines[i], room, token_len) if room > 64 else []
+                if len(pieces) > 1:
+                    lines[i : i + 1] = pieces
+                    continue
                 break
             current.append(lines[i])
             used += cost

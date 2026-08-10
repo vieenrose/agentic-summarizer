@@ -20,7 +20,7 @@ from .prompts import PROMPT_VERSION, build_step_prompt, system_prompt
 from .state import NotesState
 from .transcript import Utterance
 
-__all__ = ["Step", "StepBudgetExceeded", "Trace", "run_cursor"]
+__all__ = ["Step", "StepBudgetExceeded", "Trace", "Usage", "run_cursor"]
 
 # SYS ~250 + STATE <= 600 + CHUNK 2048 ~= 2.9k in, inside the 4k window (CLAUDE.md §8).
 STEP_BUDGET = 4096
@@ -34,6 +34,24 @@ class StepBudgetExceeded(RuntimeError):
     Raised rather than truncated: a silently shortened chunk produces a trace whose ops
     reference lines the student never saw, which is worse than a loud failure.
     """
+
+
+@dataclass
+class Usage:
+    """Token and call accounting — the instrument GT4 is measured with (CLAUDE.md §7.4).
+
+    Both arms (CURSOR and the map-reduce baseline) fill this in the same way, with the same
+    `token_len`, so a prefill comparison is like-for-like rather than two estimates.
+    """
+
+    calls: int = 0
+    prefill_tokens: int = 0
+    decode_tokens: int = 0
+
+    def record(self, prefill: int, decode: int) -> None:
+        self.calls += 1
+        self.prefill_tokens += prefill
+        self.decode_tokens += decode
 
 
 @dataclass(frozen=True, slots=True)
@@ -63,6 +81,7 @@ class Trace:
     steps: list[Step] = field(default_factory=list)
     prompt_version: str = PROMPT_VERSION
     coverage_gaps: list[int] = field(default_factory=list)
+    usage: Usage = field(default_factory=Usage)
 
     @property
     def valid_op_rate(self) -> float | None:
@@ -139,6 +158,7 @@ def run_cursor(
 
         rendered_state = build_step_prompt(trace.state, Chunk(chunk.index, ()))
         raw = model(sys, state_before)
+        trace.usage.record(prompt_tokens, token_len(raw))
         ops = parse_ops(raw)
         outcome = apply_ops(trace.state, ops, chunk, consecutive_nops=consecutive_nops)
 

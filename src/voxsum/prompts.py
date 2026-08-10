@@ -23,8 +23,11 @@ from .state import CAPS, MIN_PREFIX, NotesState
 __all__ = [
     "PROMPT_VERSION",
     "build_step_prompt",
+    "build_window_prompt",
     "function_declarations",
+    "reduce_prompt",
     "system_prompt",
+    "window_system_prompt",
 ]
 
 PROMPT_VERSION = "sys-v1"
@@ -172,3 +175,74 @@ def build_step_prompt(state: NotesState, chunk: Chunk) -> str:
     shape, CHUNK is the varying part, and the model always reads them in the same places.
     """
     return f"STATE:\n{render_for_prompt(state)}\nCHUNK:\n{chunk.render()}"
+
+
+# --- map-reduce baseline prompts ------------------------------------------------
+#
+# The baseline must be a *fair* opponent: same NOTES v2 vocabulary, same anchor rule, same
+# chunk size. What it must NOT have is STATE — independent per-window digests are the
+# defining property of map-reduce, and the thing CURSOR is being measured against.
+
+_MAP_EN = """\
+You are summarising ONE block of a meeting transcript, in isolation.
+
+Reply with bullets only, one per line, in this form:
+<SECTION> - <bullet> [m:ss]
+
+SECTION is one of SUMMARY, DECISIONS, ACTIONS, OPEN, TOPICS.
+Every bullet ends with an [m:ss] copied exactly from a line in this block.
+Keep bullets short and factual: 20 words or fewer.
+If this block contains nothing worth recording, reply NONE.
+"""
+
+_MAP_ZH = """\
+你正在為會議逐字稿的「其中一段」做摘要，只看這一段。
+
+只回覆條目，一行一個，格式如下：
+<SECTION> - <條目> [m:ss]
+
+SECTION 是 SUMMARY, DECISIONS, ACTIONS, OPEN, TOPICS 其中之一。
+每個條目結尾都要有 [m:ss]，必須從本段的某一行原樣抄錄。
+條目簡短具體，20 字以內。
+若本段沒有值得記錄的內容，請回覆 NONE。
+"""
+
+_REDUCE_EN = """\
+You are shortening one section of a set of meeting notes.
+
+You will be given the section name, a cap, and the bullets collected from the whole
+meeting. Reply with at most the cap number of bullets, one per line, each `- ` prefixed and
+each keeping an [m:ss] taken from the bullets you were given. Merge duplicates, keep the
+decisions and commitments, drop the incidental. Reply with bullets only.
+"""
+
+_REDUCE_ZH = """\
+你要精簡會議筆記中的一個區段。
+
+系統會給你區段名稱、數量上限，以及整場會議收集到的條目。請回覆不超過上限的條目，
+一行一個，每行以 `- ` 開頭，並保留原本條目中的 [m:ss]。合併重複、保留決議與承諾、
+刪去枝節。只回覆條目。
+"""
+
+_MAP_SYS = {"en": _MAP_EN, "zh-TW": _MAP_ZH}
+_REDUCE_SYS = {"en": _REDUCE_EN, "zh-TW": _REDUCE_ZH}
+
+
+def window_system_prompt(lang: str = "en") -> str:
+    """SYS for the baseline's map step (also used by the coverage fallback, §5.3)."""
+    if lang not in _MAP_SYS:
+        raise ValueError(f"unsupported language: {lang!r}")
+    return _MAP_SYS[lang]
+
+
+def build_window_prompt(chunk: Chunk) -> str:
+    """The map step's user content: the chunk alone. No STATE — that is the point."""
+    return f"CHUNK:\n{chunk.render()}"
+
+
+def reduce_prompt(lang: str, section: str, cap: int, bullets: list[str]) -> tuple[str, str]:
+    """(system, user) for the baseline's reduce step on one over-cap section."""
+    if lang not in _REDUCE_SYS:
+        raise ValueError(f"unsupported language: {lang!r}")
+    body = "\n".join(bullets)
+    return _REDUCE_SYS[lang], f"SECTION: {section}\nCAP: {cap}\nBULLETS:\n{body}\n"

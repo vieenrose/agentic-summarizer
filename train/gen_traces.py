@@ -20,6 +20,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from collections.abc import Callable
 from pathlib import Path
@@ -27,7 +28,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
 from voxsum.agent import StepBudgetExceeded, run_cursor  # noqa: E402
-from voxsum.ops import Malformed, Nop, render_op  # noqa: E402
+from voxsum.index import TranscriptIndex  # noqa: E402
+from voxsum.ops import Add, Cmp, Malformed, Nop, Upd, render_op  # noqa: E402
 from voxsum.prompts import PROMPT_VERSION  # noqa: E402
 from voxsum.render import render_state  # noqa: E402
 from voxsum.transcript import parse_transcript  # noqa: E402
@@ -42,6 +44,56 @@ def student_token_len(model_id: str) -> Callable[[str], int]:
 
     tok = AutoTokenizer.from_pretrained(model_id)
     return lambda text: len(tok(text, add_special_tokens=False)["input_ids"])
+
+
+def make_judge_filter(
+    utterances: list,
+    judge,
+    model: str,
+    *,
+    log: list[str] | None = None,
+):
+    """Veto candidate bullets a judge cannot verify from the transcript.
+
+    Why this exists: the harness accepts any op that parses, anchors and survives the guards
+    — it has no notion of whether the bullet is *true*. Measured on real QMSum meetings only
+    53-58% of the teacher's own bullets are judge-verifiable (RESULTS.md), so an unfiltered
+    trace set teaches the student to emit unverifiable bullets, and GT2 is a faithfulness
+    gate. Filtering here keeps the SFT target clean.
+
+    This does **not** breach PLAN.md §2c. The judge is not the teacher: the teacher still saw
+    only its own chunk. The filter is harness-side, like a guard, and it only ever *removes*
+    a target — it never feeds transcript knowledge back into the teacher's prompt.
+    """
+    from judge import _FAITH_SYS, _VERDICT, faith_prompt  # local: keeps eval/ optional
+
+    index = TranscriptIndex(utterances)
+
+    def verify(text: str, anchor: int | None) -> str | None:
+        evidence = index.evidence_for(text, anchor, mode="claim")
+        raw = judge(model, _FAITH_SYS, faith_prompt(text, evidence))
+        hits = _VERDICT.findall(raw)
+        verdict = hits[-1].upper() if hits else "MISSING"
+        return None if verdict == "SUPPORTED" else f"judge: {verdict}"
+
+    def op_filter(op, chunk) -> str | None:
+        # Only claims get judged. NOP/TITLE assert nothing about the meeting, and DEL removes
+        # a bullet rather than adding one — vetoing a DEL would *preserve* a wrong bullet.
+        try:
+            if isinstance(op, (Add, Upd)):
+                return verify(op.bullet, op.anchor)
+            if isinstance(op, Cmp):
+                for bullet in op.bullets:
+                    reason = verify(bullet.text, bullet.anchor)
+                    if reason is not None:
+                        return reason
+            return None
+        except Exception as exc:  # a judge outage must not silently unfilter the run
+            if log is not None:
+                log.append(f"judge error, op kept unverified: {exc}")
+            return None
+
+    return op_filter
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -71,6 +123,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="keep NOP steps (default: yes — NOP must be taught, not just tolerated)",
     )
     p.add_argument("--heuristic-tokens", action="store_true", help="skip transformers (tests only)")
+    p.add_argument(
+        "--judge-filter",
+        action="store_true",
+        help="drop bullets a judge cannot verify before they reach STATE. Strongly "
+        "recommended: only 53-58%% of the teacher's own bullets are verifiable on real "
+        "meetings, and training on the rest teaches unverifiable output.",
+    )
+    p.add_argument("--judge-model", default="openai/gpt-oss-20b")
+    p.add_argument("--judge-budget-usd", type=float, default=1.00)
     return p
 
 
@@ -91,13 +152,36 @@ def main(argv: list[str] | None = None) -> int:
         print(f"llama-server not reachable at {args.base_url}", file=sys.stderr)
         return 2
 
+    judge_client = None
+    if args.judge_filter:
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "eval"))
+        from judge import TogetherJudge
+
+        judge_client = TogetherJudge(
+            api_key=os.environ.get("TOGETHER_API_KEY", ""), budget_usd=args.judge_budget_usd
+        )
+    else:
+        print(
+            "[traces] WARNING: no judge filter. On real meetings ~45% of teacher bullets are "
+            "unverifiable, and they will become SFT targets. Pass --judge-filter.",
+            file=sys.stderr,
+        )
+
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    kept = dropped = nop_steps = 0
+    kept = dropped = nop_steps = vetoed_total = 0
 
     with args.out.open("w", encoding="utf-8") as sink:
         for path in args.transcripts:
             utterances = parse_transcript(path.read_text(encoding="utf-8"))
             print(f"[traces] {path.name}: {len(utterances)} lines", flush=True)
+            judge_errors: list[str] = []
+            op_filter = (
+                make_judge_filter(
+                    utterances, judge_client, args.judge_model, log=judge_errors
+                )
+                if judge_client is not None
+                else None
+            )
             try:
                 trace = run_cursor(
                     utterances,
@@ -106,6 +190,7 @@ def main(argv: list[str] | None = None) -> int:
                     budget=args.budget,
                     step_budget=args.step_budget,
                     token_len=token_len,
+                    op_filter=op_filter,
                 )
             except StepBudgetExceeded as exc:
                 print(f"[traces] SKIPPED {path.name}: {exc}", file=sys.stderr)
@@ -144,12 +229,17 @@ def main(argv: list[str] | None = None) -> int:
                             "chunk_start": step.chunk.start,
                             "chunk_end": step.chunk.end,
                             "content_rich": step.chunk.is_content_rich(),
+                            "vetoed": [{"op": o, "reason": r} for o, r in step.vetoed],
                         },
                         ensure_ascii=False,
                     )
                     + "\n"
                 )
                 kept += 1
+
+            vetoed_total += sum(len(s.vetoed) for s in trace.steps)
+            for message in judge_errors[:3]:
+                print(f"[traces] {message}", file=sys.stderr)
 
             notes = args.out.with_suffix(f".{path.stem}.notes.txt")
             notes.write_text(render_state(trace.state), encoding="utf-8")
@@ -164,6 +254,9 @@ def main(argv: list[str] | None = None) -> int:
             )
 
     print(f"[traces] kept {kept} steps ({nop_steps} NOP), dropped {dropped} ops -> {args.out}")
+    if judge_client is not None:
+        print(f"[traces] judge vetoed {vetoed_total} unverifiable bullets")
+        print(f"[traces] {judge_client.spend.report()}")
     return 0
 
 

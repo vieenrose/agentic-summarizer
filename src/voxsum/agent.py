@@ -15,17 +15,23 @@ from dataclasses import dataclass, field
 
 from .chunker import CHUNK_TOKENS, Chunk, heuristic_token_len, iter_chunks
 from .guards import Outcome, apply_ops
-from .ops import Add, Nop, Op, Upd, parse_ops
+from .ops import Add, Nop, Op, Upd, parse_ops, render_op
 from .prompts import PROMPT_VERSION, build_step_prompt, system_prompt
 from .state import NotesState
 from .transcript import Utterance
 
-__all__ = ["Step", "StepBudgetExceeded", "Trace", "Usage", "run_cursor"]
+__all__ = ["OpFilter", "Step", "StepBudgetExceeded", "Trace", "Usage", "run_cursor"]
 
 # SYS ~250 + STATE <= 600 + CHUNK 2048 ~= 2.9k in, inside the 4k window (CLAUDE.md §8).
 STEP_BUDGET = 4096
 
 ModelFn = Callable[[str, str], str]
+
+#: Veto hook for candidate ops, applied *before* they reach STATE. Returns None to keep the
+#: op, or a reason string to drop it. Used by trace generation to keep only bullets a judge
+#: can verify — see `train/gen_traces.py`. Kept out of `guards.py` on purpose: the guards are
+#: deterministic and model-free (CLAUDE.md §5.3), and a judge is neither.
+OpFilter = Callable[[Op, Chunk], str | None]
 
 
 class StepBudgetExceeded(RuntimeError):
@@ -67,6 +73,8 @@ class Step:
     prompt_tokens: int
     state_before: str
     chunk: Chunk
+    #: (rendered op, reason) for ops the filter vetoed before they reached STATE.
+    vetoed: tuple[tuple[str, str], ...] = ()
 
     @property
     def is_nop(self) -> bool:
@@ -137,11 +145,17 @@ def run_cursor(
     step_budget: int = STEP_BUDGET,
     token_len=heuristic_token_len,
     state: NotesState | None = None,
+    op_filter: OpFilter | None = None,
 ) -> Trace:
     """Stream `utterances` past `model`, curating one NOTES state.
 
     `token_len` should be the *student's* tokenizer for anything normative — the default
     heuristic is for tests and quick local runs only.
+
+    `op_filter` vetoes candidate ops before they are applied. Filtering here rather than at
+    write time is deliberate: a vetoed op must not enter STATE either, or the next step
+    conditions on a bullet the student was never taught to produce, and the trace stops
+    being on-policy for the state trajectory the student will actually see.
     """
     sys = system_prompt(lang, declarations=declarations)
     trace = Trace(state=state or NotesState())
@@ -160,6 +174,18 @@ def run_cursor(
         raw = model(sys, state_before)
         trace.usage.record(prompt_tokens, token_len(raw))
         ops = parse_ops(raw)
+
+        vetoed: list[tuple[str, str]] = []
+        if op_filter is not None:
+            kept: list[Op] = []
+            for op in ops:
+                reason = op_filter(op, chunk)
+                if reason is None:
+                    kept.append(op)
+                else:
+                    vetoed.append((render_op(op), reason))
+            ops = kept
+
         outcome = apply_ops(trace.state, ops, chunk, consecutive_nops=consecutive_nops)
 
         step = Step(
@@ -172,6 +198,7 @@ def run_cursor(
             prompt_tokens=prompt_tokens,
             state_before=rendered_state,
             chunk=chunk,
+            vetoed=tuple(vetoed),
         )
         trace.steps.append(step)
 

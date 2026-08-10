@@ -236,6 +236,21 @@ Not a budget decision — a quality one, only taken if the screen demands it.
 **Never trusted, always validated.** A teacher step is kept only if its ops parse, validate, and
 survive the guards (§6). Agency-seed steps additionally get a human pass.
 
+**And judge-filtered (`--judge-filter`).** The guards check protocol, not truth: an op that
+parses, anchors and survives the temporal check can still be false. Measured on real QMSum
+meetings, only **53-58% of the teacher's own bullets are judge-verifiable** (RESULTS.md), so an
+unfiltered trace set teaches the student to emit unverifiable bullets — and GT2 is a
+faithfulness gate. `gen_traces.py --judge-filter` verifies each candidate bullet in claim mode
+and drops anything not SUPPORTED, **before it reaches STATE** (filtering only the written
+target would leave the next step conditioning on a bullet the student was never taught to
+produce). Cost is ~$0.0004 per short meeting.
+
+This does not breach §2c: the judge is not the teacher, which still sees only its own chunk.
+The filter is harness-side and only ever *removes* a target. Its first live catch was the §7.6
+**trap topic** — `ADD TOPICS - Coffee machine`, well-formed and correctly anchored, which the
+guards accepted and the judge rejected as CONTRADICTED. That class of error is invisible to a
+deterministic guard by construction.
+
 ### 2c. The teacher runs under the student's context budget (normative)
 
 **The teacher sees exactly what the student will see at that step, and nothing more.** Its

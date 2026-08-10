@@ -292,3 +292,39 @@ def test_valid_op_rate_never_exceeds_one() -> None:
     assert 0.0 <= trace.valid_op_rate <= 1.0
     # Two ADDs applied, one malformed line refused.
     assert trace.valid_op_rate == pytest.approx(2 / 3)
+
+
+# --- op filter (judge-filtered trace generation) --------------------------------
+
+def test_op_filter_vetoes_before_state() -> None:
+    """A vetoed op must not reach STATE, or the next step conditions on a bullet the
+    student was never taught to produce."""
+    model = Scripted(
+        "ADD DECISIONS - unverifiable claim [0:00]\nADD TOPICS - Office move [0:00]",
+        default="NOP",
+    )
+
+    def veto_decisions(op, chunk):
+        return "judge: UNSUPPORTED" if getattr(op, "section", None) == "DECISIONS" else None
+
+    trace = run_cursor(parse_transcript(EXAMPLE), model, budget=20, op_filter=veto_decisions)
+    assert trace.state.bullets("DECISIONS") == [], "vetoed op leaked into STATE"
+    assert [b.text for b in trace.state.bullets("TOPICS")] == ["Office move"]
+    assert trace.steps[0].vetoed == (("ADD DECISIONS - unverifiable claim [0:00]",
+                                     "judge: UNSUPPORTED"),)
+
+
+def test_op_filter_absent_keeps_everything() -> None:
+    model = Scripted("ADD DECISIONS - kept [0:00]", default="NOP")
+    trace = run_cursor(parse_transcript(EXAMPLE), model, budget=20)
+    assert len(trace.state.bullets("DECISIONS")) == 1
+    assert all(not s.vetoed for s in trace.steps)
+
+
+def test_vetoed_ops_are_not_counted_as_malformed() -> None:
+    """A veto is a quality decision, not a protocol failure — it must not depress GT1."""
+    model = Scripted("ADD TOPICS - dropped [0:00]", default="NOP")
+    trace = run_cursor(
+        parse_transcript(EXAMPLE), model, budget=20, op_filter=lambda op, c: "judge: UNSUPPORTED"
+    )
+    assert trace.valid_op_rate is None, "no ops reached the harness, so GT1 has no denominator"

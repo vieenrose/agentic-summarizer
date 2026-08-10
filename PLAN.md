@@ -218,6 +218,41 @@ Not a budget decision — a quality one, only taken if the screen demands it.
 **Never trusted, always validated.** A teacher step is kept only if its ops parse, validate, and
 survive the guards (§6). Agency-seed steps additionally get a human pass.
 
+### 2c. The teacher runs under the student's context budget (normative)
+
+**The teacher sees exactly what the student will see at that step, and nothing more.** Its
+prompt is the byte-identical `SYS + STATE + CHUNK_i` from §4, within the same per-step budget
+(§8). This is not a cost measure — it is what makes a trace learnable:
+
+- **No lookahead.** The teacher must not see `CHUNK_{i+1..n}`, the full transcript, or any
+  reference summary. A teacher with hindsight writes a *perfect* arc-bearing UPD — and an
+  unlearnable one, because the student at step *i* has no way to derive it. The student's only
+  available lesson is "guess confidently", which is hallucination.
+- **No enlarged STATE.** STATE is capped identically for teacher and student. A teacher shown
+  bullets the student's caps would have evicted produces UPDs whose `«prefix»` cannot match.
+- **Same clock.** The teacher's anchors must come from the current chunk, same as the student's
+  (§6.1) — enforced by the same validator, not by trust.
+
+**The distinction that matters: extra *input* is cheating; extra *compute* is not.** The teacher
+may reason at length before answering — chain-of-thought, drafts, self-correction — because that
+is more thinking about the *same information*, which is exactly what distillation is for. Only
+the op lines are kept as the training target; any reasoning is stripped and never enters the SFT
+sample. What is forbidden is widening the teacher's view of the transcript.
+
+**Enforced in three places, not documented and hoped for:**
+
+1. `llama-server` is started with `--ctx-size` at the student's per-step budget, so an
+   over-budget prompt fails loudly instead of silently succeeding on the teacher's 128k window.
+2. `train/gen_traces.py` asserts, per step, that the rendered prompt tokenizes within budget
+   **using the student's tokenizer** (`functiongemma-270m-it`) — not the teacher's. Both are
+   262,144-vocab so the counts should agree; asserting with the student's is the one that
+   matters, and a disagreement is itself a bug worth catching.
+3. The trace record stores the exact prompt it was generated from, so any later claim that a
+   step was on-budget is checkable rather than asserted.
+
+The same rule applies to the sweep tools (§5.2): VERIFY and ANCHOR evidence budgets are
+identical for teacher and student.
+
 Teacher = Gemma-family (or API) and judge = Qwen keeps *judge ∉ {student, teacher}* satisfied
 (§0.1).
 
@@ -228,7 +263,7 @@ Teacher = Gemma-family (or API) and judge = Qwen keeps *judge ∉ {student, teac
   -m ~/.cache/huggingface/hub/models--unsloth--gemma-4-31B-it-GGUF/snapshots/*/gemma-4-31B-it-Q8_0.gguf \
   -md ~/.cache/huggingface/hub/models--unsloth--gemma-4-31B-it-GGUF/snapshots/*/MTP/mtp-gemma-4-31B-it-Q8_0.gguf \
   --n-gpu-layers 999 --split-mode layer --tensor-split 1,1 \
-  --ctx-size 8192 --parallel 2 --flash-attn on \
+  --ctx-size 4096 --parallel 2 --flash-attn on \
   --temp 1.0 --top-k 64 --top-p 0.95 --host 127.0.0.1 --port 8080
 ```
 
@@ -237,6 +272,11 @@ beats row split here — less inter-GPU traffic, and there is no NVLink on 5090s
 module is the repo's MTP (multi-token prediction) head for speculative decode. Sampling
 params are Gemma 3/4's recommended values (temp 1.0, top-k 64, top-p 0.95); trace generation
 should additionally be run greedy-ish and seeded per step so a re-run is reproducible.
+
+`--ctx-size 4096` is deliberately the **student's** budget, not the teacher's capacity (31B
+carries 128k+). Per §2c the teacher must not see more than the student will, and capping the
+served window makes an over-budget prompt fail loudly rather than quietly succeed. Raise it only
+if §8's per-step budget changes — and then for both models together.
 
 ## 3. Fine-tuning with Unsloth
 

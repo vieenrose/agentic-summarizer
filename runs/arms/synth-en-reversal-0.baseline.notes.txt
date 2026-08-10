@@ -1,0 +1,12 @@
+TITLE: Vendor contract
+SUMMARY:
+- Agenda covered [5:00]
+DECISIONS:
+- Vendor contract approved [4:00]
+- Vendor contract is approved [4:00]
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+- Vendor contract [0:00]

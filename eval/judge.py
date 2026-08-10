@@ -127,10 +127,32 @@ class TogetherJudge:
                 f"spent ${self.spend.usd:.4f} of ${self.budget_usd:.2f}; stopping"
             )
 
+        # An empty `content` has two causes: reasoning overran max_tokens, or the endpoint
+        # simply returned nothing (observed at 13 completion tokens). Retry with more room
+        # before giving up — a judged run is hundreds of calls and must not die on one.
+        attempts = self.retries + 1
+        last = ""
+        for attempt in range(attempts):
+            budget = self.max_tokens * (attempt + 1)
+            payload = self._post(model, system, user, budget)
+            usage = payload.get("usage", {})
+            self.spend.add(
+                model, usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0)
+            )
+            content = (payload["choices"][0]["message"].get("content") or "").strip()
+            if content:
+                return content
+            last = (
+                f"{model} returned {usage.get('completion_tokens', 0)} tokens with empty "
+                f"content at max_tokens={budget}"
+            )
+        raise RuntimeError(f"{last} after {attempts} attempts")
+
+    def _post(self, model: str, system: str, user: str, max_tokens: int) -> dict:
         body = json.dumps(
             {
                 "model": model,
-                "max_tokens": self.max_tokens,
+                "max_tokens": max_tokens,
                 "messages": [
                     {"role": "system", "content": system},
                     {"role": "user", "content": user},
@@ -149,21 +171,9 @@ class TogetherJudge:
         )
         try:
             with urllib.request.urlopen(request, timeout=self.timeout) as response:
-                payload = json.loads(response.read())
+                return json.loads(response.read())
         except urllib.error.HTTPError as exc:
             raise RuntimeError(f"together {exc.code}: {exc.read().decode()[:300]}") from exc
-
-        usage = payload.get("usage", {})
-        self.spend.add(model, usage.get("prompt_tokens", 0), usage.get("completion_tokens", 0))
-
-        message = payload["choices"][0]["message"]
-        content = (message.get("content") or "").strip()
-        if not content:
-            raise RuntimeError(
-                f"{model} returned {usage.get('completion_tokens', 0)} tokens with empty "
-                "content (reasoning overran max_tokens). Raise max_tokens."
-            )
-        return content
 
 
 # --- prompts -------------------------------------------------------------------

@@ -1,0 +1,28 @@
+[
+  {
+    "meeting_id": "synth-en-reversal-0",
+    "arm": "cursor",
+    "lang": "en",
+    "prompt_version": "sys-v1",
+    "chunk_budget": 128,
+    "calls": 2,
+    "prefill_tokens": 853,
+    "decode_tokens": 39,
+    "valid_op_rate": 1.0,
+    "anchor_rate_raw": 1.0,
+    "coverage_gaps": 0
+  },
+  {
+    "meeting_id": "synth-en-reversal-0",
+    "arm": "baseline",
+    "lang": "en",
+    "prompt_version": "sys-v1",
+    "chunk_budget": 128,
+    "calls": 2,
+    "prefill_tokens": 366,
+    "decode_tokens": 39,
+    "windows": 2,
+    "reduce_calls": 0,
+    "valid_bullet_rate": 1.0
+  }
+]

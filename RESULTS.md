@@ -372,3 +372,47 @@ The single zh failure was the **trap topic**, not a decision inversion — the c
 revision behaviour, the deadlines and the anchoring all passed — and three repeats passed
 cleanly. The trap topic is also precisely what the judge filter vetoes. n is small on both
 sides; these are comparable, not a demonstration that either is better.
+
+---
+
+## Resume session 2026-08-10 (branch `pi-agent`): local judge, eval carve, trace regeneration
+
+**Context:** trace regeneration had stopped partway (45 steps, en only). No TOGETHER/OpenCode
+API key exists on this box; the teacher endpoints (NVFP4 + MTP, ports 8080/8081) were already
+serving.
+
+### Local judge: `gpt-oss-20b` NVFP4, served locally — qualified
+
+`FreedomAISVR/gpt-oss-20B-NVFP4-GGUF` (12 GB, cached) served by llama.cpp split across both
+GPUs' free memory (10.4 GB free each beside the teachers), `--reasoning off --temp 0`.
+
+Two serving findings, both fixed at the server:
+
+- **`--reasoning off` is required.** With reasoning on, gpt-oss-20b thinks 2–4k tokens per
+  call and the 4k-per-slot context truncates mid-thought → empty `content`, which the client
+  retries and then fails. It also looked indistinguishable from a NOP to any downstream
+  consumer. With reasoning off, verdicts are direct and reliable.
+- **The first probe FAILED (0/2) on a stale-notes artifact, not judge quality.** The
+  planted-inversion pair used notes whose anchor `[4:00]` predated the transcript padding
+  (approval now at `[2:54:30]`), so claim-mode evidence never contained the contradiction
+  line. A judge cannot catch an inversion whose evidence cannot show it. Rebuilt the probe
+  with bullets anchored at the lines that actually state the claim.
+
+| probe | result |
+|---|---|
+| planted inversions caught | **2/2** (en `approved→rejected`, zh-TW `通過→否決`) |
+| false alarms on correct bullets | **0/4** |
+| verdict | usable — same bar as the panel |
+
+### Eval tiers carved (idempotent, `tools/carve_eval_sets.py`)
+
+80 meetings now: **train 54 / t1 20 / micro 6**. T1 = 10 en QMSum real + 10 zh synthetic
+(held out); micro = 3 en MeetingBank + 3 zh synthetic. Synthetic pool expanded +8 en/+8 zh
+(revision-dense variants) so zh training keeps 11 meetings after the holdouts. **T2 remains
+blocked** — no ≥80k-token meeting in the pool, en T2 must be real (audio).
+
+### Trace regeneration (in progress at the time of writing)
+
+Full 80-meeting set, judge-filtered with the local judge, thinking ON, seed 0. Expected
+throughput ~1 min/step (teacher 39–66 s + local judge calls) over ≈ 240 steps across two
+teacher endpoints.

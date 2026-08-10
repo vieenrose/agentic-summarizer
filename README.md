@@ -4,7 +4,7 @@ Agentic meeting-transcript summarizer for a **sub-1B** small language model, tar
 en meetings of **≥80k tokens** and producing structured, timestamp-anchored meeting notes
 on-device.
 
-> **Status: implementation — harness complete and tested, trace generation in progress, student
+> **Status: implementation — trace regeneration in progress (full 80-meeting set), student
 > not yet fine-tuned.** No ship gate has been decided. [`CLAUDE.md`](CLAUDE.md) is the normative
 > contract; where it and the code disagree, the spec wins. [`PLAN.md`](PLAN.md) records locked
 > decisions and amendments; [`RESULTS.md`](RESULTS.md) records every measured number with its
@@ -108,13 +108,18 @@ values are meaningless and only the paired delta is usable.
 - **270M may not abstract.** GT3 (SYNTH ≥ +0.5) is the whole agency bet; a 270M model can
   plausibly learn to emit valid ops and copy anchors while producing near-verbatim extraction
   with no meeting-level arc.
-- **Trace regeneration is incomplete.** A judge-filter bug vetoed setup bullets in revision
-  meetings as "contradicted" by their own later revision, destroying the UPD signal the
-  protocol exists to teach. Fixed (evidence limited to the chunk horizon); regeneration was
-  started and **stopped partway**. `data/traces_v2/` is partial — do not train on it.
+- **Trace regeneration is complete** (resumed 2026-08-10, branch `pi-agent`). The
+  judge-filter bug (evidence limited to the chunk horizon) is fixed; the full set now covers
+  all **80** meetings in `data/transcripts/manifest.json`, judge-filtered with a **local**
+  `gpt-oss-20b` judge (see RESULTS.md). `data/traces_v2/` is the current set;
   `data/traces_v1_brokenfilter/` is the superseded set, retained for before/after comparison.
-- On the partial regenerated slice, aggregate **valid-op is 86.3%, below GT1's 95% floor**.
-  Too small to conclude from, but it is the first thing to check when the full set lands.
+  The partial run's 45-step slice (86.3% valid-op) is archived in `data/traces_v2_partial/`.
+- **Eval tiers are carved** (`tools/carve_eval_sets.py`): t1 = 10 en QMSum (real) + 10 zh
+  synthetic; micro = 3 en MeetingBank + 3 zh synthetic; train = 54. T2 remains blocked on
+  corpus: the pool has no ≥80k-token meeting and en T2 must be real (needs audio).
+- **zh T1 is synthetic**, not VCSum (unobtainable on the Hub) — labelled per §7.8.
+- On the partial regenerated slice, aggregate **valid-op was 86.3%**, below GT1's 95% floor.
+  The full-set number is the first thing to check when regeneration finishes.
 
 ## Ship gates
 
@@ -155,6 +160,7 @@ mm↔ss-inverted clock formula is a known past bug that corrupted evidence place
 .venv/bin/python eval/judge_selftest.py                 # judge planted-inversion probe
 .venv/bin/python eval/screen.py                         # G1 capability screen
 .venv/bin/python tools/trace_report.py data/traces_v2/  # trace-set health
+.venv/bin/python tools/carve_eval_sets.py               # expand synth pool + carve T1/micro
 ```
 
 Trace generation needs a teacher endpoint (`tools/serve_teacher_dual.sh`) and

@@ -1,0 +1,17 @@
+
+[asr]
+torch>=2.6
+transformers>=4.57
+librosa
+soundfile
+accelerate
+
+[dev]
+pytest>=8
+ruff>=0.6
+
+[train]
+unsloth
+trl
+datasets
+peft

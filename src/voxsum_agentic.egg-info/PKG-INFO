@@ -1,0 +1,19 @@
+Metadata-Version: 2.4
+Name: voxsum-agentic
+Version: 0.1.0
+Summary: Agentic meeting-transcript summarizer (CURSOR protocol) for sub-1B SLMs
+Requires-Python: >=3.11
+Provides-Extra: asr
+Requires-Dist: torch>=2.6; extra == "asr"
+Requires-Dist: transformers>=4.57; extra == "asr"
+Requires-Dist: librosa; extra == "asr"
+Requires-Dist: soundfile; extra == "asr"
+Requires-Dist: accelerate; extra == "asr"
+Provides-Extra: train
+Requires-Dist: unsloth; extra == "train"
+Requires-Dist: trl; extra == "train"
+Requires-Dist: datasets; extra == "train"
+Requires-Dist: peft; extra == "train"
+Provides-Extra: dev
+Requires-Dist: pytest>=8; extra == "dev"
+Requires-Dist: ruff>=0.6; extra == "dev"

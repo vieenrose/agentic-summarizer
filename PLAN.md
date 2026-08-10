@@ -99,6 +99,16 @@ before the negative-result path is invoked.
 
 ---
 
+## 0b. Amendments accepted 2026-08-10 (resume, branch `pi-agent`)
+
+| decision | value |
+|---|---|
+| **judge filter runs fully local** | `gpt-oss-20b` NVFP4 (cached locally) served by llama.cpp on both GPUs' free memory, `--reasoning off` (gpt-oss's default long thinking truncated against the 4k slot; empty content looked like a NOP). Temp 0 greedy. Probe: **2/2 planted inversions caught, 0/4 false alarms** (en + zh-TW) — same bar as the panel. Records the filter's `judge_model` so cloud/local provenance is never ambiguous. Cost: $0, and no API key on this box |
+| **eval tiers carved from the pool** | t1 = 10 en QMSum real (12k–40k tok, incl. the two n=2 baselined meetings) + 10 zh synthetic held out; micro = 3 en MeetingBank (small = cheap) + 3 zh synthetic; train = 54. `tools/carve_eval_sets.py` resets and re-carves idempotently. **zh T1 is synthetic** (VCSum unobtainable, §1a) and labelled per §7.8 |
+| **synthetic pool expanded** | +8 en / +8 zh revision-dense meetings (variants v2–3 / v4–5) so holding out T1+micro does not starve zh training (was 3 zh left). 80 meetings total |
+| **T2 stays blocked** | pool has no ≥80k-token meeting; en T2 must be real, which needs audio (MOSS) or collection. Not faked with concatenation. P6 is deferred, not cancelled |
+| **COVER/SYNTH judging goes local too** | no TOGETHER_API_KEY on this box. FAITH/INVERT: local gpt-oss-20b (probed). COVER/SYNTH: serve `Qwen3.6-27B-NVFP4` (cached; Bonsai's own base family) once the teachers stop. Judge family ∉ {student, teacher} still holds (Gemma student/teacher, Qwen/OpenAI judges). Cloud panel remains the reference when a key exists |
+
 ## 1a. Transcript collection (directive 1)
 
 **Status of local assets:** MOSS-Transcribe-Diarize 0.9B weights are cached; **no meeting audio

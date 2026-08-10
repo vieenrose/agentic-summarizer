@@ -144,9 +144,6 @@ class TranscriptIndex:
         if mode == "anchor":
             return near[:limit]
 
-        seen = {e.anchor for e in near}
-        found = self.search(bullet, top_k=limit, exclude=seen)
-
         # Reserve slots for the retrieved half. A +/-3 neighbourhood yields up to 7 lines,
         # so a naive `(near + found)[:limit]` fills every slot from the neighbourhood and
         # silently discards the whole-transcript search — which made claim mode identical
@@ -154,15 +151,27 @@ class TranscriptIndex:
         # UNSUPPORTED for any true claim whose support lies elsewhere in the meeting.
         # The anchor line is guaranteed a slot because `neighbourhood` is anchor-first.
         near_budget = max(limit // 2, 1)
-        head, tail = near[:near_budget], found[: limit - near_budget]
+        head = near[:near_budget]
+        # Exclude only the lines actually shown from the search, not the whole
+        # neighbourhood. Lines at anchor +/-2 or +/-3 are inside `near` (FAITH-anchor's own
+        # window) but outside the anchor-first `head`, so excluding every near line would
+        # drop a support line at +/-2/+/-3 from claim mode entirely — the bullet's true
+        # evidence would reach neither the neighbourhood slice nor the retrieval.
+        shown = {e.anchor for e in head}
+        found = self.search(bullet, top_k=limit, exclude=shown)
+        tail = found[: limit - near_budget]
         # Backfill from whichever side has spares, so a bullet is never under-evidenced
-        # just because one source came up short.
+        # just because one source came up short. Dedup against what is already shown: the
+        # whole-transcript search may now surface a +/-2/+/-3 line the spare neighbourhood
+        # also carries.
         if len(head) + len(tail) < limit:
-            spare_near = near[len(head) :]
-            spare_found = found[len(tail) :]
+            have = shown | {e.anchor for e in tail}
+            spare_near = [e for e in near[len(head) :] if e.anchor not in have]
+            spare_found = [e for e in found[len(tail) :] if e.anchor not in have]
             for extra in (*spare_near, *spare_found):
                 if len(head) + len(tail) >= limit:
                     break
+                have.add(extra.anchor)
                 tail.append(extra)
         # Neighbourhood first: it is what FAITH-anchor would see, so a judge reading in
         # order encounters the anchored evidence before the retrieved evidence.

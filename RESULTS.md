@@ -232,3 +232,43 @@ Four lessons, all of them about the instrument rather than the systems:
 Every number above is labelled by the retrieval variant that produced it. v1 and v2 results
 are retained in `runs/judged/` and `runs/judged2/` as evidence of the artifacts, and must not
 be compared against v3 or against each other.
+
+---
+
+## FAITH calibration against human reference summaries
+
+Absolute FAITH numbers were uninterpretable — 53% verifiability could mean the notes are poor
+or that the corpus and metric permit no better. So QMSum's own "Summarize the whole meeting"
+reference was judged through the identical pipeline (`eval/calibrate_reference.py`): same judge,
+same prompt, same claim mode, anchors assigned by the same deterministic matcher the harness
+uses for an unanchored bullet.
+
+| source | supported | FAITH-equivalent |
+|---|---|---|
+| **QMSum human gold**, meeting 16abbdf7 | 1/5 — 20% | **1.80** |
+| **QMSum human gold**, meeting 3f8b473d | 1/6 — 17% | **1.67** |
+| our CURSOR arm | 53–58% | 3.12–3.32 |
+| our map-reduce arm | 47–48% | 2.89–2.92 |
+
+**The human gold standard scores well below both of our systems.** The unsupported sentences
+are true but abstractive — "The meeting was about caring Welsh children during the outbreak of
+COVID-19" summarises the meeting rather than restating any line, and cannot be verified from six
+120-char snippets.
+
+Consequences:
+
+1. **Absolute FAITH is not a faithfulness reading.** Any statement of the form "only N% of
+   bullets are verifiable, which is concerning" is unusable without this reference point.
+   Against it, the teacher looks good rather than poor.
+2. **GT2 survives because it is relative.** Δ ≥ +0.3 between arms measured identically remains
+   meaningful; only the absolute value is uninformative.
+3. **FAITH and SYNTH pull in opposite directions.** FAITH rewards extraction, GT3 rewards the
+   meeting-level arc, so a system tuned to maximise FAITH would get *worse* at the gate the
+   project exists to clear. This is the same tension first hypothesised for FAITH-anchor and
+   refuted there at n=2 — confirmed here at the metric level with a human upper bound.
+
+**Caveat on this calibration's own method.** Splitting prose into sentences strips antecedents
+("As before, this meeting also began with personal presentations"), while our bullets are
+self-contained by construction. Part of the 18% is therefore an artifact of the split, and the
+true human rate is higher than measured. n = 5 and 6 sentences across 2 meetings. The direction
+is large enough to act on; the magnitude is not precise.

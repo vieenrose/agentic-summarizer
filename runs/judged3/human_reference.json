@@ -1,0 +1,77 @@
+[
+  {
+    "meeting": "qmsum-16abbdf7b3f2",
+    "source": "human_reference",
+    "claims": 5,
+    "supported": 1,
+    "supported_rate": 0.2,
+    "faith_equivalent": 1.8,
+    "verdicts": [
+      {
+        "claim": "The meeting was about caring Welsh children during the outbreak of COVID-19.",
+        "anchor": 140,
+        "verdict": "SUPPORTED"
+      },
+      {
+        "claim": "Due to the coronavirus, the state was locked down and a strict social distance was required, and then most schools in Welsh were shut down.",
+        "anchor": 1749,
+        "verdict": "UNSUPPORTED"
+      },
+      {
+        "claim": "The group was concerned whether the existing support was enough to ensure their children get through such a period healthily, in terms of both mentally and physically.",
+        "anchor": 1195,
+        "verdict": "UNSUPPORTED"
+      },
+      {
+        "claim": "They listed several possible solutions, including having the vaccination on the susceptible group, offering psychological support for the children as well as the pregnant women, and raising a contingency fund.",
+        "anchor": 3874,
+        "verdict": "UNSUPPORTED"
+      },
+      {
+        "claim": "Through their asking and answering with the ministers, the group finally agreed on a bright blueprint for the education and economic recovery in Welsh.",
+        "anchor": 2556,
+        "verdict": "UNSUPPORTED"
+      }
+    ]
+  },
+  {
+    "meeting": "qmsum-3f8b473ddd36",
+    "source": "human_reference",
+    "claims": 6,
+    "supported": 1,
+    "supported_rate": 0.16666666666666666,
+    "faith_equivalent": 1.6666666666666665,
+    "verdicts": [
+      {
+        "claim": "The whole meeting was about a detailed prototype of the remote control.",
+        "anchor": 790,
+        "verdict": "UNSUPPORTED"
+      },
+      {
+        "claim": "As before, this meeting also began with personal presentations.",
+        "anchor": 2114,
+        "verdict": "UNSUPPORTED"
+      },
+      {
+        "claim": "The Industrial Design focused on the components of the remote control, including the energy source, the buttons and the materials, while the User Interface suggested to use voice recognition technique and add secured or hidden programming onto the touch screen.",
+        "anchor": 824,
+        "verdict": "CONTRADICTED"
+      },
+      {
+        "claim": "Then the problem came that if they would like to make it so complex, they would go beyond the budget and have to raise the cost.",
+        "anchor": 1019,
+        "verdict": "SUPPORTED"
+      },
+      {
+        "claim": "Thus they decided to simplify some functions and buttons.",
+        "anchor": 2008,
+        "verdict": "UNSUPPORTED"
+      },
+      {
+        "claim": "Before the meeting ended, they also discussed the shape of the remote control.",
+        "anchor": 790,
+        "verdict": "UNSUPPORTED"
+      }
+    ]
+  }
+]

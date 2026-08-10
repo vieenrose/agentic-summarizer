@@ -257,6 +257,23 @@ def test_claim_mode_still_leads_with_the_neighbourhood(index: TranscriptIndex) -
     assert ev[0].from_anchor_neighbourhood
 
 
+def test_claim_mode_reaches_support_at_anchor_plus_two(index: TranscriptIndex) -> None:
+    """A support line at anchor +/-2 or +/-3 must not be dropped from claim mode.
+
+    `near[:3]` is anchor-first (anchor, then +/-1), so a bullet whose true support sits at
+    anchor +/-2 or +/-3 is outside the shown slice but still inside FAITH-anchor's +/-3
+    window. Excluding the WHOLE neighbourhood from the search would make that line invisible
+    to claim mode entirely; only the lines actually shown may be excluded.
+    """
+    lines = [Utterance(i * 30, "S1", f"the vendor contract was discussed in round {i}")
+             for i in range(20)]
+    lines[5] = Utterance(150, "S1", "Vendor contract approved for the new supplier arrangement")
+    idx = TranscriptIndex(lines)
+    # anchor at 60 (idx 2); the approval line at 150 is anchor+3 (idx 5).
+    ev = idx.evidence_for("Vendor contract approved", 60, mode="claim", limit=6)
+    assert any(e.anchor == 150 for e in ev), "support at anchor+3 was dropped by the split"
+
+
 def test_claim_mode_backfills_when_one_source_is_short(index: TranscriptIndex) -> None:
     # A bullet with no lexical match anywhere: the neighbourhood must still fill the budget.
     ev = index.evidence_for("zzzz qqqq unmatchable", 90, mode="claim", limit=6)

@@ -1,0 +1,12 @@
+TITLE: Warehouse Consolidation
+SUMMARY:
+- Decision made to approve warehouse consolidation plan [5:30]
+DECISIONS:
+- Reject warehouse consolidation plan [2:00]
+- Approve warehouse consolidation plan [5:30]
+ACTIONS:
+- S2 to submit revised plan by 14 March [5:30]
+OPEN:
+- Review and adjustment of freight numbers for revised costing [3:00]
+TOPICS:
+- Warehouse consolidation plan [0:00]

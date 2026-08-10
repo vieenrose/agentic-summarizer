@@ -2,10 +2,11 @@ TITLE:
 SUMMARY:
 -
 DECISIONS:
--
+- Council to certify amendment to C-15H for 23/24 elections [1:20]
+- Council to schedule California Coastal Commission to certify amendment to C-15H [1:51]
 ACTIONS:
 -
 OPEN:
 -
 TOPICS:
-- Proposal to certify a city amendment to the Certified Local Coastal Program [0:12]
+- Council to certify amendment to C-15H for 23/24 elections [1:57]

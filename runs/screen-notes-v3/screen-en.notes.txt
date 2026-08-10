@@ -1,0 +1,12 @@
+TITLE:
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+- Warehouse consolidation plan [3:00]
+- Warehouse consolidation budget [3:00]

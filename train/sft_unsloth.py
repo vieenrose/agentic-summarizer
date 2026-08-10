@@ -28,11 +28,20 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "src"))
 
+# Bind the REAL trl trainer before `import unsloth` replaces the top-level trl.SFTTrainer
+# with its own wrapper. The CONFIG, however, must be the replaced trl.SFTConfig (below,
+# in main): trl's trainer rebuilds the args via to_dict() when the isinstance check fails,
+# and to_dict() deliberately obfuscates token strings ("<EOS_TOKEN>") — which then fails
+# the trainer's own eos validation. Constructing the replaced config class keeps the
+# isinstance check true and the real eos_token passes through untouched.
+from trl.trainer.sft_trainer import SFTTrainer  # noqa: E402
+
 STUDENT = "google/functiongemma-270m-it"
 
-# Gemma turn markers — the boundary completion-only masking keys on.
-INSTRUCTION_PART = "<start_of_turn>user\n"
-RESPONSE_PART = "<start_of_turn>model\n"
+# Gemma/Qwen turn markers — the boundary completion-only masking keys on.
+# tokenize_sample auto-detects which one the rendered template actually uses.
+INSTRUCTION_PARTS = ("<start_of_turn>user\n", "<|im_start|>user\n")
+RESPONSE_PARTS = ("<start_of_turn>model\n", "<|im_start|>assistant\n")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -96,16 +105,26 @@ def tokenize_sample(row: dict, tokenizer, max_length: int) -> dict:
     text = tokenizer.apply_chat_template(messages, tokenize=False)
     if text.count(tokenizer.bos_token or "<bos>") > 1:
         raise SystemExit("template produced two <bos> tokens — fix before training")
-    ids = tokenizer(text, add_special_tokens=False)["input_ids"]
+    def _ids(text: str) -> list[int]:
+        out = tokenizer(text=text, add_special_tokens=False)["input_ids"]
+        # Qwen3-VL processors return a batch dim (list of lists); unwrap it.
+        return out[0] if out and isinstance(out[0], list) else out
+
+    ids = _ids(text)
     if len(ids) > max_length:
         # Front-truncate: the completion (target) sits at the end and must survive.
         cut = len(ids) - max_length
         print(f"[sft] WARNING: sample {len(ids)} tokens > {max_length}; dropping {cut} from the front")
         ids = ids[cut:]
-    resp = tokenizer(RESPONSE_PART, add_special_tokens=False)["input_ids"]
-    idx = find_subsequence(ids, resp)
-    if idx is None:
+    resp = None
+    for marker in RESPONSE_PARTS:
+        m_ids = _ids(marker)
+        idx = find_subsequence(ids, m_ids)
+        if idx is not None and (resp is None or idx > resp[0]):
+            resp = (idx, m_ids)
+    if resp is None:
         raise SystemExit("response marker not found in sample — template mismatch")
+    idx = resp[0]
     labels = [-100] * idx + ids[idx:]
     return {"input_ids": ids, "labels": labels, "attention_mask": [1] * len(ids)}
 
@@ -139,8 +158,8 @@ def main(argv: list[str] | None = None) -> int:
         )
 
     from datasets import Dataset
-    from trl import SFTConfig, SFTTrainer
     from unsloth import FastLanguageModel
+    from trl import SFTConfig  # the unsloth-replaced class: keeps trl's isinstance check true
 
     train_rows = load_jsonl(args.train)
     valid_rows = load_jsonl(args.valid) if args.valid else []
@@ -154,6 +173,12 @@ def main(argv: list[str] | None = None) -> int:
         load_in_4bit=False,
         full_finetuning=args.regime == "full",
     )
+    # Qwen3.5 ships eos_token="<EOS_TOKEN>" (a training-only token absent from the
+    # vocab); the chat template's real terminator is <|im_end|>. trl's collator needs
+    # a vocab-present eos, so normalise here (model config untouched).
+    if tokenizer.eos_token != "<|im_end|>":
+        tokenizer.eos_token = "<|im_end|>"
+        tokenizer.eos_token_id = tokenizer.convert_tokens_to_ids("<|im_end|>")
     if args.regime == "lora":
         model = FastLanguageModel.get_peft_model(
             model,
@@ -177,6 +202,28 @@ def main(argv: list[str] | None = None) -> int:
     )
 
     lr = args.lr if args.lr is not None else (5e-5 if args.regime == "full" else 2e-4)
+    sft_cfg = SFTConfig(
+            output_dir=str(args.out),
+            per_device_train_batch_size=args.batch_size,
+            gradient_accumulation_steps=args.grad_accum,
+            num_train_epochs=args.epochs,
+            learning_rate=lr,
+            warmup_ratio=args.warmup_ratio,
+            lr_scheduler_type="cosine",
+            optim="adamw_8bit",
+            bf16=True,
+            fp16=False,
+            logging_steps=10,
+            save_strategy="epoch",
+            eval_strategy="epoch" if valid_ds else "no",
+            per_device_eval_batch_size=1,
+            max_length=args.max_seq_length,
+            dataset_text_field=None,
+            seed=args.seed,
+            report_to="none",
+            eos_token="<|im_end|>",
+        )
+    print(f"[sft] cfg eos_token={sft_cfg.eos_token!r} type={type(sft_cfg).__module__}.{type(sft_cfg).__name__}", flush=True)
     trainer = SFTTrainer(
         model=model,
         processing_class=tokenizer,
@@ -201,6 +248,7 @@ def main(argv: list[str] | None = None) -> int:
             dataset_text_field=None,  # pre-tokenized; labels carry the completion mask
             seed=args.seed,
             report_to="none",
+            eos_token="<|im_end|>",
         ),
     )
 

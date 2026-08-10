@@ -8,3 +8,5 @@ data/
 # API keys — never commit
 .env
 *.key
+runs/sft-*/
+runs/*/gguf*

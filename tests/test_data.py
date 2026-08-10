@@ -116,7 +116,7 @@ def test_trap_sits_between_setup_and_revision(kind: str) -> None:
 
 def test_withdraw_expects_del_others_expect_upd() -> None:
     assert build_meeting("t", "en", "withdraw").expected_op == "DEL"
-    for kind in ("reversal", "deadline", "reassign"):
+    for kind in ("reversal", "deadline", "reassign", "combined"):
         assert build_meeting("t", "en", kind).expected_op == "UPD"
 
 

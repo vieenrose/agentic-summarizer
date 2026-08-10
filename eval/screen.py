@@ -232,8 +232,12 @@ def main(argv: list[str] | None = None) -> int:
     from voxsum.render import render_state
 
     # No grammar: the screen measures whether the model *naturally* emits valid ops.
+    # Greedy: an eval instrument must be reproducible, not a lottery ticket.
     model = LlamaServer(
-        base_url=args.base_url, thinking=args.thinking, max_tokens=args.max_tokens
+        base_url=args.base_url,
+        thinking=args.thinking,
+        max_tokens=args.max_tokens,
+        temperature=0.0,
     )
     if not model.health():
         print(f"llama-server not reachable at {args.base_url}", file=sys.stderr)

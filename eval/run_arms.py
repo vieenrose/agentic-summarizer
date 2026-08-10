@@ -64,8 +64,12 @@ def main(argv: list[str] | None = None) -> int:
         token_len = lambda text: len(tok(text, add_special_tokens=False)["input_ids"])
         print("[arms] chunking with the student tokenizer (real budget)", flush=True)
 
+    # Greedy: paired eval must be reproducible; sampling noise belongs to the judge, not the arms.
     model = LlamaServer(
-        base_url=args.base_url, thinking=not args.no_thinking, max_tokens=args.max_tokens
+        base_url=args.base_url,
+        thinking=not args.no_thinking,
+        max_tokens=args.max_tokens,
+        temperature=0.0,
     )
     if not model.health():
         print(f"llama-server not reachable at {args.base_url}", file=sys.stderr)

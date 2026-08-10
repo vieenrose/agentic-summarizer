@@ -30,7 +30,7 @@ from .transcript import Utterance
 
 __all__ = ["REVISION_KINDS", "SynthMeeting", "build_set", "build_meeting"]
 
-REVISION_KINDS = ("reversal", "deadline", "reassign", "withdraw")
+REVISION_KINDS = ("reversal", "deadline", "reassign", "withdraw", "combined")
 
 LINE_GAP = 30  # seconds between lines
 
@@ -138,6 +138,17 @@ def _beats(
                 ("context", "S3", "There is no budget line for it."),
                 ("revision", "S1", f"Then drop {subject} from the plan entirely."),
             ],
+            # Screen-structured: rejection chain + TWO static deadlines + trap, in the
+            # G1 screen's beat order (reject -> trap -> drop -> approve -> deadline 1
+            # -> deadline 2). The screen checks all of these at once, so the teacher
+            # must demonstrate the whole combination.
+            "combined": [
+                ("setup", "S1", f"For now we reject {subject}."),
+                ("context", "S2", "I can rework the numbers if that helps."),
+                ("revision", "S1", f"With the reworked numbers, {subject} is approved."),
+                ("deadline", "S2", f"{o1} will submit the revised {subject} plan by 14 March."),
+                ("deadline", "S3", "Site surveys will be finished before the end of April."),
+            ],
         }
     else:
         opening = [
@@ -170,6 +181,13 @@ def _beats(
                 ("setup", "S2", f"我們應該把{subject}排進本季計畫。"),
                 ("context", "S3", "這個沒有預算科目。"),
                 ("revision", "S1", f"那就把{subject}從計畫中整個移除。"),
+            ],
+            "combined": [
+                ("setup", "S1", f"目前先否決{subject}。"),
+                ("context", "S2", "如果需要，我可以重新計算數字。"),
+                ("revision", "S1", f"依照重算後的數字，{subject}通過。"),
+                ("deadline", "S2", f"{o1}會在三月十四號前送出修正後的{subject}方案。"),
+                ("deadline", "S3", "場地勘查會在四月底之前完成。"),
             ],
         }
     # Trap sits between setup and revision so the model must hold the revision across it.

@@ -11,8 +11,10 @@ Where this file and the spec disagree, the spec wins until an amendment listed i
 |---|---|
 | **base SLM** | **`google/functiongemma-270m-it` — LOCKED.** No fallback rung. If it cannot clear the gates, the outcome is the spec's own negative-result path (ship map-reduce, publish agency-at-270M as measured), not a model swap |
 | **transcript source** | authentic audio → **MOSS-Transcribe-Diarize 0.9B** → transcript v1 (§1a). Weights already cached locally |
-| **teacher** | **`gemma-4-31B-it` Q8_0, local, tensor-split across both GPUs** (§2b). Frontier API teacher is contingency only, if the screen fails |
-| **judge** | **`Qwen3.5-9B`+ as primary** — non-Gemma, non-teacher (§0.1). `gemma-4-E2B-it` retained as a secondary, reported separately |
+| **teacher** | **`gemma-4-31B-it` Q8_0, local, tensor-split across both GPUs, thinking ON** (§2b). Thinking is not optional: with it off, zh-TW produced decision inversions in 4 of 5 runs (RESULTS.md). Screened and passed; frontier API teacher never needed |
+| **judge panel** | three distinct families, none of them the student's or teacher's — **`openai/gpt-oss-20b`** (FAITH/INVERT), **`deepseek-ai/DeepSeek-V4-Flash-0731`** (COVER/SYNTH; 1M ctx enables full-context mode), **`Prism-ML/Ternary-Bonsai-27B`** (free second opinion). All three verified at 100% planted-inversion recall (§0.1) |
+| **judges disqualified** | **every gemma judge**, including the spec's designated `gemma-4-E4B-it`. `gemma-3n-E4B-it` answered SUPPORTED to all three probe cases in 4 tokens — including a planted inversion and an unrelated claim. Enforced in code as `DISQUALIFIED` in `eval/judge.py`, not just in prose |
+| **trace quality** | `gen_traces.py --judge-filter` is **required**, not optional: only 53–58% of the teacher's own bullets are judge-verifiable on real meetings, and the guards check protocol rather than truth (§2b) |
 | **hardware** | 2× RTX 5090 32 GB (Blackwell, 64 GB total) — bf16 native, so Unsloth's float16-infinity workaround is **not needed**. Verify Unsloth/triton carry `sm_120` kernels; torch 2.10+cu128 is installed |
 
 ### Why FunctionGemma-270M fits CURSOR unusually well
@@ -44,13 +46,34 @@ before the negative-result path is invoked.
 
 ### Amendments to the spec this forces
 
-1. **Judge family — RESOLVED.** Spec §7 mandates a gemma-4 judge *because* Qwen teachers
-   distilled the student. A Gemma-3 student makes gemma-4 the **same family as the student** —
-   self-preference bias, the exact failure the rule exists to prevent. The rule generalizes to
-   *judge family ∉ {student family, teacher family}*. With student = Gemma and teacher =
-   Gemma/API, the Qwen ban is void: **primary judge = Qwen3.5-9B or larger**, with
-   `gemma-4-E2B-it` kept as a secondary and reported separately (its scores are expected to be
-   biased *upward*; that direction must be stated whenever it is quoted).
+1. **Judge family — RESOLVED, then settled empirically.** Spec §7 mandates a gemma-4 judge
+   *because* Qwen teachers distilled the student. A Gemma-3 student makes gemma-4 the **same
+   family as the student** — self-preference bias, the exact failure the rule exists to
+   prevent. The rule generalizes to *judge family ∉ {student family, teacher family}*, which
+   voids the spec's Qwen ban (our teacher is Gemma, not Qwen).
+
+   Reasoning got us that far; the choice was then decided by measurement, and the measurement
+   overturned more than the family rule did. A planted-inversion probe (`eval/judge_selftest.py`)
+   disqualified the spec's own designated judge: **`gemma-3n-E4B-it` answered SUPPORTED to all
+   three cases in 4 tokens**, including an inversion and a wholly unrelated claim. A judge that
+   assents to everything cannot certify the 0%-inversion product requirement, so "biased
+   upward" was too generous a description and the gemma judges are out entirely — enforced as
+   `DISQUALIFIED` in `eval/judge.py` so nobody reinstates them from the spec by mistake.
+
+   The panel is three distinct families, each verified at 100% planted-inversion recall with
+   zero false alarms:
+
+   | role | model | family | cost |
+   |---|---|---|---|
+   | FAITH-claim / FAITH-anchor / INVERT | `openai/gpt-oss-20b` | OpenAI | ~$0.10 per tier |
+   | COVER / SYNTH | `deepseek-ai/DeepSeek-V4-Flash-0731` | DeepSeek | ~$0.45 per tier |
+   | second opinion, all metrics | `Prism-ML/Ternary-Bonsai-27B` | Qwen | free |
+
+   Two consequences worth carrying forward. DeepSeek's **1M context retires the spec's
+   per-part-agenda approximation** for COVER/SYNTH — an entire 80k-token T2 meeting fits in one
+   call, so §7.2's "full-context mode" becomes the default rather than a cross-validation
+   reference. And **Bonsai is Qwen-family** (a 1.71-bit quantisation of Qwen3.6-27B), despite
+   §7 filing it under "gemma-4 only" — the spec is simply wrong about its lineage.
 2. **Op wire format (spec §5.1).** Emit ops as FunctionGemma function calls
    (`<start_function_call>call:ADD{...}<end_function_call>`) rather than the `ADD SECTION - …`
    text grammar, to ride the post-training. The NOTES v2 output contract (§3) is unaffected —
@@ -385,8 +408,21 @@ test, win/loss/tie counts. The n=6 micro-cell is **directional only** and never 
 
 ## 7. Open questions for you
 
-1. **Audio sourcing** — no meeting audio is on this box. Do you have recordings (internal, with
-   consent, or already-collected public proceedings), or should P1 start by collecting public
-   council / legislative sessions? The **zh-TW contested** ones are the high-value item (§1a).
-2. **VCSum / MeetingBank / QMSum** — not found locally. Download as the base pool (they still
-   provide T1 regression and en volume), or go audio-first for everything?
+1. **Audio sourcing — now the single blocker on any reportable FAITH-anchor number.** No
+   meeting audio is on this box, and §1a's measurement showed *neither* fetchable corpus has
+   timestamps, so every transcript we hold runs on a synthesised 150-wpm clock. That is fine
+   for training and useless for claiming real-world anchor accuracy. Do you have recordings
+   (internal, with consent, or already-collected public proceedings), or should this start by
+   collecting public council / legislative sessions? The **zh-TW contested** ones remain the
+   high-value item, and VCSum turning out to be unobtainable makes them the *only* route to
+   retiring the project's largest caveat.
+2. **Judge evidence ordering — needs pinning before the 20-meeting run.** Presenting the same
+   six evidence lines anchor-first rather than sequentially moved FAITH-anchor by 0.47 on one
+   note-set (RESULTS.md). The spec says nothing about ordering; it is now a known variance
+   source and must be held fixed across arms and runs, or the tier measures presentation.
+3. **Teacher content ceiling.** The teacher passes on protocol (100% valid-op, 100% raw anchor,
+   revises rather than appends) but only 53–58% of its own bullets are judge-verifiable on real
+   meetings, at SYNTH 2–3 of 5. `--judge-filter` stops that reaching the student as targets,
+   but the student still cannot exceed what the teacher demonstrates. Worth calibrating against
+   QMSum's own human reference summaries (~5 minutes of judge calls) to learn whether 53% is
+   *bad* or simply what this corpus and metric yield.

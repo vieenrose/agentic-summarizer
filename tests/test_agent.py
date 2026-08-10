@@ -278,3 +278,17 @@ def test_screen_model_runs_both_languages() -> None:
     results = screen_model(Scripted(default="NOP"), budget=96)
     assert {r.lang for r, _, _ in results} == {"en", "zh-TW"}
     assert all(r.prompt_version == PROMPT_VERSION for r, _, _ in results)
+
+
+def test_valid_op_rate_never_exceeds_one() -> None:
+    """Regression: NOP counted in the numerator but not the denominator gave >100%."""
+    model = Scripted(
+        "NOP\nADD TOPICS - Office move [0:00]",
+        "NOP\nADD OPEN - Parking [0:00]\ngarbage line",
+        default="NOP",
+    )
+    trace = run_cursor(parse_transcript(EXAMPLE), model, budget=20)
+    assert trace.valid_op_rate is not None
+    assert 0.0 <= trace.valid_op_rate <= 1.0
+    # Two ADDs applied, one malformed line refused.
+    assert trace.valid_op_rate == pytest.approx(2 / 3)

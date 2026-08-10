@@ -179,7 +179,7 @@ def screen_model(
     *,
     langs: tuple[str, ...] = ("en", "zh-TW"),
     declarations: bool = False,
-    budget: int = 512,
+    budget: int = 128,
     repeat_filler: int = 1,
 ) -> list[tuple[ScreenResult, Trace, NotesState]]:
     """Run the screen set through `model`. Returns (result, trace, final state) per meeting."""
@@ -207,8 +207,21 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument(
         "--declarations", action="store_true", help="use FunctionGemma tool declarations"
     )
-    p.add_argument("--budget", type=int, default=512, help="chunk token budget")
+    p.add_argument(
+        "--budget",
+        type=int,
+        default=128,
+        help="chunk token budget. Must be small enough that the planted meeting spans "
+        "several chunks — at one chunk per meeting the model sees the rejection and the "
+        "approval together and never has to revise anything, so the chain test is vacuous.",
+    )
     p.add_argument("--repeat-filler", type=int, default=1)
+    p.add_argument("--max-tokens", type=int, default=512, help="output budget per step")
+    p.add_argument(
+        "--thinking",
+        action="store_true",
+        help="let the model reason before emitting ops (slower; legitimate per PLAN §2c)",
+    )
     p.add_argument("--out", type=Path, default=None, help="write JSON results here")
     p.add_argument(
         "--notes-out", type=Path, default=None, help="write final NOTES per meeting here"
@@ -218,7 +231,10 @@ def main(argv: list[str] | None = None) -> int:
     from voxsum.backends.llama_server import LlamaServer
     from voxsum.render import render_state
 
-    model = LlamaServer(base_url=args.base_url)  # no grammar: measure natural op emission
+    # No grammar: the screen measures whether the model *naturally* emits valid ops.
+    model = LlamaServer(
+        base_url=args.base_url, thinking=args.thinking, max_tokens=args.max_tokens
+    )
     if not model.health():
         print(f"llama-server not reachable at {args.base_url}", file=sys.stderr)
         return 2

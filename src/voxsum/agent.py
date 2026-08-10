@@ -66,12 +66,21 @@ class Trace:
 
     @property
     def valid_op_rate(self) -> float | None:
-        rates = [
-            (s.outcome.applied, len([r for r in s.outcome.results if not isinstance(r.op, Nop)]))
+        """Meeting-level GT1: applied / scored op lines, pooled across steps.
+
+        NOP is excluded from numerator *and* denominator. Counting it in only one — as an
+        earlier version did via `Outcome.applied` — yields rates above 100% on any step
+        that mixes NOP with real ops.
+        """
+        scored = [
+            r
             for s in self.steps
+            for r in s.outcome.results
+            if not isinstance(r.op, Nop)
         ]
-        total = sum(n for _, n in rates)
-        return sum(a for a, n in rates if n) / total if total else None
+        if not scored:
+            return None
+        return sum(1 for r in scored if r.applied) / len(scored)
 
     @property
     def nop_rate_on_rich_chunks(self) -> float | None:

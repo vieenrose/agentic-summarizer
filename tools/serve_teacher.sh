@@ -11,6 +11,11 @@ set -euo pipefail
 
 REPO="${REPO:-$HOME/.cache/huggingface/hub/models--unsloth--gemma-4-31B-it-GGUF}"
 QUANT="${QUANT:-Q8_0}"
+# --ctx-size bounds prompt + output *together*, and --parallel N divides it per slot. It is
+# therefore not the enforcement of the §2c prompt budget — agent.py's client-side assertion
+# is, and it stays in force regardless of what is set here. Gemma 4 is a thinking model:
+# reasoning alone can run past 1.5k tokens, so a 4096 ctx over 2 slots starves it and the
+# step returns reasoning with no ops. Use CTX=16384 for thinking runs.
 CTX="${CTX:-4096}"
 PORT="${PORT:-8080}"
 LLAMA="${LLAMA:-$HOME/llama.cpp/build/bin/llama-server}"
@@ -39,8 +44,12 @@ else
   args+=(--split-mode none --main-gpu 0)
 fi
 
-# Speculative decode via the repo's multi-token-prediction head, when present.
-[ -n "$mtp" ] && args+=(-md "$mtp")
+# Speculative decode via the repo's multi-token-prediction head. Opt-in (MTP=1): the head
+# carries architecture `gemma4-assistant`, which this llama.cpp build rejects as a draft
+# model — enable only once your build supports it, or the server refuses to start.
+if [ "${MTP:-0}" = "1" ] && [ -n "$mtp" ]; then
+  args+=(-md "$mtp")
+fi
 
 echo "[serve] ${QUANT} $(basename "$model") ctx=${CTX} port=${PORT}"
 exec "$LLAMA" "${args[@]}"

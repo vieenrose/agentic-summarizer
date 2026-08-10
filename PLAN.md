@@ -74,6 +74,24 @@ floors seconds to the v1 clock, merges adjacent same-speaker segments across gap
 one utterance per line is a hard rule. Raw MOSS output is retained alongside each transcript so
 a conversion bug can be re-fixed without re-running the GPU.
 
+**What the public corpora actually turned out to be** (measured 2026-08-10, not assumed):
+
+| corpus | on the Hub | speakers | clock | note |
+|---|---|---|---|---|
+| **VCSum** (zh) | **no** — not published under any findable name | — | — | the spec's zh pool is unobtainable this way; zh needs audio or a manual source |
+| **QMSum** (`pszemraj/qmsum-cleaned`) | yes | **real** (`Professor E:`) | **none** | ~31k tokens/meeting; 272 rows carry only 35 distinct transcripts, so dedupe on the body — the `id` field identifies the *query*, not the meeting |
+| **MeetingBank** (`huuuyeah/meetingbank`) | yes | **none** | **none** | ~2k-char agenda-item segments, one flat string; ACTIONS attribution is impossible without speakers |
+| **AMI** (`edinburghcstr/ami`) | yes, 29 GB audio | real | real | the only Hub path to an *authentic* clock, via MOSS |
+
+**The consequence is sharper than a missing dataset.** Neither fetchable corpus has
+timestamps, so `voxsum.corpora` synthesises a clock at 150 wpm. That clock is monotonic and
+internally consistent — an anchor still points at the line that states the claim — but the
+wall-clock value is invented. So it is fine for **training** (the student learns "copy the
+supporting line's timestamp", and the clock's truth is irrelevant to that skill) and **not**
+a basis for reporting FAITH-anchor as real-world accuracy. Only audio through MOSS yields a
+real clock. Every meeting carries `authentic_clock` / `authentic_speakers` in
+`data/transcripts/manifest.json` so this cannot be forgotten downstream.
+
 **Sourcing, in priority order:**
 
 1. **en, real:** public-record council/committee meetings (the same provenance as MeetingBank,

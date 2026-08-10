@@ -57,6 +57,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--step-budget", type=int, default=4096, help="per-step prompt ceiling")
     p.add_argument("--grammar", action="store_true", help="constrain output with the op GBNF")
     p.add_argument(
+        "--no-thinking",
+        action="store_true",
+        help="disable teacher reasoning. Default is thinking ON: the screen found it is "
+        "what buys revise-don't-append, especially in zh-TW (RESULTS.md). Legitimate per "
+        "PLAN.md §2c — extra compute on the same input; only op lines are kept.",
+    )
+    p.add_argument("--max-tokens", type=int, default=6144, help="output budget per step")
+    p.add_argument(
         "--keep-nop",
         action="store_true",
         default=True,
@@ -74,7 +82,10 @@ def main(argv: list[str] | None = None) -> int:
 
     token_len = heuristic_token_len if args.heuristic_tokens else student_token_len(args.tokenizer)
     model = LlamaServer(
-        base_url=args.base_url, grammar=OP_GRAMMAR if args.grammar else None
+        base_url=args.base_url,
+        grammar=OP_GRAMMAR if args.grammar else None,
+        thinking=not args.no_thinking,
+        max_tokens=args.max_tokens,
     )
     if not model.health():
         print(f"llama-server not reachable at {args.base_url}", file=sys.stderr)

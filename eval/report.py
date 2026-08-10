@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import json
 import math
+import statistics
 import sys
 from collections import defaultdict
 from dataclasses import dataclass
@@ -63,6 +64,23 @@ class Comparison:
         return sum(self.deltas) / len(self.deltas) if self.deltas else None
 
     @property
+    def stdev(self) -> float | None:
+        return statistics.stdev(self.deltas) if len(self.deltas) > 1 else None
+
+    @property
+    def stderr(self) -> float | None:
+        """Standard error of the MEAN delta.
+
+        This, not per-meeting judge noise, is the right yardstick for a gate stated as a
+        mean difference. Judge noise is ~0.5 half-range per meeting (measured), but the
+        mean over n meetings has SE = sigma/sqrt(n) — ~0.12 at n=20. Comparing a mean
+        against a per-meeting noise band would make GT3's +0.5 look unreachable when it is
+        roughly 4 standard errors.
+        """
+        sd = self.stdev
+        return sd / math.sqrt(len(self.deltas)) if sd is not None and self.deltas else None
+
+    @property
     def p_value(self) -> float:
         return sign_test(self.wins, self.losses)
 
@@ -70,8 +88,10 @@ class Comparison:
         mean = self.mean_delta
         mean_s = "n/a" if mean is None else f"{mean:+.2f}"
         note = "" if self.n >= min_n else f"  DIRECTIONAL ONLY (n={self.n} < {min_n})"
+        se = self.stderr
+        se_s = "" if se is None else f" ±{se:.2f}"
         return (
-            f"  {self.metric:<13} Δ {mean_s}  "
+            f"  {self.metric:<13} Δ {mean_s}{se_s}  "
             f"W/L/T {self.wins}/{self.losses}/{self.ties}  "
             f"p={self.p_value:.3f}{note}"
         )
@@ -149,9 +169,14 @@ def gate_verdicts(
         out.append(f"GT3 synthesis    : WITHHELD (n={synth.n} < {min_n})")
     else:
         delta = synth.mean_delta or 0.0
+        se = synth.stderr
+        # Require the threshold to sit below the lower 1-SE bound, so a mean that only
+        # reaches +0.5 by luck of a noisy cell does not clear the agency gate.
+        margin = "" if se is None else f" (lower 1-SE bound {delta - se:+.2f})"
+        ok = delta >= GATES["GT3_synth"] and (se is None or delta - se >= GATES["GT3_synth"])
         out.append(
-            f"GT3 synthesis    : {'PASS' if delta >= GATES['GT3_synth'] else 'FAIL'} "
-            f"(Δ {delta:+.2f} vs +{GATES['GT3_synth']})"
+            f"GT3 synthesis    : {'PASS' if ok else 'FAIL'} "
+            f"(Δ {delta:+.2f} vs +{GATES['GT3_synth']}){margin}"
         )
 
     if prefill_ratio is None:

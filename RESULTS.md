@@ -133,3 +133,49 @@ Three things this exposed, all fixed or recorded:
 3. **A saturated STATE block is ~700 tokens, above §8's "≤ 600" assumption.** GT4 clears at
    2048 with the packing fix, but the margin is thin: if bullet caps or the SYS prompt grow,
    GT4 is the first gate to break and it will break quietly. Both facts are pinned as tests.
+
+---
+
+## Judge validation (`eval/judge_selftest.py`)
+
+Run before any judged comparison, because every GT2/GT3 threshold rests on the instrument.
+
+### Planted-inversion recall — the bar for certifying 0% inversions
+
+Correct notes and a polarity-flipped copy of the same notes, per meeting. Only bullets whose
+text actually changed count as planted inversions.
+
+| judge | family | inversions caught | false alarms | verdict |
+|---|---|---|---|---|
+| `openai/gpt-oss-20b` | OpenAI | **3/3 (100%)** | 0/6 | usable |
+| `Prism-ML/Ternary-Bonsai-27B` | Qwen | **3/3 (100%)** | 0/6 | usable |
+| `google/gemma-3n-E4B-it` | Gemma | **1/3** — answered SUPPORTED to everything in 4 tokens | — | **disqualified** |
+
+The ternary (1.71-bit) judge matching the OpenAI one here was not a given; it is why Bonsai
+is kept as a voting second opinion rather than a decorative one.
+
+### Judge noise — measured, per meeting
+
+`DeepSeek-V4-Flash`, same notes scored 5x:
+
+| meeting | COVER runs | SYNTH runs | half-range |
+|---|---|---|---|
+| zh reversal | 3,3,3,3,3 | 2,2,2,2,2 | 0.00 |
+| en reversal | 2,2,3,2,2 | 1,1,2,2,1 | 0.50 (stdev 0.55) |
+
+The spec's inherited ±0.4–0.5 is confirmed — but two corrections matter more than the number:
+
+1. **Noise must be measured within a meeting.** Pooling repeats across meetings mixes genuine
+   between-meeting differences into the judge's variance and overstates it. Keys are
+   `METRIC@meeting` for this reason.
+2. **A per-meeting noise band is the wrong yardstick for a gate stated as a mean.** On an
+   integer 1–5 scale, 0.50 half-range is the granularity floor — an occasional one-point
+   flip. The *mean* over n meetings has standard error σ/√n ≈ **0.12 at n=20**, so GT3's +0.5
+   is roughly four standard errors, not a coin flip. An earlier version of this tool advised
+   "treat Δ < 1.0 as a tie", which applied to the mean would have made GT3 unpassable by
+   construction. `report.py` now reports Δ ± SE and requires the lower 1-SE bound to clear
+   the gate.
+
+Two methodology bugs were found and fixed while producing this table — recall was understated
+2x by counting unchanged bullets as planted inversions, and noise was pooled across meetings.
+Both were in the measurement, not the judges.

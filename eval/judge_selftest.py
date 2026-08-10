@@ -84,7 +84,11 @@ class JudgeReport:
         return self.false_alarms / self.correct_total if self.correct_total else None
 
     def noise(self) -> dict[str, float]:
-        """Half-range and stdev of repeated scores, per metric."""
+        """Half-range and stdev of repeated scores, per metric AND meeting.
+
+        Keys are `METRIC@meeting`: pooling repeats across meetings would add genuine
+        between-meeting differences to the judge's own variance and overstate the noise.
+        """
         out: dict[str, float] = {}
         for metric, values in self.scores.items():
             if len(values) > 1:
@@ -161,13 +165,28 @@ def main(argv: list[str] | None = None) -> int:
                 continue
             print(f"[selftest] {Path(notes_path).name}: flipped {', '.join(flips)}", flush=True)
 
+            # Only bullets whose text actually CHANGED are planted inversions. Counting
+            # every bullet of the flipped notes understates recall badly: a TOPICS bullet
+            # with no polarity term is unchanged and is still true, so SUPPORTED is the
+            # correct verdict for it, not a miss.
+            original = parse_bullets(notes)
+            flipped_bullets = parse_bullets(inverted)
+            changed = [a[1] != b[1] for a, b in zip(original, flipped_bullets, strict=False)]
+            print(
+                f"[selftest]   {sum(changed)}/{len(changed)} bullets carry the inversion",
+                flush=True,
+            )
+
             for model in verdict_models:
                 report = reports[model]
                 for verdict in _verdicts_for(notes, index, client, model):
                     report.correct_total += 1
                     if verdict == "CONTRADICTED":
                         report.false_alarms += 1
-                for verdict in _verdicts_for(inverted, index, client, model):
+                verdicts = _verdicts_for(inverted, index, client, model)
+                for verdict, is_inverted in zip(verdicts, changed, strict=False):
+                    if not is_inverted:
+                        continue
                     report.inversion_total += 1
                     if verdict == "CONTRADICTED":
                         report.inversion_caught += 1
@@ -176,12 +195,13 @@ def main(argv: list[str] | None = None) -> int:
             transcript = "".join(u.render() + "\n" for u in utterances)
             prompt = cover_prompt(notes, transcript)
             model = PANEL["cover"]
+            meeting = Path(notes_path).stem
             for _ in range(args.repeats):
                 cover, synth = _score_from(client(model, _COVER_SYS, prompt))
                 if cover is not None:
-                    reports[model].scores.setdefault("COVER", []).append(cover)
+                    reports[model].scores.setdefault(f"COVER@{meeting}", []).append(cover)
                 if synth is not None:
-                    reports[model].scores.setdefault("SYNTH", []).append(synth)
+                    reports[model].scores.setdefault(f"SYNTH@{meeting}", []).append(synth)
     except JudgeBudgetExceeded as exc:
         print(f"STOPPED: {exc}", file=sys.stderr)
 
@@ -197,8 +217,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     if worst is not None:
         print(
-            f"\nmeasured judge noise (worst half-range): {worst:.2f} — "
-            f"treat Δ < {max(worst * 2, 0.5):.1f} as a tie, not the inherited 0.5"
+            f"\nmeasured judge noise (worst per-meeting half-range): {worst:.2f}"
+        )
+        print(
+            "  This is PER-MEETING noise on an integer 1-5 scale, where 0.50 half-range is\n"
+            "  the granularity floor (an occasional one-point flip). Use it as the sign-test\n"
+            "  tie band, NOT as a band on the mean: the mean over n meetings has standard\n"
+            f"  error sigma/sqrt(n) — about {worst * 1.1 / (20 ** 0.5):.2f} at n=20 — so a gate\n"
+            "  stated as a mean difference (GT3: +0.5) is several standard errors, not noise."
         )
     for report in reports.values():
         if report.recall is not None and report.recall < 1.0:

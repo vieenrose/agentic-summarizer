@@ -38,6 +38,12 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--budget", type=int, default=2048, help="chunk token budget, both arms")
     p.add_argument("--max-tokens", type=int, default=6144)
     p.add_argument("--no-thinking", action="store_true")
+    p.add_argument(
+        "--declarations",
+        action="store_true",
+        help="FunctionGemma tool declarations in SYS for the cursor arm — the student is "
+        "trained with them, so eval must match (CLAUDE.md §7.8)",
+    )
     p.add_argument("--arms", default="cursor,baseline")
     args = p.parse_args(argv)
 
@@ -67,6 +73,7 @@ def main(argv: list[str] | None = None) -> int:
                         lang=args.lang,
                         budget=args.budget,
                         token_len=heuristic_token_len,
+                        declarations=args.declarations,
                     )
                     state, use = result.state, result.usage
                     extra = {

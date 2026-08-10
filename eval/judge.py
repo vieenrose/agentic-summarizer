@@ -487,6 +487,21 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--budget-usd", type=float, default=0.25)
     p.add_argument("--no-second-opinion", action="store_true")
     p.add_argument(
+        "--faith-model",
+        default=None,
+        help="FAITH/INVERT judge (default: panel). Use local:PORT/NAME for a local judge",
+    )
+    p.add_argument(
+        "--cover-model",
+        default=None,
+        help="COVER/SYNTH judge (default: panel). Use local:PORT/NAME for a local judge",
+    )
+    p.add_argument(
+        "--second-model",
+        default=None,
+        help="second-opinion judge (default: panel second)",
+    )
+    p.add_argument(
         "--agenda-mode", action="store_true", help="per-part agenda instead of full context"
     )
     p.add_argument("--out", type=Path, default=None)
@@ -496,6 +511,13 @@ def main(argv: list[str] | None = None) -> int:
         api_key=os.environ.get("TOGETHER_API_KEY", ""), budget_usd=args.budget_usd
     )
     utterances = parse_transcript(args.transcript.read_text(encoding="utf-8"))
+    panel = {}
+    if args.faith_model:
+        panel["faith"] = args.faith_model
+    if args.cover_model:
+        panel["cover"] = args.cover_model
+    if args.second_model:
+        panel["second"] = args.second_model
     try:
         score = judge_meeting(
             args.notes.read_text(encoding="utf-8"),
@@ -503,6 +525,7 @@ def main(argv: list[str] | None = None) -> int:
             client,
             meeting_id=args.meeting_id or args.transcript.stem,
             system_name=args.system,
+            panel=panel or None,
             second_opinion=not args.no_second_opinion,
             full_context=not args.agenda_mode,
         )

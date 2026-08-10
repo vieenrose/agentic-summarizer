@@ -68,9 +68,26 @@ def make_judge_filter(
     """
     from judge import _FAITH_SYS, _VERDICT, faith_prompt  # local: keeps eval/ optional
 
-    index = TranscriptIndex(utterances)
+    # Evidence is limited to what the agent has already *seen* — lines up to the end of the
+    # current chunk. Judging against the whole transcript looks obviously right and is
+    # actively harmful here: at the setup chunk of a reversal meeting the correct bullet is
+    # "plan rejected", and a whole-transcript judge marks it CONTRADICTED because the plan is
+    # approved later. That veto keeps the bullet out of STATE, so at the revision chunk there
+    # is nothing to revise and the teacher can only ADD — destroying the UPD demonstration the
+    # revision-dense meetings exist to produce. Measured: zh synthetic revision share fell to
+    # 10%, the lowest of any source, on the set built specifically to teach revision.
+    #
+    # A bullet asserting the state at time T is not falsified by an event at T+1. That is what
+    # UPD is for.
+    prefix_cache: dict[int, TranscriptIndex] = {}
 
-    def verify(text: str, anchor: int | None) -> str | None:
+    def index_upto(end: int) -> TranscriptIndex:
+        if end not in prefix_cache:
+            prefix_cache[end] = TranscriptIndex([u for u in utterances if u.start <= end])
+        return prefix_cache[end]
+
+    def verify(text: str, anchor: int | None, horizon: int) -> str | None:
+        index = index_upto(horizon)
         evidence = index.evidence_for(text, anchor, mode="claim")
         raw = judge(model, _FAITH_SYS, faith_prompt(text, evidence))
         hits = _VERDICT.findall(raw)
@@ -81,13 +98,14 @@ def make_judge_filter(
         # Only claims get judged. NOP/TITLE assert nothing about the meeting, and DEL removes
         # a bullet rather than adding one — vetoing a DEL would *preserve* a wrong bullet.
         try:
+            horizon = chunk.end
             if isinstance(op, (Add, Upd)):
-                return verify(op.bullet, op.anchor)
+                return verify(op.bullet, op.anchor, horizon)
             if isinstance(op, Cmp):
                 # Independent claims, so verify them together rather than in sequence.
                 with ThreadPoolExecutor(max_workers=len(op.bullets) or 1) as pool:
                     reasons = list(
-                        pool.map(lambda b: verify(b.text, b.anchor), op.bullets)
+                        pool.map(lambda b: verify(b.text, b.anchor, horizon), op.bullets)
                     )
                 return next((r for r in reasons if r is not None), None)
             return None

@@ -416,3 +416,54 @@ blocked** — no ≥80k-token meeting in the pool, en T2 must be real (audio).
 Full 80-meeting set, judge-filtered with the local judge, thinking ON, seed 0. Expected
 throughput ~1 min/step (teacher 39–66 s + local judge calls) over ≈ 240 steps across two
 teacher endpoints.
+
+---
+
+## SFT v1 (2026-08-10): student trained, G1 FAILS — data iteration launched
+
+**Stack fixes that made training possible (all recorded for the next machine):**
+
+1. The repo venv had no pip (uv-created); rebuilt via `uv pip install`. Training stack lives in
+   the user site; **unsloth 2026.8.11 + trl 0.24 + datasets 4.3.0**.
+2. **trl 0.24 API changes**: `SFTTrainer` no longer takes `tokenizer=` (use
+   `processing_class`) or `max_seq_length` (use `SFTConfig(max_length=)`).
+3. **datasets.map pickling crash** ("cannot pickle ConfigModuleInstance"): multiprocess sets
+   dill recurse=True; walking the tokenize_fn globals hits torch 2.10+'s unpicklable
+   `torch.utils._config_module` singleton. Fixed by **pre-tokenizing the dataset ourselves**
+   (input_ids + completion-only labels via `tokenize_sample`) so trl skips its text maps —
+   not by pinning versions.
+4. **torch 2.11 breaks unsloth's fused CE** (vmap-in-vmap `grad_and_value` now demands a
+   scalar; unsloth's chunked loss returns 1-dim inside vmap). Reverted to **torch 2.10.0+cu128**
+   (unsupported by unsloth's cpp ext, but the fused CE and compile work; the cpp ext is a
+   speed nicety only). `UNSLOTH_COMPILE_DISABLE=1` is NOT usable at 4096 seq: the un-fused
+   loss materialises batch×4096×256k logits → OOM.
+5. With 2 visible GPUs trl takes the `n_gpu > 1` branch and calls `loss.mean()` on an int →
+   always train with `CUDA_VISIBLE_DEVICES=0`.
+6. Eval batch must be 1: eval materialises fp32 logits (batch×4096×256k×4B).
+
+**SFT v1**: 215 train + 11 valid steps (80 meetings, valid-op 95.4%, anchor 100%, revision
+21.4%, NOP 26.5%), full FT 3 epochs, bf16, effective batch 32. Eval loss still falling at
+epoch 3 (0.398 → 0.300 → 0.283) — **undertrained, not overfit**. Exported
+`runs/sft-v1/gguf_gguf/functiongemma-270m-it.Q4_K_M.gguf` (253 MB).
+
+**G1 screen (fine-tuned student, Q4_K_M, declarations): FAIL on both languages.**
+
+| | en | zh-TW |
+|---|---|---|
+| decision chain | FAIL | FAIL |
+| both deadlines | FAIL | FAIL |
+| 100% anchored | PASS | PASS |
+| trap absent | FAIL (coffee machine reported) | PASS |
+| valid-op | 71% | 67% |
+| anchor raw | 80% | 25% |
+| UPD at contradiction | FAIL (added contradicting bullet) | FAIL |
+
+Diagnosis: the wire format IS learned (function calls parse, real anchors copied) but content
+selection is not — trap topics reported, duplicate bullets, empty TITLE, Spanish/garbage
+fragments (base priors leak at 215 samples), no UPD at contradictions. The screen's 128-token
+chunks are also a distribution shift from the 2048-token training chunks.
+
+**Honest data iteration (PLAN §2b), in flight:** +16 revision-dense synth meetings (en v4-5,
+zh v6-7) at budget 2048, plus 4 meetings traced at **budget 128** (the screen's exact chunk
+distribution). Retrain at 5 epochs on the merged set, then re-screen. If G1 still fails,
+the plan's negative-result path applies (promote Qwen3.5-0.8B, or ship map-reduce).

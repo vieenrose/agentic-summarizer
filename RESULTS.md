@@ -326,3 +326,49 @@ second opinion with `glm-5.2`**, where the instrument difference is worth the wa
 
 Cost accounting records them at $0.00 because the plan is flat-rate; the real constraints are
 the subscription's $12/5h, $30/week, $60/month.
+
+---
+
+## Teacher serving: NVFP4 + MTP, one model per GPU (2.4x)
+
+The Q8_0 teacher ran at 46 s/step and the GPUs sat at 0% for roughly half of it — the judge
+filter was issuing five sequential HTTPS calls per step. Parallelising those helped little,
+because the real cost is the teacher's own reasoning (~120 chars/s, 4.5-8k chars per step),
+which scales with chunk density: 20 s on a sparse synthetic chunk, 40 s on a QMSum chunk,
+66 s on the densest. **The first fix targeted the wrong bottleneck**, diagnosed from a
+benchmark run on the cheapest chunk available.
+
+What actually worked was changing the serving stack:
+
+| | before | after |
+|---|---|---|
+| weights | Q8_0, 33 GB, layer-split across 2 GPUs | **NVFP4, 21 GB, one whole model per GPU** |
+| draft head | none — arch unsupported by the April build | **Q8_0 MTP speculative decoding** |
+| llama.cpp | 2026-04-19 build | **10298 (2026-08-06)** |
+| per-GPU | — | 62 tok/s |
+| **combined** | **46 s/step** | **19 s/step** |
+
+Three compounding effects: NVFP4 is ~1.7x faster per GPU on comparable reasoning length
+(chunk 5: 40 s -> 23.3 s), MTP adds speculative decoding, and fitting one card both removes
+the cross-PCIe layer-split traffic (no NVLink on 5090s) and frees the second GPU for genuine
+per-meeting parallelism.
+
+**Provenance matters for a teacher whose output becomes training data.** The NVFP4 build used
+is `williamliao/Gemma-4-31B-NVFP4-GGUF` <- `RedHatAI/gemma-4-31B-it-NVFP4` <-
+`google/gemma-4-31B-it`, and the MTP head is `NotMe404/gemma-4-31b-it-assistant-mtp-gguf` at
+Q8_0 — both from the original instruction-tuned model. An abliterated variant with the same
+speed properties was available and rejected: refusal-direction removal is a capability risk
+with no upside for meeting summarisation.
+
+**Screened before adoption**, as the discipline requires — a different quantisation does not
+inherit Q8_0's screen result:
+
+| | en | zh-TW |
+|---|---|---|
+| NVFP4 + MTP | 1/1 PASS | **3/4 PASS** |
+| Q8_0 (previous) | 3/3 PASS | 3/3 PASS |
+
+The single zh failure was the **trap topic**, not a decision inversion — the chain, the
+revision behaviour, the deadlines and the anchoring all passed — and three repeats passed
+cleanly. The trap topic is also precisely what the judge filter vetoes. n is small on both
+sides; these are comparable, not a demonstration that either is better.

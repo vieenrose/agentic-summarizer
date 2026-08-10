@@ -132,7 +132,14 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("transcripts", nargs="+", type=Path, help="transcript v1 files")
     p.add_argument("--out", type=Path, required=True, help="output JSONL")
     p.add_argument("--lang", default="en", choices=["en", "zh-TW"])
-    p.add_argument("--base-url", default="http://127.0.0.1:8080")
+    p.add_argument(
+        "--base-url",
+        action="append",
+        default=None,
+        help="teacher endpoint; repeatable. With several, meetings run in parallel — one "
+        "worker per endpoint. A whole-model server per GPU beats one layer-split server "
+        "across both: no cross-PCIe activations, and real per-meeting parallelism.",
+    )
     p.add_argument("--tokenizer", default="google/functiongemma-270m-it")
     p.add_argument("--budget", type=int, default=2048, help="chunk token budget")
     p.add_argument("--step-budget", type=int, default=4096, help="per-step prompt ceiling")
@@ -171,15 +178,21 @@ def main(argv: list[str] | None = None) -> int:
     from voxsum.chunker import heuristic_token_len, iter_chunks
 
     token_len = heuristic_token_len if args.heuristic_tokens else student_token_len(args.tokenizer)
-    model = LlamaServer(
-        base_url=args.base_url,
-        grammar=OP_GRAMMAR if args.grammar else None,
-        thinking=not args.no_thinking,
-        max_tokens=args.max_tokens,
-    )
-    if not model.health():
-        print(f"llama-server not reachable at {args.base_url}", file=sys.stderr)
-        return 2
+    urls = args.base_url or ["http://127.0.0.1:8080"]
+    models = [
+        LlamaServer(
+            base_url=url,
+            grammar=OP_GRAMMAR if args.grammar else None,
+            thinking=not args.no_thinking,
+            max_tokens=args.max_tokens,
+        )
+        for url in urls
+    ]
+    for url, client in zip(urls, models, strict=False):
+        if not client.health():
+            print(f"llama-server not reachable at {url}", file=sys.stderr)
+            return 2
+    print(f"[traces] {len(models)} teacher endpoint(s): {', '.join(urls)}", flush=True)
 
     judge_client = None
     if args.judge_filter:
@@ -198,6 +211,11 @@ def main(argv: list[str] | None = None) -> int:
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     kept = dropped = nop_steps = vetoed_total = 0
+
+    # One endpoint per process. Meetings are independent, so the parallelism that matters is
+    # run at the shell level: launch one `gen_traces.py` per teacher endpoint over disjoint
+    # transcript sets, then merge the JSONL. `build_sft.py` already accepts several files.
+    model = models[0]
 
     with args.out.open("w", encoding="utf-8") as sink:
         for path in args.transcripts:

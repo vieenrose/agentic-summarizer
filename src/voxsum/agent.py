@@ -10,6 +10,7 @@ refuses to send an over-budget prompt rather than silently truncating it.
 
 from __future__ import annotations
 
+import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
 
@@ -160,11 +161,16 @@ def run_cursor(
     state: NotesState | None = None,
     op_filter: OpFilter | None = None,
     step_filter: StepFilter | None = None,
+    on_step: Callable[[int, float, int], None] | None = None,
 ) -> Trace:
     """Stream `utterances` past `model`, curating one NOTES state.
 
     `token_len` should be the *student's* tokenizer for anything normative — the default
     heuristic is for tests and quick local runs only.
+
+    `on_step(index, seconds, n_ops)` is called after each step. Long runs otherwise log only
+    per meeting, which is too coarse to tell a slow run from a stalled one — a distinction
+    that cost real time to make by hand.
 
     `op_filter` vetoes candidate ops before they are applied. Filtering here rather than at
     write time is deliberate: a vetoed op must not enter STATE either, or the next step
@@ -185,7 +191,9 @@ def run_cursor(
             )
 
         rendered_state = build_step_prompt(trace.state, Chunk(chunk.index, ()))
+        started = time.monotonic()
         raw = model(sys, state_before)
+        elapsed = time.monotonic() - started
         trace.usage.record(prompt_tokens, token_len(raw))
         ops = parse_ops(raw)
 
@@ -218,6 +226,9 @@ def run_cursor(
             vetoed=tuple(vetoed),
         )
         trace.steps.append(step)
+
+        if on_step is not None:
+            on_step(chunk.index, elapsed, len(ops))
 
         substantive = outcome.applied > 0 and not step.is_nop
         consecutive_nops = 0 if substantive else consecutive_nops + 1

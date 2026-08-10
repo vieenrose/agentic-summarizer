@@ -16,11 +16,15 @@ failure is zh-TW-specific.**
 
 | config | en | zh-TW | wall / meeting | valid-op | anchor (raw) |
 |---|---|---|---|---|---|
-| Q8_0, thinking **on** | PASS | PASS | ~55 s | 100% | 100% |
-| UD-Q4_K_XL, thinking **on** | PASS | PASS | ~48 s | 100% | 100% |
+| Q8_0, thinking **on** | 3/3 PASS | 3/3 PASS | ~55 s | 100% | 100% |
+| UD-Q4_K_XL, thinking **on** | 1/1 PASS | 1/1 PASS | ~48 s | 100% | 100% |
 | Q8_0, thinking **off** (ctx 16k) | 5/5 PASS | 5/5 PASS | ~3 s | 100% | 100% |
-| Q8_0, thinking **off** (ctx 4k) | PASS | **FAIL** | ~3 s | 80% | 100% |
+| Q8_0, thinking **off** (ctx 4k) | 1/1 PASS | **0/1 PASS** | ~3 s | 80% | 100% |
 | UD-Q4_K_XL, thinking **off** | 5/5 PASS | **1/5 PASS** | ~3 s | 90–100% | 100% |
+
+The Q8-thinking runs span both ctx settings (one at 4096, two at 16384) and passed at
+each, with `revised_at_contradiction` true on every language-run — so thinking-on is the
+only config that has not produced a single zh-TW inversion.
 
 G1 criteria: decision chain rejected→approved, both deadlines, 100% anchored, no trap.
 
@@ -56,8 +60,8 @@ does not compare polarity across time.
    per PLAN.md §2c that is legitimate (extra compute on the same input), and only the op
    lines are ever kept as a target.
 3. **Q8 vs Q4 is not the deciding axis.** With thinking on, both reach 100% on every
-   measure at n=1. If a GPU is needed elsewhere, Q4 on one card is a defensible choice;
-   Q8's margin at n=1 is not evidence.
+   measure (Q8 n=3, Q4 n=1). If a GPU is needed elsewhere, Q4 on one card is a defensible
+   choice; Q8's thinner-evidence margin is not grounds to insist on it.
 4. **Anchor copying is a non-issue for the teacher.** 100% raw anchor rate in every
    config, both languages. Whether the *student* can copy digits post-quantisation is a
    separate question and still open.
@@ -72,8 +76,10 @@ GT3 bet rests on, so they are worth paying once.
 
 ## Caveats — read these before quoting any number above
 
-* **n=1 per thinking cell, n=5 per thinking-off cell.** No confidence intervals. A single
-  planted meeting per language, synthetic, written by the same author as the harness.
+* **n=3 (Q8) / n=1 (Q4) per thinking cell, n=5 per thinking-off cell.** No confidence
+  intervals. A single planted meeting per language, synthetic, written by the same author
+  as the harness. Q4-with-thinking is the thinnest cell in the table and the one most
+  likely to move.
 * **Runs are not reproducible despite `seed=0`.** Q4 thinking-off produced zh PASS on the
   first run and FAIL on the next four. Prompt-cache state and slot reuse across `--parallel`
   appear to matter; treat any single screen run as noise and require n≥3.

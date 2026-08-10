@@ -104,6 +104,13 @@ def load_scores(paths: list[Path]) -> dict[str, dict[str, dict]]:
         data = json.loads(path.read_text(encoding="utf-8"))
         records = data if isinstance(data, list) else [data]
         for record in records:
+            # Skip anything that is not a per-meeting score — notably this tool's own
+            # report.json, which lands in the same directory and would otherwise be
+            # globbed back in as input on the next run.
+            if not isinstance(record, dict) or "meeting_id" not in record:
+                continue
+            if "system" not in record:
+                continue
             out[record["meeting_id"]][record["system"]] = record
     return out
 

@@ -1,0 +1,25 @@
+TITLE: Remote Control Conceptual Design
+SUMMARY:
+- Conceptual design and component discussion for a remote control prototype [7:32]
+DECISIONS:
+- Adopt voice recognition and omit touch screen [25:10]
+- Use solar power with a small backup battery [26:08]
+- Pod-like rubbery shape with multiple color options [38:16]
+- Traditional rubber buttons with 4-way layout [35:34]
+- Target market: 18-35 year olds [36:15]
+ACTIONS:
+- Share in-house voice recognition technology details [21:21]
+- Build prototype using prototype building materials [38:57]
+- Nathan to define basic look, feel, and broad constraints [38:16]
+- Ron to design layout for voice recognition and side menu [38:57]
+- Ron to check product evaluation with pilots [38:57]
+OPEN:
+- Decide whether to seek additional manufacturers for more options [5:40]
+- Selection of final case material and shape [29:07]
+TOPICS:
+- Component design and manufacturer limitations [1:48]
+- Energy source options [2:05]
+- Case materials and shapes [3:02]
+- Visible light signaling gimmick [4:03]
+- Manufacturer constraints vs. time constraints [5:40]
+- User interface concepts and voice recognition [11:36]

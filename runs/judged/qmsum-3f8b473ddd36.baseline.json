@@ -1,0 +1,518 @@
+{
+  "meeting_id": "qmsum-3f8b473ddd36",
+  "system": "baseline",
+  "faith_claim": 2.76,
+  "faith_anchor": 3.08,
+  "cover": 5,
+  "synth": 2,
+  "inverted": false,
+  "unsupported": 14,
+  "judges": {
+    "faith": "openai/gpt-oss-20b",
+    "cover": "deepseek-ai/DeepSeek-V4-Flash-0731",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.005456910000000001,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "Meeting goal is conceptual design for the remote control prototype",
+      "anchor": 5,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Market trends suggest organic, sleek designs and intuitive user interfaces",
+      "anchor": 473,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Team chose voice recognition and discussed power and form factor",
+      "anchor": 1747,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion of a pod-like remote with earth tones, rubber materials, and voice commands.",
+      "anchor": 1804,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Team agreed on case colors and assigned tasks for prototype development.",
+      "anchor": 2390,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Omit touch screen in favor of voice recognition",
+      "anchor": 1946,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Rubber casing and buttons will be used",
+      "anchor": 2113,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Install a small backup battery for solar power",
+      "anchor": 1568,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Target market is 18-35 year olds",
+      "anchor": 2174,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Use multiple case colors while keeping the same basic design",
+      "anchor": 2296,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Marketing will share research on casing trends",
+      "anchor": 444,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Investigate cheaper manufacturing and production options for the touch screen",
+      "anchor": 1185,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Nathan to determine basic look, feel, and broad constraints",
+      "anchor": 2336,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Ron to design layout for voice recognition and side menu, and check product evaluation with pilots",
+      "anchor": 2337,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Nathan and Ron to collaborate on creating a prototype",
+      "anchor": 2373,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Coaches to send specific instructions to the team",
+      "anchor": 2373,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Whether to seek other manufacturers due to current component limitations",
+      "anchor": 340,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Whether to include voice recognition given the increased cost of the touch screen",
+      "anchor": 1315,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Manufacturing cost information is unavailable.",
+      "anchor": 1923,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Energy options including solar, lithium, and kinetic",
+      "anchor": 125,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Case materials (plastic, rubber, wood, leather) and proposed thickness",
+      "anchor": 182,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Circuit board T_A_ one one eight three five",
+      "anchor": 340,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Interface concepts including voice recognition and touch screens",
+      "anchor": 729,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Device size, changeable faceplates, and remote design",
+      "anchor": 864,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Target demographics",
+      "anchor": 2161,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Meeting goal is conceptual design for the remote control prototype",
+      "anchor": 5,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Market trends suggest organic, sleek designs and intuitive user interfaces",
+      "anchor": 473,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Team chose voice recognition and discussed power and form factor",
+      "anchor": 1747,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion of a pod-like remote with earth tones, rubber materials, and voice commands.",
+      "anchor": 1804,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Team agreed on case colors and assigned tasks for prototype development.",
+      "anchor": 2390,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Omit touch screen in favor of voice recognition",
+      "anchor": 1946,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Rubber casing and buttons will be used",
+      "anchor": 2113,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Install a small backup battery for solar power",
+      "anchor": 1568,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Target market is 18-35 year olds",
+      "anchor": 2174,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Use multiple case colors while keeping the same basic design",
+      "anchor": 2296,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Marketing will share research on casing trends",
+      "anchor": 444,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Investigate cheaper manufacturing and production options for the touch screen",
+      "anchor": 1185,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Nathan to determine basic look, feel, and broad constraints",
+      "anchor": 2336,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Ron to design layout for voice recognition and side menu, and check product evaluation with pilots",
+      "anchor": 2337,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Nathan and Ron to collaborate on creating a prototype",
+      "anchor": 2373,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Coaches to send specific instructions to the team",
+      "anchor": 2373,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Whether to seek other manufacturers due to current component limitations",
+      "anchor": 340,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Whether to include voice recognition given the increased cost of the touch screen",
+      "anchor": 1315,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Manufacturing cost information is unavailable.",
+      "anchor": 1923,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Energy options including solar, lithium, and kinetic",
+      "anchor": 125,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Case materials (plastic, rubber, wood, leather) and proposed thickness",
+      "anchor": 182,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Circuit board T_A_ one one eight three five",
+      "anchor": 340,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Interface concepts including voice recognition and touch screens",
+      "anchor": 729,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Device size, changeable faceplates, and remote design",
+      "anchor": 864,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Target demographics",
+      "anchor": 2161,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
+}

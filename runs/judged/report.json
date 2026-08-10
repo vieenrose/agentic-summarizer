@@ -1,0 +1,44 @@
+{
+  "treatment": "cursor",
+  "control": "baseline",
+  "paired_meetings": [
+    "qmsum-16abbdf7b3f2",
+    "qmsum-3f8b473ddd36"
+  ],
+  "tie_threshold": 0.5,
+  "prefill_ratio": 1.124829705668029,
+  "metrics": {
+    "faith_claim": {
+      "mean_delta": -0.05647058823529405,
+      "wins": 0,
+      "losses": 0,
+      "ties": 2,
+      "p_value": 1.0
+    },
+    "faith_anchor": {
+      "mean_delta": -0.6622910216718267,
+      "wins": 0,
+      "losses": 1,
+      "ties": 1,
+      "p_value": 1.0
+    },
+    "cover": {
+      "mean_delta": 0.5,
+      "wins": 1,
+      "losses": 1,
+      "ties": 0,
+      "p_value": 1.0
+    },
+    "synth": {
+      "mean_delta": 1.0,
+      "wins": 2,
+      "losses": 0,
+      "ties": 0,
+      "p_value": 0.5
+    }
+  },
+  "inversions": {
+    "cursor": [],
+    "baseline": []
+  }
+}

@@ -1,0 +1,31 @@
+TITLE: Energy options including solar, lithium, and kinetic
+SUMMARY:
+- Meeting goal is conceptual design for the remote control prototype [0:05]
+- Market trends suggest organic, sleek designs and intuitive user interfaces [7:53]
+- Team chose voice recognition and discussed power and form factor [29:07]
+- Discussion of a pod-like remote with earth tones, rubber materials, and voice commands. [30:04]
+- Team agreed on case colors and assigned tasks for prototype development. [39:50]
+DECISIONS:
+- Omit touch screen in favor of voice recognition [32:26]
+- Rubber casing and buttons will be used [35:13]
+- Install a small backup battery for solar power [26:08]
+- Target market is 18-35 year olds [36:14]
+- Use multiple case colors while keeping the same basic design [38:16]
+ACTIONS:
+- Marketing will share research on casing trends [7:24]
+- Investigate cheaper manufacturing and production options for the touch screen [19:45]
+- Nathan to determine basic look, feel, and broad constraints [38:56]
+- Ron to design layout for voice recognition and side menu, and check product evaluation with pilots [38:57]
+- Nathan and Ron to collaborate on creating a prototype [39:33]
+- Coaches to send specific instructions to the team [39:33]
+OPEN:
+- Whether to seek other manufacturers due to current component limitations [5:40]
+- Whether to include voice recognition given the increased cost of the touch screen [21:55]
+- Manufacturing cost information is unavailable. [32:03]
+TOPICS:
+- Energy options including solar, lithium, and kinetic [2:05]
+- Case materials (plastic, rubber, wood, leather) and proposed thickness [3:02]
+- Circuit board T_A_ one one eight three five [5:40]
+- Interface concepts including voice recognition and touch screens [12:09]
+- Device size, changeable faceplates, and remote design [14:24]
+- Target demographics [36:01]

@@ -222,3 +222,76 @@ def test_panel_is_three_distinct_families() -> None:
     assert len(models) == 3
     # None of them may be the student's or the teacher's family (both Gemma).
     assert not any("gemma" in m.lower() for m in models)
+
+
+def test_claim_mode_reserves_slots_for_retrieved_evidence(index: TranscriptIndex) -> None:
+    """Regression: the neighbourhood used to consume every slot.
+
+    A +/-3 neighbourhood yields up to 7 lines, so `(near + found)[:6]` discarded the
+    whole-transcript search entirely and made claim mode identical to anchor mode.
+    """
+    ev = index.evidence_for("Vendor contract approved", 0, mode="claim", limit=6)
+    # This transcript has only one line beyond the neighbourhood that matches lexically, so
+    # the budget cannot fill; what matters is that the retrieved slot survives at all.
+    assert any(not e.from_anchor_neighbourhood for e in ev), "search results were discarded"
+    assert any(e.anchor == 180 for e in ev), "the approval line is 6 lines from the anchor"
+
+
+def test_claim_mode_caps_the_neighbourhood_when_search_has_hits() -> None:
+    """With enough lexical matches, the neighbourhood gets at most half the budget.
+
+    Backfill may exceed that when the search comes up short (see the test below), so the
+    cap is only observable on a transcript where retrieval can actually fill its half.
+    """
+    lines = [Utterance(i * 30, "S1", f"the vendor contract was discussed in round {i}")
+             for i in range(40)]
+    idx = TranscriptIndex(lines)
+    ev = idx.evidence_for("vendor contract discussed", 0, mode="claim", limit=6)
+    assert len(ev) == 6
+    assert sum(1 for e in ev if e.from_anchor_neighbourhood) == 3
+    assert sum(1 for e in ev if not e.from_anchor_neighbourhood) == 3
+
+
+def test_claim_mode_still_leads_with_the_neighbourhood(index: TranscriptIndex) -> None:
+    ev = index.evidence_for("Vendor contract approved", 180, mode="claim", limit=6)
+    assert ev[0].from_anchor_neighbourhood
+
+
+def test_claim_mode_backfills_when_one_source_is_short(index: TranscriptIndex) -> None:
+    # A bullet with no lexical match anywhere: the neighbourhood must still fill the budget.
+    ev = index.evidence_for("zzzz qqqq unmatchable", 90, mode="claim", limit=6)
+    assert len(ev) == 6 and all(e.from_anchor_neighbourhood for e in ev)
+
+
+def test_anchor_mode_is_unchanged_by_the_fix(index: TranscriptIndex) -> None:
+    ev = index.evidence_for("Vendor contract approved", 180, mode="anchor", limit=6)
+    assert ev and all(e.from_anchor_neighbourhood for e in ev)
+
+
+def test_anchor_mode_leads_with_the_anchor_line(index: TranscriptIndex) -> None:
+    # FAITH-anchor asks "does the anchored line support it", so the anchor line itself
+    # must be the first snippet the judge reads.
+    ev = index.evidence_for("Vendor contract approved", 180, mode="anchor", limit=6)
+    assert ev[0].anchor == 180
+
+
+def test_claim_mode_keeps_the_anchor_line_when_search_has_hits() -> None:
+    """The anchor line must survive the claim-mode budget split.
+
+    The anchor line states the claim, and many other lines also match "approved", so the
+    whole-transcript search fills its half of the budget with no backfill. If the budget
+    took `near[:3]` on an ascending neighbourhood, the anchor line (position 3 of 7) would
+    be dropped and a correctly-anchored bullet would read as unsupported in claim mode.
+    """
+    lines = [
+        Utterance(i * 30, "S1", f"the committee reviewed budgets and approved item {i}")
+        for i in range(20)
+    ]
+    lines[5] = Utterance(150, "S1", "Vendor contract approved for the new supplier arrangement")
+    idx = TranscriptIndex(lines)
+    ev = idx.evidence_for("Vendor contract approved", 150, mode="claim", limit=6)
+    assert len(ev) == 6
+    assert ev[0].anchor == 150, "the anchor line should lead the claim-mode evidence"
+    assert any(e.anchor == 150 for e in ev), "the anchor line was dropped by the split"
+    # Retrieval still gets its reserved share; this is the separation §7.1 exists to draw.
+    assert any(not e.from_anchor_neighbourhood for e in ev)

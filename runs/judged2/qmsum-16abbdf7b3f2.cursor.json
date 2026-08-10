@@ -1,0 +1,358 @@
+{
+  "meeting_id": "qmsum-16abbdf7b3f2",
+  "system": "cursor",
+  "faith_claim": 1.7058823529411766,
+  "faith_anchor": 2.1764705882352944,
+  "cover": 4,
+  "synth": 2,
+  "inverted": true,
+  "unsupported": 12,
+  "judges": {
+    "faith": "openai/gpt-oss-20b",
+    "cover": "deepseek-ai/DeepSeek-V4-Flash-0731",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0051159000000000005,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "Evidence session on coronavirus impact on health and social services for children and young people",
+      "anchor": 0,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Children's mental health to be a priority in the recovery plan",
+      "anchor": 1010,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Expanded definition of vulnerable children to be published",
+      "anchor": 2358,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Check if UN reports on children's rights change operational guidance",
+      "anchor": 1437,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Write to committee regarding review of unexpected deaths among children",
+      "anchor": 1500,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Deputy Minister to provide note on additional vs continuity third sector funding",
+      "anchor": 2047,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Note on when the task and finish group will report",
+      "anchor": 3261,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Monitoring of parents and carers avoiding healthcare for non-COVID conditions",
+      "anchor": 483,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Launching youth survey to assess pandemic's impact on children",
+      "anchor": 2898,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Implementing data collection to monitor child protection and safeguarding",
+      "anchor": 2845,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Financial support for childcare providers falling between funding gaps",
+      "anchor": 3615,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Access to health services for non-COVID conditions",
+      "anchor": 483,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Children's mental health and youth survey",
+      "anchor": 2898,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Third sector and childcare sector funding",
+      "anchor": 3299,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Child protection and definition of vulnerable children",
+      "anchor": 2358,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Looked-after children, residential care, and foster care",
+      "anchor": 2434,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Legislative easements and impact assessments",
+      "anchor": 2995,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Evidence session on coronavirus impact on health and social services for children and young people",
+      "anchor": 0,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Children's mental health to be a priority in the recovery plan",
+      "anchor": 1010,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Expanded definition of vulnerable children to be published",
+      "anchor": 2358,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Check if UN reports on children's rights change operational guidance",
+      "anchor": 1437,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Write to committee regarding review of unexpected deaths among children",
+      "anchor": 1500,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Deputy Minister to provide note on additional vs continuity third sector funding",
+      "anchor": 2047,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Note on when the task and finish group will report",
+      "anchor": 3261,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Monitoring of parents and carers avoiding healthcare for non-COVID conditions",
+      "anchor": 483,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Launching youth survey to assess pandemic's impact on children",
+      "anchor": 2898,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Implementing data collection to monitor child protection and safeguarding",
+      "anchor": 2845,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Financial support for childcare providers falling between funding gaps",
+      "anchor": 3615,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Access to health services for non-COVID conditions",
+      "anchor": 483,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Children's mental health and youth survey",
+      "anchor": 2898,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Third sector and childcare sector funding",
+      "anchor": 3299,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Child protection and definition of vulnerable children",
+      "anchor": 2358,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Looked-after children, residential care, and foster care",
+      "anchor": 2434,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Legislative easements and impact assessments",
+      "anchor": 2995,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    }
+  ]
+}

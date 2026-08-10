@@ -1,0 +1,398 @@
+{
+  "meeting_id": "qmsum-16abbdf7b3f2",
+  "system": "baseline",
+  "faith_claim": 1.8421052631578947,
+  "faith_anchor": 3.736842105263158,
+  "cover": 2,
+  "synth": 1,
+  "inverted": false,
+  "unsupported": 14,
+  "judges": {
+    "faith": "openai/gpt-oss-20b",
+    "cover": "deepseek-ai/DeepSeek-V4-Flash-0731",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.005144909999999999,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "The coronavirus childcare assistance scheme provides free care for critical workers and vulnerable children",
+      "anchor": 3745,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Planning for perinatal facilities will not be based on current usage declines",
+      "anchor": 1773,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Expand and publish the definition of vulnerable children",
+      "anchor": 2358,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "The meeting will be extended until 3:10 p.m.",
+      "anchor": 3261,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "The committee resolved to meet in private for the remainder of the meeting.",
+      "anchor": 4011,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Vaughan Gething to check if UN reports change current operational guidance",
+      "anchor": 1437,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Government to share the unexpected deaths review report with the committee",
+      "anchor": 1500,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Deputy Minister to provide a note on the amount of additional funding",
+      "anchor": 2047,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Publish expanded definition of vulnerable children this week",
+      "anchor": 2358,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Deputy Minister to provide a note on the task and finish group's reporting date",
+      "anchor": 3261,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Investigating a bespoke grant scheme for unsupported childcare providers",
+      "anchor": 3615,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Full understanding of the impact on children's mental health and well-being",
+      "anchor": 923,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Double funding issues between the childcare offer and CJRS",
+      "anchor": 3443,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of COVID-19 on children and their role in transmitting the virus",
+      "anchor": 140,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of the pandemic on children's mental health",
+      "anchor": 731,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "UN reports on the physical and psychological effects of lockdown on children",
+      "anchor": 1403,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Third sector funding and support.",
+      "anchor": 1855,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Delivery of children's needs assessments during the pandemic",
+      "anchor": 3120,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Provision of technology for vulnerable children to contact social workers.",
+      "anchor": 3844,
+      "mode": "claim",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "The coronavirus childcare assistance scheme provides free care for critical workers and vulnerable children",
+      "anchor": 3745,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Planning for perinatal facilities will not be based on current usage declines",
+      "anchor": 1773,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Expand and publish the definition of vulnerable children",
+      "anchor": 2358,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "The meeting will be extended until 3:10 p.m.",
+      "anchor": 3261,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "The committee resolved to meet in private for the remainder of the meeting.",
+      "anchor": 4011,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Vaughan Gething to check if UN reports change current operational guidance",
+      "anchor": 1437,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Government to share the unexpected deaths review report with the committee",
+      "anchor": 1500,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Deputy Minister to provide a note on the amount of additional funding",
+      "anchor": 2047,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Publish expanded definition of vulnerable children this week",
+      "anchor": 2358,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Deputy Minister to provide a note on the task and finish group's reporting date",
+      "anchor": 3261,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Investigating a bespoke grant scheme for unsupported childcare providers",
+      "anchor": 3615,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Full understanding of the impact on children's mental health and well-being",
+      "anchor": 923,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Double funding issues between the childcare offer and CJRS",
+      "anchor": 3443,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of COVID-19 on children and their role in transmitting the virus",
+      "anchor": 140,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of the pandemic on children's mental health",
+      "anchor": 731,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "UN reports on the physical and psychological effects of lockdown on children",
+      "anchor": 1403,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Third sector funding and support.",
+      "anchor": 1855,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Delivery of children's needs assessments during the pandemic",
+      "anchor": 3120,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Provision of technology for vulnerable children to contact social workers.",
+      "anchor": 3844,
+      "mode": "anchor",
+      "verdicts": {
+        "openai/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
+}

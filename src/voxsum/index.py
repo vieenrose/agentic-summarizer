@@ -88,14 +88,21 @@ class TranscriptIndex:
     def neighbourhood(
         self, anchor: int, query: str, *, radius: int = NEIGHBOURHOOD
     ) -> list[Evidence]:
-        """Lines within `radius` of the anchor. Empty if the anchor resolves to nothing."""
+        """Lines within `radius` of the anchor, anchor line first. Empty if unresolved.
+
+        Ordering is anchor-centred (anchor, then ±1, ±2, …) so the bullet's own claimed
+        support line survives a partial budget: claim mode reserves half its slots for
+        whole-transcript retrieval, and `near[:near_budget]` must still include the anchor
+        line or a correctly-anchored bullet reads as unsupported in claim mode.
+        """
         centre = self.line_index(anchor)
         if centre is None:
             return []
         lo, hi = max(centre - radius, 0), min(centre + radius + 1, len(self.utterances))
+        order = sorted(range(lo, hi), key=lambda i: (abs(i - centre), i))
         return [
             Evidence(self.utterances[i].start, self.snippet(i, query), True)
-            for i in range(lo, hi)
+            for i in order
         ]
 
     def search(
@@ -139,6 +146,24 @@ class TranscriptIndex:
 
         seen = {e.anchor for e in near}
         found = self.search(bullet, top_k=limit, exclude=seen)
+
+        # Reserve slots for the retrieved half. A +/-3 neighbourhood yields up to 7 lines,
+        # so a naive `(near + found)[:limit]` fills every slot from the neighbourhood and
+        # silently discards the whole-transcript search — which made claim mode identical
+        # to anchor mode, defeating the separation §7.1 exists to draw and inflating
+        # UNSUPPORTED for any true claim whose support lies elsewhere in the meeting.
+        # The anchor line is guaranteed a slot because `neighbourhood` is anchor-first.
+        near_budget = max(limit // 2, 1)
+        head, tail = near[:near_budget], found[: limit - near_budget]
+        # Backfill from whichever side has spares, so a bullet is never under-evidenced
+        # just because one source came up short.
+        if len(head) + len(tail) < limit:
+            spare_near = near[len(head) :]
+            spare_found = found[len(tail) :]
+            for extra in (*spare_near, *spare_found):
+                if len(head) + len(tail) >= limit:
+                    break
+                tail.append(extra)
         # Neighbourhood first: it is what FAITH-anchor would see, so a judge reading in
         # order encounters the anchored evidence before the retrieved evidence.
-        return (near + found)[:limit]
+        return head + tail

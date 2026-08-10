@@ -11,9 +11,9 @@ Where this file and the spec disagree, the spec wins until an amendment listed i
 |---|---|
 | **base SLM** | **`google/functiongemma-270m-it` — LOCKED.** No fallback rung. If it cannot clear the gates, the outcome is the spec's own negative-result path (ship map-reduce, publish agency-at-270M as measured), not a model swap |
 | **transcript source** | authentic audio → **MOSS-Transcribe-Diarize 0.9B** → transcript v1 (§1a). Weights already cached locally |
-| **teacher** | two-tier: frontier API teacher for the agency-dense seed, local `gemma-4-26B-A4B-it` for volume (§2b) |
+| **teacher** | **`gemma-4-31B-it` Q8_0, local, tensor-split across both GPUs** (§2b). Frontier API teacher is contingency only, if the screen fails |
 | **judge** | **`Qwen3.5-9B`+ as primary** — non-Gemma, non-teacher (§0.1). `gemma-4-E2B-it` retained as a secondary, reported separately |
-| **hardware** | 2× RTX 5090 32 GB (Blackwell) — bf16 native, so Unsloth's float16-infinity workaround is **not needed**. Verify Unsloth/triton carry `sm_120` kernels; torch 2.10+cu128 is installed |
+| **hardware** | 2× RTX 5090 32 GB (Blackwell, 64 GB total) — bf16 native, so Unsloth's float16-infinity workaround is **not needed**. Verify Unsloth/triton carry `sm_120` kernels; torch 2.10+cu128 is installed |
 
 ### Why FunctionGemma-270M fits CURSOR unusually well
 
@@ -185,31 +185,58 @@ does it (a) emit valid ops in our declared-tool format, (b) *revise* rather than
 the chunk contradicts STATE, (c) keep a SUMMARY that reads as an arc rather than a pile, and
 (d) do all of it in zh-TW as well as en.
 
-**Two-tier plan:**
+**Chosen: `gemma-4-31B-it` at Q8_0, tensor-split across both 5090s.**
 
-- **Tier A — agency seed (frontier API teacher, e.g. Claude Opus).** A few hundred steps,
-  deliberately selected for the hard cases: contradiction/revision points, deadline changes,
-  action reassignment, cap-exceeded CMP steps, and the end-of-meeting bottom-line SUMMARY
-  rewrite. Small, expensive, hand-audited. This set defines what "good agency" looks like.
-- **Tier B — volume (local `gemma-4-26B-A4B-it`, already cached).** The bulk of steps, on the
-  cheap: MoE so decode is fast, runs on one 5090, and — being Gemma-family — its op text
-  tokenizes identically to the student's own vocabulary, which removes a class of
-  distillation mismatch. **Few-shot it with Tier A examples** so its revision behaviour is
-  anchored to the audited standard rather than to its own defaults.
+`gemma-4-31B-it` is the only fully **dense** Gemma 4 — all 30.7B parameters active per forward
+pass, against the 26B's 8-of-128-expert MoE (~4B active) — and currently ranks #3 open model on
+Arena text. Dense is the right trade here because **throughput is irrelevant to this job**:
+trace generation is a one-time offline batch of ~1200 steps at ~3k in / ~200 out. Measured
+against the MoE that is roughly 2 h instead of 30 min, unattended, once. Spend all of it on
+quality per forward pass.
 
-**Screen the teacher before spending on volume.** Run each candidate over ~30 steps drawn from
-known-revision points and measure: valid-op rate through the real harness, UPD-vs-ADD rate at
-contradiction points, and raw anchor-copy accuracy. A teacher below ~90% valid-op or that
-appends instead of revising is disqualified — cheap to check, and catches the failure that
-would otherwise only surface as a mysterious GT3 miss after a full training run.
+**Q8_0 (33 GB), not Q4.** Teacher output *is* the training target, so quantization error
+propagates directly into the student — this is the one place in the pipeline where precision is
+not a cost/quality dial but a correctness one. Q8 needs both GPUs (33 GB > 32 GB), which is
+what the 64 GB is for. `Q6_K` (~25 GB, single GPU, second card free for the judge) is the
+fallback if both cards are ever needed elsewhere.
 
-**Both tiers are validated by the harness, never trusted.** A teacher step is kept only if its
-ops parse, validate, and survive the guards (§6). Tier A additionally gets a human pass;
-disagreements between Tier A and Tier B on overlapping steps are the highest-value thing to
-read when SYNTH underperforms.
+Being Gemma-family, the teacher's op text tokenizes identically to the student's own
+vocabulary, which removes a class of distillation mismatch.
 
-Teacher ∈ {Gemma-family, API} and judge = Qwen keeps *judge ∉ {student, teacher}* satisfied
+**Screen the teacher before generating volume.** Run ~30 steps drawn from known-revision points
+and measure: valid-op rate through the real harness, UPD-vs-ADD rate at contradiction points,
+and raw anchor-copy accuracy. Below ~90% valid-op, or appending where it should revise,
+disqualifies it. Cheap to check, and it catches the failure that would otherwise surface only
+as an unexplained GT3 miss after a full training run.
+
+**Contingency, not plan: the API teacher.** If the screen shows 31B appends instead of revising,
+generate a few-hundred-step agency seed with a frontier API teacher (Claude Opus 5 — priced at
+~$3–6 for ~300 steps, or ~$25 for the entire trace set; the Batch API halves it and offline
+generation fits batch perfectly) and few-shot the local teacher from those audited examples.
+Not a budget decision — a quality one, only taken if the screen demands it.
+
+**Never trusted, always validated.** A teacher step is kept only if its ops parse, validate, and
+survive the guards (§6). Agency-seed steps additionally get a human pass.
+
+Teacher = Gemma-family (or API) and judge = Qwen keeps *judge ∉ {student, teacher}* satisfied
 (§0.1).
+
+**Serving it (both GPUs):**
+
+```sh
+~/llama.cpp/build/bin/llama-server \
+  -m ~/.cache/huggingface/hub/models--unsloth--gemma-4-31B-it-GGUF/snapshots/*/gemma-4-31B-it-Q8_0.gguf \
+  -md ~/.cache/huggingface/hub/models--unsloth--gemma-4-31B-it-GGUF/snapshots/*/MTP/mtp-gemma-4-31B-it-Q8_0.gguf \
+  --n-gpu-layers 999 --split-mode layer --tensor-split 1,1 \
+  --ctx-size 8192 --parallel 2 --flash-attn on \
+  --temp 1.0 --top-k 64 --top-p 0.95 --host 127.0.0.1 --port 8080
+```
+
+`--split-mode layer --tensor-split 1,1` spreads layers evenly across both cards (layer split
+beats row split here — less inter-GPU traffic, and there is no NVLink on 5090s). The `-md`
+module is the repo's MTP (multi-token prediction) head for speculative decode. Sampling
+params are Gemma 3/4's recommended values (temp 1.0, top-k 64, top-p 0.95); trace generation
+should additionally be run greedy-ish and seeded per step so a re-run is reproducible.
 
 ## 3. Fine-tuning with Unsloth
 
@@ -288,8 +315,5 @@ test, win/loss/tie counts. The n=6 micro-cell is **directional only** and never 
 1. **Audio sourcing** — no meeting audio is on this box. Do you have recordings (internal, with
    consent, or already-collected public proceedings), or should P1 start by collecting public
    council / legislative sessions? The **zh-TW contested** ones are the high-value item (§1a).
-2. **Tier-A teacher budget** — a frontier API teacher for the agency seed is the single highest-
-   leverage spend in the plan (~a few hundred steps). Approve, or run Tier B only and accept a
-   weaker ceiling on GT3?
-3. **VCSum / MeetingBank / QMSum** — not found locally. Download as the base pool (they still
+2. **VCSum / MeetingBank / QMSum** — not found locally. Download as the base pool (they still
    provide T1 regression and en volume), or go audio-first for everything?

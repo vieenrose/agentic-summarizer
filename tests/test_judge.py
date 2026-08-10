@@ -6,6 +6,7 @@ conclude — retrieval and aggregation — plus the guards that stop a runaway b
 
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -212,9 +213,11 @@ def test_disqualified_judge_is_refused() -> None:
     assert "google/gemma-4-E4B-it" in DISQUALIFIED
 
 
-def test_missing_api_key_fails_fast() -> None:
+def test_missing_api_key_fails_only_on_a_hosted_call() -> None:
+    # Local judges need no cloud key; the guard fires when a hosted model is actually called.
+    client = TogetherJudge(api_key="")
     with pytest.raises(SystemExit, match="TOGETHER_API_KEY"):
-        TogetherJudge(api_key="")
+        client("openai/gpt-oss-20b", "sys", "user")
 
 
 def test_panel_is_three_distinct_families() -> None:
@@ -329,3 +332,75 @@ def test_evidence_order_is_deterministic(index: TranscriptIndex) -> None:
     a = index.evidence_for("Vendor contract approved", 180, mode="claim")
     b = index.evidence_for("Vendor contract approved", 180, mode="claim")
     assert [e.anchor for e in a] == [e.anchor for e in b]
+
+
+# --- local-judge sampling and reasoning pins ----------------------------------
+
+def _capture_payload(monkeypatch) -> dict:
+    """Stub the network and capture the JSON body of the one request the call sends."""
+    captured: dict = {}
+
+    class FakeResponse:
+        def __enter__(self) -> FakeResponse:
+            return self
+
+        def __exit__(self, *exc) -> bool:
+            return False
+
+        def read(self) -> bytes:
+            return b'{"choices":[{"message":{"content":"KEEP"}}],"usage":{}}'
+
+    def fake_urlopen(request, timeout=0):
+        captured["body"] = json.loads(request.data)
+        return FakeResponse()
+
+    monkeypatch.setattr("urllib.request.urlopen", fake_urlopen)
+    return captured
+
+
+def test_local_judge_is_greedy_by_default(monkeypatch) -> None:
+    """Muse-Glimmer's recommended temp 1.0 must not leak into a judge call (§0.1)."""
+    captured = _capture_payload(monkeypatch)
+    client = TogetherJudge(api_key="")
+    assert client("local:8090/muse-glimmer-30b", "sys", "user") == "KEEP"
+    assert captured["body"]["temperature"] == 0.0
+
+
+def test_hosted_judge_keeps_provider_sampling(monkeypatch) -> None:
+    captured = _capture_payload(monkeypatch)
+    client = TogetherJudge(api_key="x")
+    client("openai/gpt-oss-20b", "sys", "user")
+    assert "temperature" not in captured["body"]
+
+
+def test_local_judge_temperature_override_beats_greedy_default(monkeypatch) -> None:
+    captured = _capture_payload(monkeypatch)
+    client = TogetherJudge(api_key="", temperature=1.0)
+    client("local:8090/muse-glimmer-30b", "sys", "user")
+    assert captured["body"]["temperature"] == 1.0
+
+
+def test_muse_glimmer_reasoning_is_pinned_low_by_default(monkeypatch) -> None:
+    """Reasoning effort is set in the system prompt; unpinned it burns budget and adds noise."""
+    captured = _capture_payload(monkeypatch)
+    client = TogetherJudge(api_key="")
+    client("local:8090/muse-glimmer-30b", "sys", "user")
+    assert captured["body"]["messages"][0]["content"].startswith(
+        "Reasoning strength: low\n"
+    )
+
+
+def test_reasoning_strength_override_is_respected(monkeypatch) -> None:
+    captured = _capture_payload(monkeypatch)
+    client = TogetherJudge(api_key="", reasoning_strength="high")
+    client("local:8090/muse-glimmer-30b", "sys", "user")
+    assert captured["body"]["messages"][0]["content"].startswith(
+        "Reasoning strength: high\n"
+    )
+
+
+def test_non_muse_judge_gets_no_reasoning_line(monkeypatch) -> None:
+    captured = _capture_payload(monkeypatch)
+    client = TogetherJudge(api_key="x")
+    client("openai/gpt-oss-20b", "sys", "user")
+    assert captured["body"]["messages"][0]["content"] == "sys"

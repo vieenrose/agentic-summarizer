@@ -13,6 +13,19 @@ the student's or the teacher's (both Gemma):
 | COVER / SYNTH (1M ctx: full-context mode) | `deepseek-ai/DeepSeek-V4-Flash-0731` | DeepSeek |
 | second opinion | `Prism-ML/Ternary-Bonsai-27B` (free) | Qwen |
 
+Any local GGUF served by llama.cpp can be substituted per-call as `local:<port>/<name>`.
+Qualified local candidate — **Muse-Glimmer-30B** (Meta): dense 30B, 131k ctx, Apache 2.0,
+UD-Q4_K_XL ≈ 15.9 GB. Meta family, so *judge ∉ {student, teacher}* (both Gemma) holds, and
+its 131k window fits an 80k-token meeting in one COVER/SYNTH call. Two properties of the
+model are pinned by the client rather than left to the server or the operator: sampling is
+forced to greedy (temperature 0) per request, because its recommended temp 1.0 is far too
+stochastic for an eval instrument; and its reasoning effort is pinned through the system
+prompt (`Reasoning strength: low`) — the control Meta documents for this model — because
+unpinned thinking burns the max_tokens budget and adds variance for zero judged benefit.
+Probe at higher effort only if `low` fails the inversion recall. No judge is trusted
+because it is large: run it through `judge_selftest.py --judge local:<port>/muse-glimmer-30b`
+and require 100% planted-inversion recall before any number from it is reported.
+
 **Budget.** Spend is capped and accounted per call. A judged eval is a loop over bullets ×
 meetings × modes × systems, so an unguarded bug is an unbounded bill; `JudgeBudgetExceeded`
 stops the run instead.
@@ -88,6 +101,12 @@ PANEL = {
 # reintroduces it from the spec by mistake.
 DISQUALIFIED = {"google/gemma-3n-E4B-it", "google/gemma-4-E4B-it", "google/gemma-4-E2B-it"}
 
+# Muse Glimmer's reasoning effort is controlled through the SYSTEM prompt — Meta documents
+# `Reasoning strength: <low|medium|high|xhigh>`. Unpinned it thinks at its default effort,
+# burning the max_tokens budget and adding variance for zero judged benefit. Maps a model
+# to the effort the client pins, unless the caller overrides it.
+REASONING_DEFAULT = {"muse": "low"}
+
 _VERDICT = re.compile(r"\b(SUPPORTED|CONTRADICTED|UNSUPPORTED)\b", re.I)
 _SCORE = re.compile(r"^\s*(?P<key>COVER|SYNTH)\s*[:=]\s*(?P<value>[1-5])", re.I | re.M)
 
@@ -140,10 +159,20 @@ class TogetherJudge:
     max_tokens: int = 3000
     timeout: float = 300.0
     retries: int = 1
+    #: Pin sampling for judge reproducibility. Empty for hosted models (provider default);
+    #: a local judge like Muse-Glimmer-30B should be run greedy + seeded — its recommended
+    #: temp 1.0 is too stochastic for an eval instrument that is supposed to be a stable yardstick.
+    temperature: float | None = None
+    seed: int | None = None
+    #: Reasoning effort to pin in the system prompt for models that speak the
+    #: "Reasoning strength:" protocol (e.g. Muse-Glimmer). None -> model-driven default.
+    reasoning_strength: str | None = None
 
     def __post_init__(self) -> None:
-        if not self.api_key:
-            raise SystemExit("TOGETHER_API_KEY is not set")
+        # Local judges (`local:<port>/...`) need no cloud key; enforce the key only when a
+        # hosted model is actually called, in `_post`, so a local-only probe can run without
+        # a TOGETHER_API_KEY.
+        pass
 
     def __call__(self, model: str, system: str, user: str) -> str:
         if model in DISQUALIFIED:
@@ -155,6 +184,7 @@ class TogetherJudge:
             raise JudgeBudgetExceeded(
                 f"spent ${self.spend.usd:.4f} of ${self.budget_usd:.2f}; stopping"
             )
+        system = self._with_reasoning(model, system)
 
         # An empty `content` has two causes: reasoning overran max_tokens, or the endpoint
         # simply returned nothing (observed at 13 completion tokens). Retry with more room
@@ -177,17 +207,41 @@ class TogetherJudge:
             )
         raise RuntimeError(f"{last} after {attempts} attempts")
 
+    def _with_reasoning(self, model: str, system: str) -> str:
+        """Pin the model's reasoning effort in the system prompt, if it speaks the protocol.
+
+        Muse Glimmer reads `Reasoning strength: <level>` from the system prompt and thinking
+        defaults to something more expensive than a judge needs. A pinned, low effort is the
+        difference between a cheap, repeatable one-word verdict and a 3000-token thought with
+        an empty `content`.
+        """
+        level = self.reasoning_strength
+        if level is None:
+            name = model.lower()
+            level = next((v for k, v in REASONING_DEFAULT.items() if k in name), None)
+        if level is None:
+            return system
+        return f"Reasoning strength: {level}\n{system}"
+
     def _post(self, model: str, system: str, user: str, max_tokens: int) -> dict:
-        body = json.dumps(
-            {
-                "model": model,
-                "max_tokens": max_tokens,
-                "messages": [
-                    {"role": "system", "content": system},
-                    {"role": "user", "content": user},
-                ],
-            }
-        ).encode()
+        body: dict = {
+            "model": model,
+            "max_tokens": max_tokens,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+        }
+        if self.temperature is not None:
+            body["temperature"] = self.temperature
+        elif model.startswith(LOCAL_PREFIX):
+            # A local judge is an eval instrument, and a stochastic one is a rubber yardstick.
+            # Force greedy per request so the server's sampling (Muse-Glimmer's recommended
+            # temp 1.0 included) cannot leak in; override deliberately via `temperature`.
+            body["temperature"] = 0.0
+        if self.seed is not None:
+            body["seed"] = self.seed
+        body = json.dumps(body).encode()
         endpoint, key = ENDPOINT, self.api_key
         if model.startswith(LOCAL_PREFIX):
             # `local:8090/qwen3.6-27b-nvfp4` -> http://127.0.0.1:8090
@@ -206,6 +260,9 @@ class TogetherJudge:
                 json.dumps(model[len(OPENCODE_GO_PREFIX) :]).encode(),
                 1,
             )
+        else:
+            if not key:
+                raise SystemExit("TOGETHER_API_KEY is not set")
 
         request = urllib.request.Request(
             endpoint,

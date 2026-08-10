@@ -13,6 +13,8 @@ inherited, and every GT2/GT3 threshold rests on it. Here it is measured: score t
 notes `--repeats` times and report the spread per judge.
 
     TOGETHER_API_KEY=... python eval/judge_selftest.py --repeats 5
+    TOGETHER_API_KEY=... python eval/judge_selftest.py --judge local:8090/muse-glimmer-30b \\
+        --judge openai/gpt-oss-120b --repeats 5
 """
 
 from __future__ import annotations
@@ -143,12 +145,40 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--repeats", type=int, default=5, help="repeated COVER/SYNTH scorings")
     p.add_argument("--budget-usd", type=float, default=0.20)
     p.add_argument("--out", type=Path, default=None)
+    p.add_argument(
+        "--judge",
+        action="append",
+        default=[],
+        metavar="MODEL",
+        help="extra judge to probe (planted-inversion + noise) alongside the panel; "
+        "repeatable. E.g. --judge local:8090/muse-glimmer-30b for a local GGUF. Local "
+        "judges run greedy with reasoning pinned low by default; see --reasoning-strength.",
+    )
+    p.add_argument(
+        "--reasoning-strength",
+        choices=["low", "medium", "high", "xhigh"],
+        default=None,
+        help="pin reasoning effort in the system prompt for models that speak the "
+        "'Reasoning strength:' protocol (Muse-Glimmer). Defaults to low for muse models; "
+        "raise only if low fails the inversion recall.",
+    )
+    p.add_argument(
+        "--temp",
+        type=float,
+        default=None,
+        help="sampling temperature for the probe client. Local judges default to greedy "
+        "(0.0); set e.g. --temp 1.0 to MEASURE how noisy a would-be judge is at its "
+        "recommended temperature rather than trusting the claim.",
+    )
     args = p.parse_args(argv)
 
     client = TogetherJudge(
-        api_key=os.environ.get("TOGETHER_API_KEY", ""), budget_usd=args.budget_usd
+        api_key=os.environ.get("TOGETHER_API_KEY", ""),
+        budget_usd=args.budget_usd,
+        temperature=args.temp,
+        reasoning_strength=args.reasoning_strength,
     )
-    verdict_models = [PANEL["faith"], PANEL["second"]]
+    verdict_models = [PANEL["faith"], PANEL["second"]] + args.judge
     reports = {m: JudgeReport(m) for m in {*verdict_models, PANEL["cover"]}}
 
     try:
@@ -191,17 +221,19 @@ def main(argv: list[str] | None = None) -> int:
                     if verdict == "CONTRADICTED":
                         report.inversion_caught += 1
 
-            # Noise: repeat COVER/SYNTH on the *correct* notes only.
+            # Noise: repeat COVER/SYNTH on the *correct* notes only. The panel's COVER judge
+            # is measured by default; every `--judge` candidate is measured the same way so a
+            # would-be COVER/SYNTH replacement (e.g. a local Muse-Glimmer) cannot skip it.
             transcript = "".join(u.render() + "\n" for u in utterances)
             prompt = cover_prompt(notes, transcript)
-            model = PANEL["cover"]
             meeting = Path(notes_path).stem
-            for _ in range(args.repeats):
-                cover, synth = _score_from(client(model, _COVER_SYS, prompt))
-                if cover is not None:
-                    reports[model].scores.setdefault(f"COVER@{meeting}", []).append(cover)
-                if synth is not None:
-                    reports[model].scores.setdefault(f"SYNTH@{meeting}", []).append(synth)
+            for model in [PANEL["cover"], *args.judge]:
+                for _ in range(args.repeats):
+                    cover, synth = _score_from(client(model, _COVER_SYS, prompt))
+                    if cover is not None:
+                        reports[model].scores.setdefault(f"COVER@{meeting}", []).append(cover)
+                    if synth is not None:
+                        reports[model].scores.setdefault(f"SYNTH@{meeting}", []).append(synth)
     except JudgeBudgetExceeded as exc:
         print(f"STOPPED: {exc}", file=sys.stderr)
 

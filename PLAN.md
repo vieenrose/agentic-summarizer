@@ -74,6 +74,21 @@ before the negative-result path is invoked.
    call, so §7.2's "full-context mode" becomes the default rather than a cross-validation
    reference. And **Bonsai is Qwen-family** (a 1.71-bit quantisation of Qwen3.6-27B), despite
    §7 filing it under "gemma-4 only" — the spec is simply wrong about its lineage.
+
+   **Local candidate — `unsloth/Muse-Glimmer-30B-GGUF`** (Meta; Apache 2.0). Dense 30B, 131k
+   ctx, UD-Q4_K_XL ≈ 15.9 GB — fits one 5090 beside the NVFP4 teacher. Meta family, so
+   *judge ∉ {student, teacher}* holds. Same structural appeal as the Bonsai addition (free,
+   frozen weights, local) with three further properties relevant here: 131k ctx fits an 80k
+   meeting in one COVER/SYNTH call, it is trained on 100+ languages (zh-TW judgment is the
+   project's weak spot), and Meta documents LLM-as-a-judge as an intended use. **Three caveats
+   before it can join the panel or replace a member:** (1) run the planted-inversion probe —
+   `judge_selftest.py --judge local:<port>/muse-glimmer-30b` — and require 100% recall with
+   zero false alarms like every incumbent; (2) sampling and reasoning are pinned *in the judge
+   client*, not left to the server or operator: local judges run greedy (temp 0) per request,
+   and reasoning effort is pinned through the system prompt (`Reasoning strength: low`, the
+   protocol Meta documents) — its recommended temp 1.0 is too stochastic for an eval
+   instrument; (3) probe at higher reasoning effort only if `low` fails the inversion recall.
+   Wired and enforced in `eval/judge.py`; the probe decides.
 2. **Op wire format (spec §5.1).** Emit ops as FunctionGemma function calls
    (`<start_function_call>call:ADD{...}<end_function_call>`) rather than the `ADD SECTION - …`
    text grammar, to ride the post-training. The NOTES v2 output contract (§3) is unaffected —

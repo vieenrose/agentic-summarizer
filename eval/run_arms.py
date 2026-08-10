@@ -45,10 +45,24 @@ def main(argv: list[str] | None = None) -> int:
         "trained with them, so eval must match (CLAUDE.md §7.8)",
     )
     p.add_argument("--arms", default="cursor,baseline")
+    p.add_argument(
+        "--heuristic-tokens",
+        action="store_true",
+        help="skip the student tokenizer (tests only): chunking must use the real "
+        "tokenizer, or zh chunks overflow the 4k context (heuristic undercounts zh)",
+    )
     args = p.parse_args(argv)
 
     from voxsum.backends.llama_server import LlamaServer
     from voxsum.chunker import heuristic_token_len
+
+    token_len = heuristic_token_len
+    if not args.heuristic_tokens:
+        from transformers import AutoTokenizer
+
+        tok = AutoTokenizer.from_pretrained("google/functiongemma-270m-it")
+        token_len = lambda text: len(tok(text, add_special_tokens=False)["input_ids"])
+        print("[arms] chunking with the student tokenizer (real budget)", flush=True)
 
     model = LlamaServer(
         base_url=args.base_url, thinking=not args.no_thinking, max_tokens=args.max_tokens
@@ -72,7 +86,7 @@ def main(argv: list[str] | None = None) -> int:
                         model,
                         lang=args.lang,
                         budget=args.budget,
-                        token_len=heuristic_token_len,
+                        token_len=token_len,
                         declarations=args.declarations,
                     )
                     state, use = result.state, result.usage
@@ -87,7 +101,7 @@ def main(argv: list[str] | None = None) -> int:
                         model,
                         lang=args.lang,
                         budget=args.budget,
-                        token_len=heuristic_token_len,
+                        token_len=token_len,
                     )
                     state, use = result.state, result.usage
                     extra = {

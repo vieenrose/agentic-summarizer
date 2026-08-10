@@ -66,6 +66,51 @@ def load_jsonl(path: Path) -> list[dict]:
     return [json.loads(line) for line in lines if line.strip()]
 
 
+def find_subsequence(seq: list[int], sub: list[int]) -> int | None:
+    """Index of the LAST occurrence of `sub` in `seq`, or None."""
+    if not sub:
+        return None
+    for i in range(len(seq) - len(sub), -1, -1):
+        if seq[i : i + len(sub)] == sub:
+            return i
+    return None
+
+
+def tokenize_sample(row: dict, tokenizer, max_length: int) -> dict:
+    """One SFT row -> pre-tokenized input_ids + completion-only labels.
+
+    The dataset is pre-tokenized deliberately: trl 0.24's text-processing `map`
+    pickles its local tokenize_fn to a multiprocess pool, and dill's recursive
+    walk of the function globals hits torch 2.10+'s unpicklable ConfigModuleInstance
+    (multiprocess sets dill recurse=True). Passing input_ids makes trl skip those
+    maps entirely ("If the dataset is already preprocessed... skip").
+
+    Completion-only masking is done here (labels = -100 before the model turn),
+    so unsloth's train_on_responses_only collator patch is not needed either.
+    """
+    messages = [
+        {"role": "system", "content": row["system"]},
+        {"role": "user", "content": row["prompt"]},
+        {"role": "assistant", "content": row["completion"]},
+    ]
+    text = tokenizer.apply_chat_template(messages, tokenize=False)
+    if text.count(tokenizer.bos_token or "<bos>") > 1:
+        raise SystemExit("template produced two <bos> tokens — fix before training")
+    ids = tokenizer(text, add_special_tokens=False)["input_ids"]
+    if len(ids) > max_length:
+        # Front-truncate: the completion (target) sits at the end and must survive.
+        cut = len(ids) - max_length
+        print(f"[sft] WARNING: sample {len(ids)} tokens > {max_length}; dropping {cut} from the front")
+        ids = ids[cut:]
+    resp = tokenizer(RESPONSE_PART, add_special_tokens=False)["input_ids"]
+    idx = find_subsequence(ids, resp)
+    if idx is None:
+        raise SystemExit("response marker not found in sample — template mismatch")
+    labels = [-100] * idx + ids[idx:]
+    return {"input_ids": ids, "labels": labels, "attention_mask": [1] * len(ids)}
+
+
+
 def assert_prompt_version_consistent(rows: list[dict], *extra: list[dict]) -> str:
     """A single prompt version across train and valid, or the run is not comparable."""
     versions = {r.get("prompt_version") for r in rows}
@@ -96,7 +141,6 @@ def main(argv: list[str] | None = None) -> int:
     from datasets import Dataset
     from trl import SFTConfig, SFTTrainer
     from unsloth import FastLanguageModel
-    from unsloth.chat_templates import train_on_responses_only
 
     train_rows = load_jsonl(args.train)
     valid_rows = load_jsonl(args.valid) if args.valid else []
@@ -125,33 +169,19 @@ def main(argv: list[str] | None = None) -> int:
             random_state=args.seed,
         )
 
-    def to_text(row: dict) -> dict:
-        """Render one sample with the model's own chat template.
-
-        The same template must serve training and inference — a mismatch here is the
-        classic silent quality killer, and llama.cpp adds its own <bos>, so exactly one
-        must appear (PLAN.md §3).
-        """
-        messages = [
-            {"role": "system", "content": row["system"]},
-            {"role": "user", "content": row["prompt"]},
-            {"role": "assistant", "content": row["completion"]},
-        ]
-        text = tokenizer.apply_chat_template(messages, tokenize=False)
-        if text.count(tokenizer.bos_token or "<bos>") > 1:
-            raise SystemExit("template produced two <bos> tokens — fix before training")
-        return {"text": text}
-
-    train_ds = Dataset.from_list([to_text(r) for r in train_rows])
-    valid_ds = Dataset.from_list([to_text(r) for r in valid_rows]) if valid_rows else None
+    train_ds = Dataset.from_list([tokenize_sample(r, tokenizer, args.max_seq_length) for r in train_rows])
+    valid_ds = (
+        Dataset.from_list([tokenize_sample(r, tokenizer, args.max_seq_length) for r in valid_rows])
+        if valid_rows
+        else None
+    )
 
     lr = args.lr if args.lr is not None else (5e-5 if args.regime == "full" else 2e-4)
     trainer = SFTTrainer(
         model=model,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         train_dataset=train_ds,
         eval_dataset=valid_ds,
-        max_seq_length=args.max_seq_length,
         args=SFTConfig(
             output_dir=str(args.out),
             per_device_train_batch_size=args.batch_size,
@@ -166,15 +196,12 @@ def main(argv: list[str] | None = None) -> int:
             logging_steps=10,
             save_strategy="epoch",
             eval_strategy="epoch" if valid_ds else "no",
-            dataset_text_field="text",
+            per_device_eval_batch_size=1,  # eval materialises fp32 logits: batch*seq*256k vocab
+            max_length=args.max_seq_length,
+            dataset_text_field=None,  # pre-tokenized; labels carry the completion mask
             seed=args.seed,
             report_to="none",
         ),
-    )
-
-    # Completion-only: mask SYS/STATE/CHUNK, train on op tokens only.
-    trainer = train_on_responses_only(
-        trainer, instruction_part=INSTRUCTION_PART, response_part=RESPONSE_PART
     )
 
     stats = trainer.train()

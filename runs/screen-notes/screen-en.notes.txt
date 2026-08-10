@@ -1,0 +1,16 @@
+TITLE:
+SUMMARY:
+- Proposal for consolidated warehouse consolidation [0:00]
+DECISIONS:
+- Combine North and South warehouses into a single site. [0:00]
+- Review the cost comparison of consolidation projects and the office coffee machine budget. [0:00]
+- Implement updated freight costs to better balance the proposed cost comparison. [0:00]
+- Combine North and South warehouses into a single site [3:00]
+- Review of office coffee machine budget [3:30]
+ACTIONS:
+- Request to reject the proposed consolidation plan. [0:00]
+- Priorize to reject the proposal to maintain a clear, concise meeting title. [0:30]
+OPEN:
+- Reject consolidated planning proposal [0:00]
+TOPICS:
+- Warehouse consolidation [0:00]

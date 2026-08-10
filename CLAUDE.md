@@ -1,3 +1,26 @@
+# CLAUDE.md
+
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+
+## 0. Repository state (2026-08-10)
+
+The repo currently contains **only this spec** — no source, tests, or build config exist yet.
+There are therefore no build/lint/test commands to run; add them to this section as soon as
+the first tooling lands (package/venv setup, how to run the harness on one transcript, how to
+run a single eval meeting, how to run the G1 capability screen).
+
+Referenced but not present in-repo: `TOOLS2.md`, the map-reduce baseline, and the eval sets
+(T1/T2/micro-cell). Treat §§1–8 below as the contract when writing the first code:
+
+- The harness is deterministic and owns the final word (§5.3, §6); the model only emits op
+  lines. Keep model-facing surfaces (SYS prompt, op grammar, NOTES render) byte-stable —
+  fine-tune and eval distributions must match exactly (§7.8).
+- `clock_to_sec` / `parse_line` are the two primitives everything else depends on; the
+  mm↔ss-inverted clock formula is a known past bug (§7).
+- Judges must never be Qwen-family (§7).
+
+---
+
 # SPEC — Agentic meeting-transcript summarizer (sub-1B SLM, zh-TW / en)
 
 **Version:** 1.0 · **Date:** 2026-08-09 · **Status:** normative design specification

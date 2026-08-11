@@ -633,3 +633,10 @@ deadlines, anchors, trap — first zh PASS for any student), but **screen-en reg
 (SUMMARY left "reject", approval anchored at the trap line; UPD PASS, valid-op 100%).
 Small-model seesaw: each language's demonstrations dilute the other's. In flight: +24 en
 meetings (combined/plain/twotopic v12-19) to rebalance both languages to ~50/50.
+
+### LFM2.5-350M v3 — en G1 PASS again; zh regressed (seesaw confirmed)
+
+Balanced 50.7% en mix: en G1 PASS (100% valid-op/anchors), zh FAIL (trap + deadlines).
+Three consecutive configs prove the seesaw: majority language passes, minority fails.
+**Resolution (PLAN 0d): per-language students** — en model (v3) + zh model (v2), both G1
+PASS in their language, ~430 MB combined, inside the envelope.

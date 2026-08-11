@@ -473,3 +473,15 @@ measured, not assumed.** The work proceeds as a falsifiable intervention program
 3. **Prove or pass**: each intervention either clears G1 or adds a measured invariance to
    the impossibility case (failure invariant across data composition, method, and — if
    tested — prompt layout).
+
+## 0d. Per-language students (2026-08-11) — the seesaw resolution
+
+LFM2.5-350M v1-v3 shows a razor-thin seesaw: whichever language has the sample majority
+passes G1, the other fails (v1 en-lean → en PASS; v2 zh 55% → zh PASS, en FAIL; v3 50.7%
+en → en PASS, zh FAIL). At 350M one model cannot hold both languages' full protocol.
+
+**Locked: two per-language students.** `LFM2.5-350M` en (v3) + zh (v2), each ~215 MB Q4_K_M
+(~430 MB total, or one loaded at a time on-device — inside the 785 MB envelope). Evals are
+per-language by construction (screen --lang; run_arms --lang), so this is a locale-based
+model selection, standard for on-device products. The zh model's training data stays
+zh-oversampled; the en model's stays balanced.

@@ -520,3 +520,28 @@ same teacher traces with the text-grammar targets (`tools/build_sft_qwen.py`).
 and traced at budget 128. The training set never demonstrated the full screen combination
 before. zh still needs more reps (known zh asymmetry, RESULTS.md) — +12 combined meetings in
 trace.
+
+---
+
+## 270M diagnostics: grounding probes P1-P4 (2026-08-11) — op-sequencing, not capacity
+
+After the direction override (PLAN 0c), the 270M failure was dissected with four controlled
+probes (same GGUF, temp 0; Qwen-v3 as control):
+
+| probe | 270M-v4 | Qwen-v3 control |
+|---|---|---|
+| P1 minimal grounding (1-bullet state) | **MATCH** | MATCH |
+| P2 state-size sweep (1/3/6 bullets × first/last) | 5-6/6 — fails only at 6 bullets, target last | 6/6 |
+| P3 distance control (STATE after CHUNK) | MATCH | MATCH |
+| P4 full en screen replay | **0/3** — UPD at every step incl. step 0 (empty state); prefixes copied from the CHUNK; nothing ever ADDed | ADD at step 0, UPD matches at step 1, perfect final state |
+
+**Conclusion: the 270M CAN ground prefixes (P1/P2) — the failure is op SEQUENCING.** It
+learned "decision-language content ⇒ UPD" from revision-dense training and UPDs against an
+empty state, so every op is rejected and the state stays empty. Not an absolute capacity
+wall; a data-distribution generalization error. (GPU vs CPU runs differ slightly cell-by-cell
+— fp-path non-determinism at temp 0 — but the pattern is identical.)
+
+**Intervention v5 (in flight)**: two new synth kinds — `plain` (ADD-only: approval content
+with NO prior bullet ⇒ ADD, breaking the content⇒UPD overgeneralisation) and `twotopic`
+(two parallel threads ⇒ 2-bullet states at revision time, exercising larger-state
+grounding). 48 meetings traced at budget 128.

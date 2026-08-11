@@ -1,0 +1,27 @@
+TITLE: Conceptual Design Review
+SUMMARY:
+- Discussion on component design and EV compatibility [2:05]
+DECISIONS:
+- Focus on remote control's ability to function with solar batteries [6:08]
+- Stick with current interface concept [10:32]
+- Include touchscreen as the main selling point [20:31]
+- Use three or four buttons with a menu button and side up/down type [34:47]
+- Use similar non-remote remote design to the iPod Mac Apple's color scheme [38:13]
+ACTIONS:
+- Research team to set up voice recognition system [13:10]
+- Develop a customizable face plate for the remote control [14:19]
+- Marketing to coordinate with the design team to reduce costs [19:02]
+- Research market research on voice recognition [21:55]
+- Identify which features are most likely to sell [22:20]
+- Assign tasks to team members in the next meeting [37:03]
+OPEN:
+- Efficient channel navigation with a hard cla c casing [14:36]
+- Define what kind of buttons are needed for the menu [34:47]
+- Decide between touchscreen or manual functions [31:51]
+TOPICS:
+- Component design [2:05]
+- EV compatibility [2:05]
+- Interchangeable casings [14:19]
+- Remote control design [25:54]
+- Cost analysis [24:17]
+- Basic look and feel [38:57]

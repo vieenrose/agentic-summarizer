@@ -1,0 +1,18 @@
+TITLE: Kickoff Meeting: Project Design
+SUMMARY:
+- Opening meeting to discuss project goals and design process. [5:23]
+DECISIONS:
+- Design a new television remote control with a modern, trendy, and friendly design. [4:46]
+- Include a white rabbit as the target animal for the remote control. [6:50]
+- Keep the current line width as it is. [9:30]
+- Use plastic, hard, and rubbery buttons for durability and weight. [23:06 [22:54]
+- Include front fronts around the television for a trendy look. [25:03]
+ACTIONS:
+- Put notes into the project folder after the session. [15:04]
+- User to restore desktop after the meeting. [28:45]
+OPEN:
+- Decide between front or back fronts based on the TV's design. [28:24]
+TOPICS:
+- Initial meeting agenda and design process. [5:23]
+- Remote controls and international compatibility. [14:30]
+- Distance-based features and technical design. [28:38]

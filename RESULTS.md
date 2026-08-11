@@ -661,3 +661,11 @@ judge's CONTRADICTED is correct. **The screen (synthetic) passes, but the studen
 hallucinates on real transcripts** — the training mix is b128/synthetic-heavy (26% real
 2048-budget samples), and the copy-don't-invent discipline does not transfer. Fix in flight:
 real-meeting distribution into the mix.
+
+### LFM en-model search (v4/v5/v6): the cap dial is noisy
+
+The b128-fraction cap trades real-trace emphasis against synthetic-pattern fidelity; each
+setting fixes one G1 detail and breaks another (v4: chain ✓ deadlines ✗; en5: deadlines ✓
+chain ✗; en6: chain ✓ deadlines ✗). **v3 remains the only all-four-PASS en model** and is
+locked as the en student (with v2 as the zh student). The real-transcript inversion risk is
+deferred to the T1 measurement, which is the instrument for it.

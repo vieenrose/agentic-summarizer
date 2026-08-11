@@ -1,0 +1,23 @@
+TITLE:
+SUMMARY:
+- Prototype design developed for remote functionality review [0:48]
+- Decision made to develop a remote with voice recognition [1:08]
+DECISIONS:
+- Include interchangeable faces in TV for a natural look [4:17]
+- Move to the project evaluation site [17:53]
+- See output files from digital paper for a professional look [31:28]
+- Go on a bit about the project eval [34:01]
+- Include disfluencies in reports [41:11]
+ACTIONS:
+- Allow Sarah to take over the project evaluation [17:53]
+- Marketing to see output files from digital paper for a professional look [31:28]
+OPEN:
+- Decide between solar cell or paging function [19:39]
+- Efficient use of the paging function [19:32]
+- Discuss roles and responsibilities in the project [24:53]
+- Discuss team collaboration and brainstorming during meetings [30:17]
+TOPICS:
+- Remote functionality review [0:48]
+- Interchangeable faces [4:17]
+- TV display features [3:45]
+- Project process [20:53]

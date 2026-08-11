@@ -1,0 +1,24 @@
+TITLE: Remote Control Component Selection
+SUMMARY:
+- Discussion on remote control components and their properties [1:32]
+- Comparison of battery, LCD, and solar cell options [4:26]
+- Discussion on advanced features in user interfaces [9:51]
+- Discussed solar panel rubber constraints and cost of advanced integrated circuits [40:31]
+- Expected time for prototype design review [42:46]
+DECISIONS:
+- Include titanium in the remote for a durable design [3:56]
+- Keep manual remote control as an option [28:13]
+- Include LCD displays for a scrolling wheel [34:04]
+- Match the remote's colour with company branding [36:55]
+- Use voice recognition for basic commands [40:32]
+ACTIONS:
+- Discuss L_C_D_ and spinning with the team [15:05]
+- Marketing to prepare presentation for the next meeting [42:47]
+- UI Designer to develop user interface design [42:47]
+- UI Designer to coordinate with the development team [42:46]
+OPEN:
+-
+TOPICS:
+- Remote control components [1:32]
+- Efficient TV integration [19:49]
+- Solar cell energy source [24:01]

@@ -1,0 +1,24 @@
+TITLE: Conceptual Design Meeting: Component Concept
+SUMMARY:
+- Discussion on energy sources and display requirements for the remote control. [0:26]
+DECISIONS:
+- Include simple battery and push-button display for cost reduction. [5:23]
+- Do not use this button for the L_C_D_ screen. [10:46]
+- Remote must be smart for basic functions. [16:38]
+- Use this button only for the LCD screen. [30:05]
+- Explore two options for fanciness: titanium shape and rubber cost. [28:49]
+ACTIONS:
+- Marketing to devise a concept for the interface. [10:26]
+- Marketing to develop a concept for the interface. [14:54]
+- Marketing to analyze current trends in the market. [20:31]
+- Marketing to research current trends in the market. [28:09]
+- UI designer to develop a user interface design for the prototype. [26:59]
+OPEN:
+-
+TOPICS:
+- Component design and display requirements. [4:03]
+- Interface concept and color selection. [10:46]
+- Remote control design and functionality. [14:27]
+- Fancy look and feel. [23:01]
+- Spongy material. [23:23]
+- Fancy features and location. [28:46 [28:14]

@@ -1,0 +1,25 @@
+TITLE: SmartKom System Setup
+SUMMARY:
+- Orientation for the SmartKom system's goal of greeting users. [7:48]
+- Discussion on formalizing notations and requirements for the demo system. [10:50]
+- Discussion on English and Japanese word orders in the system. [28:49]
+- Discussion on spatial descriptions and reference frames in German and English. [32:25]
+DECISIONS:
+- No commitment to formalize notations for the demo system. [8:55]
+- No formalized network structure; decisions will be based on internal hierarchies and data. [28:51]
+- Include a link to the EDU website for further reading. [39:52]
+ACTIONS:
+- Present system setup to the group. [7:48]
+- Grad B to coordinate with other institutions to get the demo system up and running. [13:03]
+- Look for Hugin or similar tools to visualize the network. [22:50]
+- Perform a formalization task using the construction analyzer. [49:08]
+- Grad B to coordinate with DFKI and EPFL for the formalization of the structure. [57:16]
+- Grad B to shoot for finishing all the next Monday. [58:21]
+OPEN:
+- System's ability to handle non-English word orders. [6:47]
+TOPICS:
+- Formalizing notations and requirements for the demo system. [10:50]
+- English and Japanese word orders. [28:49]
+- Spatial descriptions and reference frames. [32:46]
+- Reference, spatial reference, and linguistic differences. [45:02]
+- Graduate-level formalization. [58:42]

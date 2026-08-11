@@ -1,0 +1,12 @@
+TITLE: Warehouse Consolidation and Office Budget
+SUMMARY:
+- Discussed and rejected warehouse consolidation plan [1:30]
+DECISIONS:
+- Approve warehouse consolidation plan [5:30]
+ACTIONS:
+- S2 to submit revised costing plan by 14 March [6:00]
+- Site surveys finished by end of April [7:00]
+OPEN:
+-
+TOPICS:
+-

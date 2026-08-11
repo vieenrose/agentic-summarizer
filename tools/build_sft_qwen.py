@@ -53,7 +53,17 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--valid-out", type=Path, default=None)
     p.add_argument("--valid-frac", type=float, default=0.04)
+    p.add_argument("--lang", choices=["en", "zh-TW"], default=None,
+                  help="restrict to one language (per-language students, PLAN 0d)")
     p.add_argument("--max-nop-frac", type=float, default=0.28)
+    p.add_argument(
+        "--max-b128-frac",
+        type=float,
+        default=0.55,
+        help="cap the b128 (synthetic screen-distribution) group's share of the final "
+        "train set — the real/standard 2048-budget traces must not be diluted (micro "
+        "inversion on a real meeting was traced to exactly that dilution)",
+    )
     p.add_argument("--seed", type=int, default=0)
     args = p.parse_args(argv)
 
@@ -66,7 +76,9 @@ def main(argv: list[str] | None = None) -> int:
     split_of = {row["meeting_id"]: row["split"] for row in manifest}
 
     def _is_train(r: dict) -> bool:
-        return split_of.get(r.get("meeting"), "train") == "train"
+        return split_of.get(r.get("meeting"), "train") == "train" and (
+            args.lang is None or r.get("lang") == args.lang
+        )
 
     standard_all: list[dict] = []
     b128_all: list[dict] = []
@@ -95,6 +107,9 @@ def main(argv: list[str] | None = None) -> int:
 
     active = [r for r in b128 if not r["is_nop"]]
     nops = [r for r in b128 if r["is_nop"]]
+    # Cap the b128 group's share: real-meeting (standard) traces must stay
+    # well-represented or copy-don't-invent does not transfer to real transcripts.
+    b128_target = max(int(len(standard) * args.max_b128_frac / max(1 - args.max_b128_frac, 1e-6)), 0)
     per_meeting: dict[str, list[dict]] = {}
     for r in nops:
         per_meeting.setdefault(r["meeting"], []).append(r)
@@ -107,6 +122,10 @@ def main(argv: list[str] | None = None) -> int:
         idx = {round(i * (len(rows) - 1) / max(n - 1, 1)) for i in range(n)}
         short_nops += [rows[i] for i in sorted(idx)]
     b128 = active + short_nops
+    if len(b128) > b128_target:
+        rng.shuffle(b128)
+        b128 = b128[:b128_target]
+        print(f"[qwen] capped b128 group to {b128_target} ({args.max_b128_frac:.0%} cap)")
 
     samples = [build_sample(r) for r in standard + b128]
     samples = [s for s in samples if s["completion"].strip()]

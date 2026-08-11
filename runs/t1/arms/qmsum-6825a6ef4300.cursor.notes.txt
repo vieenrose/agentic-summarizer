@@ -1,0 +1,22 @@
+TITLE: Aurora Interchangeable Categories
+SUMMARY:
+- Discussion on intermediate categories and phoneme recognition challenges. [4:50]
+- Discussion on signal-to-noise ratio and DC offset compensation in audio data. [14:19]
+- Discussion on DC offset and signal-to-noise ratio in audio data. [21:04]
+DECISIONS:
+- PhD A: TITLE: Aurora Interchangeable Categories [5:55]
+- Use the Macrophone set of read speech and Hmm. [6:09]
+- Test SRI system on and on Aurora TI-digits for performance comparison. [30:19]
+- Smoothing the clean speech with a fixed SNR floor [43:19]
+- Use of VTS in cepstral domain for signal-to-noise ratio estimation. [52:19]
+ACTIONS:
+- Grad F to ask Morgan if she wants to get started with a reasonable set of features. [2:09]
+- Grad E to train on a larger data set for HTK readability. [8:22]
+- Read digit results with VTS in cepstra. [52:19]
+OPEN:
+- Compare performance of VTS and C-0/Z with Stephane and Sunil. [51:11]
+TOPICS:
+- Aurora interchangeable categories [3:14]
+- Near-micron signal-to-noise ratio [11:25]
+- Signal-to-noise ratio [49:27]
+- Cepstral domain normalization [52:19]

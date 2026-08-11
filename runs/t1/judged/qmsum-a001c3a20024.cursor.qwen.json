@@ -1,0 +1,58 @@
+{
+  "meeting_id": "qmsum-a001c3a20024",
+  "system": "cursor",
+  "faith_claim": 3.0,
+  "faith_anchor": 3.0,
+  "cover": 1,
+  "synth": 1,
+  "inverted": false,
+  "unsupported": 1,
+  "judges": {
+    "faith": "local:8091/qwen3.6-35b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on function key accessibility",
+      "anchor": 1028,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Target age group and features",
+      "anchor": 1863,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on function key accessibility",
+      "anchor": 1028,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Target age group and features",
+      "anchor": 1863,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    }
+  ]
+}

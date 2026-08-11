@@ -2,7 +2,7 @@
   "meeting_id": "qmsum-16abbdf7b3f2",
   "system": "baseline",
   "faith_claim": 3.857142857142857,
-  "faith_anchor": 4.428571428571429,
+  "faith_anchor": 3.857142857142857,
   "cover": 2,
   "synth": 2,
   "inverted": false,
@@ -36,17 +36,17 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Surge capacity in paediatric care during pandemic",
-      "anchor": 337,
+      "bullet": "Capacity for paediatric critical care if cases increase",
+      "anchor": 302,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
-      "majority": "SUPPORTED"
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",
-      "bullet": "Risk of disease outbreaks like measles if vaccination programmes are neglected",
+      "bullet": "Concerns about parents refusing to engage with health services due to fear",
       "anchor": 508,
       "mode": "claim",
       "verdicts": {
@@ -66,8 +66,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Welsh Government worked with AFA Cymru to develop guidance strongly welcomed by the fostering sector.",
-      "anchor": 2732,
+      "bullet": "Assurance that mental health recovery is a priority for the Health Minister",
+      "anchor": 1010,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -76,13 +76,13 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Julie Morgan agreed a bespoke scheme is vital for surviving childcare providers",
-      "anchor": 3615,
+      "bullet": "Monitoring capacity in child and adolescent mental health services",
+      "anchor": 1064,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
@@ -106,17 +106,17 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Surge capacity in paediatric care during pandemic",
-      "anchor": 337,
+      "bullet": "Capacity for paediatric critical care if cases increase",
+      "anchor": 302,
       "mode": "anchor",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
-      "majority": "SUPPORTED"
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",
-      "bullet": "Risk of disease outbreaks like measles if vaccination programmes are neglected",
+      "bullet": "Concerns about parents refusing to engage with health services due to fear",
       "anchor": 508,
       "mode": "anchor",
       "verdicts": {
@@ -136,8 +136,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Welsh Government worked with AFA Cymru to develop guidance strongly welcomed by the fostering sector.",
-      "anchor": 2732,
+      "bullet": "Assurance that mental health recovery is a priority for the Health Minister",
+      "anchor": 1010,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -146,8 +146,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Julie Morgan agreed a bespoke scheme is vital for surviving childcare providers",
-      "anchor": 3615,
+      "bullet": "Monitoring capacity in child and adolescent mental health services",
+      "anchor": 1064,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"

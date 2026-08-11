@@ -1,0 +1,58 @@
+{
+  "meeting_id": "synth-zh-withdraw-0",
+  "system": "cursor",
+  "faith_claim": 3.0,
+  "faith_anchor": 3.0,
+  "cover": 5,
+  "synth": 5,
+  "inverted": true,
+  "unsupported": 0,
+  "judges": {
+    "faith": "local:8091/qwen3.6-35b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "討論廠商合約計畫",
+      "anchor": 10470,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "將廠商合約從計畫中移除",
+      "anchor": 10470,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "討論廠商合約計畫",
+      "anchor": 10470,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "將廠商合約從計畫中移除",
+      "anchor": 10470,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
+}

@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-bdb39cc06654",
   "system": "cursor",
-  "faith_claim": 2.473684210526316,
-  "faith_anchor": 1.8421052631578947,
+  "faith_claim": 3.6666666666666665,
+  "faith_anchor": 2.333333333333333,
   "cover": 2,
   "synth": 1,
   "inverted": false,
-  "unsupported": 12,
+  "unsupported": 2,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -16,128 +16,18 @@
   "bullets": [
     {
       "section": "SUMMARY",
-      "bullet": "Orientation for the SmartKom system's goal of greeting users.",
-      "anchor": 468,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "SUMMARY",
-      "bullet": "Discussion on formalizing notations and requirements for the demo system.",
-      "anchor": 650,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "SUMMARY",
       "bullet": "Discussion on English and Japanese word orders in the system.",
       "anchor": 1729,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "SUMMARY",
-      "bullet": "Discussion on spatial descriptions and reference frames in German and English.",
-      "anchor": 1945,
-      "mode": "claim",
-      "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "No commitment to formalize notations for the demo system.",
-      "anchor": 535,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "No formalized network structure; decisions will be based on internal hierarchies and data.",
-      "anchor": 1731,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Include a link to the EDU website for further reading.",
-      "anchor": 2392,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
     },
     {
       "section": "ACTIONS",
       "bullet": "Present system setup to the group.",
       "anchor": 468,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Grad B to coordinate with other institutions to get the demo system up and running.",
-      "anchor": 783,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Look for Hugin or similar tools to visualize the network.",
-      "anchor": 1370,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Perform a formalization task using the construction analyzer.",
-      "anchor": 2948,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Grad B to coordinate with DFKI and EPFL for the formalization of the structure.",
-      "anchor": 3436,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Grad B to shoot for finishing all the next Monday.",
-      "anchor": 3501,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -153,16 +43,6 @@
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
       "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Formalizing notations and requirements for the demo system.",
-      "anchor": 650,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
     },
     {
       "section": "TOPICS",
@@ -195,36 +75,6 @@
       "majority": "SUPPORTED"
     },
     {
-      "section": "TOPICS",
-      "bullet": "Graduate-level formalization.",
-      "anchor": 3522,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "SUMMARY",
-      "bullet": "Orientation for the SmartKom system's goal of greeting users.",
-      "anchor": 468,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "SUMMARY",
-      "bullet": "Discussion on formalizing notations and requirements for the demo system.",
-      "anchor": 650,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
       "section": "SUMMARY",
       "bullet": "Discussion on English and Japanese word orders in the system.",
       "anchor": 1729,
@@ -233,46 +83,6 @@
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
       "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "SUMMARY",
-      "bullet": "Discussion on spatial descriptions and reference frames in German and English.",
-      "anchor": 1945,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "No commitment to formalize notations for the demo system.",
-      "anchor": 535,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "No formalized network structure; decisions will be based on internal hierarchies and data.",
-      "anchor": 1731,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Include a link to the EDU website for further reading.",
-      "anchor": 2392,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
     },
     {
       "section": "ACTIONS",
@@ -285,69 +95,9 @@
       "majority": "SUPPORTED"
     },
     {
-      "section": "ACTIONS",
-      "bullet": "Grad B to coordinate with other institutions to get the demo system up and running.",
-      "anchor": 783,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Look for Hugin or similar tools to visualize the network.",
-      "anchor": 1370,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Perform a formalization task using the construction analyzer.",
-      "anchor": 2948,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Grad B to coordinate with DFKI and EPFL for the formalization of the structure.",
-      "anchor": 3436,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Grad B to shoot for finishing all the next Monday.",
-      "anchor": 3501,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
       "section": "OPEN",
       "bullet": "System's ability to handle non-English word orders.",
       "anchor": 407,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Formalizing notations and requirements for the demo system.",
-      "anchor": 650,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -383,16 +133,6 @@
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Graduate-level formalization.",
-      "anchor": 3522,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
     }
   ]
 }

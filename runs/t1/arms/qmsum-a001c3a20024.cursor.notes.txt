@@ -1,26 +1,11 @@
 TITLE: Functional Design Meeting: Remote Control
 SUMMARY:
-- Discussion on remote control components and functions [8:31]
-- Discussion on remote control's main function and user needs [10:18]
-- Excluded video and D_V_D_ as primary features [14:47]
-- Discussed remote control components and functions [34:57]
-- Excluded video and D_V_D as primary features [35:33]
+-
 DECISIONS:
-- Target group and functions of the remote control are defined [2:38]
 - Focus on function key accessibility [17:08]
-- Include voice recognition for basic commands [32:42]
-- Refer technical requirements to the component concept [41:11]
-- Prepare questionnaire and summary by end of day [42:08]
 ACTIONS:
-- User to review basic button requirements with management [15:26]
-- Marketing to email technical requirements and minutes by email [40:28]
-- UI designer to create a component concept [41:10]
-- Complete questionnaire and summary by end of day [42:08]
+-
 OPEN:
-- Exclude video and D_V_D_ from remote control design [14:47]
+-
 TOPICS:
-- Functional design process [8:31]
-- Channel selection and volume selection [20:09]
-- Voice recognition and user preferences [25:02]
 - Target age group and features [31:03]
-- Efficient channel navigation [34:26]

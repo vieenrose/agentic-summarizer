@@ -1,11 +1,11 @@
 {
   "meeting_id": "synth-zh-reversal-5",
   "system": "cursor",
-  "faith_claim": 3.6666666666666665,
+  "faith_claim": 5.0,
   "faith_anchor": 5.0,
-  "cover": 5,
-  "synth": 5,
-  "inverted": true,
+  "cover": 2,
+  "synth": 1,
+  "inverted": false,
   "unsupported": 0,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
@@ -26,16 +26,6 @@
     },
     {
       "section": "DECISIONS",
-      "bullet": "否決訓練預算",
-      "anchor": 90,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
-      },
-      "majority": "CONTRADICTED"
-    },
-    {
-      "section": "DECISIONS",
       "bullet": "訓練預算通過",
       "anchor": 10470,
       "mode": "claim",
@@ -48,16 +38,6 @@
       "section": "SUMMARY",
       "bullet": "訓練預算通過",
       "anchor": 10470,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "否決訓練預算",
-      "anchor": 90,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"

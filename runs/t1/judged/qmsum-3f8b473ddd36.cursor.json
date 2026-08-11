@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-3f8b473ddd36",
   "system": "cursor",
-  "faith_claim": 2.5238095238095237,
-  "faith_anchor": 2.142857142857143,
+  "faith_claim": 3.5,
+  "faith_anchor": 3.0,
   "cover": 2,
   "synth": 1,
-  "inverted": true,
-  "unsupported": 11,
+  "inverted": false,
+  "unsupported": 3,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -14,16 +14,6 @@
   },
   "spend_usd": 0.0,
   "bullets": [
-    {
-      "section": "SUMMARY",
-      "bullet": "Discussion on component design and EV compatibility",
-      "anchor": 125,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
     {
       "section": "DECISIONS",
       "bullet": "Focus on remote control's ability to function with solar batteries",
@@ -46,58 +36,8 @@
     },
     {
       "section": "DECISIONS",
-      "bullet": "Include touchscreen as the main selling point",
-      "anchor": 1231,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
-      },
-      "majority": "CONTRADICTED"
-    },
-    {
-      "section": "DECISIONS",
       "bullet": "Use three or four buttons with a menu button and side up/down type",
       "anchor": 2087,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Use similar non-remote remote design to the iPod Mac Apple's color scheme",
-      "anchor": 2293,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Research team to set up voice recognition system",
-      "anchor": 790,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Develop a customizable face plate for the remote control",
-      "anchor": 859,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
-      },
-      "majority": "CONTRADICTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Marketing to coordinate with the design team to reduce costs",
-      "anchor": 1142,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -110,39 +50,9 @@
       "anchor": 1315,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Identify which features are most likely to sell",
-      "anchor": 1340,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Assign tasks to team members in the next meeting",
-      "anchor": 2223,
-      "mode": "claim",
-      "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Efficient channel navigation with a hard cla c casing",
-      "anchor": 876,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
     },
     {
       "section": "OPEN",
@@ -153,16 +63,6 @@
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Decide between touchscreen or manual functions",
-      "anchor": 1911,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",
@@ -176,38 +76,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "EV compatibility",
-      "anchor": 125,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Interchangeable casings",
-      "anchor": 859,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
       "bullet": "Remote control design",
       "anchor": 1554,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Cost analysis",
-      "anchor": 1457,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -225,16 +95,6 @@
       "majority": "UNSUPPORTED"
     },
     {
-      "section": "SUMMARY",
-      "bullet": "Discussion on component design and EV compatibility",
-      "anchor": 125,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
       "section": "DECISIONS",
       "bullet": "Focus on remote control's ability to function with solar batteries",
       "anchor": 368,
@@ -256,58 +116,8 @@
     },
     {
       "section": "DECISIONS",
-      "bullet": "Include touchscreen as the main selling point",
-      "anchor": 1231,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
-      },
-      "majority": "CONTRADICTED"
-    },
-    {
-      "section": "DECISIONS",
       "bullet": "Use three or four buttons with a menu button and side up/down type",
       "anchor": 2087,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Use similar non-remote remote design to the iPod Mac Apple's color scheme",
-      "anchor": 2293,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Research team to set up voice recognition system",
-      "anchor": 790,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Develop a customizable face plate for the remote control",
-      "anchor": 859,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Marketing to coordinate with the design team to reduce costs",
-      "anchor": 1142,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -325,36 +135,6 @@
       "majority": "SUPPORTED"
     },
     {
-      "section": "ACTIONS",
-      "bullet": "Identify which features are most likely to sell",
-      "anchor": 1340,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Assign tasks to team members in the next meeting",
-      "anchor": 2223,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Efficient channel navigation with a hard cla c casing",
-      "anchor": 876,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
       "section": "OPEN",
       "bullet": "Define what kind of buttons are needed for the menu",
       "anchor": 2087,
@@ -363,16 +143,6 @@
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Decide between touchscreen or manual functions",
-      "anchor": 1911,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",
@@ -386,38 +156,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "EV compatibility",
-      "anchor": 125,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Interchangeable casings",
-      "anchor": 859,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
       "bullet": "Remote control design",
       "anchor": 1554,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Cost analysis",
-      "anchor": 1457,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"

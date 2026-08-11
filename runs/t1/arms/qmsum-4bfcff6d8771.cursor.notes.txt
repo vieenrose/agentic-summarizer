@@ -1,21 +1,12 @@
 TITLE: Final Meeting: Prototype Presentation and Evaluation
 SUMMARY:
-- Marketing recommends using a seven-point scale for evaluation [15:32]
+-
 DECISIONS:
-- Remote control design starts at 15.35 [1:33]
 - Interchangeable beeping device is not necessary [26:51]
-- Banana-shaped remote control design [34:17]
-- Use a patent on the design [38:08]
 - Complete the final questionnaire and meeting summary [40:52]
 ACTIONS:
-- Prepare evaluation of the new design with maximum points [10:17]
-- Marketing to prepare slides for the meeting [36:46]
+-
 OPEN:
-- Efficient meeting time vs. traditional format [40:23]
+-
 TOPICS:
 - User requirements and evaluation [9:10]
-- Budget and finance issues [8:13]
-- Scroll wheel design [28:20]
-- Budget and finance [27:09]
-- Cost of recording the meeting [35:08]
-- Banana-shaped remote control design [38:21]

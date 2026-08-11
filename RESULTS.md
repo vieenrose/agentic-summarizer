@@ -702,3 +702,33 @@ the map-reduce baseline; agency-at-350M recorded as a measured negative result o
 faithfulness.** The positive findings stand: a 350M linear-attention student beats a 9B
 map-reduce baseline on synthesis (+1.10) and coverage (+1.30) at 1.18x prefill — the agency
 bet is real; the faithfulness requirement is not met at this scale.
+
+### The VERIFY/ANCHOR sweep is implemented and works — T1 inversion count: 12 → 0-1
+
+The spec's §5.2 final sweep was never implemented; it is now (src/voxsum/sweep.py), and
+debugging it surfaced four real bugs, each measured:
+
+1. **Jaccard retrieval is length-biased** (fixed): `[Inaudible.]` (5 tokens) outranked the
+   98-token supporting line (0.143 vs 0.100) — the judge never saw the evidence.
+2. **6-char prefixes are ambiguous** (fixed): "Use of VTS" vs "Use of VAD" share 6 chars;
+   the delete silently failed on every surviving inversion.
+3. **Prose-FIX matched inside judge output** (fixed: whole-line FIX only) — two T1
+   "inversions" were CREATED by judge-suggested rewrites, never emitted by the student.
+4. **The judge is stochastic on borderline inputs** (fixed by 3x majority): identical
+   prompt, temp 0 → SUPPORTED/UNSUPPORTED/SUPPORTED. Every earlier oscillation (inversion
+   sets shifting 3→5→5→9→12 between runs) was this, plus server-restart fp drift.
+
+**After sweep + majority (gpt-oss FAITH, n=20 T1):**
+- INVERT: **12 → 1** (a borderline "either LCD or push-button" bullet; gpt-oss majority
+  SUPPORTED, qwen3.6-35B UNSUPPORTED 5/5 — not a stable inversion)
+- FAITH-claim: **−1.64 → +0.27…+0.43** (positive for the first time)
+- FAITH-anchor: −1.70 → −0.20…+0.02
+- SYNTH: +0.85…+1.15 point-wise (conservative 1-SE bound below +0.5 after the drops)
+- GT4: 1.18x PASS
+
+**Instrument-resolution finding (the honest limit):** with a second judge family
+(qwen3.6-35B) as FAITH, the count reads 4 cursor + 2 baseline — the residue is real
+fabrication whose classification (inversion vs unsupported) is instrument-dependent. The
+0% gate at n=20 is at the local instrument's resolution; the harness-side levers are
+exhausted. The remaining fix is model-side: real-transcript training (the fabrication
+pattern), which was the plan's next step all along.

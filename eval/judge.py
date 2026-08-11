@@ -154,6 +154,7 @@ class TogetherJudge:
     )
     spend: Spend = field(default_factory=Spend)
     budget_usd: float = 1.00
+    max_tokens: int = 14000
     # High by default: all three judges reason before answering, and Bonsai burns ~1000
     # tokens for a one-word verdict.
     max_tokens: int = 3000
@@ -435,10 +436,20 @@ def judge_meeting(
 
             voters = [models["faith"]] + ([models["second"]] if second_opinion else [])
             for model in voters:
-                raw = client(model, _FAITH_SYS, prompt)
-                hits = _VERDICT.findall(raw)
-                if hits:
-                    record.verdicts[model] = hits[-1].upper()
+                try:
+                    # 3x majority: the local judge flips verdicts on identical input
+                    # (measured: SUPPORTED/UNSUPPORTED/SUPPORTED on the same prompt) —
+                    # a 0% inversion gate cannot rest on a single stochastic call.
+                    votes: list[str] = []
+                    for _ in range(3):
+                        raw = client(model, _FAITH_SYS, prompt)
+                        hits = _VERDICT.findall(raw)
+                        if hits:
+                            votes.append(hits[-1].upper())
+                    if votes:
+                        record.verdicts[model] = max(set(votes), key=votes.count)
+                except Exception:
+                    continue  # a judge hiccup skips this bullet, not the meeting
 
             verdict = record.majority
             scored += 1
@@ -467,11 +478,17 @@ def judge_meeting(
         if full_context
         else "\n".join(u.render() for u in utterances[:: max(len(utterances) // 20, 1)])
     )
-    raw = client(models["cover"], _COVER_SYS, cover_prompt(notes, transcript))
-    cover, synth = _score_from(raw)
-    if cover is None or synth is None:
+    try:
         raw = client(models["cover"], _COVER_SYS, cover_prompt(notes, transcript))
         cover, synth = _score_from(raw)
+    except Exception:
+        cover, synth = None, None
+    if cover is None or synth is None:
+        try:
+            raw = client(models["cover"], _COVER_SYS, cover_prompt(notes, transcript))
+            cover, synth = _score_from(raw)
+        except Exception:
+            cover, synth = None, None
     score.cover, score.synth = cover, synth
     return score
 

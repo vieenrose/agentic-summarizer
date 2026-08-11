@@ -1,0 +1,118 @@
+{
+  "meeting_id": "qmsum-46afb4f2ef60",
+  "system": "cursor",
+  "faith_claim": 2.6,
+  "faith_anchor": 3.4,
+  "cover": 1,
+  "synth": 1,
+  "inverted": false,
+  "unsupported": 3,
+  "judges": {
+    "faith": "local:8091/qwen3.6-35b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "DECISIONS",
+      "bullet": "See output files from digital paper for a professional look",
+      "anchor": 1888,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Go on a bit about the project eval",
+      "anchor": 2041,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Include disfluencies in reports",
+      "anchor": 2471,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Marketing to see output files from digital paper for a professional look",
+      "anchor": 1888,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Discuss roles and responsibilities in the project",
+      "anchor": 1493,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "See output files from digital paper for a professional look",
+      "anchor": 1888,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Go on a bit about the project eval",
+      "anchor": 2041,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Include disfluencies in reports",
+      "anchor": 2471,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Marketing to see output files from digital paper for a professional look",
+      "anchor": 1888,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Discuss roles and responsibilities in the project",
+      "anchor": 1493,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
+}

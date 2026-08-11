@@ -1,0 +1,64 @@
+{
+  "treatment": "cursor",
+  "control": "baseline",
+  "paired_meetings": [
+    "qmsum-16abbdf7b3f2",
+    "qmsum-3f8b473ddd36",
+    "qmsum-46afb4f2ef60",
+    "qmsum-4bfcff6d8771",
+    "qmsum-6825a6ef4300",
+    "qmsum-76d19929893a",
+    "qmsum-8ac3acb7fe5e",
+    "qmsum-a001c3a20024",
+    "qmsum-bdb39cc06654",
+    "qmsum-e75802cbf8d3",
+    "synth-zh-deadline-0",
+    "synth-zh-deadline-1",
+    "synth-zh-reassign-0",
+    "synth-zh-reassign-1",
+    "synth-zh-reversal-0",
+    "synth-zh-reversal-1",
+    "synth-zh-reversal-4",
+    "synth-zh-reversal-5",
+    "synth-zh-withdraw-0",
+    "synth-zh-withdraw-1"
+  ],
+  "tie_threshold": 0.5,
+  "prefill_ratio": 1.180750068387797,
+  "metrics": {
+    "faith_claim": {
+      "mean_delta": 0.26889332889332873,
+      "wins": 3,
+      "losses": 4,
+      "ties": 3,
+      "p_value": 1.0
+    },
+    "faith_anchor": {
+      "mean_delta": -0.19876012876012883,
+      "wins": 4,
+      "losses": 5,
+      "ties": 1,
+      "p_value": 1.0
+    },
+    "cover": {
+      "mean_delta": 1.1,
+      "wins": 11,
+      "losses": 4,
+      "ties": 5,
+      "p_value": 0.11846923828125
+    },
+    "synth": {
+      "mean_delta": 0.85,
+      "wins": 7,
+      "losses": 6,
+      "ties": 7,
+      "p_value": 1.0
+    }
+  },
+  "inversions": {
+    "cursor": [
+      "qmsum-e75802cbf8d3"
+    ],
+    "baseline": []
+  }
+}

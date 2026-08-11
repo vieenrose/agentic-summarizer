@@ -2,9 +2,9 @@
   "meeting_id": "qmsum-8ac3acb7fe5e",
   "system": "baseline",
   "faith_claim": 4.272727272727273,
-  "faith_anchor": 4.272727272727273,
+  "faith_anchor": 3.909090909090909,
   "cover": 4,
-  "synth": 3,
+  "synth": 4,
   "inverted": false,
   "unsupported": 2,
   "judges": {
@@ -230,9 +230,9 @@
       "anchor": 2526,
       "mode": "anchor",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
-      "majority": "SUPPORTED"
+      "majority": "UNSUPPORTED"
     }
   ]
 }

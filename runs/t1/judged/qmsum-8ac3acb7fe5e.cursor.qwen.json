@@ -1,0 +1,98 @@
+{
+  "meeting_id": "qmsum-8ac3acb7fe5e",
+  "system": "cursor",
+  "faith_claim": 4.0,
+  "faith_anchor": 3.0,
+  "cover": 1,
+  "synth": 1,
+  "inverted": false,
+  "unsupported": 1,
+  "judges": {
+    "faith": "local:8091/qwen3.6-35b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on remote control components and their properties",
+      "anchor": 92,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Keep manual remote control as an option",
+      "anchor": 1693,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "UI Designer to develop user interface design",
+      "anchor": 2567,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Remote control components",
+      "anchor": 92,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on remote control components and their properties",
+      "anchor": 92,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Keep manual remote control as an option",
+      "anchor": 1693,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "UI Designer to develop user interface design",
+      "anchor": 2567,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Remote control components",
+      "anchor": 92,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    }
+  ]
+}

@@ -1,0 +1,138 @@
+{
+  "meeting_id": "qmsum-16abbdf7b3f2",
+  "system": "cursor",
+  "faith_claim": 3.6666666666666665,
+  "faith_anchor": 3.0,
+  "cover": 3,
+  "synth": 2,
+  "inverted": false,
+  "unsupported": 2,
+  "judges": {
+    "faith": "local:8091/qwen3.6-35b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "DECISIONS",
+      "bullet": "Allow local authorities to have discretion in identifying vulnerable children and families",
+      "anchor": 2444,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Provide written statement on 1 May regarding child protection and safeguarding",
+      "anchor": 2110,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of the coronavirus pandemic on children and young people",
+      "anchor": 158,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "School reopening and childcare",
+      "anchor": 158,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Mental health and well-being of children and young people",
+      "anchor": 731,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Residential children's homes and social support",
+      "anchor": 2618,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Allow local authorities to have discretion in identifying vulnerable children and families",
+      "anchor": 2444,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Provide written statement on 1 May regarding child protection and safeguarding",
+      "anchor": 2110,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of the coronavirus pandemic on children and young people",
+      "anchor": 158,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "School reopening and childcare",
+      "anchor": 158,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Mental health and well-being of children and young people",
+      "anchor": 731,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Residential children's homes and social support",
+      "anchor": 2618,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    }
+  ]
+}

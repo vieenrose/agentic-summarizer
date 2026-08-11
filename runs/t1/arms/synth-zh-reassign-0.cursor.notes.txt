@@ -2,7 +2,7 @@ TITLE: 廠商合約討論
 SUMMARY:
 - 討論廠商合約議題 [0:00]
 DECISIONS:
-- 美玲負責廠商合約 [1:30]
+-
 ACTIONS:
 -
 OPEN:

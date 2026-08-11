@@ -1,11 +1,11 @@
 {
   "meeting_id": "synth-zh-withdraw-0",
   "system": "cursor",
-  "faith_claim": 2.333333333333333,
-  "faith_anchor": 3.6666666666666665,
-  "cover": 1,
-  "synth": 1,
-  "inverted": true,
+  "faith_claim": 3.0,
+  "faith_anchor": 3.0,
+  "cover": 5,
+  "synth": 5,
+  "inverted": false,
   "unsupported": 1,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
@@ -26,16 +26,6 @@
     },
     {
       "section": "DECISIONS",
-      "bullet": "將廠商合約排入本季計畫",
-      "anchor": 90,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
-      },
-      "majority": "CONTRADICTED"
-    },
-    {
-      "section": "DECISIONS",
       "bullet": "將廠商合約從計畫中移除",
       "anchor": 10470,
       "mode": "claim",
@@ -53,16 +43,6 @@
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
       "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "將廠商合約排入本季計畫",
-      "anchor": 90,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",

@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-4bfcff6d8771",
   "system": "cursor",
-  "faith_claim": 2.0666666666666664,
-  "faith_anchor": 1.8,
+  "faith_claim": 3.6666666666666665,
+  "faith_anchor": 5.0,
   "cover": 2,
   "synth": 1,
   "inverted": false,
-  "unsupported": 11,
+  "unsupported": 1,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -15,89 +15,19 @@
   "spend_usd": 0.0,
   "bullets": [
     {
-      "section": "SUMMARY",
-      "bullet": "Marketing recommends using a seven-point scale for evaluation",
-      "anchor": 932,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Remote control design starts at 15.35",
-      "anchor": 93,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
       "section": "DECISIONS",
       "bullet": "Interchangeable beeping device is not necessary",
       "anchor": 1611,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Banana-shaped remote control design",
-      "anchor": 2057,
-      "mode": "claim",
-      "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Use a patent on the design",
-      "anchor": 2288,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Complete the final questionnaire and meeting summary",
       "anchor": 2452,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Prepare evaluation of the new design with maximum points",
-      "anchor": 617,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Marketing to prepare slides for the meeting",
-      "anchor": 2206,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Efficient meeting time vs. traditional format",
-      "anchor": 2423,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -115,76 +45,6 @@
       "majority": "UNSUPPORTED"
     },
     {
-      "section": "TOPICS",
-      "bullet": "Budget and finance issues",
-      "anchor": 493,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Scroll wheel design",
-      "anchor": 1700,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Budget and finance",
-      "anchor": 1629,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Cost of recording the meeting",
-      "anchor": 2108,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Banana-shaped remote control design",
-      "anchor": 2301,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "SUMMARY",
-      "bullet": "Marketing recommends using a seven-point scale for evaluation",
-      "anchor": 932,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Remote control design starts at 15.35",
-      "anchor": 93,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
       "section": "DECISIONS",
       "bullet": "Interchangeable beeping device is not necessary",
       "anchor": 1611,
@@ -193,26 +53,6 @@
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Banana-shaped remote control design",
-      "anchor": 2057,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Use a patent on the design",
-      "anchor": 2288,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
     },
     {
       "section": "DECISIONS",
@@ -225,36 +65,6 @@
       "majority": "SUPPORTED"
     },
     {
-      "section": "ACTIONS",
-      "bullet": "Prepare evaluation of the new design with maximum points",
-      "anchor": 617,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Marketing to prepare slides for the meeting",
-      "anchor": 2206,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Efficient meeting time vs. traditional format",
-      "anchor": 2423,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
       "section": "TOPICS",
       "bullet": "User requirements and evaluation",
       "anchor": 550,
@@ -263,56 +73,6 @@
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Budget and finance issues",
-      "anchor": 493,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Scroll wheel design",
-      "anchor": 1700,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Budget and finance",
-      "anchor": 1629,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Cost of recording the meeting",
-      "anchor": 2108,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Banana-shaped remote control design",
-      "anchor": 2301,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
     }
   ]
 }

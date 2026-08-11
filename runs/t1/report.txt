@@ -1,14 +1,14 @@
 cursor vs baseline  (paired on 20 meetings)
 tie threshold Δ < 0.5
-  faith_claim   Δ -1.28 ±0.31  W/L/T 0/8/2  p=0.008  DIRECTIONAL ONLY (n=10 < 20)
-  faith_anchor  Δ -1.78 ±0.24  W/L/T 0/10/0  p=0.002  DIRECTIONAL ONLY (n=10 < 20)
-  cover         Δ +1.30 ±0.54  W/L/T 9/4/7  p=0.267
-  synth         Δ +1.10 ±0.58  W/L/T 8/6/6  p=0.791
+  faith_claim   Δ -1.48 ±0.40  W/L/T 0/7/3  p=0.016  DIRECTIONAL ONLY (n=10 < 20)
+  faith_anchor  Δ -1.65 ±0.27  W/L/T 0/10/0  p=0.002  DIRECTIONAL ONLY (n=10 < 20)
+  cover         Δ +1.35 ±0.52  W/L/T 9/4/7  p=0.267
+  synth         Δ +1.20 ±0.54  W/L/T 8/6/6  p=0.791
 
-  INVERT cursor    : qmsum-3f8b473ddd36, qmsum-6825a6ef4300, qmsum-76d19929893a, qmsum-8ac3acb7fe5e, qmsum-a001c3a20024, qmsum-e75802cbf8d3, synth-zh-reassign-0, synth-zh-reversal-0, synth-zh-reversal-1, synth-zh-reversal-4, synth-zh-reversal-5, synth-zh-withdraw-0
-  INVERT baseline  : none
+  INVERT cursor    : qmsum-6825a6ef4300, qmsum-76d19929893a, qmsum-8ac3acb7fe5e, qmsum-a001c3a20024, qmsum-e75802cbf8d3, synth-zh-reversal-0, synth-zh-reversal-1, synth-zh-reversal-4, synth-zh-reversal-5, synth-zh-withdraw-0
+  INVERT baseline  : qmsum-8ac3acb7fe5e
 
 GT2 faith        : WITHHELD (n=10 < 20)
-GT3 synthesis    : PASS (Δ +1.10 vs +0.5) (lower 1-SE bound +0.52)
-GT4 efficiency   : WITHHELD (no usage.json)
+GT3 synthesis    : PASS (Δ +1.20 vs +0.5) (lower 1-SE bound +0.66)
+GT4 efficiency   : FAIL (prefill 7.89x vs 1.25x)
 SHIP DECISION    : WITHHELD — gates not yet evaluable

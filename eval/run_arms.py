@@ -52,6 +52,15 @@ def main(argv: list[str] | None = None) -> int:
         "trained with them, so eval must match (CLAUDE.md §7.8)",
     )
     p.add_argument("--arms", default="cursor,baseline")
+    p.add_argument(
+        "--sweep",
+        choices=["none", "verify", "anchor", "both"],
+        default="none",
+        help="final VERIFY/ANCHOR sweep on the cursor arm's state (CLAUDE.md §5.2) — "
+        "the harness-side faithfulness backstop",
+    )
+    p.add_argument("--sweep-budget", type=int, default=20)
+    p.add_argument("--sweep-judge", default="local:8090/gpt-oss-20b")
     p.add_argument("--tokenizer", default="google/functiongemma-270m-it",
                   help="student tokenizer for chunk budgets (must match the served model)")
     p.add_argument(
@@ -80,6 +89,15 @@ def main(argv: list[str] | None = None) -> int:
         max_tokens=args.max_tokens,
         temperature=0.0,
     )
+    sweep_judge = None
+    if args.sweep != "none":
+        sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "eval"))
+        from judge import TogetherJudge
+
+        sweep_judge = TogetherJudge(api_key="local", budget_usd=5.0, max_tokens=14000)
+        print(f"[arms] sweep={args.sweep} judge={args.sweep_judge} "
+              f"budget={args.sweep_budget}", flush=True)
+
     baseline_model = (
         LlamaServer(
             base_url=args.baseline_url,
@@ -113,10 +131,43 @@ def main(argv: list[str] | None = None) -> int:
                         declarations=args.declarations,
                     )
                     state, use = result.state, result.usage
+                    sweep_extra = {}
+                    if sweep_judge is not None:
+                        from voxsum.sweep import run_sweep
+
+                        prompt_builder = None
+                        if args.sweep in ("verify", "both"):
+                            # Pin the FAITH judge's EXACT protocol: the sweep must drop
+                            # exactly what the eval judge would flag (measured: a lenient
+                            # sweep prompt let 3/12 inversions through).
+                            from judge import _FAITH_SYS, faith_prompt
+
+                            def prompt_builder(bullet, evidence):
+                                return faith_prompt(bullet, evidence)
+
+                        sweep = run_sweep(
+                            state,
+                            utterances,
+                            lambda sys_p, user: sweep_judge(args.sweep_judge, sys_p, user),
+                            verify=args.sweep in ("verify", "both"),
+                            anchor=args.sweep in ("anchor", "both"),
+                            budget=args.sweep_budget,
+                            prompt_builder=prompt_builder,
+                            # FIX rewrites from the local judge create inversions
+                            # (measured twice); drop-only is the safe protocol.
+                            apply_fix=False,
+                        )
+                        sweep_extra = {
+                            "sweep_calls": sweep.calls,
+                            "sweep_dropped": sweep.dropped,
+                            "sweep_fixed": sweep.fixed,
+                            "sweep_anchors_repaired": sweep.anchors_repaired,
+                        }
                     extra = {
                         "valid_op_rate": result.valid_op_rate,
                         "anchor_rate_raw": result.anchor_rate_raw,
                         "coverage_gaps": len(result.coverage_gaps),
+                        **sweep_extra,
                     }
                 else:
                     result = run_map_reduce(

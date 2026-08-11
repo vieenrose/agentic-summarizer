@@ -2,7 +2,7 @@
   "meeting_id": "qmsum-a001c3a20024",
   "system": "baseline",
   "faith_claim": 4.6923076923076925,
-  "faith_anchor": 4.384615384615385,
+  "faith_anchor": 4.076923076923077,
   "cover": 5,
   "synth": 5,
   "inverted": false,
@@ -179,10 +179,8 @@
       "bullet": "Team members must complete questionnaires and summaries by email",
       "anchor": 2361,
       "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
+      "verdicts": {},
+      "majority": "MISSING"
     },
     {
       "section": "ACTIONS",

@@ -1,11 +1,11 @@
 {
   "meeting_id": "synth-zh-reversal-1",
   "system": "cursor",
-  "faith_claim": 4.0,
+  "faith_claim": 5.0,
   "faith_anchor": 5.0,
   "cover": 5,
   "synth": 5,
-  "inverted": true,
+  "inverted": false,
   "unsupported": 0,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
@@ -23,16 +23,6 @@
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "否決人事凍結",
-      "anchor": 90,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
-      },
-      "majority": "CONTRADICTED"
     },
     {
       "section": "DECISIONS",
@@ -58,16 +48,6 @@
       "section": "SUMMARY",
       "bullet": "討論並通過人事凍結",
       "anchor": 10470,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "否決人事凍結",
-      "anchor": 90,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"

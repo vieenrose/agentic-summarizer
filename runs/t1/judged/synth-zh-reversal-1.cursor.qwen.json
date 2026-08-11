@@ -1,0 +1,78 @@
+{
+  "meeting_id": "synth-zh-reversal-1",
+  "system": "cursor",
+  "faith_claim": 3.6666666666666665,
+  "faith_anchor": 5.0,
+  "cover": 5,
+  "synth": 5,
+  "inverted": true,
+  "unsupported": 0,
+  "judges": {
+    "faith": "local:8091/qwen3.6-35b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "討論並通過人事凍結",
+      "anchor": 10470,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "通過人事凍結",
+      "anchor": 10470,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "S2 重新計算數字",
+      "anchor": 120,
+      "mode": "claim",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "討論並通過人事凍結",
+      "anchor": 10470,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "通過人事凍結",
+      "anchor": 10470,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "S2 重新計算數字",
+      "anchor": 120,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8091/qwen3.6-35b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
+}

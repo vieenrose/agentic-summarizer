@@ -1,6 +1,6 @@
 TITLE: 資安稽核討論
 SUMMARY:
-- 否決資安稽核 [1:30]
+-
 DECISIONS:
 - 資安稽核通過 [2:54:30]
 ACTIONS:

@@ -451,3 +451,25 @@ test, win/loss/tie counts. The n=6 micro-cell is **directional only** and never 
    but the student still cannot exceed what the teacher demonstrates. Worth calibrating against
    QMSum's own human reference summaries (~5 minutes of judge calls) to learn whether 53% is
    *bad* or simply what this corpus and metric yield.
+
+## 0c. Direction override 2026-08-11 (user decision): FunctionGemma-270M stays primary
+
+The spec's promote rule (PLAN §4: promote to Qwen3.5-0.8B after one honest 270M data
+iteration) is **overridden by the user**. The Qwen3.5-0.8B result (en G1 PASS on the first
+run with identical traces — RESULTS.md) is retained as a **comparison data point proving the
+data/method suffice at 0.8B**, but it does not prove 270M impossibility.
+
+New rule: **FunctionGemma-270M remains the student until G1 passes or impossibility is
+measured, not assumed.** The work proceeds as a falsifiable intervention program:
+
+1. **Diagnose** the exact failure computation (state-conditioning / prefix grounding) with
+   controlled probes — the attention-distance hypothesis: at 270M the model over-attends to
+   the immediately-preceding chunk and under-attends to the earlier STATE, so UPD prefixes
+   are copied from the chunk instead of the state.
+2. **Intervene** on the measured cause: data curriculum (step-0/small-state revision
+   samples), training method (epochs, early-stop on valid-op), and only if the evidence
+   demands it, a documented prompt-layout amendment (STATE placement) with a PROMPT_VERSION
+   bump and trace regeneration under the new surface.
+3. **Prove or pass**: each intervention either clears G1 or adds a measured invariance to
+   the impossibility case (failure invariant across data composition, method, and — if
+   tested — prompt layout).

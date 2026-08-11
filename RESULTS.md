@@ -625,3 +625,11 @@ binding + conditional branch — is learned by a 350M linear-attention model on 
 Consistent with the root-cause diagnosis: the wall was the 270M's softmax-attention capacity
 for the specific computation, not the protocol, the data, or the training method. The zh side
 shows the same asymmetry as every prior student; zh-oversampled data iteration in flight.
+
+### LFM2.5-350M v2 — zh G1 PASS; en regressed (the seesaw)
+
+zh-oversampled retrain (565 zh / 458 en, 44 new zh meetings): **screen-zh G1 PASS** (chain,
+deadlines, anchors, trap — first zh PASS for any student), but **screen-en regressed**
+(SUMMARY left "reject", approval anchored at the trap line; UPD PASS, valid-op 100%).
+Small-model seesaw: each language's demonstrations dilute the other's. In flight: +24 en
+meetings (combined/plain/twotopic v12-19) to rebalance both languages to ~50/50.

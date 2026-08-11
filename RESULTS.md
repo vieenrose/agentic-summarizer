@@ -589,3 +589,16 @@ neither is expected to change the outcome, but they are the residual unknowns.
 **Also fixed this round**: eval-tier contamination — build_sft_v3/build_sft_qwen were
 including t1/micro meeting traces (traces predate the carve); all builders now filter by
 manifest split (129 steps excluded from v6).
+
+### LoRA checkbox (r=64 all-linear, 15.2M params, 6 epochs, lr 2e-4, v6 data)
+
+Eval loss 0.084 (matches full-FT 0.087). Same failure signature, no improvement:
+P1 matches (single flip), **P2 0/6**, P4 **0/0 UPD — the approval is APPENDED as a new ADD**
+(contradicting bullet, final state carries both polarities). G1 FAIL en + zh-TW
+(chain FAIL, UPD FAIL both languages).
+
+**The measured negative result is now complete across every controllable dimension:**
+data composition (6 configs incl. unconfounded counterfactuals), training method
+(full FT + LoRA), minimal-case probes, and the 0.8B control. The only residual unknown is
+>10k-sample training, which the counterfactual experiment argues against (the conditional
+does not take hold even when the data presents it unconfounded).

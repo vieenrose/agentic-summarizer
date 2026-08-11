@@ -1,0 +1,12 @@
+TITLE:
+SUMMARY:
+-
+DECISIONS:
+- Reject warehouse consolidation plan [2:00]
+- Warehouse consolidation plan approved [6:00]
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+-

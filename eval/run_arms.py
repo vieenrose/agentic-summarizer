@@ -35,6 +35,13 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--lang", default="en", choices=["en", "zh-TW"])
     p.add_argument("--base-url", default="http://127.0.0.1:8080")
+    p.add_argument(
+        "--baseline-url",
+        default=None,
+        help="model for the baseline arm (a GENERAL model: the fine-tuned student is "
+        "trained for the CURSOR prompt only and produces empty digests — measured). "
+        "Defaults to --base-url.",
+    )
     p.add_argument("--budget", type=int, default=2048, help="chunk token budget, both arms")
     p.add_argument("--max-tokens", type=int, default=6144)
     p.add_argument("--no-thinking", action="store_true")
@@ -73,6 +80,16 @@ def main(argv: list[str] | None = None) -> int:
         max_tokens=args.max_tokens,
         temperature=0.0,
     )
+    baseline_model = (
+        LlamaServer(
+            base_url=args.baseline_url,
+            thinking=not args.no_thinking,
+            max_tokens=args.max_tokens,
+            temperature=0.0,
+        )
+        if args.baseline_url
+        else model
+    )
     if not model.health():
         print(f"llama-server not reachable at {args.base_url}", file=sys.stderr)
         return 2
@@ -104,7 +121,7 @@ def main(argv: list[str] | None = None) -> int:
                 else:
                     result = run_map_reduce(
                         utterances,
-                        model,
+                        baseline_model,
                         lang=args.lang,
                         budget=args.budget,
                         token_len=token_len,

@@ -1,42 +1,16 @@
 [
   {
     "meeting_id": "synth-zh-deadline-0",
-    "arm": "cursor",
-    "lang": "zh-TW",
-    "prompt_version": "sys-v1",
-    "chunk_budget": 2048,
-    "calls": 4,
-    "prefill_tokens": 9088,
-    "decode_tokens": 130,
-    "valid_op_rate": 1.0,
-    "anchor_rate_raw": 1.0,
-    "coverage_gaps": 0
-  },
-  {
-    "meeting_id": "synth-zh-deadline-0",
     "arm": "baseline",
     "lang": "zh-TW",
     "prompt_version": "sys-v1",
     "chunk_budget": 2048,
     "calls": 4,
     "prefill_tokens": 7417,
-    "decode_tokens": 8,
+    "decode_tokens": 109,
     "windows": 4,
     "reduce_calls": 0,
     "valid_bullet_rate": null
-  },
-  {
-    "meeting_id": "synth-zh-deadline-1",
-    "arm": "cursor",
-    "lang": "zh-TW",
-    "prompt_version": "sys-v1",
-    "chunk_budget": 2048,
-    "calls": 4,
-    "prefill_tokens": 9054,
-    "decode_tokens": 118,
-    "valid_op_rate": 1.0,
-    "anchor_rate_raw": 1.0,
-    "coverage_gaps": 0
   },
   {
     "meeting_id": "synth-zh-deadline-1",
@@ -46,23 +20,10 @@
     "chunk_budget": 2048,
     "calls": 4,
     "prefill_tokens": 7413,
-    "decode_tokens": 35,
+    "decode_tokens": 107,
     "windows": 4,
     "reduce_calls": 0,
     "valid_bullet_rate": null
-  },
-  {
-    "meeting_id": "synth-zh-reassign-0",
-    "arm": "cursor",
-    "lang": "zh-TW",
-    "prompt_version": "sys-v1",
-    "chunk_budget": 2048,
-    "calls": 4,
-    "prefill_tokens": 9001,
-    "decode_tokens": 106,
-    "valid_op_rate": 0.6,
-    "anchor_rate_raw": 1.0,
-    "coverage_gaps": 1
   },
   {
     "meeting_id": "synth-zh-reassign-0",
@@ -72,23 +33,10 @@
     "chunk_budget": 2048,
     "calls": 4,
     "prefill_tokens": 7393,
-    "decode_tokens": 8,
+    "decode_tokens": 80,
     "windows": 4,
     "reduce_calls": 0,
     "valid_bullet_rate": null
-  },
-  {
-    "meeting_id": "synth-zh-reassign-1",
-    "arm": "cursor",
-    "lang": "zh-TW",
-    "prompt_version": "sys-v1",
-    "chunk_budget": 2048,
-    "calls": 4,
-    "prefill_tokens": 9020,
-    "decode_tokens": 104,
-    "valid_op_rate": 1.0,
-    "anchor_rate_raw": 1.0,
-    "coverage_gaps": 0
   },
   {
     "meeting_id": "synth-zh-reassign-1",
@@ -98,23 +46,10 @@
     "chunk_budget": 2048,
     "calls": 4,
     "prefill_tokens": 7391,
-    "decode_tokens": 8,
+    "decode_tokens": 72,
     "windows": 4,
     "reduce_calls": 0,
     "valid_bullet_rate": null
-  },
-  {
-    "meeting_id": "synth-zh-reversal-0",
-    "arm": "cursor",
-    "lang": "zh-TW",
-    "prompt_version": "sys-v1",
-    "chunk_budget": 2048,
-    "calls": 4,
-    "prefill_tokens": 9002,
-    "decode_tokens": 107,
-    "valid_op_rate": 1.0,
-    "anchor_rate_raw": 1.0,
-    "coverage_gaps": 0
   },
   {
     "meeting_id": "synth-zh-reversal-0",
@@ -124,23 +59,10 @@
     "chunk_budget": 2048,
     "calls": 4,
     "prefill_tokens": 7400,
-    "decode_tokens": 8,
+    "decode_tokens": 44,
     "windows": 4,
     "reduce_calls": 0,
     "valid_bullet_rate": null
-  },
-  {
-    "meeting_id": "synth-zh-reversal-1",
-    "arm": "cursor",
-    "lang": "zh-TW",
-    "prompt_version": "sys-v1",
-    "chunk_budget": 2048,
-    "calls": 4,
-    "prefill_tokens": 9045,
-    "decode_tokens": 128,
-    "valid_op_rate": 1.0,
-    "anchor_rate_raw": 1.0,
-    "coverage_gaps": 0
   },
   {
     "meeting_id": "synth-zh-reversal-1",
@@ -150,23 +72,10 @@
     "chunk_budget": 2048,
     "calls": 4,
     "prefill_tokens": 7398,
-    "decode_tokens": 8,
+    "decode_tokens": 85,
     "windows": 4,
     "reduce_calls": 0,
     "valid_bullet_rate": null
-  },
-  {
-    "meeting_id": "synth-zh-withdraw-0",
-    "arm": "cursor",
-    "lang": "zh-TW",
-    "prompt_version": "sys-v1",
-    "chunk_budget": 2048,
-    "calls": 4,
-    "prefill_tokens": 9052,
-    "decode_tokens": 126,
-    "valid_op_rate": 1.0,
-    "anchor_rate_raw": 1.0,
-    "coverage_gaps": 0
   },
   {
     "meeting_id": "synth-zh-withdraw-0",
@@ -176,23 +85,10 @@
     "chunk_budget": 2048,
     "calls": 4,
     "prefill_tokens": 7417,
-    "decode_tokens": 26,
+    "decode_tokens": 109,
     "windows": 4,
     "reduce_calls": 0,
     "valid_bullet_rate": null
-  },
-  {
-    "meeting_id": "synth-zh-withdraw-1",
-    "arm": "cursor",
-    "lang": "zh-TW",
-    "prompt_version": "sys-v1",
-    "chunk_budget": 2048,
-    "calls": 4,
-    "prefill_tokens": 9053,
-    "decode_tokens": 126,
-    "valid_op_rate": 1.0,
-    "anchor_rate_raw": 1.0,
-    "coverage_gaps": 0
   },
   {
     "meeting_id": "synth-zh-withdraw-1",
@@ -202,23 +98,10 @@
     "chunk_budget": 2048,
     "calls": 4,
     "prefill_tokens": 7415,
-    "decode_tokens": 8,
+    "decode_tokens": 435,
     "windows": 4,
     "reduce_calls": 0,
     "valid_bullet_rate": null
-  },
-  {
-    "meeting_id": "synth-zh-reversal-4",
-    "arm": "cursor",
-    "lang": "zh-TW",
-    "prompt_version": "sys-v1",
-    "chunk_budget": 2048,
-    "calls": 4,
-    "prefill_tokens": 8993,
-    "decode_tokens": 81,
-    "valid_op_rate": 1.0,
-    "anchor_rate_raw": 1.0,
-    "coverage_gaps": 0
   },
   {
     "meeting_id": "synth-zh-reversal-4",
@@ -228,23 +111,10 @@
     "chunk_budget": 2048,
     "calls": 4,
     "prefill_tokens": 7400,
-    "decode_tokens": 8,
+    "decode_tokens": 92,
     "windows": 4,
     "reduce_calls": 0,
     "valid_bullet_rate": null
-  },
-  {
-    "meeting_id": "synth-zh-reversal-5",
-    "arm": "cursor",
-    "lang": "zh-TW",
-    "prompt_version": "sys-v1",
-    "chunk_budget": 2048,
-    "calls": 4,
-    "prefill_tokens": 9016,
-    "decode_tokens": 113,
-    "valid_op_rate": 1.0,
-    "anchor_rate_raw": 1.0,
-    "coverage_gaps": 0
   },
   {
     "meeting_id": "synth-zh-reversal-5",
@@ -254,7 +124,7 @@
     "chunk_budget": 2048,
     "calls": 4,
     "prefill_tokens": 7402,
-    "decode_tokens": 8,
+    "decode_tokens": 65,
     "windows": 4,
     "reduce_calls": 0,
     "valid_bullet_rate": null

@@ -1,11 +1,18 @@
-TITLE:
+TITLE: The team discusses left-handed usability and decides to
 SUMMARY:
 -
 DECISIONS:
--
+- The Industrial Designer confirmed the surface is flat rubber rather than curved. [27:14]
+- The team decided to replace the scroll wheel with two pushbuttons for volume control. [29:44]
+- The expensive sample speaker will be replaced by a simple beeping device. [31:21]
 ACTIONS:
 -
 OPEN:
 -
 TOPICS:
--
+- The team discusses left-handed usability and decides to rate the issue a six. [13:09]
+- They debate the device opening mechanism, weighing side-flip against top-flip. [14:05]
+- The group confirms the device has a locator and requires a speaker or buzzer. [15:17]
+- They evaluate the number layout as non-standard but intuitive enough for a five. [16:04]
+- The team notes the new scroll technology might need time for users to adapt. [16:31]
+- The team discussed removing the scroll wheel to stay within budget. [29:21]

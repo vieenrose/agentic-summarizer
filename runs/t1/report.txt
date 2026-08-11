@@ -1,0 +1,14 @@
+cursor vs baseline  (paired on 20 meetings)
+tie threshold Δ < 0.5
+  faith_claim   Δ n/a  W/L/T 0/0/0  p=1.000  DIRECTIONAL ONLY (n=0 < 20)
+  faith_anchor  Δ n/a  W/L/T 0/0/0  p=1.000  DIRECTIONAL ONLY (n=0 < 20)
+  cover         Δ +2.00 ±0.39  W/L/T 15/0/5  p=0.000
+  synth         Δ +1.65 ±0.44  W/L/T 9/0/11  p=0.004
+
+  INVERT cursor    : qmsum-3f8b473ddd36, qmsum-6825a6ef4300, qmsum-76d19929893a, qmsum-8ac3acb7fe5e, qmsum-a001c3a20024, qmsum-e75802cbf8d3, synth-zh-reversal-1, synth-zh-reversal-4, synth-zh-reversal-5, synth-zh-withdraw-0
+  INVERT baseline  : none
+
+GT2 faith        : WITHHELD (n=0 < 20)
+GT3 synthesis    : PASS (Δ +1.65 vs +0.5) (lower 1-SE bound +1.21)
+GT4 efficiency   : PASS (prefill 1.22x vs 1.25x)
+SHIP DECISION    : WITHHELD — gates not yet evaluable

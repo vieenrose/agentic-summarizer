@@ -1,4 +1,4 @@
-TITLE:
+TITLE: The team will shift focus from applied projects
 SUMMARY:
 -
 DECISIONS:
@@ -8,4 +8,9 @@ ACTIONS:
 OPEN:
 -
 TOPICS:
--
+- The team will shift focus from applied projects to basic scientific issues this summer. [10:50]
+- Grad B will work on English and German constructions without parsing or system constraints. [11:24]
+- Grad E proposes creating an internal demo to explain SmartKom to visitors. [13:03]
+- Professor C suggests setting up an institute-wide talk once the demo is polished. [13:30]
+- Robert will select a specific space piece for his absentee thesis submission. [51:12]
+- Grad G confirms they will finish everything by the end of this week. [58:33]

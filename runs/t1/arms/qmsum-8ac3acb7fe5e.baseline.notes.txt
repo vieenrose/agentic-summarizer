@@ -1,11 +1,20 @@
-TITLE:
+TITLE: Industrial Designer discusses material options like titanium and
 SUMMARY:
 -
 DECISIONS:
--
+- The team agrees LCDs are the way to go for style [22:15]
+- Rubber material selected for the case and buttons due to constraints. [38:26]
+- Simple battery chosen over kinetic energy as a safer option. [38:43]
+- Advanced integrated circuits and voice recognition features included. [40:25]
+- Final concept features a curved, folded rubber case with internal LCD and wheel. [40:41]
 ACTIONS:
 -
 OPEN:
 -
 TOPICS:
--
+- Industrial Designer discusses material options like titanium and interface choices such as push-buttons and scroll wheels. [6:21]
+- User Interface defines user interface as visible aspects and mechanisms users use to control a system. [10:49]
+- Project Manager confirms requirement for LCD display with spinning wheel. [27:05]
+- Team agrees to use buttons for frequent tasks and LCD for menus. [31:21]
+- Industrial Designer to work on look and feel design. [42:06]
+- Designers to collaborate on a clay prototype based on new instructions. [42:06]

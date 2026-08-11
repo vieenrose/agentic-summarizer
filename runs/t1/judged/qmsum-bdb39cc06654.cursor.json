@@ -1,11 +1,11 @@
 {
-  "meeting_id": "qmsum-3f8b473ddd36",
+  "meeting_id": "qmsum-bdb39cc06654",
   "system": "cursor",
-  "faith_claim": 2.5238095238095237,
-  "faith_anchor": 2.333333333333333,
+  "faith_claim": 2.894736842105263,
+  "faith_anchor": 1.631578947368421,
   "cover": 2,
   "synth": 1,
-  "inverted": true,
+  "inverted": false,
   "unsupported": 10,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
@@ -16,208 +16,8 @@
   "bullets": [
     {
       "section": "SUMMARY",
-      "bullet": "Discussion on component design and EV compatibility",
-      "anchor": 125,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Focus on remote control's ability to function with solar batteries",
-      "anchor": 368,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Stick with current interface concept",
-      "anchor": 632,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Include touchscreen as the main selling point",
-      "anchor": 1231,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
-      },
-      "majority": "CONTRADICTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Use three or four buttons with a menu button and side up/down type",
-      "anchor": 2087,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Use similar non-remote remote design to the iPod Mac Apple's color scheme",
-      "anchor": 2293,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Research team to set up voice recognition system",
-      "anchor": 790,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
-      },
-      "majority": "CONTRADICTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Develop a customizable face plate for the remote control",
-      "anchor": 859,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
-      },
-      "majority": "CONTRADICTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Marketing to coordinate with the design team to reduce costs",
-      "anchor": 1142,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Research market research on voice recognition",
-      "anchor": 1315,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Identify which features are most likely to sell",
-      "anchor": 1340,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Assign tasks to team members in the next meeting",
-      "anchor": 2223,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Efficient channel navigation with a hard cla c casing",
-      "anchor": 876,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Define what kind of buttons are needed for the menu",
-      "anchor": 2087,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Decide between touchscreen or manual functions",
-      "anchor": 1911,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Component design",
-      "anchor": 125,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "EV compatibility",
-      "anchor": 125,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Interchangeable casings",
-      "anchor": 859,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Remote control design",
-      "anchor": 1554,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Cost analysis",
-      "anchor": 1457,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Basic look and feel",
-      "anchor": 2337,
+      "bullet": "Orientation for the SmartKom system's goal of greeting users.",
+      "anchor": 468,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -226,9 +26,39 @@
     },
     {
       "section": "SUMMARY",
-      "bullet": "Discussion on component design and EV compatibility",
-      "anchor": 125,
-      "mode": "anchor",
+      "bullet": "Discussion on formalizing notations and requirements for the demo system.",
+      "anchor": 650,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on English and Japanese word orders in the system.",
+      "anchor": 1729,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on spatial descriptions and reference frames in German and English.",
+      "anchor": 1945,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "No commitment to formalize notations for the demo system.",
+      "anchor": 535,
+      "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
@@ -236,49 +66,19 @@
     },
     {
       "section": "DECISIONS",
-      "bullet": "Focus on remote control's ability to function with solar batteries",
-      "anchor": 368,
-      "mode": "anchor",
+      "bullet": "No formalized network structure; decisions will be based on internal hierarchies and data.",
+      "anchor": 1731,
+      "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
-      "bullet": "Stick with current interface concept",
-      "anchor": 632,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Include touchscreen as the main selling point",
-      "anchor": 1231,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
-      },
-      "majority": "CONTRADICTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Use three or four buttons with a menu button and side up/down type",
-      "anchor": 2087,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Use similar non-remote remote design to the iPod Mac Apple's color scheme",
-      "anchor": 2293,
-      "mode": "anchor",
+      "bullet": "Include a link to the EDU website for further reading.",
+      "anchor": 2392,
+      "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
@@ -286,39 +86,9 @@
     },
     {
       "section": "ACTIONS",
-      "bullet": "Research team to set up voice recognition system",
-      "anchor": 790,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Develop a customizable face plate for the remote control",
-      "anchor": 859,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Marketing to coordinate with the design team to reduce costs",
-      "anchor": 1142,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Research market research on voice recognition",
-      "anchor": 1315,
-      "mode": "anchor",
+      "bullet": "Present system setup to the group.",
+      "anchor": 468,
+      "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
@@ -326,9 +96,9 @@
     },
     {
       "section": "ACTIONS",
-      "bullet": "Identify which features are most likely to sell",
-      "anchor": 1340,
-      "mode": "anchor",
+      "bullet": "Grad B to coordinate with other institutions to get the demo system up and running.",
+      "anchor": 783,
+      "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
@@ -336,9 +106,39 @@
     },
     {
       "section": "ACTIONS",
-      "bullet": "Assign tasks to team members in the next meeting",
-      "anchor": 2223,
-      "mode": "anchor",
+      "bullet": "Look for Hugin or similar tools to visualize the network.",
+      "anchor": 1370,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Perform a formalization task using the construction analyzer.",
+      "anchor": 2948,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Grad B to coordinate with DFKI and EPFL for the formalization of the structure.",
+      "anchor": 3436,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Grad B to shoot for finishing all the next Monday.",
+      "anchor": 3501,
+      "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
@@ -346,8 +146,188 @@
     },
     {
       "section": "OPEN",
-      "bullet": "Efficient channel navigation with a hard cla c casing",
-      "anchor": 876,
+      "bullet": "System's ability to handle non-English word orders.",
+      "anchor": 407,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Formalizing notations and requirements for the demo system.",
+      "anchor": 650,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "English and Japanese word orders.",
+      "anchor": 1729,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Spatial descriptions and reference frames.",
+      "anchor": 1966,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Reference, spatial reference, and linguistic differences.",
+      "anchor": 2702,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Graduate-level formalization.",
+      "anchor": 3522,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Orientation for the SmartKom system's goal of greeting users.",
+      "anchor": 468,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on formalizing notations and requirements for the demo system.",
+      "anchor": 650,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on English and Japanese word orders in the system.",
+      "anchor": 1729,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on spatial descriptions and reference frames in German and English.",
+      "anchor": 1945,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "No commitment to formalize notations for the demo system.",
+      "anchor": 535,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "No formalized network structure; decisions will be based on internal hierarchies and data.",
+      "anchor": 1731,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Include a link to the EDU website for further reading.",
+      "anchor": 2392,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Present system setup to the group.",
+      "anchor": 468,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Grad B to coordinate with other institutions to get the demo system up and running.",
+      "anchor": 783,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Look for Hugin or similar tools to visualize the network.",
+      "anchor": 1370,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Perform a formalization task using the construction analyzer.",
+      "anchor": 2948,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Grad B to coordinate with DFKI and EPFL for the formalization of the structure.",
+      "anchor": 3436,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Grad B to shoot for finishing all the next Monday.",
+      "anchor": 3501,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -356,18 +336,8 @@
     },
     {
       "section": "OPEN",
-      "bullet": "Define what kind of buttons are needed for the menu",
-      "anchor": 2087,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Decide between touchscreen or manual functions",
-      "anchor": 1911,
+      "bullet": "System's ability to handle non-English word orders.",
+      "anchor": 407,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -376,18 +346,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Component design",
-      "anchor": 125,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "EV compatibility",
-      "anchor": 125,
+      "bullet": "Formalizing notations and requirements for the demo system.",
+      "anchor": 650,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -396,8 +356,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Interchangeable casings",
-      "anchor": 859,
+      "bullet": "English and Japanese word orders.",
+      "anchor": 1729,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -406,18 +366,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Remote control design",
-      "anchor": 1554,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Cost analysis",
-      "anchor": 1457,
+      "bullet": "Spatial descriptions and reference frames.",
+      "anchor": 1966,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -426,13 +376,23 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Basic look and feel",
-      "anchor": 2337,
+      "bullet": "Reference, spatial reference, and linguistic differences.",
+      "anchor": 2702,
       "mode": "anchor",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
-      "majority": "SUPPORTED"
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Graduate-level formalization.",
+      "anchor": 3522,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     }
   ]
 }

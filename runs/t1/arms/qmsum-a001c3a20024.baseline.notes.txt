@@ -1,11 +1,21 @@
-TITLE:
+TITLE: Marketing presents survey data showing 75% of users
 SUMMARY:
 -
 DECISIONS:
--
+- Target demographic is fifteen to thirty-five year olds [38:36]
+- Remote control should have only key buttons and one menu button [39:06]
+- Voice recognition will be included as an optional feature [39:06]
 ACTIONS:
--
+- Team members must complete questionnaires and summaries by email [39:21]
+- Team members must send PowerPoint presentations to the Project Manager [39:21]
+- Team members will work individually for thirty minutes after lunch [39:41]
+- Project Manager will upload minutes to the project documents folder [39:48]
 OPEN:
 -
 TOPICS:
--
+- Marketing presents survey data showing 75% of users find current remotes ugly and 80% would pay more for a nice-looking remote control. [18:06]
+- Marketing explains that users only use 10% of buttons, making extra buttons unnecessary, with power, channel, and volume being essential. [18:46]
+- Industrial Designer agrees the design should be ergonomic to prevent wrist strain. [21:53]
+- Marketing suggests targeting the 15-35 age group due to higher disposable income and interest in voice recognition features. [28:17]
+- Project Manager states targeting 15-35 implies incorporating voice recognition features. [31:17]
+- Industrial Designer agrees voice recognition is feasible for a limited set of commands. [33:09]

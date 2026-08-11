@@ -1,4 +1,4 @@
-TITLE:
+TITLE: Voice recognition selected over touch screen due to
 SUMMARY:
 -
 DECISIONS:
@@ -8,4 +8,8 @@ ACTIONS:
 OPEN:
 -
 TOPICS:
--
+- Voice recognition selected over touch screen due to lower risk and cost. [25:09]
+- Team agrees to omit touch screen in favor of voice recognition. [25:10]
+- Next step is developing prototypes for the chosen voice recognition remote. [25:35]
+- Discussion on using solar power with a backup battery for the remote. [25:54]
+- Proposal to redesign remote as a stationary paperweight-style device. [27:16]

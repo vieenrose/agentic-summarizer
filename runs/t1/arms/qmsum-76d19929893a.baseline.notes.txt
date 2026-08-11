@@ -1,4 +1,4 @@
-TITLE:
+TITLE: Project Manager introduces the kick-off meeting agenda and
 SUMMARY:
 -
 DECISIONS:
@@ -8,4 +8,8 @@ ACTIONS:
 OPEN:
 -
 TOPICS:
--
+- Project Manager introduces the kick-off meeting agenda and project goals. [0:27]
+- Project Manager explains the three-stage project design process. [1:54]
+- Project Manager demonstrates Smartboard tools for drawing and saving files. [3:22]
+- Team members discuss and guess the animal being drawn on the Smartboard. [5:36]
+- Industrial Designer confirms their role and comments on the drawing quality. [6:28]

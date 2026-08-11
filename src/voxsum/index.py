@@ -46,6 +46,19 @@ def _overlap(a: set[str], b: set[str]) -> float:
     return len(a & b) / len(a | b) if a and b else 0.0
 
 
+def _query_coverage(query: set[str], line: set[str]) -> float:
+    """Query-side coverage: |q ∩ line| / |q|.
+
+    Jaccard is length-biased: a 98-token monologue holding the decision scores below a
+    5-token junk line ([Inaudible.]) that shares two function words — measured: the
+    supporting line for "discretion for local authorities" scored 0.100 against 0.143
+    for "[Inaudible.]", so the judge never saw the evidence and flagged an inversion
+    the transcript actually supports. Long lines must not be diluted by their own
+    length; the snippet extractor windows inside them anyway.
+    """
+    return len(query & line) / len(query) if query else 0.0
+
+
 @dataclass(frozen=True, slots=True)
 class Evidence:
     """One snippet handed to the judge."""
@@ -122,7 +135,7 @@ class TranscriptIndex:
             return []
         skip = exclude or set()
         scored = [
-            (_overlap(q, self._tokens[i]), i)
+            (_query_coverage(q, self._tokens[i]), i)
             for i in range(len(self.utterances))
             if self.utterances[i].start not in skip
         ]

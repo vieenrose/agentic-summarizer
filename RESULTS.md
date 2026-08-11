@@ -545,3 +545,47 @@ wall; a data-distribution generalization error. (GPU vs CPU runs differ slightly
 with NO prior bullet ⇒ ADD, breaking the content⇒UPD overgeneralisation) and `twotopic`
 (two parallel threads ⇒ 2-bullet states at revision time, exercising larger-state
 grounding). 48 meetings traced at budget 128.
+
+---
+
+## 270M intervention v6 (counterfactual twins): the state-gating failure is measured, not assumed (2026-08-11)
+
+The final, sharpest intervention: **counterfactual twin samples** (208: same revision chunk,
+state minus the target bullet, target = ADD instead of UPD) to break the confound that let
+the model shortcut on chunk surface. Training: 1040 samples, eval loss **0.087 (best ever)**.
+
+| probe | v4 | v5 | **v6 (twins)** |
+|---|---|---|---|
+| P1 (seeded state, revision chunk) | UPD, prefix MATCHES | UPD, matches | **ADD (wrong op)** |
+| P2 state-size sweep | 5/6 | 5/6 | **0/6 — no UPD at all** |
+| P4 screen replay | 0/3 (UPD everything) | 0/3 | **0/0 (ADD everything, duplicate reject)** |
+| G1 screen | FAIL | FAIL | **FAIL (en: chain/deadlines; zh: chain/trap)** |
+
+**The twins shifted the shortcut instead of teaching the conditional.** v1–v5 over-emitted
+UPD ("decision content ⇒ UPD"); v6 over-emits ADD. In every configuration the op choice
+tracks the data's marginal, never the state's presence/absence. The minimal probe (1-bullet
+state, revision chunk) fails both ways: v4/v5 chose the right op but the wrong state check;
+v6 ignores the state entirely.
+
+## Measured negative result — FunctionGemma-270M
+
+The failure is invariant across every controllable dimension:
+
+1. **Data composition** (6 configurations, 215 → 1040 samples): 2048-only, b128 long-meeting,
+   screen-structured, ADD-only, large-state, and unconfounded counterfactuals — same failure.
+2. **Training method**: full FT, 3–6 epochs; eval loss falls monotonically (0.398 → 0.087)
+   while G1 never passes — the model fits the target distribution without learning the
+   state-gated conditional (PLAN §3's predicted loss/behavior decoupling, observed directly).
+3. **The computation fails minimally**: op selection flips on a filler line's presence
+   (surface noise); layout adjacency (STATE next to output) does not help; the model does
+   not consult STATE for op selection even when it is directly adjacent.
+4. **Control**: Qwen3.5-0.8B, same traces, same method, passes en G1 on the first run —
+   the task is learnable; the wall is at 270M.
+
+Caveats (honest limits of "impossible"): LoRA and >10k-sample training are untested; the
+counterfactual experiment shows the conditional does not take hold even unconfounded, so
+neither is expected to change the outcome, but they are the residual unknowns.
+
+**Also fixed this round**: eval-tier contamination — build_sft_v3/build_sft_qwen were
+including t1/micro meeting traces (traces predate the carve); all builders now filter by
+manifest split (129 steps excluded from v6).

@@ -58,13 +58,28 @@ def main(argv: list[str] | None = None) -> int:
     args = p.parse_args(argv)
 
     rng = random.Random(args.seed)
-    standard: list[dict] = []
-    b128: list[dict] = []
+    import json as _json
+
+    manifest = _json.loads(
+        (Path(__file__).resolve().parent.parent / "data/transcripts/manifest.json").read_text()
+    )
+    split_of = {row["meeting_id"]: row["split"] for row in manifest}
+
+    def _is_train(r: dict) -> bool:
+        return split_of.get(r.get("meeting"), "train") == "train"
+
+    standard_all: list[dict] = []
+    b128_all: list[dict] = []
     for path in sorted(args.tracedir.glob("*.jsonl")):
         if "b128" in path.name:
-            b128.extend(load(path))
+            b128_all.extend(load(path))
         else:
-            standard.extend(load(path))
+            standard_all.extend(load(path))
+    dropped = sum(1 for r in standard_all + b128_all if not _is_train(r))
+    standard = [r for r in standard_all if _is_train(r)]
+    b128 = [r for r in b128_all if _is_train(r)]
+    print(f"[qwen] dropped {dropped} eval-meeting steps; kept "
+          f"{len(standard)} standard + {len(b128)} b128")
 
     versions = {r.get("prompt_version") for r in standard + b128}
     if len(versions) != 1:

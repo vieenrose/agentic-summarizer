@@ -68,7 +68,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 from typing import Any, List, Optional, Tuple, Union, Dict, Set, Callable
-from transformers.models.qwen3_5.modeling_qwen3_5 import (F, torch)
+from transformers.models.gemma3.modeling_gemma3 import (torch)
 
 def forward(self, x: torch.Tensor) -> torch.Tensor:
     """

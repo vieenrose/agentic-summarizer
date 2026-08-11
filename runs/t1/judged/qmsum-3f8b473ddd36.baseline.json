@@ -1,17 +1,118 @@
 {
   "meeting_id": "qmsum-3f8b473ddd36",
   "system": "baseline",
-  "faith_claim": null,
-  "faith_anchor": null,
-  "cover": 1,
-  "synth": 1,
+  "faith_claim": 3.4,
+  "faith_anchor": 4.2,
+  "cover": 3,
+  "synth": 2,
   "inverted": false,
-  "unsupported": 0,
+  "unsupported": 2,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
     "second": "Prism-ML/Ternary-Bonsai-27B"
   },
   "spend_usd": 0.0,
-  "bullets": []
+  "bullets": [
+    {
+      "section": "TOPICS",
+      "bullet": "Voice recognition selected over touch screen due to lower risk and cost.",
+      "anchor": 1509,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Team agrees to omit touch screen in favor of voice recognition.",
+      "anchor": 1510,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Next step is developing prototypes for the chosen voice recognition remote.",
+      "anchor": 1535,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Discussion on using solar power with a backup battery for the remote.",
+      "anchor": 1554,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Proposal to redesign remote as a stationary paperweight-style device.",
+      "anchor": 1636,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Voice recognition selected over touch screen due to lower risk and cost.",
+      "anchor": 1509,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Team agrees to omit touch screen in favor of voice recognition.",
+      "anchor": 1510,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Next step is developing prototypes for the chosen voice recognition remote.",
+      "anchor": 1535,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Discussion on using solar power with a backup battery for the remote.",
+      "anchor": 1554,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Proposal to redesign remote as a stationary paperweight-style device.",
+      "anchor": 1636,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
 }

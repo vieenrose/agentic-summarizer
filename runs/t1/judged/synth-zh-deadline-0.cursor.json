@@ -2,7 +2,7 @@
   "meeting_id": "synth-zh-deadline-0",
   "system": "cursor",
   "faith_claim": 5.0,
-  "faith_anchor": 3.6666666666666665,
+  "faith_anchor": 5.0,
   "cover": 5,
   "synth": 5,
   "inverted": false,
@@ -60,9 +60,9 @@
       "anchor": 120,
       "mode": "anchor",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "TOPICS",

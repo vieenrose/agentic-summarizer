@@ -1,17 +1,238 @@
 {
   "meeting_id": "qmsum-8ac3acb7fe5e",
   "system": "baseline",
-  "faith_claim": null,
-  "faith_anchor": null,
-  "cover": 1,
-  "synth": 1,
+  "faith_claim": 4.272727272727273,
+  "faith_anchor": 4.272727272727273,
+  "cover": 4,
+  "synth": 3,
   "inverted": false,
-  "unsupported": 0,
+  "unsupported": 2,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
     "second": "Prism-ML/Ternary-Bonsai-27B"
   },
   "spend_usd": 0.0,
-  "bullets": []
+  "bullets": [
+    {
+      "section": "DECISIONS",
+      "bullet": "The team agrees LCDs are the way to go for style",
+      "anchor": 1335,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Rubber material selected for the case and buttons due to constraints.",
+      "anchor": 2306,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Simple battery chosen over kinetic energy as a safer option.",
+      "anchor": 2323,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Advanced integrated circuits and voice recognition features included.",
+      "anchor": 2425,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Final concept features a curved, folded rubber case with internal LCD and wheel.",
+      "anchor": 2441,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Industrial Designer discusses material options like titanium and interface choices such as push-buttons and scroll wheels.",
+      "anchor": 381,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "User Interface defines user interface as visible aspects and mechanisms users use to control a system.",
+      "anchor": 649,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project Manager confirms requirement for LCD display with spinning wheel.",
+      "anchor": 1625,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Team agrees to use buttons for frequent tasks and LCD for menus.",
+      "anchor": 1881,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Industrial Designer to work on look and feel design.",
+      "anchor": 2526,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Designers to collaborate on a clay prototype based on new instructions.",
+      "anchor": 2526,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "The team agrees LCDs are the way to go for style",
+      "anchor": 1335,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Rubber material selected for the case and buttons due to constraints.",
+      "anchor": 2306,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Simple battery chosen over kinetic energy as a safer option.",
+      "anchor": 2323,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Advanced integrated circuits and voice recognition features included.",
+      "anchor": 2425,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Final concept features a curved, folded rubber case with internal LCD and wheel.",
+      "anchor": 2441,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Industrial Designer discusses material options like titanium and interface choices such as push-buttons and scroll wheels.",
+      "anchor": 381,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "User Interface defines user interface as visible aspects and mechanisms users use to control a system.",
+      "anchor": 649,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project Manager confirms requirement for LCD display with spinning wheel.",
+      "anchor": 1625,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Team agrees to use buttons for frequent tasks and LCD for menus.",
+      "anchor": 1881,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Industrial Designer to work on look and feel design.",
+      "anchor": 2526,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Designers to collaborate on a clay prototype based on new instructions.",
+      "anchor": 2526,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
 }

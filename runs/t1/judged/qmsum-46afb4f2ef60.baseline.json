@@ -1,17 +1,178 @@
 {
   "meeting_id": "qmsum-46afb4f2ef60",
   "system": "baseline",
-  "faith_claim": null,
-  "faith_anchor": null,
-  "cover": 1,
-  "synth": 1,
+  "faith_claim": 3.5,
+  "faith_anchor": 3.5,
+  "cover": 3,
+  "synth": 2,
   "inverted": false,
-  "unsupported": 0,
+  "unsupported": 3,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
     "second": "Prism-ML/Ternary-Bonsai-27B"
   },
   "spend_usd": 0.0,
-  "bullets": []
+  "bullets": [
+    {
+      "section": "DECISIONS",
+      "bullet": "The team decides to keep the backup battery despite the minor failure risk.",
+      "anchor": 877,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "The team agrees to remove the solar cell to meet the budget goal of twelve fifty.",
+      "anchor": 1015,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Marketing evaluates the product against original criteria and finds it generally successful.",
+      "anchor": 1088,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "The team acknowledges losing the solar panel is a setback but necessary for the budget.",
+      "anchor": 1215,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project Manager suggests renaming the concepts phase to proposed ideas and prototypes.",
+      "anchor": 2322,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Marketing notes that the evaluation focused on the product rather than the project.",
+      "anchor": 2370,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project Manager plans to include project evaluation details in the final report.",
+      "anchor": 2401,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project Manager decides to save the meeting transcript into project documents.",
+      "anchor": 2467,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "The team decides to keep the backup battery despite the minor failure risk.",
+      "anchor": 877,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "The team agrees to remove the solar cell to meet the budget goal of twelve fifty.",
+      "anchor": 1015,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Marketing evaluates the product against original criteria and finds it generally successful.",
+      "anchor": 1088,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "The team acknowledges losing the solar panel is a setback but necessary for the budget.",
+      "anchor": 1215,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project Manager suggests renaming the concepts phase to proposed ideas and prototypes.",
+      "anchor": 2322,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Marketing notes that the evaluation focused on the product rather than the project.",
+      "anchor": 2370,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project Manager plans to include project evaluation details in the final report.",
+      "anchor": 2401,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project Manager decides to save the meeting transcript into project documents.",
+      "anchor": 2467,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
 }

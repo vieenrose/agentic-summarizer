@@ -1,11 +1,11 @@
 {
   "meeting_id": "synth-zh-reversal-0",
   "system": "cursor",
-  "faith_claim": 5.0,
+  "faith_claim": 3.6666666666666665,
   "faith_anchor": 5.0,
   "cover": 5,
   "synth": 5,
-  "inverted": false,
+  "inverted": true,
   "unsupported": 0,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
@@ -30,9 +30,9 @@
       "anchor": 90,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
       },
-      "majority": "SUPPORTED"
+      "majority": "CONTRADICTED"
     },
     {
       "section": "DECISIONS",

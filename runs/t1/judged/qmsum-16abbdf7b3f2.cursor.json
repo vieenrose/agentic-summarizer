@@ -6,7 +6,7 @@
   "cover": 3,
   "synth": 2,
   "inverted": false,
-  "unsupported": 6,
+  "unsupported": 7,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -90,9 +90,9 @@
       "anchor": 3874,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "TOPICS",
@@ -100,9 +100,9 @@
       "anchor": 158,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
-      "majority": "SUPPORTED"
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",
@@ -140,9 +140,9 @@
       "anchor": 3093,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
-      "majority": "CONTRADICTED"
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",

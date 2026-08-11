@@ -2,11 +2,11 @@
   "meeting_id": "qmsum-a001c3a20024",
   "system": "cursor",
   "faith_claim": 1.6,
-  "faith_anchor": 1.4,
+  "faith_anchor": 1.6,
   "cover": 2,
   "synth": 1,
   "inverted": true,
-  "unsupported": 17,
+  "unsupported": 14,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -40,9 +40,9 @@
       "anchor": 887,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "CONTRADICTED"
     },
     {
       "section": "SUMMARY",
@@ -130,9 +130,9 @@
       "anchor": 2428,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "CONTRADICTED"
     },
     {
       "section": "ACTIONS",
@@ -150,9 +150,9 @@
       "anchor": 2528,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "CONTRADICTED"
     },
     {
       "section": "OPEN",
@@ -330,9 +330,9 @@
       "anchor": 2428,
       "mode": "anchor",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
-      "majority": "CONTRADICTED"
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "ACTIONS",
@@ -350,9 +350,9 @@
       "anchor": 2528,
       "mode": "anchor",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
-      "majority": "CONTRADICTED"
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "OPEN",
@@ -400,9 +400,9 @@
       "anchor": 1863,
       "mode": "anchor",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "TOPICS",

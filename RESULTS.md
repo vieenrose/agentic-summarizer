@@ -669,3 +669,36 @@ setting fixes one G1 detail and breaks another (v4: chain ✓ deadlines ✗; en5
 chain ✗; en6: chain ✓ deadlines ✗). **v3 remains the only all-four-PASS en model** and is
 locked as the en student (with v2 as the zh student). The real-transcript inversion risk is
 deferred to the T1 measurement, which is the instrument for it.
+
+---
+
+## T1 paired eval (n=20) — the ship decision (2026-08-11)
+
+Composite student: LFM2.5-350M per-language (en v3 + zh v2, both G1 PASS). Baseline engine:
+**Qwen3.5-9B** map-reduce (the fine-tuned student cannot do window digests — it was trained
+for the CURSOR prompt only and produces empty baseline notes, measured; the original n=2
+baseline also used a strong general model). Retrieval scoring fixed before re-judging
+(query-coverage instead of Jaccard — Jaccard ranked `[Inaudible.]` above the true supporting
+line; measured 0.143 vs 0.100). Greedy, paired, local judges (gpt-oss FAITH, qwen3.6-35B
+COVER/SYNTH).
+
+| gate | result |
+|---|---|
+| GT1 learnability | G1 PASS both languages (screen); valid-op 100% on screen runs |
+| GT2 faith | **FAIL as measured**: FAITH-claim Δ **−1.28** (0/8/2, p=0.008), FAITH-anchor Δ −1.78 (0/10/0); **INVERT cursor 12/20, baseline 0** |
+| GT3 synthesis | PASS point-wise (Δ +1.10, 1-SE bound +0.52) — **NOT at equal inversions** |
+| GT4 efficiency | **PASS (1.18x)** |
+
+**Inversion anatomy (12/20)**: zh final-state inversions (synth-zh-reversal/reassign/withdraw:
+the zh student does not revise on T1-style meetings, final notes assert the overturned
+state — the G1-zh weakness generalised); en claim-precision failures (a question asserted as
+a decision; "THE main selling point" when the meeting decided "one of two"; a fabricated
+"Certified Regional Coastal Program" transition). All verified against the transcripts —
+the judge was right.
+
+**Spec §7.7 ship rule applied**: CURSOR ships only if GT2 or GT3 clears *at equal
+inversions*. GT2 fails; GT3's +1.10 does not clear at 12-vs-0 inversions. **Decision: ship
+the map-reduce baseline; agency-at-350M recorded as a measured negative result on
+faithfulness.** The positive findings stand: a 350M linear-attention student beats a 9B
+map-reduce baseline on synthesis (+1.10) and coverage (+1.30) at 1.18x prefill — the agency
+bet is real; the faithfulness requirement is not met at this scale.

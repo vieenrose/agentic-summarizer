@@ -10,5 +10,5 @@ tie threshold Δ < 0.5
 
 GT2 faith        : WITHHELD (n=10 < 20)
 GT3 synthesis    : PASS (Δ +1.10 vs +0.5) (lower 1-SE bound +0.52)
-GT4 efficiency   : WITHHELD (no usage.json)
+GT4 efficiency   : PASS (prefill 1.18x vs 1.25x)
 SHIP DECISION    : WITHHELD — gates not yet evaluable

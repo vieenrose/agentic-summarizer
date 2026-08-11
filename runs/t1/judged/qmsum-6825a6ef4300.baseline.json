@@ -1,17 +1,138 @@
 {
   "meeting_id": "qmsum-6825a6ef4300",
   "system": "baseline",
-  "faith_claim": null,
-  "faith_anchor": null,
+  "faith_claim": 2.333333333333333,
+  "faith_anchor": 3.0,
   "cover": 2,
   "synth": 1,
   "inverted": false,
-  "unsupported": 0,
+  "unsupported": 4,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
     "second": "Prism-ML/Ternary-Bonsai-27B"
   },
   "spend_usd": 0.0,
-  "bullets": []
+  "bullets": [
+    {
+      "section": "TOPICS",
+      "bullet": "Professor B discusses the TORRENT chip schedule delays.",
+      "anchor": 8,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Grad F plans to finish a proposal draft by Monday.",
+      "anchor": 99,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Grad E plans to train on the Macrophone dataset to improve robustness against re-synthesized audio artifacts",
+      "anchor": 369,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "PhD C reports the new Aurora system achieves a 2.7% error rate on meeting digits.",
+      "anchor": 1133,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "MFCC features are identified as the key difference improving the SRI system performance.",
+      "anchor": 1738,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "PhD C plans to smooth spectral subtraction results to reduce musical noise",
+      "anchor": 2545,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Professor B discusses the TORRENT chip schedule delays.",
+      "anchor": 8,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Grad F plans to finish a proposal draft by Monday.",
+      "anchor": 99,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Grad E plans to train on the Macrophone dataset to improve robustness against re-synthesized audio artifacts",
+      "anchor": 369,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "PhD C reports the new Aurora system achieves a 2.7% error rate on meeting digits.",
+      "anchor": 1133,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "MFCC features are identified as the key difference improving the SRI system performance.",
+      "anchor": 1738,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "PhD C plans to smooth spectral subtraction results to reduce musical noise",
+      "anchor": 2545,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
 }

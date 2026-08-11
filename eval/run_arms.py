@@ -158,9 +158,16 @@ def main(argv: list[str] | None = None) -> int:
                 flush=True,
             )
 
-    (args.out / "usage.json").write_text(
-        json.dumps(usage, ensure_ascii=False, indent=2), encoding="utf-8"
-    )
+    # Merge, don't overwrite: tiers run en and zh as separate invocations and GT4 needs
+    # both arms' accounting from the same run.
+    usage_path = args.out / "usage.json"
+    merged = usage
+    if usage_path.exists():
+        try:
+            merged = json.loads(usage_path.read_text(encoding="utf-8")) + usage
+        except Exception:
+            pass
+    usage_path.write_text(json.dumps(merged, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # GT4 straight from this run, so the efficiency claim and the quality claim share data.
     for lang in {u["lang"] for u in usage}:

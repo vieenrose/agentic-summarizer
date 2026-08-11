@@ -24,7 +24,7 @@
     "synth-zh-withdraw-1"
   ],
   "tie_threshold": 0.5,
-  "prefill_ratio": null,
+  "prefill_ratio": 1.180750068387797,
   "metrics": {
     "faith_claim": {
       "mean_delta": -1.2835468401567476,

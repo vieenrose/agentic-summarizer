@@ -2,11 +2,11 @@
   "meeting_id": "qmsum-3f8b473ddd36",
   "system": "cursor",
   "faith_claim": 2.5238095238095237,
-  "faith_anchor": 2.333333333333333,
+  "faith_anchor": 2.142857142857143,
   "cover": 2,
   "synth": 1,
   "inverted": true,
-  "unsupported": 10,
+  "unsupported": 11,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -80,9 +80,9 @@
       "anchor": 790,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "CONTRADICTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "ACTIONS",
@@ -110,9 +110,9 @@
       "anchor": 1315,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
-      "majority": "SUPPORTED"
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "ACTIONS",
@@ -410,9 +410,9 @@
       "anchor": 1554,
       "mode": "anchor",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
-      "majority": "SUPPORTED"
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",

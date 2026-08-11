@@ -1,17 +1,138 @@
 {
   "meeting_id": "qmsum-e75802cbf8d3",
   "system": "baseline",
-  "faith_claim": null,
-  "faith_anchor": null,
-  "cover": 1,
+  "faith_claim": 4.333333333333334,
+  "faith_anchor": 4.333333333333334,
+  "cover": 2,
   "synth": 1,
   "inverted": false,
-  "unsupported": 0,
+  "unsupported": 1,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
     "second": "Prism-ML/Ternary-Bonsai-27B"
   },
   "spend_usd": 0.0,
-  "bullets": []
+  "bullets": [
+    {
+      "section": "TOPICS",
+      "bullet": "Project Manager proposes increasing price for more colours on L_C_D_",
+      "anchor": 741,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Marketing suggests remote controls should be upgradable or signature items",
+      "anchor": 812,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Marketing argues young people want unique items like pink remotes",
+      "anchor": 881,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "User Interface suggests integrating lights for use in darkness",
+      "anchor": 956,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Marketing suggests speech recognition as a feature for smart remotes",
+      "anchor": 1008,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Team decides to explore two options for the remote control design",
+      "anchor": 1748,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project Manager proposes increasing price for more colours on L_C_D_",
+      "anchor": 741,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Marketing suggests remote controls should be upgradable or signature items",
+      "anchor": 812,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Marketing argues young people want unique items like pink remotes",
+      "anchor": 881,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "User Interface suggests integrating lights for use in darkness",
+      "anchor": 956,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Marketing suggests speech recognition as a feature for smart remotes",
+      "anchor": 1008,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Team decides to explore two options for the remote control design",
+      "anchor": 1748,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
 }

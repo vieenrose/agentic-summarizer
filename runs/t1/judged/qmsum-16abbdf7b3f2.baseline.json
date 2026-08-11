@@ -1,17 +1,158 @@
 {
   "meeting_id": "qmsum-16abbdf7b3f2",
   "system": "baseline",
-  "faith_claim": null,
-  "faith_anchor": null,
-  "cover": 1,
-  "synth": 1,
+  "faith_claim": 3.857142857142857,
+  "faith_anchor": 4.428571428571429,
+  "cover": 2,
+  "synth": 2,
   "inverted": false,
-  "unsupported": 0,
+  "unsupported": 2,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
     "second": "Prism-ML/Ternary-Bonsai-27B"
   },
   "spend_usd": 0.0,
-  "bullets": []
+  "bullets": [
+    {
+      "section": "DECISIONS",
+      "bullet": "Public excluded to protect health per Standing Order 34.19",
+      "anchor": 0,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of coronavirus on children and young people in Wales",
+      "anchor": 140,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Surge capacity in paediatric care during pandemic",
+      "anchor": 337,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Risk of disease outbreaks like measles if vaccination programmes are neglected",
+      "anchor": 508,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Mental health impact on children and young people during the crisis",
+      "anchor": 731,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Welsh Government worked with AFA Cymru to develop guidance strongly welcomed by the fostering sector.",
+      "anchor": 2732,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Julie Morgan agreed a bespoke scheme is vital for surviving childcare providers",
+      "anchor": 3615,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Public excluded to protect health per Standing Order 34.19",
+      "anchor": 0,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of coronavirus on children and young people in Wales",
+      "anchor": 140,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Surge capacity in paediatric care during pandemic",
+      "anchor": 337,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Risk of disease outbreaks like measles if vaccination programmes are neglected",
+      "anchor": 508,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Mental health impact on children and young people during the crisis",
+      "anchor": 731,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Welsh Government worked with AFA Cymru to develop guidance strongly welcomed by the fostering sector.",
+      "anchor": 2732,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Julie Morgan agreed a bespoke scheme is vital for surviving childcare providers",
+      "anchor": 3615,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
 }

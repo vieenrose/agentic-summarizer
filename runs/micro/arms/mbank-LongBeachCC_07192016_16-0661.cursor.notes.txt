@@ -1,6 +1,6 @@
-TITLE:
+TITLE: Item 20: SB 1374
 SUMMARY:
--
+- Discussion on SB 1374 and its impact on Long Beach [0:34]
 DECISIONS:
 -
 ACTIONS:
@@ -8,4 +8,4 @@ ACTIONS:
 OPEN:
 -
 TOPICS:
--
+- SB 1374 [0:54]

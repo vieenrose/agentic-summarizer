@@ -1,12 +1,11 @@
-TITLE:
+TITLE: C Set Process
 SUMMARY:
--
+- C set process to transition from Certified Local Coastal Program to Certified Regional Coastal Program [0:05]
 DECISIONS:
-- Council to certify amendment to C-15H for 23/24 elections [1:20]
-- Council to schedule California Coastal Commission to certify amendment to C-15H [1:51]
+- Direct City Staff to submit a request to the California Coastal Commission for an amendment to the Certified Local Coastal Program [0:12]
 ACTIONS:
--
+- City staff to provide copies of required annual reports by the fifth year to the Planning Commission, Council offices, and the Lo Cerritos Wetlands Authority [0:43]
 OPEN:
 -
 TOPICS:
-- Council to certify amendment to C-15H for 23/24 elections [1:57]
+- C set process [2:08]

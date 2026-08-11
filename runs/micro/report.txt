@@ -1,0 +1,14 @@
+cursor vs baseline  (paired on 6 meetings)
+tie threshold Δ < 0.5
+  faith_claim   Δ n/a  W/L/T 0/0/0  p=1.000  DIRECTIONAL ONLY (n=0 < 6)
+  faith_anchor  Δ n/a  W/L/T 0/0/0  p=1.000  DIRECTIONAL ONLY (n=0 < 6)
+  cover         Δ +2.33 ±0.76  W/L/T 5/0/1  p=0.062
+  synth         Δ +2.17 ±0.83  W/L/T 4/0/2  p=0.125
+
+  INVERT cursor    : mbank-LongBeachCC_09192017_17-0808
+  INVERT baseline  : none
+
+GT2 faith        : WITHHELD (n=0 < 6)
+GT3 synthesis    : PASS (Δ +2.17 vs +0.5) (lower 1-SE bound +1.33)
+GT4 efficiency   : PASS (prefill 1.22x vs 1.25x)
+SHIP DECISION    : WITHHELD — gates not yet evaluable

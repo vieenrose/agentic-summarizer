@@ -1,0 +1,50 @@
+{
+  "treatment": "cursor",
+  "control": "baseline",
+  "paired_meetings": [
+    "mbank-DenverCityCouncil_03142016_16-0110",
+    "mbank-LongBeachCC_07192016_16-0661",
+    "mbank-LongBeachCC_09192017_17-0808",
+    "synth-zh-reassign-4",
+    "synth-zh-withdraw-4",
+    "synth-zh-withdraw-5"
+  ],
+  "tie_threshold": 0.5,
+  "prefill_ratio": 1.221062575914346,
+  "metrics": {
+    "faith_claim": {
+      "mean_delta": null,
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "p_value": 1.0
+    },
+    "faith_anchor": {
+      "mean_delta": null,
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "p_value": 1.0
+    },
+    "cover": {
+      "mean_delta": 2.3333333333333335,
+      "wins": 5,
+      "losses": 0,
+      "ties": 1,
+      "p_value": 0.0625
+    },
+    "synth": {
+      "mean_delta": 2.1666666666666665,
+      "wins": 4,
+      "losses": 0,
+      "ties": 2,
+      "p_value": 0.125
+    }
+  },
+  "inversions": {
+    "cursor": [
+      "mbank-LongBeachCC_09192017_17-0808"
+    ],
+    "baseline": []
+  }
+}

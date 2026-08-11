@@ -45,6 +45,8 @@ def main(argv: list[str] | None = None) -> int:
         "trained with them, so eval must match (CLAUDE.md §7.8)",
     )
     p.add_argument("--arms", default="cursor,baseline")
+    p.add_argument("--tokenizer", default="google/functiongemma-270m-it",
+                  help="student tokenizer for chunk budgets (must match the served model)")
     p.add_argument(
         "--heuristic-tokens",
         action="store_true",
@@ -60,9 +62,9 @@ def main(argv: list[str] | None = None) -> int:
     if not args.heuristic_tokens:
         from transformers import AutoTokenizer
 
-        tok = AutoTokenizer.from_pretrained("google/functiongemma-270m-it")
+        tok = AutoTokenizer.from_pretrained(args.tokenizer)
         token_len = lambda text: len(tok(text, add_special_tokens=False)["input_ids"])
-        print("[arms] chunking with the student tokenizer (real budget)", flush=True)
+        print(f"[arms] chunking with {args.tokenizer} (real budget)", flush=True)
 
     # Greedy: paired eval must be reproducible; sampling noise belongs to the judge, not the arms.
     model = LlamaServer(

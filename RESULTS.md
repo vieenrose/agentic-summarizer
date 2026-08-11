@@ -640,3 +640,24 @@ Balanced 50.7% en mix: en G1 PASS (100% valid-op/anchors), zh FAIL (trap + deadl
 Three consecutive configs prove the seesaw: majority language passes, minority fails.
 **Resolution (PLAN 0d): per-language students** — en model (v3) + zh model (v2), both G1
 PASS in their language, ~430 MB combined, inside the envelope.
+
+---
+
+## Micro-cell eval (n=6, directional only) — LFM2.5-350M per-language composite (2026-08-11)
+
+Paired cursor vs map-reduce baseline, same meetings, greedy, judged locally (gpt-oss FAITH,
+qwen3.6-35B COVER/SYNTH). **GT3 synthesis: PASS (Δ +2.17, lower 1-SE +1.33 vs +0.5 gate);
+GT4 prefill: PASS (1.22x vs 1.25x); COVER Δ +2.33 (5/0/1).**
+
+**GT2 not evaluable on micro**: the baseline produced EMPTY notes on the tiny 1-chunk mbank
+meetings (no bullets → no FAITH), so paired n=0. The cursor's own FAITH was 5.0 where
+judgeable.
+
+**One REAL inversion on a real meeting** (product-critical): on
+mbank-LongBeachCC_09192017_17-0808 the student's SUMMARY claims a "transition from Certified
+Local Coastal Program to Certified Regional Coastal Program" — the transcript adopts a CLCP
+amendment and concludes the process; no "Regional" program exists in the transcript. The
+judge's CONTRADICTED is correct. **The screen (synthetic) passes, but the student
+hallucinates on real transcripts** — the training mix is b128/synthetic-heavy (26% real
+2048-budget samples), and the copy-don't-invent discipline does not transfer. Fix in flight:
+real-meeting distribution into the mix.

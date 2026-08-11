@@ -13,9 +13,11 @@
 set -euo pipefail
 cd "$(dirname "$0")/.."
 TIER="${1:?usage: run_tier.sh micro|t1}"
-STUDENT_URL="${STUDENT_URL:-http://127.0.0.1:8092}"
+STUDENT_URL="${STUDENT_URL:-http://127.0.0.1:8092}"   # en student (or both, if one model serves both)
+STUDENT_URL_ZH="${STUDENT_URL_ZH:-$STUDENT_URL}"      # zh student (per-language composite, PLAN 0d)
 FAITH="${FAITH:-local:8090/gpt-oss-20b}"
 COVER="${COVER:-}"
+STUDENT_TOKENIZER="${STUDENT_TOKENIZER:-LiquidAI/LFM2.5-350M}"
 BUDGET="${BUDGET:-2048}"
 
 [ -n "$COVER" ] || { echo "COVER judge required (local:PORT/NAME)"; exit 2; }
@@ -25,14 +27,10 @@ OUT=runs/"$TIER"
 mkdir -p "$OUT/arms" "$OUT/judged"
 
 # 1. Meeting list for this tier, from the manifest.
-mapfile -t MEETINGS < <("$VENV" - <<'PY'
-import json, sys
-rows = json.load(open("data/transcripts/manifest.json"))
-for r in rows:
-    if r["split"] == sys.argv[1]:
-        print(r["meeting_id"], r["lang"])
-PY
-"$TIER")
+MEETING_LIST=$(mktemp)
+"$VENV" tools/tier_meetings.py "$TIER" > "$MEETING_LIST"
+mapfile -t MEETINGS < "$MEETING_LIST"
+rm -f "$MEETING_LIST"
 
 echo "[tier] $TIER: ${#MEETINGS[@]} meetings"
 
@@ -43,9 +41,9 @@ for pair in "${MEETINGS[@]}"; do
   if [ "$lang" = en ]; then EN+=("data/transcripts/$mid.txt"); else ZH+=("data/transcripts/$mid.txt"); fi
 done
 [ ${#EN[@]} -gt 0 ] && "$VENV" eval/run_arms.py "${EN[@]}" --out "$OUT/arms" --lang en \
-  --base-url "$STUDENT_URL" --declarations --budget "$BUDGET"
+  --base-url "$STUDENT_URL" --tokenizer "$STUDENT_TOKENIZER" --budget "$BUDGET"
 [ ${#ZH[@]} -gt 0 ] && "$VENV" eval/run_arms.py "${ZH[@]}" --out "$OUT/arms" --lang zh-TW \
-  --base-url "$STUDENT_URL" --declarations --budget "$BUDGET"
+  --base-url "$STUDENT_URL_ZH" --tokenizer "$STUDENT_TOKENIZER" --budget "$BUDGET"
 
 # 3. Judge every (meeting, arm) notes file.
 ARGS=(--faith-model "$FAITH" --cover-model "$COVER")

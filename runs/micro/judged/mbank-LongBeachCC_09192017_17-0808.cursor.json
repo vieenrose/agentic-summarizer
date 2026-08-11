@@ -1,0 +1,98 @@
+{
+  "meeting_id": "mbank-LongBeachCC_09192017_17-0808",
+  "system": "cursor",
+  "faith_claim": 2.0,
+  "faith_anchor": 3.0,
+  "cover": 2,
+  "synth": 2,
+  "inverted": true,
+  "unsupported": 2,
+  "judges": {
+    "faith": "local:8090/gpt-oss-20b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "C set process to transition from Certified Local Coastal Program to Certified Regional Coastal Program",
+      "anchor": 5,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Direct City Staff to submit a request to the California Coastal Commission for an amendment to the Certified Local Coastal Program",
+      "anchor": 12,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "City staff to provide copies of required annual reports by the fifth year to the Planning Commission, Council offices, and the Lo Cerritos Wetlands Authority",
+      "anchor": 43,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "C set process",
+      "anchor": 128,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "C set process to transition from Certified Local Coastal Program to Certified Regional Coastal Program",
+      "anchor": 5,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Direct City Staff to submit a request to the California Coastal Commission for an amendment to the Certified Local Coastal Program",
+      "anchor": 12,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "City staff to provide copies of required annual reports by the fifth year to the Planning Commission, Council offices, and the Lo Cerritos Wetlands Authority",
+      "anchor": 43,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "C set process",
+      "anchor": 128,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
+}

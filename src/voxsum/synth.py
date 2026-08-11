@@ -30,7 +30,7 @@ from .transcript import Utterance
 
 __all__ = ["REVISION_KINDS", "SynthMeeting", "build_set", "build_meeting"]
 
-REVISION_KINDS = ("reversal", "deadline", "reassign", "withdraw", "combined")
+REVISION_KINDS = ("reversal", "deadline", "reassign", "withdraw", "combined", "plain", "twotopic")
 
 LINE_GAP = 30  # seconds between lines
 
@@ -102,7 +102,8 @@ _FILLER = {
 
 
 def _beats(
-    lang: str, kind: str, subject: str, trap: str, owners: tuple[str, str]
+    lang: str, kind: str, subject: str, trap: str, owners: tuple[str, str],
+    subject2: str | None = None,
 ) -> list[tuple[str, str, str]]:
     """(tag, speaker, text) beats for one meeting. `tag` marks the planted positions."""
     o1, o2 = owners
@@ -149,6 +150,31 @@ def _beats(
                 ("deadline", "S2", f"{o1} will submit the revised {subject} plan by 14 March."),
                 ("deadline", "S3", "Site surveys will be finished before the end of April."),
             ],
+            # ADD-only: decision-language content with NO prior bullet. The 270M
+            # overgeneralised "decision content -> UPD" from revision-dense data and
+            # UPDs against an empty state; these meetings teach "no matching state
+            # bullet -> ADD" (the approval is a NEW decision here).
+            "plain": [
+                ("context", "S2", "The costing for this has been reworked twice."),
+                ("revision", "S1", f"{subject} is approved."),
+                ("deadline", "S2", f"{o1} will deliver {subject} by 14 March."),
+                ("deadline", "S3", "Site surveys will be finished before the end of April."),
+            ],
+            # Two parallel threads: two setups and two revisions. The state at the
+            # revision chunk carries 2+ decision bullets, exercising UPD prefix
+            # grounding against a LARGER state (the 270M failed at 6 bullets, target
+            # last — probe P2).
+            "twotopic": [
+                ("context", "S2", f"I have circulated the details on {subject}."),
+                ("setup", "S1", f"For now we reject {subject}."),
+                ("context", "S3", f"We also need to settle {subject2}."),
+                ("setup", "S1", f"For now we reject {subject2} as well."),
+                ("revision", "S1", f"With the reworked numbers, {subject} is approved."),
+                ("context", "S2", "The same rework applies to the other item."),
+                ("revision", "S1", f"With the reworked numbers, {subject2} is approved too."),
+                ("deadline", "S2", f"{o1} will deliver both by 14 March."),
+                ("deadline", "S3", "Site surveys will be finished before the end of April."),
+            ],
         }
     else:
         opening = [
@@ -189,6 +215,23 @@ def _beats(
                 ("deadline", "S2", f"{o1}會在三月十四號前送出修正後的{subject}方案。"),
                 ("deadline", "S3", "場地勘查會在四月底之前完成。"),
             ],
+            "plain": [
+                ("context", "S2", "這項目的成本已經重算過兩次。"),
+                ("revision", "S1", f"{subject}通過。"),
+                ("deadline", "S2", f"{o1}會在三月十四號前完成{subject}。"),
+                ("deadline", "S3", "場地勘查會在四月底之前完成。"),
+            ],
+            "twotopic": [
+                ("context", "S2", f"我已經把{subject}的資料發給大家。"),
+                ("setup", "S1", f"目前先否決{subject}。"),
+                ("context", "S3", f"我們還要處理{subject2}。"),
+                ("setup", "S1", f"目前也先否決{subject2}。"),
+                ("revision", "S1", f"依照重算後的數字，{subject}通過。"),
+                ("context", "S2", "另一個項目也用同樣的方式重算。"),
+                ("revision", "S1", f"依照重算後的數字，{subject2}也通過。"),
+                ("deadline", "S2", f"{o1}會在三月十四號前完成這兩項。"),
+                ("deadline", "S3", "場地勘查會在四月底之前完成。"),
+            ],
         }
     # Trap sits between setup and revision so the model must hold the revision across it.
     body = bodies[kind]
@@ -220,7 +263,8 @@ def build_meeting(
     owner_b = _OWNERS[(variant + 1) % len(_OWNERS)]
 
     subject, trap = subject_pair[idx], trap_pair[idx]
-    beats = _beats(lang, kind, subject, trap, (owner_a[idx], owner_b[idx]))
+    subject2 = _SUBJECTS[(variant + 1) % len(_SUBJECTS)][idx] if kind == "twotopic" else None
+    beats = _beats(lang, kind, subject, trap, (owner_a[idx], owner_b[idx]), subject2)
 
     # Insert padding immediately before the revision beat, so setup and revision are pushed
     # into different chunks while the trap still sits between them.
@@ -249,12 +293,12 @@ def build_meeting(
         lang=lang,
         kind=kind,
         utterances=tuple(utterances),
-        setup_at=marks["setup"],
+        setup_at=marks.get("setup", -1),  # plain kind has no setup by design
         revision_at=marks["revision"],
         trap_at=marks["trap"],
         subject_terms=subject_terms if lang == "en" else (subject,),
         trap_terms=(trap,),
-        expected_op="DEL" if kind == "withdraw" else "UPD",
+        expected_op="DEL" if kind == "withdraw" else "ADD" if kind == "plain" else "UPD",
     )
 
 

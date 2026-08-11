@@ -101,22 +101,31 @@ def test_clock_scales_with_turn_length() -> None:
 @pytest.mark.parametrize("kind", REVISION_KINDS)
 def test_every_meeting_plants_setup_then_revision(lang: str, kind: str) -> None:
     m = build_meeting(f"t-{lang}-{kind}", lang, kind)
-    assert m.setup_at < m.revision_at, "the revision must come after what it revises"
-    assert m.line_at(m.setup_at) and m.line_at(m.revision_at)
+    if kind == "plain":
+        # ADD-only kind: decision content with NO prior bullet (the 270M lesson:
+        # "no matching state bullet -> ADD", breaking the content->UPD overgeneralisation).
+        assert m.line_at(m.revision_at)
+    else:
+        assert m.setup_at < m.revision_at, "the revision must come after what it revises"
+        assert m.line_at(m.setup_at) and m.line_at(m.revision_at)
     parse_transcript(m.render())
 
 
 @pytest.mark.parametrize("kind", REVISION_KINDS)
 def test_trap_sits_between_setup_and_revision(kind: str) -> None:
     m = build_meeting("t", "en", kind)
-    assert m.setup_at < m.trap_at < m.revision_at, (
-        "the trap must fall between them so the model holds the revision across it"
-    )
+    if kind == "plain":
+        assert m.trap_at is not None  # trap still planted; no setup/revision pair by design
+    else:
+        assert m.setup_at < m.trap_at < m.revision_at, (
+            "the trap must fall between them so the model holds the revision across it"
+        )
 
 
 def test_withdraw_expects_del_others_expect_upd() -> None:
     assert build_meeting("t", "en", "withdraw").expected_op == "DEL"
-    for kind in ("reversal", "deadline", "reassign", "combined"):
+    assert build_meeting("t", "en", "plain").expected_op == "ADD"
+    for kind in ("reversal", "deadline", "reassign", "combined", "twotopic"):
         assert build_meeting("t", "en", kind).expected_op == "UPD"
 
 
@@ -227,6 +236,8 @@ def test_setup_and_revision_land_in_different_chunks(budget: int) -> None:
     from voxsum.synth import build_set
 
     for meeting in build_set(chunk_budget=budget):
+        if meeting.kind == "plain":
+            continue  # ADD-only kind: no setup by design
         chunks = list(iter_chunks(list(meeting.utterances), budget=budget))
         setup = [i for i, c in enumerate(chunks) if c.has_line(meeting.setup_at)]
         revision = [i for i, c in enumerate(chunks) if c.has_line(meeting.revision_at)]

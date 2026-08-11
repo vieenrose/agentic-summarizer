@@ -602,3 +602,26 @@ data composition (6 configs incl. unconfounded counterfactuals), training method
 (full FT + LoRA), minimal-case probes, and the 0.8B control. The only residual unknown is
 >10k-sample training, which the counterfactual experiment argues against (the conditional
 does not take hold even when the data presents it unconfounded).
+
+---
+
+## LFM2.5-350M — screen-en G1 PASS on the first training run (2026-08-11)
+
+After the 270M measured negative result, the user requested **LFM2.5-350M** (Liquid AI,
+linear-attention architecture, 350M params, ~215 MB Q4_K_M — lighter than both prior
+students). Same traces, same SFT method (full FT, 6 epochs, text grammar), eval loss 0.070
+(best of any student so far).
+
+| probe | 270M (6 configs) | **LFM2.5-350M v1** |
+|---|---|---|
+| P1 minimal grounding | match (v4/v5) | MATCH |
+| P2 state-size sweep | 5-6/6, fails (6,last) | **6/6** |
+| P4 screen replay | 0/3 (shortcut, never ADDed) | **2/2 grounded UPDs, full correct sequence** |
+| G1 screen-en | FAIL (all configs) | **PASS** (chain, deadlines, anchors, trap) |
+| G1 screen-zh | FAIL | FAIL (trap reported; approval missed) |
+
+**Interpretation**: the state-gating computation the 270M could not learn — long-range exact
+binding + conditional branch — is learned by a 350M linear-attention model on the first run.
+Consistent with the root-cause diagnosis: the wall was the 270M's softmax-attention capacity
+for the specific computation, not the protocol, the data, or the training method. The zh side
+shows the same asymmetry as every prior student; zh-oversampled data iteration in flight.

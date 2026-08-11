@@ -68,7 +68,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 from typing import Any, List, Optional, Tuple, Union, Dict, Set, Callable
-from transformers.models.gemma3.modeling_gemma3 import (nn)
+from transformers.models.lfm2.modeling_lfm2 import (F, nn)
 
 def forward(self, input: Tensor) -> Tensor:
     self._check_input_dim(input)

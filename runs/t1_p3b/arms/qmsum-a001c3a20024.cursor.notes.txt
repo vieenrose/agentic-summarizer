@@ -1,0 +1,24 @@
+TITLE: Functional Design Meeting: Remote Control
+SUMMARY:
+- ID presented functional components and remote control design process. [8:31]
+- ID presented remote control design process and user needs. [8:31]
+- UI designer advocated for simplicity in design based on "tabula mada" principle. [14:47]
+- Marketing shared functional requirements and estimated time for completion. [40:38]
+DECISIONS:
+- Remote must be compatible with at least one television. [7:52]
+- No need for buttons on the remote control; they are just decorative [19:32]
+- Target retail age with 30-35 bracket [28:57]
+- UI designer advocated for simplicity in design based on "tabula mada" principle. [40:14]
+- Prepare questionnaire and summary [42:08]
+ACTIONS:
+- Marketing to share functional requirements and estimate time for completion. [40:38]
+- UI Designer to develop a "menu" concept. [41:10]
+OPEN:
+- Decide between basic buttons or menu interface. [14:47]
+TOPICS:
+- Functional design meeting agenda. [8:26]
+- "tabula mada" principle [14:47]
+- Retainable features vs voice recognition [31:23]
+- Retainable advertising [33:46]
+- Functional requirements [40:51]
+- UI simplicity [34:56]

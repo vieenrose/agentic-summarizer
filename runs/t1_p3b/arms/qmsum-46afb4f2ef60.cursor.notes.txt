@@ -1,0 +1,26 @@
+TITLE:
+SUMMARY:
+- Discussed teamwork and collaboration in future meetings [28:04]
+- Expected team size and meeting frequency [29:09]
+- UI designer advocated for simplicity in design [28:49]
+DECISIONS:
+- Remote with voice recognition and large buttons [3:56]
+- Marketing shared the email about team size [32:31]
+- Sufficient color palette for the project [33:49]
+- Copy of recording to be saved in project documents [41:11]
+- UI Designer to develop "sense of place" design [39:19]
+ACTIONS:
+- Marketing to evaluate the product from a "what-if" scenario [17:38]
+- UI designer to develop a "sense of place" design [19:39]
+OPEN:
+- Efficient use of solar cell and battery space [12:51]
+- Balance features vs target retail price [13:51]
+- Efficient use of information over the course of a day [25:30]
+- Sufficient color palette for the project [24:29]
+TOPICS:
+- TV specifications [3:49]
+- Market research [3:57]
+- Role and task definition [24:55]
+- Information flow [25:22]
+- UI designer advocated for simplicity in design [37:50]
+- Project timeline [33:51]

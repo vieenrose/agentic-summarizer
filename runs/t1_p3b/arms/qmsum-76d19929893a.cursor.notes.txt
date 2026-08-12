@@ -1,0 +1,22 @@
+TITLE: Project Kickoff Meeting
+SUMMARY:
+- Opened meeting to discuss the design of a new television remote control and establish team roles and process. [6:34]
+- Marketing analyzed competitor remote controls and recommended a universal compatible format. [12:48]
+DECISIONS:
+- Design a new television remote control and establish team roles and process. [6:34]
+- Keep pen width and line width for the original document. [9:01]
+- Use plastic, hard, and rubbery buttons for a long-lasting feel [23:06]
+- UI designer to develop customizable buttons with icons [21:39]
+- Fronts must be grey or black to fit TV/DVD/TV set. [26:34]
+ACTIONS:
+- Marketing to research fronts and technical design. [27:48]
+- User Interface to look into technical design and form. [27:05]
+OPEN:
+-
+TOPICS:
+- Project agenda and tools [1:03]
+- Team introductions [6:17]
+- Cost analysis of materials and marketing research [11:26]
+- Compatible long box shape [16:31]
+- Fronts must be grey or black to fit TV/DVD/TV set. [26:34]
+- Technical design of remote. [27:48]

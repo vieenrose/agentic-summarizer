@@ -1,0 +1,22 @@
+TITLE: Production and Design Evaluation
+SUMMARY:
+- Marketing evaluated the need for a mute button and suggested it was unnecessary [5:49]
+DECISIONS:
+- Marketing approved the evaluation criteria [2:09]
+- Sample speaker is expensive [27:00]
+- Banana-shaped whiteboard digital pens [34:51]
+- Keep the teamwork and notes [36:47]
+- Final questionnaire and meeting summary to be sent [40:52]
+ACTIONS:
+- Marketing to prepare evaluation criteria for A_ [10:17]
+- UI designer to develop a locatable rating system [10:43]
+OPEN:
+- Budget and finance issues for evaluation criteria [8:12]
+- User interface's ability to become intuitive [16:56]
+- Layout flipping from top to bottom [14:17]
+- Final questionnaire and meeting summary to be sent [40:52]
+TOPICS:
+- Production process [1:34]
+- UI simplicity [3:00]
+- User requirements and interface design [9:10]
+- Banana remote control [38:33]

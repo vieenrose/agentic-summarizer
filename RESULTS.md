@@ -924,3 +924,18 @@ of PASS, raw INVERT 4/20 (equal to the 350M phase-2; the 350M phase-3 holds 3/20
 single-model-both-languages property removes the composite's per-language complexity. Its
 trap gap is the cheapest fix (zh trap demonstrations); its raw rate needs the same
 sweep-feedback treatment as the primary.
+
+### Primary track: p3b — G1 restored, raw improvement kept (2026-08-12)
+
+The p3 negative dose (×3) broke G1 deadlines; the lighter dose (48 samples, p3b) restores
+all four G1 criteria (valid-op 100%) while keeping the raw gain:
+
+| model | G1 en | raw T1 INVERT |
+|---|---|---|
+| p2 (phase-2) | PASS | 4/20 (en 3/10) |
+| p3 (neg ×3) | FAIL (deadlines) | 3/20 (en 2/10) |
+| **p3b (neg ×1)** | **PASS** | **en 2/10** (+ zh 1/10 ≈ 3/20) |
+
+p3b is the current primary candidate: G1 PASS + raw ≈3/20, toward the owner's 6.2% bar.
+Next raw-INVERT lever: harvest the ~53 pure-hallucination drops (bullets with no teacher
+trace — requires capturing the student's per-step states during the harvest) + zh negatives.

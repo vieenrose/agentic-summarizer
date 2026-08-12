@@ -956,3 +956,29 @@ base MiniCPM checkpoint, LR 1e-5, 2 epochs.
 
 Primary 350M p4: G1 PASS, raw en INVERT 2/10 (unchanged from p3b; the same two
 fabrication classes persist — bdb39cc06654, 8ac3acb7fe5e).
+
+### MiniCPM-p3 raw T1: 5/20 — and the persistent fabrication classes (2026-08-12)
+
+MiniCPM-p3 (trap-fixed, single-model G1 PASS both languages) raw T1 INVERT: **5/20**
+(qmsum-a001c3a20024, qmsum-bdb39cc06654, synth-zh-reversal-0, qmsum-46afb4f2ef60,
+qmsum-3f8b473ddd36) — the trap fix nudged G1 to full PASS but the raw rate ticked up from
+the base's 4/20.
+
+**Persistent 350M classes (p3b/p4, unshifted by the negative harvest):**
+1. **Negation misstatements** — "No commitment to research for the next six months."
+   (asserting a negative commitment the transcript doesn't support);
+2. **Polarity flips** — "can't imagine a wooden remote control" → "Keep the option to use
+   wood as a practical choice" (the meeting's stated preference inverted);
+3. **Judge-borderline** — "UI Designer to develop look and feel design": the evidence line
+   ("Interface Designer will work on the user interface design") actually supports it.
+
+These are the semantically-hard fabrications; their equivalents are absent from the train
+meetings' sweep flags, so the negative harvest cannot cover them. The remaining levers are
+new real training data (the root lever) and the eval-time sweep (already 0/20 swept).
+
+**Locked options measured standing (raw T1 INVERT, owner's bar < 6.2%):**
+
+| option | G1 en/zh | raw INVERT | single model |
+|---|---|---|---|
+| 1st: LFM2.5-350M p4 | PASS/PASS (composite) | **≈3/20 (15%)** | no (per-language pair) |
+| 2nd: MiniCPM5-1B p3 | PASS/PASS (one model) | 5/20 (25%) | yes |

@@ -1,0 +1,27 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Presentation of prototype and evaluation criteria [0:23]
+- Evaluation of new design against a 7-point scale and a locator [15:47]
+- Discussion on budget and interface types [25:30]
+- Feedback on design criteria and budget [32:45]
+- Final meeting summary and cost analysis [40:46]
+DECISIONS:
+- Focus on using bananas as the color and shape [1:47]
+- Intuitive layout and two speakers [17:00]
+- Rate the device on a 1-7 scale [17:02]
+- Patent on the new design rejected [38:15]
+- No final design decision made [40:43]
+ACTIONS:
+- Marketing to prioritize evaluation of new design [8:17]
+- Marketing to rate the device on a 1-7 scale [17:02]
+- Marketing to prioritize three-cost device [24:03]
+- Marketing to submit final evaluation score [38:47]
+- Marketing to send complete questionnaire and summary [40:46]
+OPEN:
+- Alternative remote model for left-handed users [11:33]
+- Define pushbutton/scroll wheel count limit [25:24]
+- Final product design approved [40:46]
+TOPICS:
+- User interface layout and components [2:46]
+- Evaluation criteria and seven-point scale [8:17]
+- Cost analysis and final design [40:30]

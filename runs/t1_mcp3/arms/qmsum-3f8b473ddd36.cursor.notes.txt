@@ -1,0 +1,25 @@
+TITLE: Remote Control Conceptual Design
+SUMMARY:
+- Discussion on defining the design concept and making final decisions on the prototype. [0:03]
+- Discussion on defining design concept and finalizing prototype features. [13:10]
+DECISIONS:
+- User to go first [1:28]
+- Focus on visible light signaling for marketing differentiation [6:08]
+- Explore alternative battery chemistries [5:23]
+- Traditional button layout with minimal buttons [29:19]
+- Hit or miss case color approach [38:16]
+ACTIONS:
+- User to go first [10:55]
+- Explore cheaper manufacturing options [19:45]
+- Develop basic prototype with voice recognition by [25:24]
+- Decide between stick with rubber buttons or rubber case [34:59]
+- Develop basic prototype [39:50]
+OPEN:
+- Selection of visible light on or off [5:04]
+- 是否考虑使用橡胶 casement for durability and visibility [11:35]
+- Cost issue and feature balance [33:55]
+- Menu placement and evaluation [38:57]
+TOPICS:
+- Remote control components and design [3:56]
+- Case material selection and marketing [6:57]
+- Expanding features for bottom-line gain [20:31]

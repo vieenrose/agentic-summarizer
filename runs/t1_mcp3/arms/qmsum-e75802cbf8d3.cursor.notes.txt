@@ -1,0 +1,17 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on remote control components and design decisions [6:28]
+- Discussion on remote control design trends and specifications [24:38]
+DECISIONS:
+- Use simple push buttons and speech recognition to reduce cost [5:02]
+- Target low-cost battery with minimal shape [6:37]
+- Do not use the millennium remote control [10:17]
+- Remote control should be smart and recognize user presence [16:34]
+- Explore titanium panels on a rubber body for fruit-like shape [29:44]
+ACTIONS:
+- Industrial Designer to change LCD color scheme [11:47]
+OPEN:
+- How to define speech recognition without additional technology [7:06]
+TOPICS:
+- Remote control components [0:26]
+- Interface design [8:56]

@@ -1,0 +1,21 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+- Report on SmartKom Project Report [TITLE: SmartKom Project Report] [24:29]
+DECISIONS:
+- Focus on basic demos until next meeting [14:32]
+- Continue developing belief-net concepts for honors thesis [53:35]
+ACTIONS:
+- Explain the concept-to-speech approach to speech generation [7:38]
+- Start the synthesis module in October due to system limitations [4:26]
+- Grad B to present the taxonomy of reference frames [36:20]
+- Grad B to implement the construction analyzer for the child language modeling task [48:47]
+- Professor C to decide on an initial ontology for the parser task [46:49]
+- Grad B to contact Bhaskara for a reading group on schema formalization [1:00:22]
+OPEN:
+- Difficulty understanding non-English word orders [6:47]
+- Can we add GUI visualization given resource constraints [22:42]
+- Grad B's ability to implement a small enough analyzer vs. Nancy's need for a larger one [50:37]
+TOPICS:
+- SmartKom project background [0:05]
+- Expansion of discourse reference and deixis [46:25]
+- addition of "belief-net" to the discourse model [52:52]

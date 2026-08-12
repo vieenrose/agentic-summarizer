@@ -1,0 +1,21 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Discussed and selected three types of remote control components based on cost, functionality, and design. [6:21]
+DECISIONS:
+- Use flat cases as they are the most affordable and standard for remote controls. [4:03]
+- Include scroll button and voice recognition if possible. [13:33]
+- Include screen on the remote for better time efficiency. [20:34]
+- Include L_C_D_ display for channel selection. [30:54]
+- Use rubber case and plastic/tech components due to cost and usability trends. [38:29]
+ACTIONS:
+- Presentative designer to prioritize a flat-case remote control in the design. [5:38]
+- Include microphone in the user interface if available. [14:21]
+- Presentative designer to prioritize L_C_D_ display in the design. [31:08]
+OPEN:
+- Comparison of battery, kinetic energy, and solar cell options for cost and functionality. [3:06]
+- Voice recognition necessary for advanced features. [19:28]
+- Availability of third-party case materials. [26:22]
+- Prioritize between push-buttons and L_C_D_ display. [32:18]
+TOPICS:
+- Remote control components [1:42]
+- User interface features [16:23]

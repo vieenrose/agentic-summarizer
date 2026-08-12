@@ -1,0 +1,22 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on completing the TORRENT chip project within a month [5:51]
+- Discussion on using larger data sets for speech recognition [6:09]
+- Comparison of signal processing approaches for echo removal [11:25]
+- Comparison of error rates on new vs. old audio systems [19:38]
+- Discussion on combining different signal processing methods for speech recognition [54:28]
+DECISIONS:
+- Use the Macrophone read speech set for further training [6:09]
+- Use clean training data with G-7 filter and IEEE 158-8 filter for SRI [27:17]
+ACTIONS:
+- Grad F to submit a full proposal by Monday [1:39]
+- Check if DC component is present in meeting digits data [19:43]
+- Try gender-dependent models for SRI [26:32]
+- Combine MLP and energy-based VAD using "AND" operator [39:58]
+- PhD G to experiment with different time constants for smoothing speech noise [42:25]
+OPEN:
+- Performance of near-mic training on Meeting Recorder digits vs. HTK data [5:46]
+TOPICS:
+- TORRENT chip project [0:08]
+- Use of read speech data [6:09]
+- Use of clean training data [28:22]

@@ -1,0 +1,25 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- ID presented a functional overview of the remote control system, highlighting its components and working mechanism. [8:32]
+- ID presented a functional overview of the remote control system. [8:32]
+- Marketing presented findings on remote control user preferences and criticisms. [21:35]
+DECISIONS:
+- Include video and D_V_D_ features as they are user desires. [14:03]
+- Do not include video features as they are user desires. [18:32]
+- Channel selection is more important than volume selection. [20:12]
+- Target age group for voice recognition software: 25-35 years. [27:05]
+ACTIONS:
+- ID to present the functional design choices by first [2:51]
+- Define which basic functions are required. [14:47]
+- Marketing to provide function key explanation. [17:08]
+- Research market popularity among 25-35-year-olds. [27:43]
+OPEN:
+- Target group and remote functions to define [1:47]
+- How often do people use voice recognition on a TV remote? [32:01]
+TOPICS:
+- Functional design overview [7:04]
+- Technical function design [11:23]
+- Remote control function requirements [17:06]
+- Voice recognition software popularity [22:17]
+- Target audience for stylish remote control [26:47]
+- Function key explanation [29:59]

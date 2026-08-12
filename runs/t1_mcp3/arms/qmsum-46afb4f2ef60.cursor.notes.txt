@@ -1,0 +1,18 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on remote features and design priorities [6:57]
+- Discussed need for team brainstorming and digital board output [31:28]
+- Comparison of design concepts across cultural groups [33:48]
+DECISIONS:
+- Remote will use voice recognition and shape for basic functions [3:57]
+- Interchangeable faces for the regular product packaging [4:20]
+- Consider switching away from solar cells or back-up battery for a simple fix [13:38]
+- Move to branch out with this product with higher budget [19:40]
+- Project manager to go on a bit about the project evaluation [34:01]
+ACTIONS:
+-
+OPEN:
+- Remote's edible nature makes it potentially future-proof [6:39]
+TOPICS:
+- Remote design criteria [3:57]
+- Project process [20:35]

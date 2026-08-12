@@ -10,3 +10,10 @@ data/
 *.key
 runs/sft-*/
 runs/*/gguf*
+
+# Model weights live on Hugging Face only — never in this repo.
+*.gguf
+*.safetensors
+*.pt
+runs/*/final/
+runs/*/checkpoint-*/

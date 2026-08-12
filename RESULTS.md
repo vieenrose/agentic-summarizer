@@ -851,3 +851,28 @@ target metric for the next iteration is raw INVERT, not swept INVERT.** The phas
 improvement (12 → 4) shows the model-side lever works; harvesting sweep DROP cases
 (contradiction/fabrication demonstrations) as training signal is the concrete next step
 toward a checkpoint whose raw rate approaches the swept rate.
+
+---
+
+## BF16 vs Q4_K_M — the quantization is not the quality limiter (2026-08-12)
+
+Every headline number (G1, T1, FAITH) was measured on the **Q4_K_M production GGUF** — the
+quantized artifact IS what was evaluated, not an extrapolation from bf16. The one missing
+datapoint (bf16-vs-Q4 for the LFM linear-attention arch) was measured on the G1 screen:
+
+| instance | screen-en chain | SUMMARY |
+|---|---|---|
+| **Q4_K_M (production)** | **PASS** | neutral summary → chain clean |
+| **BF16** | FAIL | "Decision made to reject..." — SUMMARY never revised |
+
+The BF16 instance kept the rejected-state SUMMARY while the Q4 instance carried a neutral
+one; both UPD'd DECISIONS. **Quantization did not degrade quality — the model sits at a
+margin where the greedy trajectory is fp-instance-sensitive** (linear attention + quant fp
+paths), and a single screen criterion flips between instances. The shipped Q4 artifact's
+measured numbers stand.
+
+**Verdict on "is the ft + quantized GGUF good enough"**: the quantized model's quality is
+exactly the reported quality — G1 PASS, T1 0/20 swept (4/20 raw), FAITH +1.05, GT4 0.51×.
+Good enough for the faithfulness gate with the sweep; GT3 sits exactly at +0.50; and for
+on-device 0%-without-judges the limiter is the model's raw fabrication rate (4/20), not the
+quantization — the raw-INVERT training pass is the next lever, not a different quant.

@@ -1,9 +1,15 @@
 # agentic-summarizer
 
+[![GitHub](https://img.shields.io/badge/source-github-181717?logo=github&logoColor=white)](https://github.com/vieenrose/agentic-summarizer)
+[![HF en](https://img.shields.io/badge/HF-en%20model-yellow?logo=huggingface)](https://huggingface.co/Luigi/lfm2.5-350m-cursor-en)
+[![HF zh-TW](https://img.shields.io/badge/HF-zh--TW%20model-yellow?logo=huggingface)](https://huggingface.co/Luigi/lfm2.5-350m-cursor-zh)
+
 Agentic meeting-transcript summarizer for a **sub-1B** small language model, targeting zh-TW and
 en meetings of **≥80k tokens** and producing structured, timestamp-anchored meeting notes
 on-device.
 
+> Source: **https://github.com/vieenrose/agentic-summarizer**
+>
 > **Status: student trained and measured.** The fine-tuned **LFM2.5-350M** (per-language en/zh
 > composite) passes the G1 capability screen in both languages; on the T1 tier (n=20, paired)
 > it reaches **0% inversions**, **FAITH-claim +1.05 over the map-reduce baseline**, SYNTH at

@@ -1,0 +1,24 @@
+TITLE: Production and Design Evaluation
+SUMMARY:
+- Marketing presented evaluation criteria and financial limits [0:22]
+- Marketing analyzed sample sensor size and cost of innovation [26:51]
+DECISIONS:
+- Finance criteria checked against [0:22]
+- A locator will be placed on T_V_ [15:52]
+- Include a beeping feature for the locator [31:51]
+- No need for a whiteboard digital pen for the meeting [34:51]
+- Costs are within budget [38:45]
+ACTIONS:
+- Prepare evaluation of new design for 7-point scale [10:43]
+- Marketing to decide whether to place a locator on T_V_ [15:52]
+- Marketing to discuss project goals and features with management [31:18]
+- Marketing to prepare slides for the meeting [36:46]
+- Marketing to prepare the final questionnaire and meeting summary [40:52]
+OPEN:
+-
+TOPICS:
+- Evaluation criteria [0:22]
+- Budget and finance issues [7:53]
+- Intuitive user experience [16:47]
+- Project goals [31:51]
+- Design patent [38:47]

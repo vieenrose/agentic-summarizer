@@ -68,7 +68,7 @@ import torch
 import torch.nn as nn
 from torch.nn import functional as F
 from typing import Any, List, Optional, Tuple, Union, Dict, Set, Callable
-from transformers.models.lfm2.modeling_lfm2 import (F, torch)
+from transformers.models.llama.modeling_llama import (torch)
 
 def forward(self, x: torch.Tensor) -> torch.Tensor:
     """

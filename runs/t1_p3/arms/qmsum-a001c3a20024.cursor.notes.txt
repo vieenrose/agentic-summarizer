@@ -1,0 +1,23 @@
+TITLE: Functional Design Meeting: Remote Control
+SUMMARY:
+- Discussion on target groups and functions of the remote control [0:55]
+- Explored alternatives to teletext and its impact on the remote control [7:04]
+- Technical functions design focused on main function: TV compatibility [9:32]
+- User preferences to keep basic on-off and channel numbers [9:32]
+DECISIONS:
+- Remote must be compatible with at least one television [7:51]
+- Functional requirements to be met [17:14]
+- Include voice recognition for basic commands [32:49]
+- Use electronic components instead of physical buttons [40:34]
+- Prepare questionnaire and summary [42:08]
+ACTIONS:
+-
+OPEN:
+- Decide between basic on-off and channel number functionality [9:32]
+TOPICS:
+- Target groups and functions [0:55]
+- Alternative remote control features [7:04]
+- Technical functions design [10:47]
+- Voice recognition [26:47]
+- Technical specifications [31:48]
+- Functional requirements [40:41]

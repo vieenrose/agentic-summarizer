@@ -1,0 +1,17 @@
+[
+  {
+    "name": "screen-en",
+    "lang": "en",
+    "steps": 3,
+    "chain_correct": true,
+    "both_deadlines": false,
+    "fully_anchored": true,
+    "trap_absent": true,
+    "valid_op_rate": 1.0,
+    "anchor_rate_raw": 1.0,
+    "nop_rate_on_rich_chunks": null,
+    "revised_at_contradiction": true,
+    "added_contradiction": false,
+    "prompt_version": "sys-v1"
+  }
+]

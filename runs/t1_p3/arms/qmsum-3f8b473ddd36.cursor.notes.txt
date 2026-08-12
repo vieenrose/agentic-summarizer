@@ -1,0 +1,26 @@
+TITLE: Remote Control Conceptual Design
+SUMMARY:
+-
+DECISIONS:
+- Focus on component design to explore various possibilities. [3:32]
+- Stick with what's found to be easy to use and technologically innovative. [9:08]
+- Include touchscreen technology for a main selling point. [20:30]
+- Include basic buttons and menu functionality [34:47]
+- Use the same non-remote remote design for the prototype. [38:56]
+ACTIONS:
+- Marketing to conduct a pilot program for pre-release feedback. [7:14]
+- Marketing to research voice recognition system and connect it with the remote control. [13:30]
+- Marketing to coordinate with the design team for cost analysis. [18:23]
+- Marketing to conduct pilot program for pre-release feedback. [39:40]
+- Ron to research voice recognition system and connect it with the remote control. [35:18]
+- Team to coordinate with the design team for cost analysis. [36:15]
+OPEN:
+- Decide between touchscreen or voice recognition for the feature. [21:05]
+- Decide between touchscreen or voice recognition [28:03]
+TOPICS:
+- Component design [3:56]
+- Environmental sustainability [6:57]
+- Cost analysis [18:23]
+- Solar-powered voice recognition [26:51]
+- Prototype development [38:57]
+- Non-remote remote design [38:56]

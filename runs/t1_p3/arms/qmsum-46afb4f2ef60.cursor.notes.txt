@@ -1,0 +1,27 @@
+TITLE:
+SUMMARY:
+- Discussed product performance with and without solar panel [35:59]
+- Explored alternative marketing approaches [36:39]
+DECISIONS:
+- Remote with voice recognition expected [3:56]
+- Target retail price goal: 12.50 Euro [7:11]
+- Move project evaluation to Sarah's role [17:53]
+- Explored alternative marketing approaches [36:39]
+- Final report and documentation to be included in the report [40:31]
+ACTIONS:
+- User Interface Designer to develop prototype for market analysis [3:57]
+- Marketing to clarify the solar cell and back-up battery components [13:49]
+- Marketing to evaluate product performance with and without solar panel [19:34]
+- Marketing to fill in blanks on the spreadsheet [25:44]
+- Marketing to discuss new ideas with the team [32:31]
+- Marketing to put all recorded data into project documents [41:11]
+OPEN:
+- Efficient information flow over the course of the day [25:30]
+- Efficient information flow during the project's duration [26:32]
+TOPICS:
+- Retainable faces and market positioning [4:17]
+- Edible televisions and future product development [6:43]
+- Finance of the project [11:51]
+- Basic design criteria [19:00]
+- Role and task definition [26:17]
+- Final report and documentation [40:31]

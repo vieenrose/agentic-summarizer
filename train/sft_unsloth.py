@@ -41,7 +41,7 @@ STUDENT = "google/functiongemma-270m-it"
 # Gemma/Qwen turn markers — the boundary completion-only masking keys on.
 # tokenize_sample auto-detects which one the rendered template actually uses.
 INSTRUCTION_PARTS = ("<start_of_turn>user\n", "<|im_start|>user\n")
-RESPONSE_PARTS = ("<start_of_turn>model\n", "<|im_start|>assistant\n")
+RESPONSE_PARTS = ("<start_of_turn>model\n", "<|im_start|>assistant\n", "Assistant:")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -128,6 +128,20 @@ def tokenize_sample(row: dict, tokenizer, max_length: int) -> dict:
         idx = find_subsequence(ids, m_ids)
         if idx is not None and (resp is None or idx > resp[0]):
             resp = (idx, m_ids)
+    if resp is None:
+        # String-level fallback: plain-text markers ("Assistant:") merge differently
+        # in context than standalone (BPE boundary effects). Split the rendered text
+        # at the marker string and concatenate the two tokenizations.
+        for marker in RESPONSE_PARTS:
+            pos = text.rfind(marker)
+            if pos < 0:
+                continue
+            head = _ids(text[:pos])
+            tail = _ids(text[pos:])
+            idx = len(head)
+            if resp is None or idx > resp[0]:
+                resp = (idx, None)
+                ids = head + tail
     if resp is None:
         raise SystemExit("response marker not found in sample — template mismatch")
     idx = resp[0]

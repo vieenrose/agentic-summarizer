@@ -1,0 +1,28 @@
+TITLE: Conceptual Design Meeting: Industrial Design
+SUMMARY:
+- Proposal to focus on component knowledge and material selection for energy efficiency. [1:12]
+- Discussed creating trend-fillable prototypes using modelling clay. [26:59]
+- Explored options for fanciness in titanium panels. [28:49]
+DECISIONS:
+- Include simple battery and titanium design for cost-effectiveness. [30:12]
+- Remote must be smart for minimal complexity. [16:38]
+- Use natural-looking colors and shapes [24:23]
+- Explore both fanciness options [29:18]
+- Retain two batteries for minimal complexity. [30:05]
+ACTIONS:
+- Propose battery-only display for simplicity and cost reduction. [5:28]
+- Marketing to develop the concept of the interface. [10:26]
+- Marketing to develop the remote control's smart features. [17:15]
+- Present prototypes to target retail locations [28:44]
+- Marketing to develop the interface concept and remote control's smart features. [31:04]
+- Present prototypes to target retail locations. [31:43]
+OPEN:
+- Efficient channel use in displays for minimal cost. [6:21]
+- Decide between fanciness and simplicity [28:49]
+TOPICS:
+- Component knowledge [1:12]
+- Material selection [1:12]
+- Interface concept [8:44]
+- Trends and innovation [21:27]
+- Fancy look and feel [22:26]
+- Prototype development [26:59]

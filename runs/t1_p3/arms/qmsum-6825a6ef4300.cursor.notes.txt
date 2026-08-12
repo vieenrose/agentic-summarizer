@@ -1,0 +1,25 @@
+TITLE: Aurora Interchangeable Categories
+SUMMARY:
+- Discussion on intermediate categories and phoneme recognition error rates [4:50]
+- Discussion on signal-to-noise ratio and DC offset compensation in audio data [18:50]
+- Comparison of mean subtraction with SRI system [18:12]
+- Evaluation of different SNR estimation methods [43:42]
+- Exploring the use of cepstra for signal-to-noise ratio estimation [53:50]
+DECISIONS:
+- Include additional intermediate categories in the proposal [3:14]
+- Use the same training data for SRI and TI-digital data [27:08]
+- Test SRI system on and test on Aurora TI-digits [30:30]
+- Try different SNR estimation methods to see if they improve performance [43:42]
+ACTIONS:
+- Morgan to submit proposal to TIMIT for training on TI-digital data [4:31]
+- Grad E to train on larger datasets for robustness [6:09]
+- PhD C to review DC offset compensation in meeting digits [20:06]
+- Grad E to review SRI and TI-digital data for channel adaptation [26:31]
+- Perform additional experiments with different time constants [43:42]
+- Read some digits with VTS for noise estimation [55:11]
+OPEN:
+- Efficient phoneme recognition with additional features [5:46]
+- Comparison of mean subtraction with SRI system [12:50]
+TOPICS:
+- Interchangeable categories [3:14]
+- SNR estimation [42:24]

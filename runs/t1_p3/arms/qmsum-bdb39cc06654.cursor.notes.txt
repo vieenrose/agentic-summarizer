@@ -1,0 +1,24 @@
+TITLE: German SmartKom System
+SUMMARY:
+- Introduction to the system's ability to handle text-to-speech and LISP notation. [7:48]
+- Discussion on spatial descriptions and reference frames. [33:04]
+- Discussion on spatial descriptions and reference frames [38:14]
+- Explanation of how the brain processes information at different distances [42:44]
+DECISIONS:
+- No commitment to formalize notations for the duration of the project. [8:55]
+ACTIONS:
+- Professor C to provide guidance on how to understand the system's structure. [7:48]
+- Present demo version of the project to attract interest and gather feedback. [13:08]
+- Look for which free tools have the GUI [22:50]
+- Grad B to build the parser and analyzer for the project. [46:48]
+- Grad B to provide email with a link to the webpage. [56:28]
+- Grad B to coordinate with Ellen for image schemas [1:00:41]
+OPEN:
+- Efficiently generating syntactic structures for large volumes of text. [3:11]
+TOPICS:
+- System structure and LISP notation [7:48]
+- Project goals and timeline [14:32]
+- System integration and technical details [21:30]
+- Spatial descriptions and reference frames [33:05]
+- Spatial descriptions [38:47]
+- System components and requirements [46:49]

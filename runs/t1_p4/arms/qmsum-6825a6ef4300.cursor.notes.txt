@@ -1,0 +1,16 @@
+TITLE: Proposal for Aurora Interchangeable Categories
+SUMMARY:
+- Discussion on SRI and Aurora system normalization and gender differences. [26:30]
+- Discussion on signal-to-noise ratio and cepstral normalization. [54:26]
+DECISIONS:
+- Aurora intermediate categories are expected to be classified using a combination of phonetic features and SRI recognition. [5:46]
+- VAD - threshold set at 10:39 [11:25]
+- Aurora system uses VTL - acoustic models on meeting digits and has been trained on Macrophone. [18:39]
+- Include energy and zero-crossing detection in frame selection [36:44]
+- Smoothing the SNR estimate using a low-rank matrix. [48:42]
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+-

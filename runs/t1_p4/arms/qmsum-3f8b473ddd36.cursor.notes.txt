@@ -1,0 +1,23 @@
+TITLE: Remote Control Conceptual Design
+SUMMARY:
+- Discussion on component design and EV compatibility [2:05]
+- Marketing shared research on voice recognition and UI concepts [13:30]
+- Marketing discussed the need for a simple design to get the concept into people's minds [38:57]
+DECISIONS:
+- Focus on visual light signaling for a gimmick effect [4:47]
+- Interchangeable casings available for $9.09 [14:37]
+- Include touchscreen as main selling point [20:30]
+- Include menu buttons and a side an s up and down type for scrolling [34:47]
+- Stick with the same non-remote design for the initial prototype [38:56]
+ACTIONS:
+- Develop a prototype with menu options and a side an s up and down type [34:47]
+- Marketing to develop the prototype using prototype building materials [39:39]
+OPEN:
+-
+TOPICS:
+- Component design [2:05]
+- EV compatibility [2:05]
+- Touchscreen integration [19:18]
+- Menu options [34:47]
+- Initial prototype design [38:57]
+- UI simplicity [38:16]

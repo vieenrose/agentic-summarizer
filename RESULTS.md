@@ -939,3 +939,20 @@ all four G1 criteria (valid-op 100%) while keeping the raw gain:
 p3b is the current primary candidate: G1 PASS + raw ≈3/20, toward the owner's 6.2% bar.
 Next raw-INVERT lever: harvest the ~53 pure-hallucination drops (bullets with no teacher
 trace — requires capturing the student's per-step states during the harvest) + zh negatives.
+
+---
+
+## MiniCPM5-1B-p3: single-model G1 PASS in BOTH languages (2026-08-12)
+
+The zh trap-only gap was fixed with a targeted dose: zh trap-chunk steps (chunks
+containing the trap term; targets NOP or trap-free) ×3 + 1/3 of the base mix, from the
+base MiniCPM checkpoint, LR 1e-5, 2 epochs.
+
+| model | en G1 | zh G1 |
+|---|---|---|
+| MiniCPM5-1B (base FT) | PASS | 3/4 (trap) |
+| MiniCPM5-1B-p2 (zh combined ×2 + en negatives) | PASS | FAIL (trap + UPD regression) |
+| **MiniCPM5-1B-p3 (trap-only fix)** | **PASS** | **PASS — first single-model both-language PASS** |
+
+Primary 350M p4: G1 PASS, raw en INVERT 2/10 (unchanged from p3b; the same two
+fabrication classes persist — bdb39cc06654, 8ac3acb7fe5e).

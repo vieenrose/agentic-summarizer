@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
-"""Harvest sweep DROP corrections as negative SFT signal (the committed next step).
+"""Harvest sweep DROP corrections as negative SFT signal — v2 (per-step states).
 
-The sweep drops bullets the whole-transcript judge cannot verify (fabrications,
-request-as-decision). For each dropped bullet we reconstruct the earliest trace step
-where it was emitted, and build a negative sample: SAME state+chunk, target WITHOUT the
-wrong bullet. This teaches the student not to emit unverifiable content — converting
-judge-time corrections into training signal.
+v1 could only harvest bullets that appeared in the TEACHER's trace targets (48/109);
+the 53 "no_record" drops were the student's pure hallucinations with no teacher trace.
+v2 uses the student's OWN per-step record (state_before + chunk + applied ops) to
+reconstruct a negative sample for every dropped bullet the student actually emitted:
 
-Two hygiene rules:
-* train meetings only (the eval tiers stay held out);
-* the stale-state class is excluded: bullets that a LATER step UPD/DELs were true at
-  emission time and needed revision, not suppression — those are already taught by the
-  UPD demonstrations.
+  user   = the exact STATE+CHUNK prompt of the step that emitted the bullet
+  target = that step's APPLIED ops minus the op carrying the dropped bullet
 
-    python tools/harvest_negatives.py --out data/sft/lfm-en-negatives.jsonl
+Same hygiene as v1: train meetings only; the stale-state class (bullets a later step
+UPD/DELs) is excluded — those were true at emission time and need revision, not
+suppression.
+
+    python tools/harvest_negatives.py --out data/sft/lfm-en-negatives2.jsonl
 """
 from __future__ import annotations
 
@@ -27,48 +27,18 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "eval"))
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent / "train"))
 
 from build_sft_qwen import build_sample  # noqa: E402 (text grammar)
-from judge import _FAITH_SYS, faith_prompt, TogetherJudge  # noqa: E402
+from judge import faith_prompt, TogetherJudge  # noqa: E402
 from voxsum.agent import run_cursor  # noqa: E402
 from voxsum.backends.llama_server import LlamaServer  # noqa: E402
-from voxsum.ops import Del, Nop, Upd, parse_ops  # noqa: E402
+from voxsum.ops import Del, Malformed, Nop, Upd, render_op  # noqa: E402
 from voxsum.sweep import run_sweep  # noqa: E402
 from voxsum.transcript import parse_transcript  # noqa: E402
 
 REAL_SOURCES = ("qmsum", "meetingbank")
 
 
-def load_trace_records(tracedir: Path) -> dict[str, list[dict]]:
-    """meeting stem -> records (split-filtered to train already at build time)."""
-    out: dict[str, list[dict]] = {}
-    for path in sorted(tracedir.glob("*.jsonl")):
-        for line in path.read_text(encoding="utf-8").splitlines():
-            if not line.strip():
-                continue
-            r = json.loads(line)
-            out.setdefault(r["meeting"], []).append(r)
-    for rows in out.values():
-        rows.sort(key=lambda r: r["chunk_start"])
-    return out
-
-
-def target_lines(target: str) -> list[str]:
-    return [l for l in target.splitlines() if l.strip()]
-
-
-def op_mentions(line: str, text: str) -> bool:
-    """Does this target line carry the bullet (ADD/Upd/DEL)?"""
-    for op in parse_ops(line):
-        if isinstance(op, Nop):
-            continue
-        body = getattr(op, "bullet", getattr(op, "prefix", "")) or ""
-        if body and text.casefold() in body.casefold():
-            return True
-    return False
-
-
 def main(argv: list[str] | None = None) -> int:
     p = argparse.ArgumentParser(description=__doc__)
-    p.add_argument("--tracedir", type=Path, default=Path("data/traces_v2"))
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--student-url", default="http://127.0.0.1:8093")
     p.add_argument("--judge", default="local:8090/gpt-oss-20b")
@@ -87,13 +57,13 @@ def main(argv: list[str] | None = None) -> int:
     if args.max_meetings:
         meetings = meetings[: args.max_meetings]
 
-    records = load_trace_records(args.tracedir)
     student = LlamaServer(base_url=args.student_url, max_tokens=512, temperature=0.0)
     judge_client = TogetherJudge(api_key="local", budget_usd=10, max_tokens=14000)
     judge = lambda s, u: judge_client(args.judge, s, u)
 
     negatives: list[dict] = []
-    stats = {"meetings": 0, "dropped": 0, "harvested": 0, "stale_skipped": 0, "no_record": 0}
+    stats = {"meetings": 0, "dropped": 0, "harvested": 0, "stale_skipped": 0,
+             "not_emitted": 0, "nothing_left": 0}
     for m in meetings:
         mid = m["meeting_id"]
         utt = parse_transcript((Path("data/transcripts") / m["file"]).read_text())
@@ -107,37 +77,49 @@ def main(argv: list[str] | None = None) -> int:
         stats["meetings"] += 1
         dropped = [v.bullet for v in sweep.verified if v.verdict in ("DROP", "FIX")]
         stats["dropped"] += len(dropped)
-        rows = records.get(mid, [])
         for bullet in dropped:
-            # Earliest step emitting the bullet (the ADD step).
-            hit = next(
-                (r for r in rows if any(op_mentions(l, bullet) for l in target_lines(r["target"]))),
-                None,
-            )
+            needle = bullet.casefold()
+            # Earliest step whose raw EMITS the bullet with it APPLIED.
+            hit = None
+            for step in trace.steps:
+                if needle not in step.raw.casefold():
+                    continue
+                applied = [r.op for r in step.outcome.results
+                           if r.applied and not isinstance(r.op, Malformed)]
+                if any(needle in str(o).casefold() for o in applied):
+                    hit = (step, applied)
+                    break
             if hit is None:
-                stats["no_record"] += 1
+                stats["not_emitted"] += 1
                 continue
-            # Stale-state class: a LATER step revises/drops this bullet -> skip.
-            later = [
-                r for r in rows if r["chunk_start"] > hit["chunk_start"]
-                and any(
-                    isinstance(o, (Upd, Del)) and bullet.casefold() in str(o).casefold()
-                    for o in parse_ops(r["target"])
-                )
-            ]
-            if later:
+            step, applied = hit
+            # Stale-state class: a later step revises/drops this bullet.
+            later_revises = False
+            for later in trace.steps:
+                if later.index <= step.index:
+                    continue
+                if any(isinstance(o, (Upd, Del)) and needle in str(o).casefold()
+                       for o in later.ops):
+                    later_revises = True
+                    break
+            if later_revises:
                 stats["stale_skipped"] += 1
                 continue
-            kept = [
-                l for l in target_lines(hit["target"]) if not op_mentions(l, bullet)
-            ]
+            kept = [render_op(o) for o in applied if needle not in str(o).casefold()]
             if not kept:
-                stats["stale_skipped"] += 1  # nothing left: bullet WAS the step's content
+                stats["nothing_left"] += 1
                 continue
-            rec = dict(hit)
-            rec["target"] = "\n".join(kept)
-            rec["meeting"] = f"{mid}~neg"
-            rec["negative_of"] = bullet[:80]
+            rec = {
+                "meeting": f"{mid}~neg",
+                "lang": "en",
+                "step": step.index,
+                "prompt_version": "sys-v1",
+                "system": step.system,
+                "user": step.user,
+                "target": "\n".join(kept),
+                "is_nop": False,
+                "negative_of": bullet[:80],
+            }
             sample = build_sample(rec)
             if sample["completion"]:
                 negatives.append(sample)
@@ -147,8 +129,8 @@ def main(argv: list[str] | None = None) -> int:
     with args.out.open("w", encoding="utf-8") as sink:
         for s in negatives:
             sink.write(json.dumps(s, ensure_ascii=False) + "\n")
-    print(f"[neg] {stats}")
-    print(f"[neg] {len(negatives)} negative samples -> {args.out}")
+    print(f"[neg2] {stats}")
+    print(f"[neg2] {len(negatives)} negative samples -> {args.out}")
     return 0
 
 

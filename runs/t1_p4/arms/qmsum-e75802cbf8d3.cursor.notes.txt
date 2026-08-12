@@ -1,0 +1,23 @@
+TITLE:
+SUMMARY:
+- Marketing analyzed trends and recommended focusing on fruit and vegetable looks [23:51]
+- UI designer advocated for simplicity in design [17:48]
+- Marketing and UI Designer will focus on creating trends and features for the prototype [26:59]
+- Industrial Designer will develop the look and feel of the prototype [26:30]
+DECISIONS:
+- Use simple battery for cost-effectiveness [2:34]
+- UI designer to prioritize simplicity [17:48]
+- Stick with two batteries for cost-effectiveness [30:12]
+- Develop a detailed design for the prototype [31:50]
+- Marketing to create a prototype and demonstrate user experience [31:04]
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+- Interface design [8:49]
+- Smart features [16:33]
+- Efficient use of space [15:10]
+- Marketing strategy [14:47]
+- Trends and features [27:30]
+- Location and features [28:49]

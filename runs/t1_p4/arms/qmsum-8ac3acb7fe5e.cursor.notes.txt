@@ -1,0 +1,26 @@
+TITLE:
+SUMMARY:
+- Discussed and listed three options for remote control configurations [4:17]
+- L_C_ display and scroll button are new features [13:51]
+- Marketing analyzed user desire for new and technologically innovative features [18:57]
+- Marketing analyzed user desire for new features [21:06]
+- UI designer planned prototype design with and without personal coaching [42:47]
+DECISIONS:
+- Excluded titanium from designs [3:44]
+- Use a programmable speaker unit [13:51]
+- Use a flat surface for buttons to minimize movement [25:16]
+- Keep the option to use wood as a practical choice [28:51]
+- Use company colors in buttons and main remote [36:17]
+ACTIONS:
+- Marketing to research which vegetable colors are most trendy [36:55]
+- UI Designer to develop look and feel design [42:18]
+- Marketing to conduct product evaluation [42:47]
+- UI Designer to develop user interface design [42:47]
+OPEN:
+-
+TOPICS:
+- User desire for new features [21:06]
+- UI simplicity [19:49]
+- Scrolling wheel speed [34:49]
+- Interchangeable cases [35:35]
+- Color scheme [36:55]

@@ -1,0 +1,13 @@
+TITLE: Warehouse Consolidation Plan
+SUMMARY:
+- Approved warehouse consolidation plan [5:30]
+DECISIONS:
+- Merge north and south warehouses into one site [1:00]
+- Approve warehouse consolidation plan [5:30]
+ACTIONS:
+- Submit revised plan by 14 March [6:00]
+- Complete site surveys by end of April [7:00]
+OPEN:
+-
+TOPICS:
+-

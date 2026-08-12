@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+# Reject any push that would upload model weights to GitHub.
+# Weights live on Hugging Face only (Luigi/lfm2.5-350m-cursor-en / -zh).
+# Install: git config core.hooksPath .githooks
+set -uo pipefail
+WEIGHT_RE='\.(gguf|safetensors|pt|bin|onnx)$|checkpoint|optimizer\.'
+offenders=$(git diff --cached --name-only 2>/dev/null | grep -iE "$WEIGHT_RE")
+if [ -n "$offenders" ]; then
+    echo "BLOCKED: model weights must not be pushed to GitHub (HF only):" >&2
+    echo "$offenders" >&2
+    exit 1
+fi
+exit 0

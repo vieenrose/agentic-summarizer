@@ -1,3 +1,62 @@
+# RESULTS — fine-tuned LFM2.5-350M meeting-notes agents
+
+**Focus: the fine-tuned LFM2.5-350M per-language students.** (The earlier FunctionGemma-270M
+path is documented below as the measured negative result that led here — see §270M.)
+
+## Current results (2026-08-12)
+
+**Published models (weights on Hugging Face only):**
+
+| model | repo | size |
+|---|---|---|
+| en CURSOR agent | [Luigi/lfm2.5-350m-cursor-en](https://huggingface.co/Luigi/lfm2.5-350m-cursor-en) | ~215 MB Q4_K_M |
+| zh-TW CURSOR agent | [Luigi/lfm2.5-350m-cursor-zh](https://huggingface.co/Luigi/lfm2.5-350m-cursor-zh) | ~215 MB Q4_K_M |
+
+Per-language split is locked (PLAN §0d): a 350M model holds one language's full protocol at
+a time (measured seesaw); the composite is ~430 MB, inside the 785 MB on-device envelope.
+
+### G1 capability screen (decision chain, deadlines, 100% anchored, no trap)
+
+| model | en | zh-TW |
+|---|---|---|
+| en student (phase-2, real-adapted) | **PASS** — valid-op 100%, UPD at contradiction | — |
+| zh student | — | **PASS** — valid-op 100%, UPD at contradiction |
+
+### T1 tier (n=20, paired vs 9B map-reduce baseline, local judges, 3× majority)
+
+| metric | result | gate |
+|---|---|---|
+| FAITH-claim | **Δ +1.05** (14/2/2, p=0.004) | GT2 **PASS** (≥ +0.3) |
+| **INVERT** (notes stating the opposite of the transcript) | **0 / 20** (baseline: 3) | **0% requirement met** |
+| FAITH-anchor | Δ +0.40 | positive |
+| SYNTH (meeting-level insight) | Δ +0.50 | at the +0.5 gate (1-SE bound below) |
+| COVER | Δ +0.30 | — |
+| GT4 prefill | **0.51×** | PASS (≤ 1.25×) |
+
+The VERIFY/ANCHOR sweep (spec §5.2, implemented here) is part of the deployed pipeline and
+is what turns 12/20 raw inversions into 0/20 — four harness bugs were found and fixed on the
+way (length-biased retrieval, ambiguous delete prefixes, prose-FIX corruption, judge
+stochasticity → 3× majority).
+
+### Micro-cell (n=6, directional only)
+
+GT3 SYNTH **+2.17**, GT4 1.22×, COVER +2.33 — the agency signal before the sweep; FAITH not
+evaluable (baseline produced empty notes on 1-chunk meetings).
+
+### The path that led here (in one line)
+
+FunctionGemma-270M: measured impossible for state-gated op selection (6 data configs,
+full-FT + LoRA, counterfactual twins, probes; Qwen-0.8B control passes) → Qwen3.5-0.8B:
+en G1 PASS, heavier than wanted → **LFM2.5-350M (linear attention): state-gating solved on
+the first run at the same scale; T1 gates above after phase-2 real-data adaptation + sweep.**
+
+**Caveats that must accompany every number**: no real clocks (150 wpm synthesized);
+zh training data is synthetic-only; zh T1 is synthetic; n=20/tier; judge-noise floor
+±0.4–0.5 (Δ < 0.5 is a tie per meeting); train/eval distributions match exactly, system
+prompt included.
+
+---
+
 # RESULTS — teacher screen, gemma-4-31B-it
 
 **Date:** 2026-08-10 · Harness `sys-v1` · 2× RTX 5090 · llama.cpp `llama-server`

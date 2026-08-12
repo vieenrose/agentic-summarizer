@@ -1,0 +1,25 @@
+TITLE:
+SUMMARY:
+- Prototype design meeting to review technical specifications and budget allocation [7:11]
+- Discussed role and information gaps in the project [25:55]
+- Excluded whiteboard as it was used [22:19]
+- Discussed task definitions in the project report [26:17]
+- Discussed team collaboration and process for brainstorming [30:09]
+DECISIONS:
+- Develop prototype for internal review [0:48]
+- Exclude touchscreen for basic functions [2:58]
+- Allow multiple colors for the TV [3:48]
+- Use a face-like appearance in presentations [37:38]
+- Include champagne in meeting [43:34]
+ACTIONS:
+- Marketing to evaluate product from scratch [17:53]
+- Marketing to put all documentation into reports [40:31]
+OPEN:
+-
+TOPICS:
+- Technical specifications [7:11]
+- Budget allocation [7:11]
+- Expanding voice recognition [19:39]
+- Project process [20:53]
+- Project evaluation [39:02]
+- Disfluencies [41:07]

@@ -1,0 +1,26 @@
+TITLE: Production and Design Evaluation
+SUMMARY:
+- Discussion on finance and financial limits [0:23]
+- Evaluation of the production process and design [0:29]
+- Evaluation of the project and cost analysis [38:57]
+DECISIONS:
+- Initial presentation of evaluation criteria and financial limits [1:33]
+- Locator be placed on T_V_ [15:52]
+- Space remote score: 3 [20:39]
+- No need for whiteboard digital pens [35:09]
+- Costs are within budget [38:45]
+ACTIONS:
+- Marketing to present evaluation criteria and financial limits [0:23]
+- Prepare evaluation of new design criteria [10:01]
+- Put marks in evaluation criteria [10:42]
+- Marketing to decide whether to flag the issue for management [13:09]
+OPEN:
+- Review of the initial evaluation criteria [0:23]
+- Budget for new design evaluation criteria [7:47]
+TOPICS:
+- R_S_I_issue [12:38]
+- Finance and financial limits [21:31]
+- Space remote [20:21]
+- Sample sensor [26:27]
+- Scroll wheel and pushbuttons [28:20]
+- Evaluation criteria [30:04]

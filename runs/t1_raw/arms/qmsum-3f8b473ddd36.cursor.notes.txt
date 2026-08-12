@@ -1,0 +1,23 @@
+TITLE: Remote Control Conceptual Design
+SUMMARY:
+- Discussion on component design and EV compatibility [3:56]
+- Explored alternative energy sources [2:05]
+- Analyzed visual signal transmission [4:47]
+- Discussed prototype design and non-remote remote [38:57]
+DECISIONS:
+- Include visible light as a signal [4:47]
+- Keep the LCD display for compatibility [7:14]
+- Test with different case materials [7:05]
+- Include basic menu buttons and a sidebar [34:47]
+- Target youth market with 18-35 year olds [36:21]
+ACTIONS:
+- Research which buttons will be most visible [34:47]
+OPEN:
+-
+TOPICS:
+- Component design [3:56]
+- EV compatibility [3:56]
+- Cost analysis [17:08]
+- Menu options [33:39]
+- Prototype design [38:57]
+- Non-remote remote design [38:57]

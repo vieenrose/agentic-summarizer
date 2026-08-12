@@ -826,3 +826,28 @@ confirmed (eval loss 0.026 on the real-heavy set).
 **0 inversions / FAITH +1.05** via four harness bugs (retrieval, prefixes, prose-FIX,
 judge stochasticity), the VERIFY/ANCHOR sweep (spec §5.2, previously unimplemented),
 majority voting, a working zh baseline, and phase-2 real-data training.
+
+---
+
+## Sweep-free (raw) measurement of the phase-2 checkpoint — VoxSumDroid feedback item 1 (2026-08-12)
+
+External evaluation (VoxSumDroid, on-device consumer) noted that the 0%-inversion headline
+was sweep-dependent and that the phase-2 checkpoint's raw rate was unmeasured. Measured now
+(T1, n=20, same judges/protocol, **no VERIFY/ANCHOR sweep**):
+
+| configuration | INVERT | note |
+|---|---|---|
+| pre-phase-2 model, raw (previously the only raw number) | 12/20 (60%) | from the earlier run |
+| **phase-2 model, raw (measured now)** | **4/20 (20%)** | real-data adaptation helped the model itself |
+| phase-2 model, + sweep | 0/20 | headline number |
+
+Raw survivors (characterised): 1 real precision inversion ("old-fashioned" stated as
+"fashionable"), 1 zh stale-state bullet (rejection retained after the later approval),
+1 truncated fabrication, 1 borderline judge call (the evidence line supports the claim).
+
+**Sweep-feedback-into-training: not yet implemented** — DROP/FIX outcomes are currently
+judge-time corrections only, not SFT signal. Stated explicitly per the feedback: **the
+target metric for the next iteration is raw INVERT, not swept INVERT.** The phase-2 raw
+improvement (12 → 4) shows the model-side lever works; harvesting sweep DROP cases
+(contradiction/fabrication demonstrations) as training signal is the concrete next step
+toward a checkpoint whose raw rate approaches the swept rate.

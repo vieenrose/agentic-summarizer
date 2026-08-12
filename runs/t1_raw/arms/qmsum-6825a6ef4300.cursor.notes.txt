@@ -1,0 +1,22 @@
+TITLE: Aurora Interchangeable Categories
+SUMMARY:
+- Discussion on intermediate categories and phoneme recognition error rates [5:51]
+- Discussion on signal-to-noise ratio and DC offset compensation in audio data [20:47]
+- Discussion on DC offset and signal-to-noise ratio in audio data [20:59]
+- Comparison of SRI and Aurora systems' normalization methods [24:50]
+DECISIONS:
+- Training on larger datasets for better robustness [6:09]
+- Test SRI on noisy TI-digits for performance [30:19]
+- Include energy and zero-crossing detection in VAD for robustness [36:18]
+- Apply VTS in cepstral domain for robustness [53:39]
+ACTIONS:
+- Grad E to use the Macrophone set for speech and NOP [6:09]
+- PhD C to train gender-dependent models for SRI digit modeling [26:47]
+- Compare results with and without training on TI-digits [28:17]
+- Try different time constants for SNR estimation [43:22]
+- Read digits for performance analysis [55:11]
+OPEN:
+-
+TOPICS:
+- SRI vs Aurora system differences [26:09]
+- SRI system performance on noisy digit data [28:28]

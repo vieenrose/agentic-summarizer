@@ -1,0 +1,22 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on functional components and remote control design goals [7:04]
+- Discussion on basic buttons and function design [15:35]
+- Discussed remote control design goals and features [34:57]
+- Explored the possibility of beeper buttons for advanced features [37:56]
+DECISIONS:
+- Target groups and functions of the remote control will be defined by end of meeting [2:14]
+- Functional requirements to be met [17:08]
+- Include voice recognition for basic commands [33:46]
+- Remote must be near the user [35:34]
+- Prepare questionnaire and summary [41:56]
+ACTIONS:
+-
+OPEN:
+- Decide between screen-based or direct function design [15:26]
+TOPICS:
+- Functional design of the remote [0:31]
+- Remote control design goals [8:31]
+- Function design [9:51]
+- User survey results [18:46]
+- Voice recognition and smart features [25:19]

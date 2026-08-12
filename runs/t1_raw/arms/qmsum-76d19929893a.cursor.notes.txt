@@ -1,0 +1,17 @@
+TITLE: Project Kickoff Meeting: Initial Design Review
+SUMMARY:
+- Kickoff meeting to discuss initial design of the television remote control and establish team roles and process. [11:26]
+DECISIONS:
+- Design a new television remote control for young people and modernize its design. [4:46]
+- Include a white rabbit in the design for initial concept review [6:38]
+- Target retail price: 25 Euros internationally [10:34]
+- Use plastic, hard, and rubbery buttons for durability [23:06]
+- Universal remote transmission standard [24:34]
+ACTIONS:
+- Keep the remote and D_V_D_ player compatible [14:30]
+- Marketing to research front and technical design [27:10]
+OPEN:
+-
+TOPICS:
+- Initial design review [5:24]
+- Target retail price [11:25]

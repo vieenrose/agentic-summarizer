@@ -1,0 +1,26 @@
+TITLE: Remote Control Configuration Discussion
+SUMMARY:
+- Discussion on different components and their properties [0:48]
+- Scroll button design [13:32]
+- Marketing shared research on sliding features [25:38]
+- Discussed solar panel rubber constraints [38:14]
+- Developed prototype design with and without voice recognition [42:47]
+DECISIONS:
+- Discussed various components and their properties [0:48]
+- Include voice recognition for basic commands [19:20]
+- Include touchscreen for basic commands [22:17]
+- Keep the option to use L_C_D_ display for fast navigation [31:09]
+- Include labels in buttons for company colors [37:30]
+ACTIONS:
+- Discuss L_C_D_ and spinning with the team [19:07]
+- Marketing to present prototype to external partners [42:47]
+- UI Designer to develop look and feel design [42:18]
+OPEN:
+-
+TOPICS:
+- Remote control components [0:48]
+- Material durability [21:03]
+- Interchangeable parts [28:15]
+- Color scheme [36:17]
+- Solar panel rubber constraints [38:14]
+- Prototype design with and without voice recognition [42:47]

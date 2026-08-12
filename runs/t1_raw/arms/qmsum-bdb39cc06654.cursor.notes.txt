@@ -1,0 +1,19 @@
+TITLE: SmartKom System Admin
+SUMMARY:
+- Discussion on spatial descriptions and reference frames. [33:04]
+- Discussion on semester and projects. [58:33]
+DECISIONS:
+- Include basic information in demo requests. [13:17]
+- Link to webpage for spatial description. [39:55]
+- Finish all next Monday. [58:25]
+ACTIONS:
+- Perform initial tests with and without modules. [50:27]
+- Look for free and GUI-compatible packages. [22:50]
+- Professor C to send link to webpage. [39:56]
+- Grad B to email Ami for a consulting call. [56:28]
+OPEN:
+- System's ability to handle non-English words and structures. [6:47]
+TOPICS:
+- System structure and training. [3:11]
+- Spatial description and training. [37:22]
+- Parsers and image schemas. [59:55]

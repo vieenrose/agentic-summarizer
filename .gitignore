@@ -17,3 +17,4 @@ runs/*/gguf*
 *.pt
 runs/*/final/
 runs/*/checkpoint-*/
+unsloth_compiled_cache/

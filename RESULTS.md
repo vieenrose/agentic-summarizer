@@ -982,3 +982,15 @@ new real training data (the root lever) and the eval-time sweep (already 0/20 sw
 |---|---|---|---|
 | 1st: LFM2.5-350M p4 | PASS/PASS (composite) | **≈3/20 (15%)** | no (per-language pair) |
 | 2nd: MiniCPM5-1B p3 | PASS/PASS (one model) | 5/20 (25%) | yes |
+
+## Apodex-1.0-0.8B-SFT as on-device FAITH verifier: measured negative (2026-08-12)
+
+Probe: 40 claim-mode bullets from the p4 T1 judged outputs (gpt-oss verdicts, 3x
+majority), same `_FAITH_SYS` + `faith_prompt` prompts, `enable_thinking=False`,
+left-padding, temp 0. Apodex-1.0-0.8B-SFT (Qwen3.5-0.8B, verification-centric deep-
+research post-training) agrees with gpt-oss on **2/40 (5%)** — it systematically
+answers SUPPORTED for bullets gpt-oss marks UNSUPPORTED, and does not emit the
+1-word verdict format (long agentic chains even with thinking off). It is a research
+evidence-chain model, not a claim-verdict classifier for the FAITH protocol. As-is it
+cannot replace the sweep judge. A FAITH-verifier fine-tune of a 0.8B base (from the
+sweep's own (bullet, evidence, verdict) triples) remains a possible future probe.

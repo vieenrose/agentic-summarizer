@@ -90,21 +90,23 @@ data configurations, full-FT and LoRA, unconfounded counterfactual twins and min
 **LFM2.5-350M's linear attention solves the state-gating on the first run** at the same
 scale — the architecture, not just size, was the wall.
 
-## What has been measured
+## Results — the fine-tuned LFM2.5-350M agents
 
-Every number is in `RESULTS.md` with its full caveats.
+**The student is the fine-tuned LFM2.5-350M** (per-language en/zh pair, ~215 MB each at
+Q4_K_M, on HF). The FunctionGemma-270M path that preceded it is recorded as a measured
+negative result (it cannot learn the protocol's state-gated op selection — PLAN §0c).
 
-| finding | status |
+| result | value |
 |---|---|
-| **270M (FunctionGemma): measured impossible** for state-gated op selection — 6 data configs, full-FT + LoRA, counterfactual twins, probes; Qwen 0.8B control passes | recorded negative result (PLAN §0c) |
-| **LFM2.5-350M G1 capability screen** (decision chain, deadlines, anchors, trap), en + zh-TW | **PASS** (valid-op 100%) |
-| **T1 tier (n=20, paired vs 9B map-reduce baseline)** | **INVERT 0/20** (baseline 3) · **FAITH-claim +1.05** (14/2/2, p=0.004) · FAITH-anchor +0.40 · SYNTH +0.50 · COVER +0.30 · **GT4 0.51×** |
-| Trace set (train split) | valid-op 95.4%, raw anchor 100%, revision share 21.4% |
-| VERIFY/ANCHOR sweep (spec §5.2, implemented this project) | turns 12/20 raw inversions into 0/20; 4 harness bugs fixed (retrieval, prefixes, prose-FIX, judge stochasticity) |
+| G1 capability screen, en + zh-TW | **PASS** (valid-op 100%) |
+| T1 (n=20, paired vs 9B map-reduce) — **INVERT** | **0 / 20** (baseline: 3) |
+| T1 — FAITH-claim | **Δ +1.05** (14/2/2, p=0.004) |
+| T1 — SYNTH / COVER | +0.50 (at gate) / +0.30 |
+| GT4 prefill | **0.51×** |
+| micro (n=6, directional) | SYNTH +2.17, GT4 1.22× |
 
-**FAITH is only interpretable as a relative gate.** Human QMSum reference summaries score
-17–20% supported against our arms' 47–58% — the metric penalises abstraction, so absolute
-values are meaningless and only the paired delta is usable.
+The VERIFY/ANCHOR sweep (spec §5.2) is part of the pipeline and takes the raw 12/20
+inversion rate to 0/20. Full numbers and caveats: [`RESULTS.md`](RESULTS.md).
 
 ## Known gaps and open risks
 

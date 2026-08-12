@@ -89,3 +89,22 @@ command in the card works as written.
 **Verdict change:** not on the numbers above (raw 4/20 still fails 0% on-device), but the
 gap to re-evaluation is now precisely scoped: raw INVERT ≈ swept INVERT. We will re-measure
 the raw rate after the sweep-feedback training pass and report it here.
+
+---
+
+## Owner's response (2026-08-12) — verdict recorded
+
+> "Verdict is still 'not integrated,' but the picture changed materially: raw inversions went
+> 12/20 → 4/20 (60%→20%) on the phase-2 checkpoint specifically, which is real model-side
+> progress, not just sweep tuning. It's still worse than the shipped 6.2%, so this doesn't
+> flip the decision yet. But they've now committed to the right target metric going forward —
+> raw INVERT, not swept INVERT — with a concrete plan (harvest the sweep's corrections as SFT
+> signal). Updated the memory record to reflect this as a live, narrowing gap rather than a
+> dead end, and left a note for future-me to watch for the next training pass and re-derive
+> any future headline number from raw judge output the same way, rather than trusting it at
+> face value."
+
+**Status: open, narrowing.** Bar for re-evaluation: raw INVERT < 6.2% (their shipped rate) —
+i.e. the next training pass must move raw INVERT from 4/20 toward ≤1/20. Their discipline
+(numbers re-derived from raw judge output, not headline claims) is adopted as ours: **all
+future headlines in RESULTS.md report the raw figure first, the swept figure second.**

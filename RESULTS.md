@@ -876,3 +876,12 @@ exactly the reported quality — G1 PASS, T1 0/20 swept (4/20 raw), FAITH +1.05,
 Good enough for the faithfulness gate with the sweep; GT3 sits exactly at +0.50; and for
 on-device 0%-without-judges the limiter is the model's raw fabrication rate (4/20), not the
 quantization — the raw-INVERT training pass is the next lever, not a different quant.
+
+---
+
+## External verdict state (VoxSumDroid, 2026-08-12)
+
+Owner's response recorded in `agentic-summarizer-feedback.md`: still "not integrated", but
+the raw 12/20 → 4/20 measurement is acknowledged as real model-side progress; the gap is
+live and narrowing. **Their re-evaluation bar: raw INVERT < their shipped 6.2%.** Our
+adopted discipline: report raw figures first, swept figures second, in every headline.

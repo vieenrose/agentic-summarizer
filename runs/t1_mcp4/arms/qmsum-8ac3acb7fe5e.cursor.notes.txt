@@ -1,0 +1,22 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Discussed four types of remote control components and their features. [5:57]
+- Discussed three available remote control case options and selected the curved one [25:24]
+DECISIONS:
+- Include scroll button and voice recognition if possible. [13:33]
+- Include voice recognition as essential for user interface simplicity. [16:43]
+- Choose between flat or curved surface for ease of use [24:06]
+- Include push-buttons for simplicity and ease of use [30:17]
+- Use plastic or titanium cases instead of rubber [38:29]
+ACTIONS:
+- Use titanium if space allows for exercise features. [6:21]
+- Test different UI styles against user friendliness and ease of learning. [11:21]
+OPEN:
+- Determine which components are suitable for the target audience. [5:38]
+- Include sample sender with voice recognition? [13:51]
+- Determine if LCD display is necessary based on TV speed [29:05]
+- Interchangeable cases with different shapes and colors? [37:24]
+TOPICS:
+- Remote control components [1:42]
+- UI features and user-friendliness [11:21]
+- Remote case design [38:23]

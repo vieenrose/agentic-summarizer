@@ -994,3 +994,19 @@ answers SUPPORTED for bullets gpt-oss marks UNSUPPORTED, and does not emit the
 evidence-chain model, not a claim-verdict classifier for the FAITH protocol. As-is it
 cannot replace the sweep judge. A FAITH-verifier fine-tune of a 0.8B base (from the
 sweep's own (bullet, evidence, verdict) triples) remains a possible future probe.
+
+## Phase-5 (350M primary): 173 new real-meeting traces + p4 mix; MiniCPM-p4 (2026-08-12)
+
+**New real data (root lever):** 15 previously-unused distinct QMSum transcripts from the
+HF cache (same Canadian-committee provenance as the pool; 5k-50k tok; 24 files incl. the
+10 already-traced train meetings re-traced) → traced at 2048 with the judge filter
+(Z1 80 records / Z2 103 records). phase-5 = p4 (624) + 173 new = **797 samples**.
+
+**350M p5** (resume p4/final, LR 2e-5, 2 epochs): G1 PASS (100% valid-op).
+
+**MiniCPM-p4** (trapfix + its own 230 harvest negatives ×2, LR 1e-5, 2 epochs):
+G1 PASS both languages with **100% valid-op on both** (p3: 88% zh). BUT raw T1 INVERT
+went 5/20 → **6/20** (4bfcff6d8771, 6825a6ef4300 in; 3f8b473ddd36, bdb39cc06654 out):
+the 230-negative dose over-suppresses — G1/op-quality improves, raw faithfulness degrades
+(over-cautious rewrites misstate borderline claims). Dose sensitivity confirmed again
+(350M p3 broke G1 at 144; MiniCPM raw degrades at 460).

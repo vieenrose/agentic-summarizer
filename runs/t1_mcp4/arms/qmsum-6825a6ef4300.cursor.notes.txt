@@ -1,0 +1,18 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on completing the TORRENT chip project within a month [5:51]
+- Discussion on using larger data sets for speech recognition [6:09]
+- Comparison of signal processing approaches for echo removal [13:31]
+- Discussion on comparing signal processing approaches for echo removal [30:46]
+- Discussion on combining different signal processing methods [54:28]
+DECISIONS:
+- Use clean training data to normalize models [27:17]
+- Combine MLP and energy-based VAD to reduce noise (39:51-39:59) [39:58]
+ACTIONS:
+- Grad F to submit a full proposal by Monday [1:39]
+- Try different time constants for smoothing to see improvement [42:25]
+OPEN:
+- Performance of next step (phonetic features) expected by [5:57]
+- Future measurement of reverberation time needed for optimal processing [11:57]
+TOPICS:
+-

@@ -1,0 +1,19 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on conceptual design and final decisions regarding the remote's form and function. [7:48]
+DECISIONS:
+- Presenting to Nathan the option to go first [1:28]
+- Provisional touch screen due to cost constraints [19:03]
+- Omit the touch screen in favor of voice recognition [25:10]
+- Omit the touch screen in favor of voice recognition. [31:18]
+- Focus on basic design and features for young markets [38:16]
+ACTIONS:
+- Develop a prototype before basic models are released [25:24]
+- Build prototype using available materials [39:50]
+OPEN:
+- Selection between plastic, rubber, or wood for the case body [3:02]
+- 是否考虑在 casing 顶部增加显示板？ [14:37]
+- Material costs for basic prototypes [25:34]
+TOPICS:
+- Component design and options [3:56]
+- Expanding voice recognition capabilities [23:15]

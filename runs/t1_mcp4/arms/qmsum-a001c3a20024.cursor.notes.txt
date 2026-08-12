@@ -1,0 +1,24 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussed functional components and identification process [8:26]
+- Discussed functional requirements and user interface design [11:23]
+- Discussed remote control features and user needs [20:30]
+- Discussed wrapping up design specifications considering age target [38:36]
+DECISIONS:
+- Include only basic buttons for now [12:51]
+- Target young audience for stylish remote control [26:08]
+- Target young, hip, and trendy consumers for the remote [33:22]
+- Focus on basic buttons and voice recognition for young users [38:36]
+ACTIONS:
+- ID designer to provide technical components and integrate with marketing/user interface [3:26]
+- Research voice recognition popularity among 25-35 year olds [27:43]
+- Provide technical components and user interface concept summaries via email [39:21]
+OPEN:
+- Define target group and remote functions by end of meeting [1:47]
+- How to implement basic buttons without extra features [15:26]
+- Voice recognition via old T_V_ would limit features [34:17]
+- Define which functions will be included in the remote control package [38:30]
+TOPICS:
+- Functional design components [7:04]
+- Voice recognition [34:07]
+- User interface concept [41:03]

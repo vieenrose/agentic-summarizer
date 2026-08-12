@@ -1,0 +1,17 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Discussion on remote features and design constraints [6:57]
+- Discussion on design challenges and user experience [38:10]
+DECISIONS:
+- Remote will use voice recognition and shape for basic functions [3:57]
+- Discussing the voice recognition area and solar cells [11:21]
+- Keep the solar panel [20:06]
+- Move to branch out with voice recognition later [19:40]
+- Discussing de-briefing in next meeting [32:37]
+ACTIONS:
+- Industrial Designer to develop remote prototype [3:57]
+OPEN:
+- Need to determine if rot factors are a concern [6:14]
+- How to handle the lack of a granola market [20:21]
+TOPICS:
+- Remote features [6:48]

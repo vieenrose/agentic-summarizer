@@ -1,0 +1,20 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+- Discussion on switching to science mode for the next meeting [12:45]
+- Discussion on English vs Japanese description of location [29:36]
+DECISIONS:
+-
+ACTIONS:
+- Explain the concept-to-speech approach to speech synthesis [7:38]
+- Prepare an internal demo showing what the ontology, constructions, and engine are [14:45]
+- Grad B to continue researching spatial descriptions in German [32:25]
+- Grad E to continue researching spatial descriptions in German [56:07]
+- PhD A to arrange for Ami to drop by at the German AI center [55:57]
+- Grad B to contact Bhaskara for a reading group on schema formalization [1:00:22]
+OPEN:
+- Difficulty starting the synthesis module due to LISP structure [3:11]
+- Next meeting to focus on fulfilling research goals beyond demos [10:50]
+TOPICS:
+- Smartkom project report [0:05]
+- Internal demo [12:47]
+- System integration [15:46]

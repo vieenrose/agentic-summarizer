@@ -1,0 +1,19 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on remote control components and design goals [6:01]
+- Discussion on interface complexity and design goals [7:41]
+- Discussion on remote control design goals and trends [24:38]
+DECISIONS:
+- Use simple push buttons and speech recognition to reduce cost [5:02]
+- Use simple push buttons and speech recognition [10:01]
+- Change interface model to avoid millennium style [9:57]
+- Remote control should be smart and able to understand user preferences [16:34]
+- Explore titanium panels on a rubber body [29:44]
+ACTIONS:
+- User Interface designer to develop instruction manual [8:56]
+- UI designer to create a "who uses this" feature [16:44]
+OPEN:
+- Selection of battery type and display form [6:01]
+- How to define speech recognition in device mode [7:06]
+TOPICS:
+- Interface design [8:41]

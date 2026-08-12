@@ -1,0 +1,18 @@
+TITLE: Kickoff Meeting: Television Remote Control
+SUMMARY:
+- Project manager to present the kick-off meeting agenda and discuss the design of the television remote control. [1:03]
+- Discussed design of television remote control and compatibility with D_V_D_ player [12:27]
+DECISIONS:
+- Target international sales price: 25 Euros [11:10]
+ACTIONS:
+- Design a new television remote control. [1:03]
+- Calculate target international sales price: 25 Euros [10:46]
+- Design a universal remote control [12:21]
+OPEN:
+- Decision on which animal to draw on the Smartboard. [4:28]
+- Calculate profit aim: 50 million Euros [10:46]
+- Remote design shape must be useful [17:16]
+- Case material and button size specifics [22:54]
+TOPICS:
+- Project plan from "Real Reaction" [0:38]
+- Remote control design [8:00]

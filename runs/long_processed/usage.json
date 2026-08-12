@@ -1,0 +1,19 @@
+[
+  {
+    "meeting_id": "qmsum-2a7e262cb50b",
+    "arm": "cursor",
+    "lang": "en",
+    "prompt_version": "sys-v1",
+    "chunk_budget": 2048,
+    "calls": 15,
+    "prefill_tokens": 38357,
+    "decode_tokens": 847,
+    "valid_op_rate": 0.7450980392156863,
+    "anchor_rate_raw": 0.9310344827586207,
+    "coverage_gaps": 0,
+    "sweep_calls": 54,
+    "sweep_dropped": 5,
+    "sweep_fixed": 3,
+    "sweep_anchors_repaired": 18
+  }
+]

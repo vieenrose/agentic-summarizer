@@ -65,6 +65,11 @@ class LlamaServer:
     seed: int | None = 0
     grammar: str | None = None
     thinking: bool = False
+    #: Some templates (MiniCPM5) INSERT an empty <think> block when
+    #: enable_thinking=false is sent — a surface our SFT never showed the model
+    #: (measured: MiniCPM then fills it with base-RL reasoning, empty content).
+    #: Set False to omit the kwarg entirely; the template then omits the block.
+    send_thinking_kwarg: bool = True
     timeout: float = 600.0
     #: Raw reasoning from the last call, for logs. Never used as a training target.
     last_reasoning: str = ""
@@ -86,7 +91,7 @@ class LlamaServer:
             # an empty `content` that is indistinguishable from a genuine NOP.
             "stop": ["<end_of_turn>"],
         }
-        if not self.thinking:
+        if not self.thinking and self.send_thinking_kwarg:
             payload["chat_template_kwargs"] = {"enable_thinking": False}
         if self.seed is not None:
             payload["seed"] = self.seed

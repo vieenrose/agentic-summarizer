@@ -1,0 +1,25 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- ID presented a functional overview of the remote control system, highlighting its components and working mechanism. [8:32]
+- ID presented a functional overview of the remote control system. [8:55]
+- Marketing analyzed user feedback on remote control aesthetics and function. [21:35]
+- User Interface was most popular among the 25-35 age group [27:55]
+- Discussed wrapping up remote control specifications to reduce age-appropriate distractions [38:36]
+DECISIONS:
+- Target first user group: three designers and Project Manager [2:51]
+- Include video and D_V_D features to improve user experience. [17:16]
+- Exclude unnecessary buttons for intuitive design. [20:47]
+- Target 25-35 age group and over [33:22]
+- Focus on simplicity and key buttons while including voice recognition [36:01]
+ACTIONS:
+- User Interface requirements must include on-off button, channel numbers, and volume [12:16]
+- Include voice recognition to meet young audience demand [34:14]
+- Present technical requirements via email and save minutes in project documents [39:57]
+OPEN:
+- How to implement basic buttons vs fancy UI [14:53]
+- Voice recognition implementation is complex [34:17]
+- Feasibility of adding beeper feature vs other options [39:09]
+TOPICS:
+- Functional design overview [7:04]
+- User interface requirements [17:06]
+- Voice recognition [33:46]

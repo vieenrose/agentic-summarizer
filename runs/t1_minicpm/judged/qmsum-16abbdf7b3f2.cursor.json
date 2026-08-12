@@ -1,0 +1,318 @@
+{
+  "meeting_id": "qmsum-16abbdf7b3f2",
+  "system": "cursor",
+  "faith_claim": 2.8666666666666667,
+  "faith_anchor": 2.0666666666666664,
+  "cover": 4,
+  "synth": 3,
+  "inverted": false,
+  "unsupported": 8,
+  "judges": {
+    "faith": "local:8090/gpt-oss-20b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "DECISIONS",
+      "bullet": "Meeting to be held in private for the remainder of the session",
+      "anchor": 4011,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Check translation back on [4:24]",
+      "anchor": 296,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Reconsider the plan for surge capacity in paediatric care",
+      "anchor": 337,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Continue to meet with health leads and families to understand the impact on mental health",
+      "anchor": 923,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Publish the expanded definition of vulnerable children and young people",
+      "anchor": 2358,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Implement a full suite of impact assessments on coronavirus legislation for childcare and education",
+      "anchor": 3038,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Discuss the creation of a bespoke grant scheme for under-resourced providers",
+      "anchor": 3334,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Whether current capacity in surge capacity is enough for critical care",
+      "anchor": 302,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Impact of coronavirus on vulnerable children's school attendance",
+      "anchor": 2068,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Do we need to revise the Welsh Government definition of vulnerable children",
+      "anchor": 2327,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of coronavirus on children and health services",
+      "anchor": 158,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Perinatal mental health and support",
+      "anchor": 1626,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of coronavirus on children's school attendance",
+      "anchor": 2068,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of coronavirus on foster care and children's rights",
+      "anchor": 2783,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Support for childcare sector providers",
+      "anchor": 3261,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Meeting to be held in private for the remainder of the session",
+      "anchor": 4011,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Check translation back on [4:24]",
+      "anchor": 296,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Reconsider the plan for surge capacity in paediatric care",
+      "anchor": 337,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Continue to meet with health leads and families to understand the impact on mental health",
+      "anchor": 923,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Publish the expanded definition of vulnerable children and young people",
+      "anchor": 2358,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Implement a full suite of impact assessments on coronavirus legislation for childcare and education",
+      "anchor": 3038,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Discuss the creation of a bespoke grant scheme for under-resourced providers",
+      "anchor": 3334,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Whether current capacity in surge capacity is enough for critical care",
+      "anchor": 302,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Impact of coronavirus on vulnerable children's school attendance",
+      "anchor": 2068,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Do we need to revise the Welsh Government definition of vulnerable children",
+      "anchor": 2327,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of coronavirus on children and health services",
+      "anchor": 158,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Perinatal mental health and support",
+      "anchor": 1626,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of coronavirus on children's school attendance",
+      "anchor": 2068,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Impact of coronavirus on foster care and children's rights",
+      "anchor": 2783,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Support for childcare sector providers",
+      "anchor": 3261,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    }
+  ]
+}

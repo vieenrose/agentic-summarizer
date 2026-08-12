@@ -1,0 +1,258 @@
+{
+  "meeting_id": "qmsum-e75802cbf8d3",
+  "system": "cursor",
+  "faith_claim": 2.666666666666667,
+  "faith_anchor": 2.0,
+  "cover": 3,
+  "synth": 2,
+  "inverted": false,
+  "unsupported": 7,
+  "judges": {
+    "faith": "local:8090/gpt-oss-20b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on remote control components and design decisions",
+      "anchor": 388,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on remote control design trends and specifications",
+      "anchor": 1478,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Use simple push buttons and speech recognition to reduce cost",
+      "anchor": 302,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Target low-cost battery with minimal shape",
+      "anchor": 397,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Do not use the millennium remote control",
+      "anchor": 618,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Trends should look natural, round, and simple",
+      "anchor": 1456,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Explore titanium panels on a rubber body for a fruit-shaped shape",
+      "anchor": 1784,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "User Interface designer to change the color of the LCD screen",
+      "anchor": 707,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "How to define speech recognition in the absence of additional technology",
+      "anchor": 426,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Remote control components",
+      "anchor": 26,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Interface design",
+      "anchor": 536,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Remote control trends and specifications",
+      "anchor": 1478,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on remote control components and design decisions",
+      "anchor": 388,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on remote control design trends and specifications",
+      "anchor": 1478,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Use simple push buttons and speech recognition to reduce cost",
+      "anchor": 302,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Target low-cost battery with minimal shape",
+      "anchor": 397,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Do not use the millennium remote control",
+      "anchor": 618,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Trends should look natural, round, and simple",
+      "anchor": 1456,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Explore titanium panels on a rubber body for a fruit-shaped shape",
+      "anchor": 1784,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "User Interface designer to change the color of the LCD screen",
+      "anchor": 707,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "How to define speech recognition in the absence of additional technology",
+      "anchor": 426,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Remote control components",
+      "anchor": 26,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Interface design",
+      "anchor": 536,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Remote control trends and specifications",
+      "anchor": 1478,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    }
+  ]
+}

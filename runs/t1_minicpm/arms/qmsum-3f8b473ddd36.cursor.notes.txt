@@ -1,0 +1,26 @@
+TITLE: Remote Control Prototype Design
+SUMMARY:
+- Discussion on conceptual design and final decisions for the prototype [1:48]
+DECISIONS:
+- User to speak first [1:38]
+- Explore alternative battery chemistries [6:08]
+- Discussing the trade-off between voice recognition and touch screen [21:01]
+- Voice recognition will be the primary feature [25:10]
+- Focus on simplicity and versatility in design [38:16]
+ACTIONS:
+- Research team to develop voice command system based on standard responses [12:09]
+- Explore cheaper manufacturing options [19:45]
+- Develop basic prototype with voice recognition [25:24]
+- Discuss cost issue later [32:03]
+- Develop basic user interface with minimal buttons [39:50]
+OPEN:
+- Selection of remote case material [3:02]
+- Define target profit margin [17:57]
+- Remote case material [25:48]
+TOPICS:
+- Component design and options [3:56]
+- Marketing piloting and trends [7:24]
+- Interface concepts and design [10:29]
+- Cost analysis and pricing [18:25]
+- Voice command system [25:10]
+- Style case selection [37:18]

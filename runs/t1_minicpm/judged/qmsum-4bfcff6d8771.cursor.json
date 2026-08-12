@@ -1,0 +1,298 @@
+{
+  "meeting_id": "qmsum-4bfcff6d8771",
+  "system": "cursor",
+  "faith_claim": 2.7142857142857144,
+  "faith_anchor": 2.428571428571429,
+  "cover": 2,
+  "synth": 1,
+  "inverted": false,
+  "unsupported": 8,
+  "judges": {
+    "faith": "local:8090/gpt-oss-20b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "Presentation of prototype and evaluation criteria",
+      "anchor": 23,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on reducing features to meet budget constraints",
+      "anchor": 1997,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on vegetable shape, color, and simplicity",
+      "anchor": 1037,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Include seven-point evaluation scale",
+      "anchor": 497,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Remote control to be sold for $249 (eight dollars)",
+      "anchor": 1290,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Include beeping function as alternative to speaker",
+      "anchor": 1881,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Final design approved for $249",
+      "anchor": 2477,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Compare next page's evaluation marks against list",
+      "anchor": 561,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Marketing to rate the interface as intuitive or not",
+      "anchor": 1030,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Present prototype and evaluation criteria for management feedback",
+      "anchor": 1939,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Submit final questionnaire and summary by [40:46]",
+      "anchor": 2458,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Patent for this design",
+      "anchor": 2288,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Evaluation criteria",
+      "anchor": 23,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "User interface design",
+      "anchor": 551,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Presentation of prototype and evaluation criteria",
+      "anchor": 23,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on reducing features to meet budget constraints",
+      "anchor": 1997,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on vegetable shape, color, and simplicity",
+      "anchor": 1037,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Include seven-point evaluation scale",
+      "anchor": 497,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Remote control to be sold for $249 (eight dollars)",
+      "anchor": 1290,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Include beeping function as alternative to speaker",
+      "anchor": 1881,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Final design approved for $249",
+      "anchor": 2477,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Compare next page's evaluation marks against list",
+      "anchor": 561,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Marketing to rate the interface as intuitive or not",
+      "anchor": 1030,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Present prototype and evaluation criteria for management feedback",
+      "anchor": 1939,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Submit final questionnaire and summary by [40:46]",
+      "anchor": 2458,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Patent for this design",
+      "anchor": 2288,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Evaluation criteria",
+      "anchor": 23,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "User interface design",
+      "anchor": 551,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    }
+  ]
+}

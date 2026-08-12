@@ -1,0 +1,22 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on completing the TORRENT chip project within a month [5:51]
+- Discussion on using larger data sets for speech recognition [6:09]
+- Comparison of signal processing approaches for echo removal [11:25]
+- Discussion on improving signal-to-noise ratio with mean normalization [16:36]
+- Comparison of back-end acoustic models on meeting digits and Aurora [19:24]
+DECISIONS:
+- Use of the Macrophone read speech set [6:09]
+- Use of LCD transformations on meeting digits [18:21]
+- Training on meeting digits and Aurora [19:34]
+- Combine MLP and energy-based VAD to maximize speech detection [39:51]
+- Explore combination of line-normalization and VAD for better model performance [54:26]
+ACTIONS:
+- Grad F to submit a full proposal by Monday [1:39]
+- Use of SRI system on noisy TI-digits [30:19]
+- PhD G to experiment with different time constants for smoothing noise spectrum [42:25]
+OPEN:
+- Performance of next step (TIMIT) vs SRI [4:43]
+- Comparison of VAD problem boundaries [32:49]
+TOPICS:
+- Data set selection for speech recognition [6:09]

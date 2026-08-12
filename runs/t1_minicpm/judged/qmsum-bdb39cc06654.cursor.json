@@ -1,0 +1,418 @@
+{
+  "meeting_id": "qmsum-bdb39cc06654",
+  "system": "cursor",
+  "faith_claim": 2.6,
+  "faith_anchor": 2.8,
+  "cover": 2,
+  "synth": 1,
+  "inverted": false,
+  "unsupported": 12,
+  "judges": {
+    "faith": "local:8090/gpt-oss-20b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on system design and data collection",
+      "anchor": 1768,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on linguistic relativity and spatial reasoning",
+      "anchor": 2423,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on basic demos until next meeting",
+      "anchor": 872,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on net computations and semantic understanding",
+      "anchor": 1356,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on design until more data is available",
+      "anchor": 1671,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Continue developing belief-net concepts for the honors thesis",
+      "anchor": 3215,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Do all projects by end of this week",
+      "anchor": 3513,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Professor C to explain the concept-to-speech approach",
+      "anchor": 475,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Prepare internal demo showing what the system does",
+      "anchor": 885,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Check if \"L\" is in the taxonomy of reference frames",
+      "anchor": 2205,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "PhD A to travel to Switzerland for summer work",
+      "anchor": 3307,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "PhD E to present thesis structure proposal next week",
+      "anchor": 3447,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Grad D to present final project structure next week",
+      "anchor": 3447,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "System compatibility with visiarte face recognition",
+      "anchor": 337,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "SmartKom project report",
+      "anchor": 5,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Internal demo setup",
+      "anchor": 810,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Belief network development",
+      "anchor": 1105,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Construction analyzer and child language modeling",
+      "anchor": 2926,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Honorable thesis topic",
+      "anchor": 3185,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project finalization",
+      "anchor": 3513,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on system design and data collection",
+      "anchor": 1768,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on linguistic relativity and spatial reasoning",
+      "anchor": 2423,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on basic demos until next meeting",
+      "anchor": 872,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on net computations and semantic understanding",
+      "anchor": 1356,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on design until more data is available",
+      "anchor": 1671,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Continue developing belief-net concepts for the honors thesis",
+      "anchor": 3215,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Do all projects by end of this week",
+      "anchor": 3513,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Professor C to explain the concept-to-speech approach",
+      "anchor": 475,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Prepare internal demo showing what the system does",
+      "anchor": 885,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Check if \"L\" is in the taxonomy of reference frames",
+      "anchor": 2205,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "PhD A to travel to Switzerland for summer work",
+      "anchor": 3307,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "PhD E to present thesis structure proposal next week",
+      "anchor": 3447,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Grad D to present final project structure next week",
+      "anchor": 3447,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "System compatibility with visiarte face recognition",
+      "anchor": 337,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "SmartKom project report",
+      "anchor": 5,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Internal demo setup",
+      "anchor": 810,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Belief network development",
+      "anchor": 1105,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Construction analyzer and child language modeling",
+      "anchor": 2926,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Honorable thesis topic",
+      "anchor": 3185,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project finalization",
+      "anchor": 3513,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
+}

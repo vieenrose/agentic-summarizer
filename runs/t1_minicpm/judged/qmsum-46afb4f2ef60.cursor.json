@@ -1,0 +1,276 @@
+{
+  "meeting_id": "qmsum-46afb4f2ef60",
+  "system": "cursor",
+  "faith_claim": 2.230769230769231,
+  "faith_anchor": 2.5384615384615383,
+  "cover": 2,
+  "synth": 1,
+  "inverted": true,
+  "unsupported": 7,
+  "judges": {
+    "faith": "local:8090/gpt-oss-20b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on remote features and design priorities",
+      "anchor": 417,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussed need for team briefing and new ideas",
+      "anchor": 1942,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Project evaluation and team briefing",
+      "anchor": 2041,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Remote will use voice recognition and shape for basic functions",
+      "anchor": 237,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "No whiteboard and no physical peeler",
+      "anchor": 1337,
+      "mode": "claim",
+      "verdicts": {},
+      "majority": "MISSING"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on teamwork and resourcefulness",
+      "anchor": 1456,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Report on individual tasks without overlap",
+      "anchor": 1588,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on teamwork and collaborative ideas",
+      "anchor": 1751,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Remote's edibility in case of an earthquake",
+      "anchor": 377,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Swapping out battery or solar cells",
+      "anchor": 818,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Define what constitutes \"de-briefing\"",
+      "anchor": 1957,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Remote design features",
+      "anchor": 237,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project design phase",
+      "anchor": 2290,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on remote features and design priorities",
+      "anchor": 417,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussed need for team briefing and new ideas",
+      "anchor": 1942,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Project evaluation and team briefing",
+      "anchor": 2041,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Remote will use voice recognition and shape for basic functions",
+      "anchor": 237,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "No whiteboard and no physical peeler",
+      "anchor": 1337,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on teamwork and resourcefulness",
+      "anchor": 1456,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Report on individual tasks without overlap",
+      "anchor": 1588,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Focus on teamwork and collaborative ideas",
+      "anchor": 1751,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Remote's edibility in case of an earthquake",
+      "anchor": 377,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Swapping out battery or solar cells",
+      "anchor": 818,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Define what constitutes \"de-briefing\"",
+      "anchor": 1957,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Remote design features",
+      "anchor": 237,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project design phase",
+      "anchor": 2290,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    }
+  ]
+}

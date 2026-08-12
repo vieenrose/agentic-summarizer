@@ -1,0 +1,26 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+- Discussion on system design and data collection [29:28]
+- Discussion on linguistic relativity and spatial reasoning [40:23]
+DECISIONS:
+- Focus on basic demos until next meeting [14:32]
+- Focus on net computations and semantic understanding [22:36]
+- Focus on design until more data is available [27:51]
+- Continue developing belief-net concepts for the honors thesis [53:35]
+- Do all projects by end of this week [58:33]
+ACTIONS:
+- Professor C to explain the concept-to-speech approach [7:55]
+- Prepare internal demo showing what the system does [14:45]
+- Check if "L" is in the taxonomy of reference frames [36:45]
+- PhD A to travel to Switzerland for summer work [55:07]
+- PhD E to present thesis structure proposal next week [57:27]
+- Grad D to present final project structure next week [57:27]
+OPEN:
+- System compatibility with visiarte face recognition [5:37]
+TOPICS:
+- SmartKom project report [0:05]
+- Internal demo setup [13:30]
+- Belief network development [18:25]
+- Construction analyzer and child language modeling [48:46]
+- Honorable thesis topic [53:05]
+- Project finalization [58:33]

@@ -1,0 +1,20 @@
+TITLE: Kick-off Meeting: TV Remote Control
+SUMMARY:
+- Kick-off meeting to discuss the design of a new television remote control. [5:59]
+- Discussed design goals and compatibility with D_V_D_ and T_F_T players [14:48]
+DECISIONS:
+- Focus on design and drawing with a Smartboard. [4:07]
+- Target international sales price: 25 Euros [10:46]
+- Keep material cost: 12.50 Euros [11:10]
+- Original and trendy design form [16:44]
+- Remote must be custom-shaped to fit the hand [18:27]
+ACTIONS:
+- Discuss current remote controls and remarks [11:40]
+- Discuss material and market ideas for next meeting [22:23]
+OPEN:
+-
+TOPICS:
+- Project plan from "Real Reaction" [3:18]
+- Design stages (functional, conceptual, detailed) [1:27]
+- Remote control design goals [1:27]
+- Design process using two Smartboards [4:42]

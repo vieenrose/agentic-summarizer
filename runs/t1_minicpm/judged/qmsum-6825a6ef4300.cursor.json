@@ -1,0 +1,336 @@
+{
+  "meeting_id": "qmsum-6825a6ef4300",
+  "system": "cursor",
+  "faith_claim": 3.0,
+  "faith_anchor": 2.5,
+  "cover": 2,
+  "synth": 1,
+  "inverted": false,
+  "unsupported": 8,
+  "judges": {
+    "faith": "local:8090/gpt-oss-20b",
+    "cover": "local:8091/qwen3.6-35b",
+    "second": "Prism-ML/Ternary-Bonsai-27B"
+  },
+  "spend_usd": 0.0,
+  "bullets": [
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on completing the TORRENT chip project within a month",
+      "anchor": 351,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on using larger data sets for speech recognition",
+      "anchor": 369,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Comparison of signal processing approaches for echo removal",
+      "anchor": 685,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on improving signal-to-noise ratio with mean normalization",
+      "anchor": 996,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Comparison of back-end acoustic models on meeting digits and Aurora",
+      "anchor": 1164,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Use of the Macrophone read speech set",
+      "anchor": 369,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Use of LCD transformations on meeting digits",
+      "anchor": 1101,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Training on meeting digits and Aurora",
+      "anchor": 1174,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Combine MLP and energy-based VAD to maximize speech detection",
+      "anchor": 2391,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Explore combination of line-normalization and VAD for better model performance",
+      "anchor": 3266,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Grad F to submit a full proposal by Monday",
+      "anchor": 99,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Use of SRI system on noisy TI-digits",
+      "anchor": 1819,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "PhD G to experiment with different time constants for smoothing noise spectrum",
+      "anchor": 2545,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Performance of next step (TIMIT) vs SRI",
+      "anchor": 283,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Comparison of VAD problem boundaries",
+      "anchor": 1969,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Data set selection for speech recognition",
+      "anchor": 369,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on completing the TORRENT chip project within a month",
+      "anchor": 351,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on using larger data sets for speech recognition",
+      "anchor": 369,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Comparison of signal processing approaches for echo removal",
+      "anchor": 685,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussion on improving signal-to-noise ratio with mean normalization",
+      "anchor": 996,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Comparison of back-end acoustic models on meeting digits and Aurora",
+      "anchor": 1164,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Use of the Macrophone read speech set",
+      "anchor": 369,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Use of LCD transformations on meeting digits",
+      "anchor": 1101,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Training on meeting digits and Aurora",
+      "anchor": 1174,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Combine MLP and energy-based VAD to maximize speech detection",
+      "anchor": 2391,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Explore combination of line-normalization and VAD for better model performance",
+      "anchor": 3266,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Grad F to submit a full proposal by Monday",
+      "anchor": 99,
+      "mode": "anchor",
+      "verdicts": {},
+      "majority": "MISSING"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "Use of SRI system on noisy TI-digits",
+      "anchor": 1819,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "ACTIONS",
+      "bullet": "PhD G to experiment with different time constants for smoothing noise spectrum",
+      "anchor": 2545,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Performance of next step (TIMIT) vs SRI",
+      "anchor": 283,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "OPEN",
+      "bullet": "Comparison of VAD problem boundaries",
+      "anchor": 1969,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Data set selection for speech recognition",
+      "anchor": 369,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    }
+  ]
+}

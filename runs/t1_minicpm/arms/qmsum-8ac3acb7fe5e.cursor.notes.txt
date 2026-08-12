@@ -1,0 +1,24 @@
+TITLE: Remote Control Components and Design
+SUMMARY:
+- Discussion on remote control components and design decisions [5:57]
+- Discussion on user interface features and design [11:21]
+DECISIONS:
+- Use a flat case for the simplest design [5:47]
+- Use solar cells for environmental friendliness [5:38]
+- Remote must have a flat surface or curved surface [25:24]
+- Exclude wood case [29:50]
+- Use rubber case and edges for durability [38:29]
+ACTIONS:
+- Use titanium if space allows [6:21]
+- Include sample speaker and define UI components [9:12]
+- Choose between flat, curved, or both case materials [24:01]
+- Define L_C_D_ menu options [30:33]
+- Match remote buttons with company colors using integrated circuits [37:24]
+OPEN:
+- Remote control design preferences [4:50]
+- Include sample sender and voice recognition [13:52]
+- Availability of case types based on shape [26:05]
+- Spinning vs scrolling [33:31]
+TOPICS:
+- L_C_D_ display and features [30:46]
+- Durability and form factor [38:04]

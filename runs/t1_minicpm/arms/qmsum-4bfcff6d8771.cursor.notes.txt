@@ -1,0 +1,20 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Presentation of prototype and evaluation criteria [0:23]
+- Discussion on reducing features to meet budget constraints [33:17]
+DECISIONS:
+- Focus on vegetable shape, color, and simplicity [17:17]
+- Include seven-point evaluation scale [8:17]
+- Remote control to be sold for $249 (eight dollars) [21:30]
+- Include beeping function as alternative to speaker [31:21]
+- Final design approved for $249 [41:17]
+ACTIONS:
+- Compare next page's evaluation marks against list [9:21]
+- Marketing to rate the interface as intuitive or not [17:10]
+- Present prototype and evaluation criteria for management feedback [32:19]
+- Submit final questionnaire and summary by [40:46] [40:58]
+OPEN:
+- Patent for this design [38:08]
+TOPICS:
+- Evaluation criteria [0:23]
+- User interface design [9:11]

@@ -88,6 +88,7 @@ def main(argv: list[str] | None = None) -> int:
         thinking=not args.no_thinking,
         max_tokens=args.max_tokens,
         temperature=0.0,
+        send_thinking_kwarg=False,  # MiniCPM5 template inserts an empty <think> block otherwise
     )
     sweep_judge = None
     if args.sweep != "none":

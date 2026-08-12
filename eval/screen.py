@@ -238,6 +238,7 @@ def main(argv: list[str] | None = None) -> int:
         thinking=args.thinking,
         max_tokens=args.max_tokens,
         temperature=0.0,
+        send_thinking_kwarg=False,  # MiniCPM5 template inserts an empty <think> block otherwise
     )
     if not model.health():
         print(f"llama-server not reachable at {args.base_url}", file=sys.stderr)

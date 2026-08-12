@@ -1,0 +1,20 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on remote features and design priorities [6:57]
+- Discussed need for team briefing and new ideas [32:22]
+- Project evaluation and team briefing [34:01]
+DECISIONS:
+- Remote will use voice recognition and shape for basic functions [3:57]
+- No whiteboard and no physical peeler [22:17]
+- Focus on teamwork and resourcefulness [24:16]
+- Report on individual tasks without overlap [26:28]
+- Focus on teamwork and collaborative ideas [29:11]
+ACTIONS:
+-
+OPEN:
+- Remote's edibility in case of an earthquake [6:17]
+- Swapping out battery or solar cells [13:38]
+- Define what constitutes "de-briefing" [32:37]
+TOPICS:
+- Remote design features [3:57]
+- Project design phase [38:10]

@@ -900,3 +900,27 @@ phase-2 checkpoint (LR 2e-5, 2 epochs).
 - **G1 regression**: deadlines now anchored one line off ([5:00] vs 6:00) — the negatives
   perturbed anchor placement. Chain PASS, valid-op 100%. The anchor fix is the next
   primary-track step (targeted, not a full retrain).
+
+---
+
+## Secondary options evaluated (2026-08-12): MiniCPM5-1B is the standout
+
+Three secondaries fine-tuned on the same CURSOR data (en+zh mix, 6 epochs, text grammar)
+and evaluated:
+
+| model | en G1 | zh G1 | raw T1 INVERT | note |
+|---|---|---|---|---|
+| **MiniCPM5-1B** (InfLLM v2 sparse attention) | **PASS** (all 4) | 3/4 — **only the trap fails** (chain/deadlines/UPD PASS) | **4/20** | **one model holds both languages — no seesaw at 1B** |
+| LFM2.5-1.2B-Thinking | PASS (all 4) | FAIL (chain/UPD — seesaw persists) | — | thinking prior needs server `--reasoning off` |
+| Qwen3-0.6B-notetaker FT | PASS (all 4) | FAIL (chain/UPD) | — | the note-taking prior transfers to en only |
+
+MiniCPM specifics: served with `--reasoning off` (its hybrid RL prior emits
+`<think>` on some chunks even after SFT; the template inserts an empty think block when
+`enable_thinking=false` is sent — `send_thinking_kwarg=False` in the backend). Mean
+FAITH-claim on T1 (self): ~3.5.
+
+**Verdict**: MiniCPM5-1B is the strongest secondary — en G1 PASS, zh within one trap fix
+of PASS, raw INVERT 4/20 (equal to the 350M phase-2; the 350M phase-3 holds 3/20). The
+single-model-both-languages property removes the composite's per-language complexity. Its
+trap gap is the cheapest fix (zh trap demonstrations); its raw rate needs the same
+sweep-feedback treatment as the primary.

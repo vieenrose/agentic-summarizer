@@ -885,3 +885,18 @@ Owner's response recorded in `agentic-summarizer-feedback.md`: still "not integr
 the raw 12/20 → 4/20 measurement is acknowledged as real model-side progress; the gap is
 live and narrowing. **Their re-evaluation bar: raw INVERT < their shipped 6.2%.** Our
 adopted discipline: report raw figures first, swept figures second, in every headline.
+
+---
+
+## Primary track continues: sweep-feedback negatives (phase-3, 350M) — raw INVERT 4/20 → 3/20 (2026-08-12)
+
+First harvest of sweep DROP corrections as negative SFT signal (48 samples ×3, from 109
+dropped bullets on 27 train real meetings; stale-state class excluded). Trained from the
+phase-2 checkpoint (LR 2e-5, 2 epochs).
+
+- **RAW T1 INVERT: 4/20 → 3/20** (qmsum-4bfcff6d8771, qmsum-bdb39cc06654,
+  synth-zh-reversal-5) — the model-side lever keeps moving the raw rate toward the owner's
+  < 6.2% bar (3/20 = 15%).
+- **G1 regression**: deadlines now anchored one line off ([5:00] vs 6:00) — the negatives
+  perturbed anchor placement. Chain PASS, valid-op 100%. The anchor fix is the next
+  primary-track step (targeted, not a full retrain).

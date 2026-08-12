@@ -1,13 +1,12 @@
-TITLE: SmartKom System Setup
+TITLE: SmartKom System Admin
 SUMMARY:
-- Discussion on English and Japanese word orders in the system. [28:49]
+- Discussion on spatial descriptions and reference frames. [33:04]
+- Discussion on semester and projects. [58:33]
 DECISIONS:
--
+- Finish all next Monday. [58:25]
 ACTIONS:
-- Present system setup to the group. [7:48]
+-
 OPEN:
-- System's ability to handle non-English word orders. [6:47]
+-
 TOPICS:
-- English and Japanese word orders. [28:49]
-- Spatial descriptions and reference frames. [32:46]
-- Reference, spatial reference, and linguistic differences. [45:02]
+- Parsers and image schemas. [59:55]

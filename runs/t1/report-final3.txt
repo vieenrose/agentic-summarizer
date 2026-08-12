@@ -5,8 +5,8 @@ tie threshold Δ < 0.5
   cover         Δ +0.30 ±0.47  W/L/T 7/6/7  p=1.000
   synth         Δ +0.50 ±0.43  W/L/T 4/2/14  p=0.688
 
-  INVERT cursor    : qmsum-76d19929893a, qmsum-bdb39cc06654
-  INVERT baseline  : synth-zh-deadline-0, synth-zh-deadline-1, synth-zh-reversal-5, synth-zh-withdraw-1
+  INVERT cursor    : none
+  INVERT baseline  : synth-zh-deadline-0, synth-zh-deadline-1, synth-zh-reversal-5
 
 GT2 faith        : WITHHELD (n=18 < 20)
 GT3 synthesis    : FAIL (Δ +0.50 vs +0.5) (lower 1-SE bound +0.07)

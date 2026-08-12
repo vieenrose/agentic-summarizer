@@ -187,7 +187,7 @@ _MAP_EN = """\
 You are summarising ONE block of a meeting transcript, in isolation.
 
 Reply with bullets only, one per line, in this form:
-<SECTION> - <bullet> [m:ss]
+TOPICS - Discussion topic [0:00]
 
 SECTION is one of SUMMARY, DECISIONS, ACTIONS, OPEN, TOPICS.
 Every bullet ends with an [m:ss] copied exactly from a line in this block.
@@ -199,7 +199,7 @@ _MAP_ZH = """\
 你正在為會議逐字稿的「其中一段」做摘要，只看這一段。
 
 只回覆條目，一行一個，格式如下：
-<SECTION> - <條目> [m:ss]
+TOPICS - 討論議題 [0:00]
 
 SECTION 是 SUMMARY, DECISIONS, ACTIONS, OPEN, TOPICS 其中之一。
 每個條目結尾都要有 [m:ss]，必須從本段的某一行原樣抄錄。

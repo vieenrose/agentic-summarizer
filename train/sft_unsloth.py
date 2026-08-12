@@ -51,6 +51,12 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--train", type=Path, required=True, help="JSONL from build_sft.py")
     p.add_argument("--valid", type=Path, default=None)
     p.add_argument("--model", default=STUDENT)
+    p.add_argument(
+        "--resume",
+        default=None,
+        help="continue from a saved checkpoint instead of the base model (phase-2 "
+        "real-data adaptation keeps the phase-1 protocol pattern)",
+    )
     p.add_argument("--out", type=Path, default=Path("runs/sft-v1"))
     p.add_argument("--max-seq-length", type=int, default=4096)
     p.add_argument(
@@ -167,7 +173,7 @@ def main(argv: list[str] | None = None) -> int:
     print(f"[sft] {len(train_rows)} train / {len(valid_rows)} valid samples, prompt {version}")
 
     model, tokenizer = FastLanguageModel.from_pretrained(
-        model_name=args.model,
+        model_name=args.resume or args.model,
         max_seq_length=args.max_seq_length,
         dtype=torch.bfloat16,
         load_in_4bit=False,

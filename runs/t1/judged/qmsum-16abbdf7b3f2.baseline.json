@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-16abbdf7b3f2",
   "system": "baseline",
-  "faith_claim": 3.857142857142857,
-  "faith_anchor": 3.857142857142857,
+  "faith_claim": 5.0,
+  "faith_anchor": 2.6,
   "cover": 2,
-  "synth": 2,
+  "synth": 1,
   "inverted": false,
-  "unsupported": 2,
+  "unsupported": 0,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -15,9 +15,9 @@
   "spend_usd": 0.0,
   "bullets": [
     {
-      "section": "DECISIONS",
-      "bullet": "Public excluded to protect health per Standing Order 34.19",
-      "anchor": 0,
+      "section": "TOPICS",
+      "bullet": "Discussion on children's residential care challenges and operational status",
+      "anchor": 2607,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -26,8 +26,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Impact of coronavirus on children and young people in Wales",
-      "anchor": 140,
+      "bullet": "Update on foster care support and financial retainer positions",
+      "anchor": 2719,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -36,18 +36,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Capacity for paediatric critical care if cases increase",
-      "anchor": 302,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Concerns about parents refusing to engage with health services due to fear",
-      "anchor": 508,
+      "bullet": "Confirmation that no easements were introduced to children's services legislation",
+      "anchor": 2845,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -56,8 +46,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Mental health impact on children and young people during the crisis",
-      "anchor": 731,
+      "bullet": "Explanation of why children's rights impact assessments were not completed",
+      "anchor": 2898,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -66,18 +56,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Assurance that mental health recovery is a priority for the Health Minister",
-      "anchor": 1010,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Monitoring capacity in child and adolescent mental health services",
-      "anchor": 1064,
+      "bullet": "Clarification that children's needs assessments continue despite staffing reductions",
+      "anchor": 3093,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -85,9 +65,9 @@
       "majority": "SUPPORTED"
     },
     {
-      "section": "DECISIONS",
-      "bullet": "Public excluded to protect health per Standing Order 34.19",
-      "anchor": 0,
+      "section": "TOPICS",
+      "bullet": "Discussion on children's residential care challenges and operational status",
+      "anchor": 2607,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -96,18 +76,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Impact of coronavirus on children and young people in Wales",
-      "anchor": 140,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Capacity for paediatric critical care if cases increase",
-      "anchor": 302,
+      "bullet": "Update on foster care support and financial retainer positions",
+      "anchor": 2719,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -116,28 +86,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Concerns about parents refusing to engage with health services due to fear",
-      "anchor": 508,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Mental health impact on children and young people during the crisis",
-      "anchor": 731,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Assurance that mental health recovery is a priority for the Health Minister",
-      "anchor": 1010,
+      "bullet": "Confirmation that no easements were introduced to children's services legislation",
+      "anchor": 2845,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -146,13 +96,23 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Monitoring capacity in child and adolescent mental health services",
-      "anchor": 1064,
+      "bullet": "Explanation of why children's rights impact assessments were not completed",
+      "anchor": 2898,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Clarification that children's needs assessments continue despite staffing reductions",
+      "anchor": 3093,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
     }
   ]
 }

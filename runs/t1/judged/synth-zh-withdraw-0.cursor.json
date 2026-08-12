@@ -1,12 +1,12 @@
 {
   "meeting_id": "synth-zh-withdraw-0",
   "system": "cursor",
-  "faith_claim": 3.0,
+  "faith_claim": 5.0,
   "faith_anchor": 3.0,
   "cover": 5,
   "synth": 5,
   "inverted": false,
-  "unsupported": 1,
+  "unsupported": 0,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -20,9 +20,9 @@
       "anchor": 10470,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",

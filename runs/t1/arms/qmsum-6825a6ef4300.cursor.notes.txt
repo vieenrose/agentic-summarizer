@@ -2,11 +2,10 @@ TITLE: Aurora Interchangeable Categories
 SUMMARY:
 -
 DECISIONS:
-- Use the Macrophone set of read speech and Hmm. [6:09]
-- Test SRI system on and on Aurora TI-digits for performance comparison. [30:19]
+- Test SRI on noisy TI-digits for performance [30:19]
 ACTIONS:
 -
 OPEN:
 -
 TOPICS:
-- Cepstral domain normalization [52:19]
+-

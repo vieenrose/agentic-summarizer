@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-4bfcff6d8771",
   "system": "cursor",
-  "faith_claim": 3.6666666666666665,
+  "faith_claim": 5.0,
   "faith_anchor": 5.0,
-  "cover": 2,
+  "cover": 1,
   "synth": 1,
   "inverted": false,
-  "unsupported": 1,
+  "unsupported": 0,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -15,9 +15,9 @@
   "spend_usd": 0.0,
   "bullets": [
     {
-      "section": "DECISIONS",
-      "bullet": "Interchangeable beeping device is not necessary",
-      "anchor": 1611,
+      "section": "SUMMARY",
+      "bullet": "Evaluation of the production process and design",
+      "anchor": 29,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -26,8 +26,8 @@
     },
     {
       "section": "DECISIONS",
-      "bullet": "Complete the final questionnaire and meeting summary",
-      "anchor": 2452,
+      "bullet": "Costs are within budget",
+      "anchor": 2325,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -35,19 +35,19 @@
       "majority": "SUPPORTED"
     },
     {
-      "section": "TOPICS",
-      "bullet": "User requirements and evaluation",
-      "anchor": 550,
+      "section": "OPEN",
+      "bullet": "Review of the initial evaluation criteria",
+      "anchor": 23,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
-      "section": "DECISIONS",
-      "bullet": "Interchangeable beeping device is not necessary",
-      "anchor": 1611,
+      "section": "SUMMARY",
+      "bullet": "Evaluation of the production process and design",
+      "anchor": 29,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -56,8 +56,8 @@
     },
     {
       "section": "DECISIONS",
-      "bullet": "Complete the final questionnaire and meeting summary",
-      "anchor": 2452,
+      "bullet": "Costs are within budget",
+      "anchor": 2325,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -65,9 +65,9 @@
       "majority": "SUPPORTED"
     },
     {
-      "section": "TOPICS",
-      "bullet": "User requirements and evaluation",
-      "anchor": 550,
+      "section": "OPEN",
+      "bullet": "Review of the initial evaluation criteria",
+      "anchor": 23,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"

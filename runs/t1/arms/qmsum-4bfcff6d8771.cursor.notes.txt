@@ -1,12 +1,11 @@
-TITLE: Final Meeting: Prototype Presentation and Evaluation
+TITLE: Production and Design Evaluation
 SUMMARY:
--
+- Evaluation of the production process and design [0:29]
 DECISIONS:
-- Interchangeable beeping device is not necessary [26:51]
-- Complete the final questionnaire and meeting summary [40:52]
+- Costs are within budget [38:45]
 ACTIONS:
 -
 OPEN:
--
+- Review of the initial evaluation criteria [0:23]
 TOPICS:
-- User requirements and evaluation [9:10]
+-

@@ -1,12 +1,12 @@
-TITLE: Kickoff Meeting: Project Design
+TITLE: Project Kickoff Meeting: Initial Design Review
 SUMMARY:
 -
 DECISIONS:
-- Use plastic, hard, and rubbery buttons for durability and weight. [23:06 [22:54]
-- Include front fronts around the television for a trendy look. [25:03]
+- Design a new television remote control for young people and modernize its design. [4:46]
+- Universal remote transmission standard [24:34]
 ACTIONS:
-- Put notes into the project folder after the session. [15:04]
+- Keep the remote and D_V_D_ player compatible [14:30]
 OPEN:
 -
 TOPICS:
-- Remote controls and international compatibility. [14:30]
+-

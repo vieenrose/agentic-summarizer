@@ -1,4 +1,4 @@
-TITLE: Project Manager introduces the kick-off meeting agenda and
+TITLE: Discussion of drawing animals and identifying species
 SUMMARY:
 -
 DECISIONS:
@@ -8,8 +8,9 @@ ACTIONS:
 OPEN:
 -
 TOPICS:
-- Project Manager introduces the kick-off meeting agenda and project goals. [0:27]
-- Project Manager explains the three-stage project design process. [1:54]
-- Project Manager demonstrates Smartboard tools for drawing and saving files. [3:22]
-- Team members discuss and guess the animal being drawn on the Smartboard. [5:36]
-- Industrial Designer confirms their role and comments on the drawing quality. [6:28]
+- Discussion of drawing animals and identifying species [6:34]
+- Adjusting line width and color settings for drawings [7:24]
+- Debate on whether to name specific bird species [8:26]
+- Project pricing strategy of twenty-five Euros internationally [10:46]
+- Cost control target of twelve and a half Euros per unit [11:10]
+- Proposal to discuss current remote control design and market aim [11:26]

@@ -1,4 +1,4 @@
-TITLE: Professor B discusses the TORRENT chip schedule delays.
+TITLE: Plan to wait for Sunil before final status
 SUMMARY:
 -
 DECISIONS:
@@ -8,9 +8,9 @@ ACTIONS:
 OPEN:
 -
 TOPICS:
-- Professor B discusses the TORRENT chip schedule delays. [0:08]
-- Grad F plans to finish a proposal draft by Monday. [1:39]
-- Grad E plans to train on the Macrophone dataset to improve robustness against re-synthesized audio artifacts [6:09]
-- PhD C reports the new Aurora system achieves a 2.7% error rate on meeting digits. [18:53]
-- MFCC features are identified as the key difference improving the SRI system performance. [28:58]
-- PhD C plans to smooth spectral subtraction results to reduce musical noise [42:25]
+- Plan to wait for Sunil before final status reports [1:02]
+- Grad F's proposal draft and intermediate category classification [1:39]
+- Grad F's qualifying exam date and presentation format [2:17]
+- Grad F's iterative feature selection and error reduction strategy [3:15]
+- Grad F's use of TIMIT and Switchboard datasets [4:31]
+- Grad F's tandem processing with SRI recognizer [5:10]

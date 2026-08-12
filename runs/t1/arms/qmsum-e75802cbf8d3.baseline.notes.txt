@@ -1,4 +1,4 @@
-TITLE: Project Manager proposes increasing price for more colours
+TITLE:
 SUMMARY:
 -
 DECISIONS:
@@ -8,9 +8,4 @@ ACTIONS:
 OPEN:
 -
 TOPICS:
-- Project Manager proposes increasing price for more colours on L_C_D_ [12:21]
-- Marketing suggests remote controls should be upgradable or signature items [13:32]
-- Marketing argues young people want unique items like pink remotes [14:41]
-- User Interface suggests integrating lights for use in darkness [15:56]
-- Marketing suggests speech recognition as a feature for smart remotes [16:48]
-- Team decides to explore two options for the remote control design [29:08]
+-

@@ -1,13 +1,11 @@
 TITLE:
 SUMMARY:
--
+- Discussed role and information gaps in the project [25:55]
 DECISIONS:
-- See output files from digital paper for a professional look [31:28]
-- Go on a bit about the project eval [34:01]
-- Include disfluencies in reports [41:11]
-ACTIONS:
-- Marketing to see output files from digital paper for a professional look [31:28]
-OPEN:
-- Discuss roles and responsibilities in the project [24:53]
-TOPICS:
 -
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+- Budget allocation [7:11]

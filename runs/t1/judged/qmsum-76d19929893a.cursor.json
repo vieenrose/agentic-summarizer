@@ -1,98 +1,78 @@
 {
-  "meeting_id": "qmsum-76d19929893a",
-  "system": "cursor",
-  "faith_claim": 5.0,
-  "faith_anchor": 2.0,
-  "cover": 2,
-  "synth": 1,
-  "inverted": false,
-  "unsupported": 0,
-  "judges": {
-    "faith": "local:8090/gpt-oss-20b",
-    "cover": "local:8091/qwen3.6-35b",
-    "second": "Prism-ML/Ternary-Bonsai-27B"
+ "meeting_id": "qmsum-76d19929893a",
+ "system": "cursor",
+ "faith_claim": 3.6666666666666665,
+ "faith_anchor": 3.6666666666666665,
+ "cover": 2,
+ "synth": 1,
+ "inverted": false,
+ "unsupported": 1,
+ "judges": {
+  "faith": "local:8090/gpt-oss-20b",
+  "cover": "local:8091/qwen3.6-35b",
+  "second": "Prism-ML/Ternary-Bonsai-27B"
+ },
+ "spend_usd": 0.0,
+ "bullets": [
+  {
+   "section": "DECISIONS",
+   "bullet": "Design a new television remote control for young people and modernize its design.",
+   "anchor": 286,
+   "mode": "claim",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "SUPPORTED"
+   },
+   "majority": "SUPPORTED"
   },
-  "spend_usd": 0.0,
-  "bullets": [
-    {
-      "section": "DECISIONS",
-      "bullet": "Use plastic, hard, and rubbery buttons for durability and weight. [23:06",
-      "anchor": 1374,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Include front fronts around the television for a trendy look.",
-      "anchor": 1503,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Put notes into the project folder after the session.",
-      "anchor": 904,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Remote controls and international compatibility.",
-      "anchor": 870,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Use plastic, hard, and rubbery buttons for durability and weight. [23:06",
-      "anchor": 1374,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Include front fronts around the television for a trendy look.",
-      "anchor": 1503,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Put notes into the project folder after the session.",
-      "anchor": 904,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Remote controls and international compatibility.",
-      "anchor": 870,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    }
-  ]
+  {
+   "section": "DECISIONS",
+   "bullet": "Universal remote transmission standard",
+   "anchor": 1474,
+   "mode": "claim",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "UNSUPPORTED"
+   },
+   "majority": "UNSUPPORTED"
+  },
+  {
+   "section": "ACTIONS",
+   "bullet": "Keep the remote and D_V_D_ player compatible",
+   "anchor": 870,
+   "mode": "claim",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "SUPPORTED"
+   },
+   "majority": "SUPPORTED"
+  },
+  {
+   "section": "DECISIONS",
+   "bullet": "Design a new television remote control for young people and modernize its design.",
+   "anchor": 286,
+   "mode": "anchor",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "CONTRADICTED"
+   },
+   "majority": "CONTRADICTED"
+  },
+  {
+   "section": "DECISIONS",
+   "bullet": "Universal remote transmission standard",
+   "anchor": 1474,
+   "mode": "anchor",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "SUPPORTED"
+   },
+   "majority": "SUPPORTED"
+  },
+  {
+   "section": "ACTIONS",
+   "bullet": "Keep the remote and D_V_D_ player compatible",
+   "anchor": 870,
+   "mode": "anchor",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "SUPPORTED"
+   },
+   "majority": "SUPPORTED"
+  }
+ ]
 }

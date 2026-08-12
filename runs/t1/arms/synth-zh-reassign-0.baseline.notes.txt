@@ -1,4 +1,4 @@
-TITLE:
+TITLE: 廠商合約
 SUMMARY:
 -
 DECISIONS:
@@ -8,4 +8,7 @@ ACTIONS:
 OPEN:
 -
 TOPICS:
--
+- 廠商合約 [0:00]
+- 美玲請假 [2:00]
+- 跳過咖啡機 [3:00]
+- 廠商合約負責人變更 [2:54:30]

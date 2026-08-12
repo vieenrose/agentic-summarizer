@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-3f8b473ddd36",
   "system": "cursor",
-  "faith_claim": 3.5,
-  "faith_anchor": 3.0,
-  "cover": 2,
+  "faith_claim": 4.0,
+  "faith_anchor": 4.0,
+  "cover": 1,
   "synth": 1,
   "inverted": false,
-  "unsupported": 3,
+  "unsupported": 1,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -15,9 +15,9 @@
   "spend_usd": 0.0,
   "bullets": [
     {
-      "section": "DECISIONS",
-      "bullet": "Focus on remote control's ability to function with solar batteries",
-      "anchor": 368,
+      "section": "SUMMARY",
+      "bullet": "Analyzed visual signal transmission",
+      "anchor": 287,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -25,68 +25,8 @@
       "majority": "SUPPORTED"
     },
     {
-      "section": "DECISIONS",
-      "bullet": "Stick with current interface concept",
-      "anchor": 632,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Use three or four buttons with a menu button and side up/down type",
-      "anchor": 2087,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Research market research on voice recognition",
-      "anchor": 1315,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Define what kind of buttons are needed for the menu",
-      "anchor": 2087,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Component design",
-      "anchor": 125,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Remote control design",
-      "anchor": 1554,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Basic look and feel",
+      "section": "SUMMARY",
+      "bullet": "Discussed prototype design and non-remote remote",
       "anchor": 2337,
       "mode": "claim",
       "verdicts": {
@@ -96,48 +36,48 @@
     },
     {
       "section": "DECISIONS",
-      "bullet": "Focus on remote control's ability to function with solar batteries",
-      "anchor": 368,
+      "bullet": "Include visible light as a signal",
+      "anchor": 287,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Prototype design",
+      "anchor": 2337,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Analyzed visual signal transmission",
+      "anchor": 287,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
       "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "SUMMARY",
+      "bullet": "Discussed prototype design and non-remote remote",
+      "anchor": 2337,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
-      "bullet": "Stick with current interface concept",
-      "anchor": 632,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Use three or four buttons with a menu button and side up/down type",
-      "anchor": 2087,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Research market research on voice recognition",
-      "anchor": 1315,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Define what kind of buttons are needed for the menu",
-      "anchor": 2087,
+      "bullet": "Include visible light as a signal",
+      "anchor": 287,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -146,27 +86,7 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Component design",
-      "anchor": 125,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Remote control design",
-      "anchor": 1554,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Basic look and feel",
+      "bullet": "Prototype design",
       "anchor": 2337,
       "mode": "anchor",
       "verdicts": {

@@ -1,17 +1,116 @@
 {
-  "meeting_id": "synth-zh-withdraw-1",
-  "system": "baseline",
-  "faith_claim": null,
-  "faith_anchor": null,
-  "cover": 1,
-  "synth": 1,
-  "inverted": false,
-  "unsupported": 0,
-  "judges": {
-    "faith": "local:8090/gpt-oss-20b",
-    "cover": "local:8091/qwen3.6-35b",
-    "second": "Prism-ML/Ternary-Bonsai-27B"
+ "meeting_id": "synth-zh-withdraw-1",
+ "system": "baseline",
+ "faith_claim": 3.4,
+ "faith_anchor": 3.4,
+ "cover": 5,
+ "synth": 5,
+ "inverted": false,
+ "unsupported": 1,
+ "judges": {
+  "faith": "local:8090/gpt-oss-20b",
+  "cover": "local:8091/qwen3.6-35b",
+  "second": "Prism-ML/Ternary-Bonsai-27B"
+ },
+ "spend_usd": 0.0,
+ "bullets": [
+  {
+   "section": "DECISIONS",
+   "bullet": "議程結束",
+   "anchor": 10500,
+   "mode": "claim",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "UNSUPPORTED"
+   },
+   "majority": "UNSUPPORTED"
   },
-  "spend_usd": 0.0,
-  "bullets": []
+  {
+   "section": "TOPICS",
+   "bullet": "人事凍結議題",
+   "anchor": 0,
+   "mode": "claim",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "SUPPORTED"
+   },
+   "majority": "SUPPORTED"
+  },
+  {
+   "section": "TOPICS",
+   "bullet": "停車位議題跳過",
+   "anchor": 180,
+   "mode": "claim",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "SUPPORTED"
+   },
+   "majority": "SUPPORTED"
+  },
+  {
+   "section": "TOPICS",
+   "bullet": "技術問題與靜音",
+   "anchor": 300,
+   "mode": "claim",
+   "verdicts": {},
+   "majority": "MISSING"
+  },
+  {
+   "section": "TOPICS",
+   "bullet": "移除人事凍結",
+   "anchor": 10470,
+   "mode": "claim",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "SUPPORTED"
+   },
+   "majority": "SUPPORTED"
+  },
+  {
+   "section": "DECISIONS",
+   "bullet": "議程結束",
+   "anchor": 10500,
+   "mode": "anchor",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "CONTRADICTED"
+   },
+   "majority": "CONTRADICTED"
+  },
+  {
+   "section": "TOPICS",
+   "bullet": "人事凍結議題",
+   "anchor": 0,
+   "mode": "anchor",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "SUPPORTED"
+   },
+   "majority": "SUPPORTED"
+  },
+  {
+   "section": "TOPICS",
+   "bullet": "停車位議題跳過",
+   "anchor": 180,
+   "mode": "anchor",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "SUPPORTED"
+   },
+   "majority": "SUPPORTED"
+  },
+  {
+   "section": "TOPICS",
+   "bullet": "技術問題與靜音",
+   "anchor": 300,
+   "mode": "anchor",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "UNSUPPORTED"
+   },
+   "majority": "UNSUPPORTED"
+  },
+  {
+   "section": "TOPICS",
+   "bullet": "移除人事凍結",
+   "anchor": 10470,
+   "mode": "anchor",
+   "verdicts": {
+    "local:8090/gpt-oss-20b": "SUPPORTED"
+   },
+   "majority": "SUPPORTED"
+  }
+ ]
 }

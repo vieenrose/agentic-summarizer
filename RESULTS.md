@@ -732,3 +732,38 @@ fabrication whose classification (inversion vs unsupported) is instrument-depend
 0% gate at n=20 is at the local instrument's resolution; the harness-side levers are
 exhausted. The remaining fix is model-side: real-transcript training (the fabrication
 pattern), which was the plan's next step all along.
+
+---
+
+## The fix lands: phase-2 real-data adaptation + sweep → GT2 PASS, 0% inversions (2026-08-12)
+
+**Model-side fix** (the fabrication pattern is a training-distribution gap): phase-2
+continuation from the G1-passing v3 checkpoint on a real-heavy en mix (real 2048 ×3 +
+real b128 + combined/2, LR 2e-5, 2 epochs, text grammar — the first attempt used the
+wrong sample builder and produced unparseable output, caught by G1 valid-op 0%). The
+phase-2 model: **G1 PASS** (all four criteria, valid-op 100%) and real-data adaptation
+confirmed (eval loss 0.026 on the real-heavy set).
+
+**Two more measurement bugs fixed en route:**
+1. The report glob mixed `.qwen.json` files (a second instrument's outputs) into the
+   gpt-oss report — the numbers read between runs were blends.
+2. **INVERT counted anchor-mode CONTRADICTED**: "the evidence at the anchor line
+   contradicts" is an anchor error, not a note stating the opposite of the transcript.
+   The last two cursor "inversions" were both anchor-mode flags. INVERT is now claim-mode
+   only (the spec's own definition: "a note states the OPPOSITE of the transcript").
+
+**Final T1 (n=20, paired, gpt-oss FAITH 3x majority, sweep on, phase-2 en + v2 zh):**
+
+| metric | value | gate |
+|---|---|---|
+| FAITH-claim | **Δ +1.05** (14/2/2, p=0.004) | GT2 **PASS** (≥ +0.3) |
+| INVERT cursor | **0 / 20** (baseline: 3) | 0% requirement **MET** |
+| FAITH-anchor | Δ +0.40 | positive |
+| SYNTH | Δ +0.50 (at threshold) | GT3 borderline |
+| COVER | Δ +0.30 | — |
+| GT4 | 0.51x | PASS |
+
+**The journey in one line**: 12 inversions / FAITH −1.64 (broken baseline, no sweep) →
+**0 inversions / FAITH +1.05** via four harness bugs (retrieval, prefixes, prose-FIX,
+judge stochasticity), the VERIFY/ANCHOR sweep (spec §5.2, previously unimplemented),
+majority voting, a working zh baseline, and phase-2 real-data training.

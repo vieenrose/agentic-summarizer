@@ -455,8 +455,17 @@ def judge_meeting(
             scored += 1
             if verdict == "SUPPORTED":
                 supported += 1
-            elif verdict == "CONTRADICTED" and section in ("DECISIONS", "ACTIONS", "SUMMARY"):
-                # INVERT is about decisions, approvals, outcomes and commitments (§7.1).
+            elif (
+                verdict == "CONTRADICTED"
+                and mode == "claim"
+                and section in ("DECISIONS", "ACTIONS", "SUMMARY")
+            ):
+                # INVERT is about decisions, approvals, outcomes and commitments (§7.1),
+                # judged in CLAIM mode. An anchor-mode CONTRADICTED means the anchor
+                # line's neighbourhood does not support the claim — an anchor error,
+                # not a note stating the opposite of the transcript. Counting anchor
+                # verdicts inflated the inversion count (measured: the last two
+                # "inversions" were both anchor-mode flags).
                 score.inverted = True
             elif verdict == "UNSUPPORTED" and mode == "claim":
                 score.unsupported += 1

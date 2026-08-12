@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-4bfcff6d8771",
   "system": "baseline",
-  "faith_claim": 3.2222222222222223,
-  "faith_anchor": 2.7777777777777777,
-  "cover": 3,
-  "synth": 2,
+  "faith_claim": 3.2857142857142856,
+  "faith_anchor": 2.142857142857143,
+  "cover": 2,
+  "synth": 1,
   "inverted": false,
-  "unsupported": 4,
+  "unsupported": 3,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -16,38 +16,8 @@
   "bullets": [
     {
       "section": "DECISIONS",
-      "bullet": "The Industrial Designer confirmed the surface is flat rubber rather than curved.",
-      "anchor": 1634,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "The team decided to replace the scroll wheel with two pushbuttons for volume control.",
-      "anchor": 1784,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "The expensive sample speaker will be replaced by a simple beeping device.",
-      "anchor": 1881,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "The team discusses left-handed usability and decides to rate the issue a six.",
-      "anchor": 789,
+      "bullet": "The team agrees to rate the intuitive aspect as a five",
+      "anchor": 1022,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -56,8 +26,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "They debate the device opening mechanism, weighing side-flip against top-flip.",
-      "anchor": 845,
+      "bullet": "Discussion on left-handed usability and right-handed scrolling",
+      "anchor": 693,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -66,18 +36,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "The group confirms the device has a locator and requires a speaker or buzzer.",
-      "anchor": 917,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "They evaluate the number layout as non-standard but intuitive enough for a five.",
-      "anchor": 964,
+      "bullet": "Debate on whether the device is intuitive for users",
+      "anchor": 952,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -86,8 +46,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "The team notes the new scroll technology might need time for users to adapt.",
-      "anchor": 991,
+      "bullet": "Ergonomic design and repetitive strain discussion",
+      "anchor": 1075,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -96,8 +56,28 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "The team discussed removing the scroll wheel to stay within budget.",
-      "anchor": 1761,
+      "bullet": "Voice control feature evaluation",
+      "anchor": 1136,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Technological innovation and component novelty",
+      "anchor": 1164,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Novelty of the banana remote control design solution",
+      "anchor": 2247,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -106,38 +86,8 @@
     },
     {
       "section": "DECISIONS",
-      "bullet": "The Industrial Designer confirmed the surface is flat rubber rather than curved.",
-      "anchor": 1634,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "The team decided to replace the scroll wheel with two pushbuttons for volume control.",
-      "anchor": 1784,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "The expensive sample speaker will be replaced by a simple beeping device.",
-      "anchor": 1881,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "The team discusses left-handed usability and decides to rate the issue a six.",
-      "anchor": 789,
+      "bullet": "The team agrees to rate the intuitive aspect as a five",
+      "anchor": 1022,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -146,8 +96,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "They debate the device opening mechanism, weighing side-flip against top-flip.",
-      "anchor": 845,
+      "bullet": "Discussion on left-handed usability and right-handed scrolling",
+      "anchor": 693,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -156,8 +106,18 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "The group confirms the device has a locator and requires a speaker or buzzer.",
-      "anchor": 917,
+      "bullet": "Debate on whether the device is intuitive for users",
+      "anchor": 952,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Ergonomic design and repetitive strain discussion",
+      "anchor": 1075,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -166,8 +126,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "They evaluate the number layout as non-standard but intuitive enough for a five.",
-      "anchor": 964,
+      "bullet": "Voice control feature evaluation",
+      "anchor": 1136,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -176,23 +136,23 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "The team notes the new scroll technology might need time for users to adapt.",
-      "anchor": 991,
+      "bullet": "Technological innovation and component novelty",
+      "anchor": 1164,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Novelty of the banana remote control design solution",
+      "anchor": 2247,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "The team discussed removing the scroll wheel to stay within budget.",
-      "anchor": 1761,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
     }
   ]
 }

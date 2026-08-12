@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-bdb39cc06654",
   "system": "baseline",
-  "faith_claim": 4.333333333333334,
-  "faith_anchor": 4.333333333333334,
+  "faith_claim": 5.0,
+  "faith_anchor": 5.0,
   "cover": 2,
-  "synth": 2,
+  "synth": 1,
   "inverted": false,
-  "unsupported": 1,
+  "unsupported": 0,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -16,8 +16,8 @@
   "bullets": [
     {
       "section": "TOPICS",
-      "bullet": "The team will shift focus from applied projects to basic scientific issues this summer.",
-      "anchor": 650,
+      "bullet": "Report on German SmartKom project visit",
+      "anchor": 5,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -26,8 +26,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Grad B will work on English and German constructions without parsing or system constraints.",
-      "anchor": 684,
+      "bullet": "System brittleness and virtual touch screen dependency",
+      "anchor": 266,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -36,8 +36,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Grad E proposes creating an internal demo to explain SmartKom to visitors.",
-      "anchor": 783,
+      "bullet": "Discussion of spatial reference frames and terminology",
+      "anchor": 2243,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -46,18 +46,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Professor C suggests setting up an institute-wide talk once the demo is polished.",
-      "anchor": 810,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Robert will select a specific space piece for his absentee thesis submission.",
-      "anchor": 3072,
+      "bullet": "Plan to finish work by next Monday",
+      "anchor": 3455,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -66,8 +56,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Grad G confirms they will finish everything by the end of this week.",
-      "anchor": 3513,
+      "bullet": "Note to catch up with Ellen regarding image schemas",
+      "anchor": 3618,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -76,8 +66,18 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "The team will shift focus from applied projects to basic scientific issues this summer.",
-      "anchor": 650,
+      "bullet": "Mention of a secret student reading group over summer",
+      "anchor": 3641,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Report on German SmartKom project visit",
+      "anchor": 5,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -86,8 +86,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Grad B will work on English and German constructions without parsing or system constraints.",
-      "anchor": 684,
+      "bullet": "System brittleness and virtual touch screen dependency",
+      "anchor": 266,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -96,8 +96,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Grad E proposes creating an internal demo to explain SmartKom to visitors.",
-      "anchor": 783,
+      "bullet": "Discussion of spatial reference frames and terminology",
+      "anchor": 2243,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -106,8 +106,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Professor C suggests setting up an institute-wide talk once the demo is polished.",
-      "anchor": 810,
+      "bullet": "Plan to finish work by next Monday",
+      "anchor": 3455,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -116,18 +116,18 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Robert will select a specific space piece for his absentee thesis submission.",
-      "anchor": 3072,
+      "bullet": "Note to catch up with Ellen regarding image schemas",
+      "anchor": 3618,
       "mode": "anchor",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "TOPICS",
-      "bullet": "Grad G confirms they will finish everything by the end of this week.",
-      "anchor": 3513,
+      "bullet": "Mention of a secret student reading group over summer",
+      "anchor": 3641,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"

@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-46afb4f2ef60",
   "system": "cursor",
-  "faith_claim": 4.2,
-  "faith_anchor": 3.4,
+  "faith_claim": 5.0,
+  "faith_anchor": 3.0,
   "cover": 1,
   "synth": 1,
   "inverted": false,
-  "unsupported": 1,
+  "unsupported": 0,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -15,9 +15,9 @@
   "spend_usd": 0.0,
   "bullets": [
     {
-      "section": "DECISIONS",
-      "bullet": "See output files from digital paper for a professional look",
-      "anchor": 1888,
+      "section": "SUMMARY",
+      "bullet": "Discussed role and information gaps in the project",
+      "anchor": 1555,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -25,9 +25,9 @@
       "majority": "SUPPORTED"
     },
     {
-      "section": "DECISIONS",
-      "bullet": "Go on a bit about the project eval",
-      "anchor": 2041,
+      "section": "TOPICS",
+      "bullet": "Budget allocation",
+      "anchor": 431,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -35,59 +35,9 @@
       "majority": "SUPPORTED"
     },
     {
-      "section": "DECISIONS",
-      "bullet": "Include disfluencies in reports",
-      "anchor": 2471,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "Marketing to see output files from digital paper for a professional look",
-      "anchor": 1888,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Discuss roles and responsibilities in the project",
-      "anchor": 1493,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "See output files from digital paper for a professional look",
-      "anchor": 1888,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Go on a bit about the project eval",
-      "anchor": 2041,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Include disfluencies in reports",
-      "anchor": 2471,
+      "section": "SUMMARY",
+      "bullet": "Discussed role and information gaps in the project",
+      "anchor": 1555,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -95,24 +45,14 @@
       "majority": "UNSUPPORTED"
     },
     {
-      "section": "ACTIONS",
-      "bullet": "Marketing to see output files from digital paper for a professional look",
-      "anchor": 1888,
+      "section": "TOPICS",
+      "bullet": "Budget allocation",
+      "anchor": 431,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
-    },
-    {
-      "section": "OPEN",
-      "bullet": "Discuss roles and responsibilities in the project",
-      "anchor": 1493,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
     }
   ]
 }

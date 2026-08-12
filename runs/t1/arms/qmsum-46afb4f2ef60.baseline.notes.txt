@@ -1,17 +1,16 @@
-TITLE: Marketing evaluates the product against original criteria and
+TITLE: Discussion on project concepts and phases
 SUMMARY:
 -
 DECISIONS:
-- The team decides to keep the backup battery despite the minor failure risk. [14:37]
-- The team agrees to remove the solar cell to meet the budget goal of twelve fifty. [16:55]
+-
 ACTIONS:
 -
 OPEN:
 -
 TOPICS:
-- Marketing evaluates the product against original criteria and finds it generally successful. [18:08]
-- The team acknowledges losing the solar panel is a setback but necessary for the budget. [20:15]
-- Project Manager suggests renaming the concepts phase to proposed ideas and prototypes. [38:42]
-- Marketing notes that the evaluation focused on the product rather than the project. [39:30]
-- Project Manager plans to include project evaluation details in the final report. [40:01]
-- Project Manager decides to save the meeting transcript into project documents. [41:07]
+- Discussion on project concepts and phases [38:10]
+- Clarification on product evaluation versus project evaluation [39:30]
+- Plan to include meeting notes in the final report [40:01]
+- Comparison of internet history and household adoption [41:46]
+- Proposal to celebrate project completion with champagne [43:01]
+- Confirmation to end the meeting [43:53]

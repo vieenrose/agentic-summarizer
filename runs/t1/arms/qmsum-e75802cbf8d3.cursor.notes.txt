@@ -1,11 +1,13 @@
-TITLE: Conceptual Design Meeting: Component Concept
+TITLE: Remote Control Design Meeting
 SUMMARY:
 -
 DECISIONS:
-- Include simple battery and push-button display for cost reduction. [5:23]
+- Include simple LCD display for basic information [5:21]
+- Include novel technology and features [21:27]
+- See trends in real-world settings [23:01]
 ACTIONS:
-- UI designer to develop a user interface design for the prototype. [26:59]
+-
 OPEN:
 -
 TOPICS:
-- Fancy features and location. [28:46 [28:14]
+-

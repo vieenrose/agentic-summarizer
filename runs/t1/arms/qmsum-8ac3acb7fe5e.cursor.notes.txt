@@ -1,11 +1,11 @@
-TITLE: Remote Control Component Selection
+TITLE: Remote Control Configuration Discussion
 SUMMARY:
-- Discussion on remote control components and their properties [1:32]
+-
 DECISIONS:
-- Keep manual remote control as an option [28:13]
+- Include voice recognition for basic commands [19:20]
 ACTIONS:
-- UI Designer to develop user interface design [42:47]
+-
 OPEN:
 -
 TOPICS:
-- Remote control components [1:32]
+-

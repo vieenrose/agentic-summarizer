@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-76d19929893a",
   "system": "baseline",
-  "faith_claim": 2.6,
-  "faith_anchor": 2.6,
+  "faith_claim": 5.0,
+  "faith_anchor": 5.0,
   "cover": 1,
   "synth": 1,
   "inverted": false,
-  "unsupported": 3,
+  "unsupported": 0,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -16,8 +16,8 @@
   "bullets": [
     {
       "section": "TOPICS",
-      "bullet": "Project Manager introduces the kick-off meeting agenda and project goals.",
-      "anchor": 27,
+      "bullet": "Discussion of drawing animals and identifying species",
+      "anchor": 394,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -26,18 +26,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Project Manager explains the three-stage project design process.",
-      "anchor": 114,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Project Manager demonstrates Smartboard tools for drawing and saving files.",
-      "anchor": 202,
+      "bullet": "Adjusting line width and color settings for drawings",
+      "anchor": 444,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -46,48 +36,48 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Team members discuss and guess the animal being drawn on the Smartboard.",
-      "anchor": 336,
+      "bullet": "Debate on whether to name specific bird species",
+      "anchor": 506,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "TOPICS",
-      "bullet": "Industrial Designer confirms their role and comments on the drawing quality.",
-      "anchor": 388,
+      "bullet": "Project pricing strategy of twenty-five Euros internationally",
+      "anchor": 646,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "TOPICS",
-      "bullet": "Project Manager introduces the kick-off meeting agenda and project goals.",
-      "anchor": 27,
-      "mode": "anchor",
+      "bullet": "Cost control target of twelve and a half Euros per unit",
+      "anchor": 670,
+      "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "TOPICS",
-      "bullet": "Project Manager explains the three-stage project design process.",
-      "anchor": 114,
-      "mode": "anchor",
+      "bullet": "Proposal to discuss current remote control design and market aim",
+      "anchor": 686,
+      "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "TOPICS",
-      "bullet": "Project Manager demonstrates Smartboard tools for drawing and saving files.",
-      "anchor": 202,
+      "bullet": "Discussion of drawing animals and identifying species",
+      "anchor": 394,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -96,8 +86,8 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Team members discuss and guess the animal being drawn on the Smartboard.",
-      "anchor": 336,
+      "bullet": "Adjusting line width and color settings for drawings",
+      "anchor": 444,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -106,13 +96,43 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Industrial Designer confirms their role and comments on the drawing quality.",
-      "anchor": 388,
+      "bullet": "Debate on whether to name specific bird species",
+      "anchor": 506,
       "mode": "anchor",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Project pricing strategy of twenty-five Euros internationally",
+      "anchor": 646,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Cost control target of twelve and a half Euros per unit",
+      "anchor": 670,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Proposal to discuss current remote control design and market aim",
+      "anchor": 686,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     }
   ]
 }

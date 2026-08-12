@@ -3,7 +3,7 @@
   "system": "cursor",
   "faith_claim": 5.0,
   "faith_anchor": 5.0,
-  "cover": 2,
+  "cover": 1,
   "synth": 1,
   "inverted": false,
   "unsupported": 0,
@@ -16,17 +16,7 @@
   "bullets": [
     {
       "section": "DECISIONS",
-      "bullet": "Use the Macrophone set of read speech and Hmm.",
-      "anchor": 369,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Test SRI system on and on Aurora TI-digits for performance comparison.",
+      "bullet": "Test SRI on noisy TI-digits for performance",
       "anchor": 1819,
       "mode": "claim",
       "verdicts": {
@@ -35,39 +25,9 @@
       "majority": "SUPPORTED"
     },
     {
-      "section": "TOPICS",
-      "bullet": "Cepstral domain normalization",
-      "anchor": 3139,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
       "section": "DECISIONS",
-      "bullet": "Use the Macrophone set of read speech and Hmm.",
-      "anchor": 369,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "DECISIONS",
-      "bullet": "Test SRI system on and on Aurora TI-digits for performance comparison.",
+      "bullet": "Test SRI on noisy TI-digits for performance",
       "anchor": 1819,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Cepstral domain normalization",
-      "anchor": 3139,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"

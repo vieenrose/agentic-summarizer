@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-e75802cbf8d3",
   "system": "cursor",
-  "faith_claim": 3.6666666666666665,
-  "faith_anchor": 1.0,
+  "faith_claim": 5.0,
+  "faith_anchor": 5.0,
   "cover": 2,
   "synth": 1,
-  "inverted": true,
-  "unsupported": 1,
+  "inverted": false,
+  "unsupported": 0,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -16,63 +16,63 @@
   "bullets": [
     {
       "section": "DECISIONS",
-      "bullet": "Include simple battery and push-button display for cost reduction.",
-      "anchor": 323,
+      "bullet": "Include simple LCD display for basic information",
+      "anchor": 321,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
-    },
-    {
-      "section": "ACTIONS",
-      "bullet": "UI designer to develop a user interface design for the prototype.",
-      "anchor": 1619,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Fancy features and location. [28:46",
-      "anchor": 1694,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
     },
     {
       "section": "DECISIONS",
-      "bullet": "Include simple battery and push-button display for cost reduction.",
-      "anchor": 323,
-      "mode": "anchor",
+      "bullet": "Include novel technology and features",
+      "anchor": 1287,
+      "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "CONTRADICTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "CONTRADICTED"
+      "majority": "SUPPORTED"
     },
     {
-      "section": "ACTIONS",
-      "bullet": "UI designer to develop a user interface design for the prototype.",
-      "anchor": 1619,
-      "mode": "anchor",
+      "section": "DECISIONS",
+      "bullet": "See trends in real-world settings",
+      "anchor": 1381,
+      "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
-      "section": "TOPICS",
-      "bullet": "Fancy features and location. [28:46",
-      "anchor": 1694,
+      "section": "DECISIONS",
+      "bullet": "Include simple LCD display for basic information",
+      "anchor": 321,
       "mode": "anchor",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "Include novel technology and features",
+      "anchor": 1287,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "DECISIONS",
+      "bullet": "See trends in real-world settings",
+      "anchor": 1381,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     }
   ]
 }

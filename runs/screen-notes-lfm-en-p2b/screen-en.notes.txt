@@ -1,0 +1,13 @@
+TITLE: Warehouse Consolidation & Budget
+SUMMARY:
+- Discussion on warehouse consolidation and cost reduction [0:00]
+DECISIONS:
+- Approve warehouse consolidation plan [3:30]
+ACTIONS:
+- S2 to revise costing with updated freight numbers [3:00]
+- S2 to submit revised costing plan by 14 March [6:00]
+- Site surveys to be finished by end of April [6:30]
+OPEN:
+-
+TOPICS:
+-

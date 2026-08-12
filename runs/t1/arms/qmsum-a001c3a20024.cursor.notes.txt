@@ -1,11 +1,12 @@
-TITLE: Functional Design Meeting: Remote Control
+TITLE: Remote Control Design Review
 SUMMARY:
 -
 DECISIONS:
-- Focus on function key accessibility [17:08]
+- Target groups and functions of the remote control will be defined by end of meeting [2:14]
+- Functional requirements to be met [17:08]
 ACTIONS:
 -
 OPEN:
--
+- Decide between screen-based or direct function design [15:26]
 TOPICS:
-- Target age group and features [31:03]
+-

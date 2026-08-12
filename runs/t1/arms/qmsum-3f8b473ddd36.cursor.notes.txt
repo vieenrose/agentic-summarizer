@@ -1,15 +1,12 @@
-TITLE: Conceptual Design Review
+TITLE: Remote Control Conceptual Design
 SUMMARY:
--
+- Analyzed visual signal transmission [4:47]
+- Discussed prototype design and non-remote remote [38:57]
 DECISIONS:
-- Focus on remote control's ability to function with solar batteries [6:08]
-- Stick with current interface concept [10:32]
-- Use three or four buttons with a menu button and side up/down type [34:47]
+- Include visible light as a signal [4:47]
 ACTIONS:
-- Research market research on voice recognition [21:55]
+-
 OPEN:
-- Define what kind of buttons are needed for the menu [34:47]
+-
 TOPICS:
-- Component design [2:05]
-- Remote control design [25:54]
-- Basic look and feel [38:57]
+- Prototype design [38:57]

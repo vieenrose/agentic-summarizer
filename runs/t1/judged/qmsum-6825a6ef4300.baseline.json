@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-6825a6ef4300",
   "system": "baseline",
-  "faith_claim": 2.333333333333333,
-  "faith_anchor": 3.0,
+  "faith_claim": 3.6666666666666665,
+  "faith_anchor": 2.333333333333333,
   "cover": 2,
   "synth": 1,
   "inverted": false,
-  "unsupported": 4,
+  "unsupported": 2,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -16,58 +16,28 @@
   "bullets": [
     {
       "section": "TOPICS",
-      "bullet": "Professor B discusses the TORRENT chip schedule delays.",
-      "anchor": 8,
+      "bullet": "Plan to wait for Sunil before final status reports",
+      "anchor": 62,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+        "local:8090/gpt-oss-20b": "SUPPORTED"
       },
-      "majority": "UNSUPPORTED"
+      "majority": "SUPPORTED"
     },
     {
       "section": "TOPICS",
-      "bullet": "Grad F plans to finish a proposal draft by Monday.",
+      "bullet": "Grad F's proposal draft and intermediate category classification",
       "anchor": 99,
       "mode": "claim",
       "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "Grad E plans to train on the Macrophone dataset to improve robustness against re-synthesized audio artifacts",
-      "anchor": 369,
-      "mode": "claim",
-      "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
       "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",
-      "bullet": "PhD C reports the new Aurora system achieves a 2.7% error rate on meeting digits.",
-      "anchor": 1133,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "MFCC features are identified as the key difference improving the SRI system performance.",
-      "anchor": 1738,
-      "mode": "claim",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "PhD C plans to smooth spectral subtraction results to reduce musical noise",
-      "anchor": 2545,
+      "bullet": "Grad F's qualifying exam date and presentation format",
+      "anchor": 137,
       "mode": "claim",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -76,8 +46,38 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Professor B discusses the TORRENT chip schedule delays.",
-      "anchor": 8,
+      "bullet": "Grad F's iterative feature selection and error reduction strategy",
+      "anchor": 195,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Grad F's use of TIMIT and Switchboard datasets",
+      "anchor": 271,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Grad F's tandem processing with SRI recognizer",
+      "anchor": 310,
+      "mode": "claim",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Plan to wait for Sunil before final status reports",
+      "anchor": 62,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
@@ -86,18 +86,38 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "Grad F plans to finish a proposal draft by Monday.",
+      "bullet": "Grad F's proposal draft and intermediate category classification",
       "anchor": 99,
       "mode": "anchor",
       "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Grad F's qualifying exam date and presentation format",
+      "anchor": 137,
+      "mode": "anchor",
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
+    },
+    {
+      "section": "TOPICS",
+      "bullet": "Grad F's iterative feature selection and error reduction strategy",
+      "anchor": 195,
+      "mode": "anchor",
+      "verdicts": {
         "local:8090/gpt-oss-20b": "SUPPORTED"
       },
       "majority": "SUPPORTED"
     },
     {
       "section": "TOPICS",
-      "bullet": "Grad E plans to train on the Macrophone dataset to improve robustness against re-synthesized audio artifacts",
-      "anchor": 369,
+      "bullet": "Grad F's use of TIMIT and Switchboard datasets",
+      "anchor": 271,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
@@ -106,33 +126,13 @@
     },
     {
       "section": "TOPICS",
-      "bullet": "PhD C reports the new Aurora system achieves a 2.7% error rate on meeting digits.",
-      "anchor": 1133,
+      "bullet": "Grad F's tandem processing with SRI recognizer",
+      "anchor": 310,
       "mode": "anchor",
       "verdicts": {
         "local:8090/gpt-oss-20b": "UNSUPPORTED"
       },
       "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "MFCC features are identified as the key difference improving the SRI system performance.",
-      "anchor": 1738,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "UNSUPPORTED"
-      },
-      "majority": "UNSUPPORTED"
-    },
-    {
-      "section": "TOPICS",
-      "bullet": "PhD C plans to smooth spectral subtraction results to reduce musical noise",
-      "anchor": 2545,
-      "mode": "anchor",
-      "verdicts": {
-        "local:8090/gpt-oss-20b": "SUPPORTED"
-      },
-      "majority": "SUPPORTED"
     }
   ]
 }

@@ -43,6 +43,10 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--student-url", default="http://127.0.0.1:8093")
     p.add_argument("--judge", default="local:8090/gpt-oss-20b")
     p.add_argument("--max-meetings", type=int, default=0)
+    p.add_argument("--include-synth", action="store_true",
+                   help="also harvest the synth:hard counterfactual meetings (the "
+                        "hard-class targets: proposal/nocommit/rejpref/rejectact)")
+    p.add_argument("--lang", default="en", choices=("en", "zh-TW"))
     args = p.parse_args(argv)
 
     manifest = json.loads(
@@ -50,8 +54,9 @@ def main(argv: list[str] | None = None) -> int:
     )
     meetings = [
         r for r in manifest
-        if r["split"] == "train" and r["lang"] == "en"
-        and r["source"].split(":")[0] in REAL_SOURCES
+        if r["split"] == "train" and r["lang"] == args.lang
+        and (r["source"].split(":")[0] in REAL_SOURCES
+             or (args.include_synth and r["source"] == "synth:hard"))
     ]
     meetings.sort(key=lambda r: -r["tokens"])
     if args.max_meetings:

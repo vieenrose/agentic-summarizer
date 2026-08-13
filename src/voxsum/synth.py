@@ -30,7 +30,7 @@ from .transcript import Utterance
 
 __all__ = ["REVISION_KINDS", "SynthMeeting", "build_set", "build_meeting"]
 
-REVISION_KINDS = ("reversal", "deadline", "reassign", "withdraw", "combined", "plain", "twotopic", "proposal", "nocommit", "rejpref")
+REVISION_KINDS = ("reversal", "deadline", "reassign", "withdraw", "combined", "plain", "twotopic", "proposal", "nocommit", "rejpref", "rejectact")
 
 LINE_GAP = 30  # seconds between lines
 
@@ -196,6 +196,16 @@ def _beats(
                 ("revision", "S1", "So that option stays off the table."),
                 ("context", "S3", "Right, we will not go there."),
             ],
+            # Explicit NOT-decision: the meeting decides AGAINST an action (the
+            # a001c3a20024 class — "Project manager to email presentations" while the
+            # transcript says "then you don't have to email them"). The trap is the
+            # student asserting the rejected action as ACTIONS/DECISIONS.
+            "rejectact": [
+                ("setup", "S2", f"We should email {subject} to everyone."),
+                ("context", "S3", "The folder already has it."),
+                ("revision", "S1", "Then we will not email it; the folder is the source."),
+                ("context", "S2", "Right, no email then."),
+            ],
         }
     else:
         opening = [
@@ -270,6 +280,12 @@ def _beats(
                 ("context", "S2", "團隊裡有些人不這麼認為。"),
                 ("revision", "S1", "所以那個選項先不列入考慮。"),
                 ("context", "S3", "對，我們不會往那個方向。"),
+            ],
+            "rejectact": [
+                ("setup", "S2", f"我們應該把{subject}寄給大家。"),
+                ("context", "S3", "資料夾裡已經有了。"),
+                ("revision", "S1", "那就不要寄了，以資料夾為準。"),
+                ("context", "S2", "對，不用寄信。"),
             ],
         }
     # Trap sits between setup and revision so the model must hold the revision across it.

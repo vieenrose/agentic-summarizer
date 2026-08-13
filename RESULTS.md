@@ -1084,3 +1084,24 @@ them as harvest-style NEGATIVES, never as protocol positives.
 The 2nd option has overtaken the 1st on the raw metric — at 1B the hard-class
 counterfactuals land; at 350M they corrupt the UPD lesson. Both remain above the owner's
 < 6.2% bar; the sweep stays the 0/20 deployment net.
+
+## zh 350M G1 chain: measured negative after 6 attempts (2026-08-12)
+
+The zh 350M leg has never passed the G1 screen's decision chain (6 versions: v1, v2,
+p3, p4, v3, v4). Session findings:
+
+1. **Train/eval granularity mismatch found**: the G1 screen runs at **budget=128 tokens**
+   (1-2 lines/chunk) while all training traces were 2048-token (and b128-LINE) chunks.
+   Traced 8 zh combined meetings at the screen's exact budget (J1_zh128, 62 records,
+   teacher demonstrates UPD «否決…» -> 通過… at the approval chunk).
+2. The teacher's own trap-chunk targets at 128 tokens ADD "跳過{trap}討論" (trap-term
+   containing) — screen-poisoning (the trap check is term-based); filtered out.
+3. zh v4 (J1 trap-free ×3 + trapfix): **trap PASS (first time)** but chain STILL FAIL:
+   the model emits "倉庫整併方案合併" — it echoes the subject's 合併 instead of the
+   approval verb 通過; the polarity parser scores it 0 (not -1/+1) → the screen's
+   `1 in polarities` check fails. The model avoids the 通過/否決 polarity vocabulary.
+
+Conclusion: at 350M the zh G1 chain is a measured negative (6/6). The zh 350M also
+never reached the raw bar (1-4/10 with judge noise). The **MiniCPM5-1B is the only
+G1-PASS-both model** — the single-model option is now the only production candidate.
+The en 350M (G1 PASS, raw 3-4/10) remains the cheapest en-only fallback.

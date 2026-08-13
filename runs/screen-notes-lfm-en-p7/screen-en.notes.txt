@@ -1,0 +1,12 @@
+TITLE: Warehouse Consolidation and Office Budget
+SUMMARY:
+-
+DECISIONS:
+- Approve warehouse consolidation plan [3:30]
+ACTIONS:
+- S2 to submit revised costing plan by 14 March [6:00]
+- Site surveys to be finished by end of April [7:00]
+OPEN:
+-
+TOPICS:
+-

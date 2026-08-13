@@ -1032,3 +1032,24 @@ classes (decision/commitment distortions — "proposal"→"decision" — and pol
 which the sweep (0/20) catches at deploy time. The owner bar (< 6.2% raw) needs either a
 larger real corpus of the hard classes or targeted counterfactual negatives (the
 proposal-only class is constructible with tools/build_counterfactual.py).
+
+## Hard-class pass (2026-08-12): 3 new synth kinds + phase-6
+
+New synth kinds targeting the persistent raw-INVERT classes: `proposal` (proposed-but-
+never-decided → the trap is ADDing it to DECISIONS), `nocommit` (explicitly no
+commitment → trap: asserting one), `rejpref` (negative preference "cannot imagine X" →
+trap: "keep X as an option"). 8 meetings (4 en + 4 zh), padded so the deferral beat
+lands in a different chunk, traced by the teacher (en 15 records / zh 16); the teacher
+demonstrates NOP/OPEN at the deferral chunk.
+
+- **350M en p6** (p5 + 6 en hard samples): G1 PASS (100% valid-op).
+- **350M zh p3** (v2 + 7 zh hard samples): **G1 FAIL — the chain/UPD broke** (valid-op
+  78%, chain_correct False). The hard-class "revision chunk → NOP/ADD" lessons conflict
+  with the "contradiction chunk → UPD" demonstrations — the twins confound again. zh
+  reverted to v2 (measured G1 PASS, raw 1/10).
+- **MiniCPM p6** (p5 + 6 en + 7 zh hard samples): G1 PASS en + zh (100% / 88% valid-op)
+  — at 1B the dose coexists with the UPD lessons.
+
+Lesson: the hard-class counterfactuals are usable as NEGATIVES (student-fabrication
+harvest) but NOT as positive protocol traces for the 350M — they over-teach NOP at
+revision chunks. The 350M en p6 kept G1 because its dose was smaller and en-only.

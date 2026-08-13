@@ -30,7 +30,7 @@ from .transcript import Utterance
 
 __all__ = ["REVISION_KINDS", "SynthMeeting", "build_set", "build_meeting"]
 
-REVISION_KINDS = ("reversal", "deadline", "reassign", "withdraw", "combined", "plain", "twotopic")
+REVISION_KINDS = ("reversal", "deadline", "reassign", "withdraw", "combined", "plain", "twotopic", "proposal", "nocommit", "rejpref")
 
 LINE_GAP = 30  # seconds between lines
 
@@ -175,6 +175,27 @@ def _beats(
                 ("deadline", "S2", f"{o1} will deliver both by 14 March."),
                 ("deadline", "S3", "Site surveys will be finished before the end of April."),
             ],
+            # Hard-class targets: the persistent raw-INVERT classes (proposal->decision
+            # distortions, asserted commitments, polarity flips). The correct answer at
+            # the revision chunk is NOP or ADD OPEN/TOPICS — never DECISIONS/ACTIONS.
+            "proposal": [
+                ("setup", "S2", f"We could adopt {subject}."),
+                ("context", "S3", "The numbers look mixed so far."),
+                ("revision", "S1", "We will not decide on this today."),
+                ("context", "S2", "We will revisit it next week."),
+            ],
+            "nocommit": [
+                ("setup", "S2", "We should look into the research on this."),
+                ("context", "S3", "That would need another round of analysis."),
+                ("revision", "S1", "We are not committing to anything yet."),
+                ("context", "S2", "Let us keep it open for now."),
+            ],
+            "rejpref": [
+                ("setup", "S3", "I cannot imagine building it with that material."),
+                ("context", "S2", "Some of the team feel differently."),
+                ("revision", "S1", "So that option stays off the table."),
+                ("context", "S3", "Right, we will not go there."),
+            ],
         }
     else:
         opening = [
@@ -231,6 +252,24 @@ def _beats(
                 ("revision", "S1", f"依照重算後的數字，{subject2}也通過。"),
                 ("deadline", "S2", f"{o1}會在三月十四號前完成這兩項。"),
                 ("deadline", "S3", "場地勘查會在四月底之前完成。"),
+            ],
+            "proposal": [
+                ("setup", "S2", f"我們可以考慮採用{subject}。"),
+                ("context", "S3", "目前的數字好壞參半。"),
+                ("revision", "S1", "今天先不決定這件事。"),
+                ("context", "S2", "下週再回來討論。"),
+            ],
+            "nocommit": [
+                ("setup", "S2", "我們應該研究一下這方面的資料。"),
+                ("context", "S3", "那還需要再一輪分析。"),
+                ("revision", "S1", "現在還沒有任何承諾。"),
+                ("context", "S2", "先保持開放。"),
+            ],
+            "rejpref": [
+                ("setup", "S3", "我無法想像用那種材質來做。"),
+                ("context", "S2", "團隊裡有些人不這麼認為。"),
+                ("revision", "S1", "所以那個選項先不列入考慮。"),
+                ("context", "S3", "對，我們不會往那個方向。"),
             ],
         }
     # Trap sits between setup and revision so the model must hold the revision across it.

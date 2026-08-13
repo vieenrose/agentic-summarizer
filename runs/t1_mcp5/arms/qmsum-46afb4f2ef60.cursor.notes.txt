@@ -1,0 +1,15 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Discussion on remote features and design constraints [6:57]
+- Discussion on design challenges and user interface [38:10]
+DECISIONS:
+- Remote will use interchangeable faces for the regular product [6:57]
+- Voice recognition area is embedded in the back and includes solar cells and battery [12:14]
+- Move to project evaluation after considering the design trade-off with the solar panel [17:43]
+- Use of digital paper for output [31:28]
+ACTIONS:
+-
+OPEN:
+- Marketing focus on subdued design vs. initial packaging [4:20]
+TOPICS:
+- Remote features and constraints [6:48]

@@ -1,0 +1,24 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- Discussion on target audience and remote control features [26:07]
+- Project manager to email presentations by next meeting [40:38]
+DECISIONS:
+- Include only basic functions (on-off button, channel numbers, volume) [12:51]
+- Exclude video and D_V_D functions [21:53]
+- Target young adults (25-35) for stylish remote control [26:48]
+- Include both voice recognition and traditional buttons [32:33]
+ACTIONS:
+- Project Manager to email presentations by next meeting [3:07]
+- User Interface designer to prioritize simplicity in design [15:50]
+- Test voice recognition softwares [33:16]
+- Marketing to send PowerPoint presentations in project documents folder by next Monday [39:48]
+OPEN:
+- Cost analysis of components [7:50]
+- Decision on including video and D_V_D_ functions [14:23]
+- Affordability of features for the target audience [28:17]
+- Voice recognition feasible for target audience [33:22]
+TOPICS:
+- Remote control usability [18:06]
+- Voice recognition [34:07]
+- Remote control basics [38:36]

@@ -1,0 +1,19 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on conceptual design and final decisions for the prototype [0:03]
+- Discussion on interface concepts and design goals [11:02]
+DECISIONS:
+- Presenting to Nathan first [1:28]
+- Focus on the visible light signaling for marketing differentiation [6:08]
+- Provisional touch screen from 25 Euros [19:03]
+- Voice recognition will be the primary feature [25:10]
+- Use a simple function set as primary feature [32:26]
+ACTIONS:
+- Develop basic prototypes next week [25:24]
+- Discuss cost issue later [33:39]
+OPEN:
+- Decision on whether to use the standard battery or solar cells [4:54]
+- Expanding to a physical remote control [27:16]
+TOPICS:
+- Component design and options [3:56]
+- Expanding features [28:22]

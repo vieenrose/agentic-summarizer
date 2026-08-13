@@ -1,0 +1,25 @@
+TITLE: Remote with Voice Recognition
+SUMMARY:
+- Prototype design and development of a remote with voice recognition [0:49]
+- Discussed team collaboration and process informing the board [30:08]
+- Expected team brainstorming session [29:45]
+DECISIONS:
+- Develop prototype for prototype review [0:49]
+- Develop the project evaluation process [17:53]
+- Include the s in the multi-coloured wave pattern [24:30]
+- Review team brainstorming session [29:45]
+- Marketing to focus on basic design and aesthetic qualities [38:09]
+ACTIONS:
+- Sarah to evaluate the product from basic design to aesthetic qualities [19:20]
+- Marketing to focus on basic design and aesthetic qualities [19:20]
+OPEN:
+- Balance solar panel integration with the project's budget and target [19:34]
+- Balance solar panel integration with budget and target [22:23]
+- Use the whiteboard at all times [22:19]
+- Efficient use of Play-Doh in the project [24:49]
+TOPICS:
+- Interchangeable faces and materials [4:17]
+- Durability and materials [5:46]
+- Cost of 12.50 Euro target [7:11]
+- Project evaluation [33:51]
+- "Inventing a new car" cost of 12.50 Euro target [33:49]

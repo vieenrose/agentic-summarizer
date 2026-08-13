@@ -1,0 +1,19 @@
+TITLE: Project Kick-Off Meeting
+SUMMARY:
+- Kick-off meeting to discuss the design of a new television remote control and establish team roles and process. [6:34]
+DECISIONS:
+- Design a new television remote control with a modern, friendly, and youth-friendly design. [0:12]
+- Save the document and start a new blank document. [8:52]
+- Remote must be original and trendy [16:51]
+- Use a plastic case for the remote [22:49]
+- Use front fronts to be grey or black for a trendy look [26:23]
+ACTIONS:
+- Marketing to present the design concept to the team and establish roles. [6:34]
+- Test the remote for international recognition [15:48]
+- Marketing to rehash decisions and provide instructions for the next meeting [22:25]
+OPEN:
+- Finalize the design concept and establish team roles. [6:34]
+- Balance form and shape to ensure recognition [16:34]
+TOPICS:
+- Project agenda and tools [0:21]
+- "Kay" design concept [0:05]

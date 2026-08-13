@@ -1,0 +1,20 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+- Discussion on starting demo mode in next meeting to address remaining issues [14:32]
+DECISIONS:
+-
+ACTIONS:
+- Explain the concept of "synthesis" to the team [7:48]
+- Explore freeware options to visualize the belief network [23:24]
+- Grad B to decide which ontology to use [46:27]
+- Grad E to continue the belief-net effort for next few weeks [53:35]
+- Grad B to finish the first cut by end of week [58:33]
+- Do the extended reach test by end of week [58:40]
+OPEN:
+- Difficulty starting the synthesis module due to XML structure [4:26]
+- Next meeting to focus on flipping into science mode [12:15]
+- Agreement on whether to separate belief-net efforts from formalization [57:17]
+- Whether to separate belief-net efforts from formalization [1:00:49]
+TOPICS:
+- SmartKom project report [0:05]
+- Next meeting focus on ontology and constructions [14:32]

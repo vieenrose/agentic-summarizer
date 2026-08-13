@@ -1,0 +1,20 @@
+TITLE: Remote Control Configuration
+SUMMARY:
+- Discussion on battery and solar cell options [4:24]
+- Review of advanced and sample speaker options [7:24]
+- Marketing analyzed user wants and needs for the next 3 years [18:57]
+- Marketing discussed solar panel rubber constraints [38:14]
+DECISIONS:
+- Include titanium in the design for a nicer appearance [6:21]
+- Keep the LCD display for fast, efficient operation [31:12]
+- Include vegetable-themed colors in the remote [36:55]
+- Replace vegetable themes with advanced electronics for the remote [37:58]
+- Include advanced integrated circuits and a curved on one side case [40:49]
+ACTIONS:
+- UI Designer to develop user interface design [42:46]
+- Marketing to conduct product evaluation [42:47]
+OPEN:
+-
+TOPICS:
+- Battery and solar cell options [4:16]
+- Advanced and sample speaker options [7:24]

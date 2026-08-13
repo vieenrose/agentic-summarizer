@@ -1,0 +1,25 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- ID presented functional components and process. [8:31]
+- Review of basic buttons and user interface requirements [15:26]
+- Marketing shared survey results on voice recognition remote controls [33:46]
+- Marketing shared survey results on voice recognition [36:01]
+- UI designer proposed a "simple, easy-to-use" approach [39:08]
+DECISIONS:
+- Teletext is outdated and outdated. [7:04]
+- Target younger audience for voice recognition software [26:34]
+- Include voice recognition in the remote for on-channel commands [32:33]
+- Develop a "component concept" for UI design [41:11]
+- Prepare questionnaire and summary [42:08]
+ACTIONS:
+- Marketing to complete questionnaire and summarize results [39:57]
+- UI Designer to develop a "simple, easy-to-use" approach [39:08]
+- Complete questionnaire and summarize results [42:08]
+OPEN:
+- Determine which basic buttons to implement [15:26]
+- Decide between screen or physical buttons [14:47]
+TOPICS:
+- Functional components [0:28]
+- Teletext and remote control design [7:04]
+- Voice recognition and battery life [26:48]
+- Functional requirements [40:28]

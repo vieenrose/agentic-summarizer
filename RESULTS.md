@@ -1010,3 +1010,25 @@ went 5/20 → **6/20** (4bfcff6d8771, 6825a6ef4300 in; 3f8b473ddd36, bdb39cc0665
 the 230-negative dose over-suppresses — G1/op-quality improves, raw faithfulness degrades
 (over-cautious rewrites misstate borderline claims). Dose sensitivity confirmed again
 (350M p3 broke G1 at 144; MiniCPM raw degrades at 460).
+
+## MiniCPM-p5 (half-dose) + standings (2026-08-12)
+
+MiniCPM-p5 (trapfix + its 230 harvest negatives ×1, LR 1e-5, 2 epochs):
+**G1 PASS both languages** (en valid-op 100%, zh 87.5%; trap/chain/deadlines/anchored/UPD
+all PASS), raw T1 INVERT **4/19** — the ×1 dose keeps the trap fix and the zh UPD
+behavior while returning raw to the base level (p4's ×2 over-suppressed to 6/20).
+Dose-sensitivity confirmed for the third time: ×1 negative dose is the sweet spot for
+both G1 integrity and raw faithfulness.
+
+**Measured standings, end of session:**
+
+| option | G1 en/zh | raw T1 INVERT | sweep | models |
+|---|---|---|---|---|
+| 1st: LFM2.5-350M p5 + zh v2 | PASS/PASS (composite) | 4/20 (en 3 + zh 1) | 0/20 | 2 × ~215 MB |
+| 2nd: MiniCPM5-1B p5 | PASS/PASS (one model) | 4/19 (1 arms fail) | — | 1 × ~650 MB |
+
+Both options converge at the same raw rate (~20%), plateaued at the semantically-hard
+classes (decision/commitment distortions — "proposal"→"decision" — and polarity flips),
+which the sweep (0/20) catches at deploy time. The owner bar (< 6.2% raw) needs either a
+larger real corpus of the hard classes or targeted counterfactual negatives (the
+proposal-only class is constructible with tools/build_counterfactual.py).

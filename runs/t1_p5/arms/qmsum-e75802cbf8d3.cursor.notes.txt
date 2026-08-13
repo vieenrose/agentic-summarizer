@@ -1,0 +1,25 @@
+TITLE: Conceptual Design Meeting: Remote Control
+SUMMARY:
+- Proposal for battery-free, simple, and cost-effective remote control [6:28]
+- Marketing shared web trends and user survey results [20:31]
+- UI designer advocated for "fancy, technologically innovative" look and feel [22:26]
+DECISIONS:
+- Use simple battery for the display [5:23]
+- Use the phone as a good example of a trend source [20:41]
+- Use rubber body for titanium panels [29:54]
+- Use a shape that is not a sponge [30:49]
+- Use a sponge-like material for titanium panels [30:29]
+ACTIONS:
+- UI Designer to develop speech recognition criteria [26:47]
+- Marketing to research fanciness of materials [28:13]
+OPEN:
+- Define speech recognition criteria [7:53]
+- Determine speaker independence vs location [7:53]
+- Smartness of the remote must be minimal [16:23]
+- Decide between fanciness and material durability [28:13]
+TOPICS:
+- Interface concept [10:26]
+- Color scheme [6:29]
+- Distance-based features [15:56]
+- Trends and user survey results [20:31]
+- UI design and look and feel [22:26]

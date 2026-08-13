@@ -1,0 +1,20 @@
+TITLE: Remote Control Conceptual Design
+SUMMARY:
+- Marketing presented research on current casing trends [7:24]
+DECISIONS:
+- Focus on environmental sustainability [6:08]
+- Stick with current trends [8:50]
+- Include voice recognition in the remote [25:14]
+- Develop a menu with three or four buttons [34:47]
+- Use the same basic non-remote remote design [38:56]
+ACTIONS:
+- Research current market trends [7:48]
+- Develop prototype for voice recognition [25:34]
+- Prototype development using basic non-remote design [38:56]
+OPEN:
+-
+TOPICS:
+- Interface design concepts [11:17]
+- Cost analysis [18:24]
+- Solar power and sunlight exposure [26:08]
+- Prototype development [39:49]

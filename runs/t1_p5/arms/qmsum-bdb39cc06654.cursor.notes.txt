@@ -1,0 +1,26 @@
+TITLE: SmartKom System Setup
+SUMMARY:
+- Discussion on using a German sythesis module for English sentences [0:05]
+- Discussion on formalizing notations and formalizing the ontology [11:02]
+- Discussion on data utility in initial interactions [28:49]
+- Comparison of "ego" and "allocentric" perspectives [38:56]
+- Explanation of MRI findings on brain regions and circuits [40:13]
+DECISIONS:
+- Funding and demos are committed for research [8:49]
+- Grad B to finish the next Monday by end of week [58:21]
+ACTIONS:
+- Present system to the user for greeting [7:48]
+- Grad B to review and refine the internal demo [13:03]
+- Bhaskara to review technical aspects and resolve connections [21:30]
+- Build formalized system components [48:33]
+- Grad B to coordinate with DFKI and EPFL for consulting [55:47]
+- Grad B to coordinate with Ellen for image schemas [1:00:13]
+OPEN:
+- System needs to handle gestural recognition for the Siemens virtual touch screen [5:37]
+TOPICS:
+- Formalizing notations and formalizing the ontology [11:02]
+- System setup and integration [15:19]
+- Spatial description generation [33:05]
+- Differences between English and German on spatial descriptions [34:38]
+- Formalization of the ontology [58:33]
+- Progress on image schemas [58:22]

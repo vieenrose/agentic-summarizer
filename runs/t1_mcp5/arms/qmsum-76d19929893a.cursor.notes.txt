@@ -1,0 +1,19 @@
+TITLE: Kick-off Meeting: TV Remote Control
+SUMMARY:
+- Kick-off meeting to discuss the design of a new television remote control. [5:59]
+- Discussed design of a new TV remote control and compatibility with D_V_D_ and T_F_T players. [15:23]
+DECISIONS:
+- Keep design costs at 12.50 Euros and focus on international sales target of 25 Euros. [11:10]
+- Target international sales target of 25 Euros and keep design costs at 12.50 Euros. [13:00]
+- Remote must be custom shaped to fit hand. [18:37]
+ACTIONS:
+- Industrial Designer to draw a most favorite animal on a Smartboard. [6:17]
+- Industrial Designer to draw a favorite animal on a Smartboard. [13:00]
+- Discuss material and market ideas for next meeting. [22:03]
+OPEN:
+- Project manager to decide which animal to draw (hippo, mouse, or rat). [5:48]
+- Decide which animal to draw on Smartboard. [13:19]
+TOPICS:
+- Project plan and design process [5:03]
+- Remote control design criteria [1:27]
+- International sales target [6:39]

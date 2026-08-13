@@ -1,0 +1,24 @@
+TITLE: Proposal for Aurora Interchangeable Categories
+SUMMARY:
+- Proposal to classify intermediate categories using phoneme recognition and SRI. [5:46]
+- Aurora system performance improved with new LDA filters and DC compensation. [19:42]
+DECISIONS:
+- Training on larger data sets for HTK. [6:09]
+- Training on clean digit data for SRI system. [27:08]
+- Test SRI system on noisy TI- digits for training. [27:14]
+- Use energy and zero crossings thresholds for speech detection. [36:18]
+- Smooth SNR estimate using Wiener filter and baseline. [43:34]
+ACTIONS:
+- PhD A to write a proposal and give it to Morgan. [2:36]
+- Grad E to record audio for measurement. [11:48]
+- PhD C to listen to SRI system results for 1.5 hours. [18:53]
+- Implement energy and zero crossings thresholds for speech detection. [36:45]
+- Test different time constants for SNR estimation. [44:21]
+- Read digit results and analyze them. [55:11]
+OPEN:
+- Efficient phoneme recognition with additional intermediate features. [4:49]
+- Modeling intermediate categories using word and switchboard. [5:46]
+TOPICS:
+- Aurora system performance [12:50]
+- Training on Macrophone test data [29:45]
+- Spectral subtraction and Wiener filter [43:34]

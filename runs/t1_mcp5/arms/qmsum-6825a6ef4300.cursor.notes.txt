@@ -1,0 +1,21 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on completing the TORRENT chip project within a month [5:51]
+- Discussion on using a larger data set for phoneme recognition [6:09]
+- Comparison of signal after and before/after processing [11:25]
+- Discussion on improving signal-to-noise ratio with new models [19:38]
+- Discussion on testing SRI vs Aurora on TI-digits [30:19]
+DECISIONS:
+- Use a larger data set for phoneme recognition [6:09]
+- Use clean training data for model training [27:17]
+- Do not apply VTS in the log domain [54:03]
+ACTIONS:
+- Grad F to submit a full proposal by Monday [1:39]
+- Check if meeting digits have DC component [19:34]
+- Combine MLP and energy-based VAD using "AND" operator [39:58]
+- Try different time constants for smoothing to see if SNR improves [42:25]
+OPEN:
+- Performance of next step (phoneme recognition) expected by [5:57]
+- Impact of removing DC offset on model performance [20:20]
+TOPICS:
+- Data set selection for phoneme recognition [6:09]

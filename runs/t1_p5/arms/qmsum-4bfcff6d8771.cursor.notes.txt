@@ -1,0 +1,19 @@
+TITLE: Prototype Presentation and Evaluation
+SUMMARY:
+- Presentation of prototype and evaluation criteria [0:29]
+- Marketing presented evaluation criteria and budget [28:57]
+DECISIONS:
+- Initial evaluation of the process and design [0:29]
+- Use a whiteboard for notes [36:47]
+- Marketing to review evaluation criteria [37:11]
+- UI designer to develop the interface [36:38]
+- Marketing to prepare evaluation of the new design for the seven-point scale [38:58]
+ACTIONS:
+- Marketing to review evaluation criteria [2:09]
+- UI designer to develop user interface [1:34]
+- Marketing to prepare evaluation of the new design for the seven-point scale [8:29]
+OPEN:
+-
+TOPICS:
+- User requirements and evaluation criteria [9:10]
+- Project timeline and resource allocation [38:58]

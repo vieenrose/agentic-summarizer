@@ -1,0 +1,21 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+- Discussion on design vs learning approach [26:25]
+DECISIONS:
+- Focus on basic demos first for the summer [10:50]
+ACTIONS:
+- Explain the concept of "synthesis" to the team [7:55]
+- Prepare a basic demo version of SmartKom by next meeting [14:32]
+- Put a link to the anatomy of a spatial description on the website [39:56]
+- Grad B to present the taxonomy of reference frames by end of month [52:28]
+- Grad B to finish the project by end of week [58:33]
+- Professor C to do the formalization work [59:23]
+OPEN:
+- Difficulty starting the synthesis module due to module count [4:26]
+- Difficulty starting synthesis module due to module count [29:12]
+- Thesis on belief-net structure expected next month [57:17]
+- Readiness for group reading group to discuss schema formalization [1:00:18]
+TOPICS:
+- Smartkom project report [0:05]
+- System integration [15:34]
+- Expanding belief-net structure [57:27]

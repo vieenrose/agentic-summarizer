@@ -1,0 +1,15 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on remote control components and options. [5:56]
+- Discussion on user interface features and design. [11:21]
+- Consensus on including L_C_D display. [22:15]
+DECISIONS:
+- Include voice recognition and scroll button. [16:43]
+- Include L_C_D display. [30:33]
+ACTIONS:
+- Include voice recognition and scroll button if desired. [13:33]
+OPEN:
+- Availability of case materials. [26:05]
+TOPICS:
+- Remote control components [1:42]
+- Case options [5:38]

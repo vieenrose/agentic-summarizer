@@ -1,0 +1,19 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on waiting for Grad F before presenting proposal [1:05]
+- Discussion on using more data for re-synthesis to improve signal-to-noise ratio [11:25]
+- Discussion on improving signal-to-noise ratio with more data [14:48]
+- Comparison of error rates on different training sets [19:37]
+- Discussion on VAD problem and speech boundary detection [32:01]
+DECISIONS:
+- Use clean training data only for model training [27:17]
+- Do not apply VTS in the cepstral domain [52:19]
+ACTIONS:
+- Grad F to finish proposal by Monday [1:39]
+- Try combining MLP and energy-based VAD [39:58]
+- Try different time constants for smoothing to see if SNR improves [42:25]
+OPEN:
+- Discussion on improving error rates with additional features [3:01]
+- Whether mean subtraction helped with the Aurora baseline system [13:37]
+TOPICS:
+-

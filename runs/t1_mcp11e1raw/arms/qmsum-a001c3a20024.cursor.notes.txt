@@ -1,0 +1,22 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- Discussion on target audience and remote control features [26:07]
+- User interface requirements and technical specifications [41:15]
+DECISIONS:
+- Include video and D_V_D_ features based on management directive [14:03]
+- Focus on function key feature for easy operation [17:08]
+- Target young audience for stylish remote control [26:08]
+- Include voice recognition for the fifteen to thirty-five age group [31:17]
+- Include voice recognition as an option for ages 15-35 [38:36]
+ACTIONS:
+- Project Manager to email presentations by next meeting [3:07]
+- User Interface designer to find remote location after lunch [41:12]
+OPEN:
+- Cost analysis of components [7:50]
+- How to implement basic buttons vs fancy interface [14:53]
+- Feasibility of voice recognition in low-income households [25:27]
+- Voice recognition would be extra but likely not reduce remote size [34:57]
+TOPICS:
+- User interface requirements [12:08]
+- Function key requirement [17:08]

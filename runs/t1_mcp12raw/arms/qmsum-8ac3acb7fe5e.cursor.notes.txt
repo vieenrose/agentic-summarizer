@@ -1,0 +1,18 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on remote control components and options. [5:56]
+- Consensus on using L_C_D_s for the remote control. [23:51]
+DECISIONS:
+- Include voice recognition. [16:43]
+- Include push-buttons. [32:22]
+- Use a case made of rubber or edges covered with rubber. [38:29]
+ACTIONS:
+- Use a flat case with plastic, rubber, or titanium. [6:21]
+- Include voice recognition and scroll button. [13:33]
+OPEN:
+- Whether kinetic energy is suitable for a remote control. [4:50]
+- 是否包含语音识别和 Scroll 按钮。 [13:33]
+TOPICS:
+- Remote control components [1:42]
+- Interfacing with the human body [5:33]
+- Case shape and options [5:47]

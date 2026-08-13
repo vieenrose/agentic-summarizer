@@ -1,0 +1,19 @@
+TITLE: Kickoff Meeting: Television Remote Control
+SUMMARY:
+- Presentation of project goals and discussion about design stages [1:03]
+- Discussing design goals and market target [16:38]
+DECISIONS:
+- Target international price point: 25 Euros [11:10]
+- Keep material cost: 12.50 Euros [11:10]
+- Compatible with D_V_D_ player and T_F_T [14:30]
+ACTIONS:
+- Project manager to design a new television remote control [1:03]
+- Discuss design goals and market target [11:26]
+OPEN:
+- Decision on target animal design [4:34]
+- Accurate international sales price calculation [6:39]
+- Button layout and design [14:24]
+- Design of the remote control face [21:19]
+TOPICS:
+- User interface and compatibility [13:23]
+- Design goals and market target [20:37]

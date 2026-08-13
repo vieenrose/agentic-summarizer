@@ -219,8 +219,8 @@ is the number we are actively improving; the sweep is the current deployment bac
 |---|---|---|
 | G1 capability screen (en / zh) | **PASS / PASS** (chain, deadlines, anchored, trap) | — |
 | valid-op rate (screen) | en 100% / zh 88%* | — |
-| raw INVERT (model only, no sweep) | **2/20 (10%)** | 3/20 |
-| swept INVERT (model + VERIFY/ANCHOR sweep) | **0/19–0/20 (0%)** | — |
+| raw INVERT (model only, no sweep, n=20) | **3-4/20 (15-20%)** across passes p10/p11-e1/p12 (the p10 ship-table quote of 2/20 came from p6 — corrected after maintainer verification 2026-08-13) | 3/20 |
+| swept INVERT (model + VERIFY/ANCHOR sweep, n=20) | **0/20 (0%)** | — |
 | FAITH-claim (1–5) | **4.81–4.84** | 3.50 |
 | COVER (1–5) | 2.84–2.89 | 3.05 |
 | SYNTH (1–5) | 2.32 | 2.60 (tie within judge noise ±0.4–0.5) |
@@ -228,6 +228,28 @@ is the number we are actively improving; the sweep is the current deployment bac
 
 \* zh 88% = one redundant duplicate-ADD per screen run, correctly rejected by the
 dedup guard; the notes are unaffected.
+
+**On-device status — RESOLVED 2026-08-13:** the objection "a phone has no 20B judge"
+is now answered. The sweep judge has been replaced by an on-device verifier:
+**`Luigi/lfm2.5-350m-verifier`** (~215 MB Q4_K_M), fine-tuned on the pipeline's own
+judged (bullet, evidence, verdict) triples, class-balanced; measured **96% agreement
+with the 20B judge** on 200 held-out triples. The full deployment — MiniCPM student
+(688 MB) + verifier (215 MB) — runs the sweep on-device and measures, with the
+on-device verifier as the sweep judge:
+
+| metric | on-device deployment (student + 350M verifier sweep) |
+|---|---|
+| G1 screen (en / zh) | PASS / PASS, valid-op **100% / 100%** (pass p12) |
+| swept INVERT (n=20) | **0/20** |
+| FAITH-claim | **4.54** (baseline 3.50, +1.04) |
+| COVER | 2.95 (baseline 3.05, tie) |
+| SYNTH | 2.50 (baseline 2.60, tie) |
+
+Memory: 688 + 215 MB ≈ 900 MB if both models resident; ~750 MB peak with sequential
+loading (student for the stream, verifier swapped in for the sweep) — within the
+device's 2.05 GB ceiling. The model-only raw rate (no sweep at all) is 3/20 (15%) on
+pass p12 (raw runs: p10 3/20, p11-e1 4/20, p12 4/20 — 15-20%); the sweep remains the
+0-inversion backstop, now on-device.
 
 Ship-rule reading (spec §7.7): GT2 (faith) clears decisively — FAITH +1.3 at fewer
 inversions than the baseline (0 vs 3, swept). GT3 (SYNTH) is a statistical tie, not a

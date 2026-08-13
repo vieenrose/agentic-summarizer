@@ -1,0 +1,22 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+- Discussion on modeling human behavior using network structures [29:28]
+DECISIONS:
+- Focus on basic issues and move to science mode in summer [12:10]
+- Focus on design followed by data collection [26:48]
+ACTIONS:
+- Explain the concept of "synthesis" to the team [7:48]
+- Prepare for next meeting by flipping into science mode [12:10]
+- Check if KLEist project can be done in science mode [33:21]
+- Grad E to continue the belief-net effort for next few weeks [53:35]
+- PhD A to visit the German AI center in July [55:07]
+- Grad B to contact Bhaskara for reading group on schemas [1:00:22]
+OPEN:
+- Difficulty starting the synthesis module due to code complexity [7:38]
+- KLEist project status update [33:35]
+- Whether to continue the belief-net effort separately [57:17]
+TOPICS:
+- Smarticus dialogue system [0:05]
+- Construction and visualization [22:13]
+- Expanding belief network [25:18]
+- Expansion of belief network [38:57]

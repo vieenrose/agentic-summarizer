@@ -1,0 +1,22 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on waiting for Grad F for his proposal (2:35) [0:55]
+- Discussion on using a larger data set for VAD training (6:09) [6:09]
+- Comparison of signal after processing with high-pass filtering (11:48) [11:48]
+- Discussion on using a larger data set for VAD training [6:09] [28:22]
+- Comparison of signal after processing with high-pass filtering [11:48] [28:18]
+DECISIONS:
+- Use a larger data set for VAD training [6:09]
+- Use clean training data to normalize signals [27:17]
+- Use a combined VAD that considers both energy and spectral information [39:18] [39:51]
+ACTIONS:
+- Grad F to finish proposal by Monday (2:35) [1:39]
+- PhD G to review PZM signal analysis [16:20] [17:32]
+- Try to put a floor on SNR [43:42]
+- Read digits on next session to compare different VAD methods [55:03]
+OPEN:
+- Discussion on improving error rates with additional features (4:43) [2:12]
+- Impact of removing DC component on signal-to-noise ratio [17:38] [18:30]
+- Impact of removing DC component on signal-to-noise ratio [17:38] [18:30] [33:21]
+TOPICS:
+- Reverberation time and data filtering [11:28]

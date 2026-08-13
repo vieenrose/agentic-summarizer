@@ -1,0 +1,22 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on remote control components and configurations [0:57]
+- Presentation on user interface features and options [9:21]
+DECISIONS:
+- Include scroll button and voice recognition if possible [13:33]
+- Include voice recognition to reduce initial learning curve [16:43]
+- Use a curved surface for the display to be suitable for the right hand [23:02]
+- Exclude the wind dynamo and handle power via the case [28:24]
+- Use a curved surface for the display [32:25]
+ACTIONS:
+- Use whiteboard for initial introduction [1:59]
+- Include definition of user interface in product specs [10:22]
+- Define which features are included in the remote control display [29:57]
+- Match remote color with company branding [37:24]
+OPEN:
+- Suitability of different components for the target audience [4:41]
+- Cost of advanced chip vs regular chip for L_C_D [8:30]
+- Determine whether to use a flat case or curved one [28:15]
+- Include or exclude solar panels based on case material [38:23]
+TOPICS:
+- Remote control features and components [27:03]

@@ -1,0 +1,18 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Presentation of remote design features and goals [6:48]
+- Discussion on design challenges and functional requirements [38:10]
+DECISIONS:
+- Remote will use multiple colors and be interchangeable faces [3:57]
+- Voice recognition area is part of the solar cell design [12:39]
+- Move to evaluation phase without solar cell [17:43]
+ACTIONS:
+- Industrial Designer to develop remote prototype [3:57]
+- Discuss project process and team dynamics [26:02]
+- Marketing to doodling less due to feeling professional [31:49]
+OPEN:
+- Budget exceeded $12.50, resulting in final price around €11.99 [7:11]
+- Project process details are unclear [20:35]
+- Clarity of new ideas found on the board [32:22]
+TOPICS:
+-

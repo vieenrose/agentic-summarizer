@@ -1,0 +1,17 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Discussed development of a new remote with voice recognition and interchangeable faces [6:57]
+DECISIONS:
+- Remote will use multiple colors and be edible [3:57]
+- Voice recognition area doubles as solar cell area [12:14]
+- Move ahead with the project without the solar cell [16:45]
+- Discussing de-briefing in next meeting [32:37]
+- Celebrate with a new song [43:20]
+ACTIONS:
+- Industrial Designer to develop prototype with interchangeable faces [3:57]
+OPEN:
+- Budget exceeded goal of 12.50 Euro [7:11]
+- Swapping out battery may reduce initial cost [13:38]
+- Marketing's okay with lower price point [16:55]
+TOPICS:
+- Interchangeable faces [13:51]

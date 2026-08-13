@@ -30,7 +30,7 @@ from .transcript import Utterance
 
 __all__ = ["REVISION_KINDS", "SynthMeeting", "build_set", "build_meeting"]
 
-REVISION_KINDS = ("reversal", "deadline", "reassign", "withdraw", "combined", "plain", "twotopic", "proposal", "nocommit", "rejpref", "rejectact", "nofollow")
+REVISION_KINDS = ("reversal", "deadline", "reassign", "withdraw", "combined", "plain", "twotopic", "proposal", "nocommit", "rejpref", "rejectact", "nofollow", "softact", "eitheror")
 
 LINE_GAP = 30  # seconds between lines
 
@@ -215,6 +215,22 @@ def _beats(
                 ("revision", "S1", "Right, no need to email anything then."),
                 ("context", "S2", "Okay, the folder it is."),
             ],
+            # Discussion items that are never ASSIGNED as actions (the over-assertion
+            # class: "we need to look into X" -> the student asserts "owner: look into X").
+            "softact": [
+                ("setup", "S2", f"We need to look into {subject}."),
+                ("context", "S3", "That would help the planning."),
+                ("revision", "S1", "We will assign that next time."),
+                ("context", "S2", "Right, no owner yet."),
+            ],
+            # Two options discussed, NOT decided (the "either/or" class: the student
+            # asserts one side as the decision).
+            "eitheror": [
+                ("setup", "S2", f"Should we go with {subject} or wait?"),
+                ("context", "S3", "Both sides have good arguments."),
+                ("revision", "S1", "We have not settled that yet."),
+                ("context", "S2", "Let us keep both options open."),
+            ],
         }
     else:
         opening = [
@@ -301,6 +317,18 @@ def _beats(
                 ("context", "S3", f"喔，不用寄啊，資料夾裡都有{subject}了。"),
                 ("revision", "S1", "對，那就不用寄了。"),
                 ("context", "S2", "好，以資料夾為準。"),
+            ],
+            "softact": [
+                ("setup", "S2", f"我們需要研究一下{subject}。"),
+                ("context", "S3", "這對規劃會有幫助。"),
+                ("revision", "S1", "這個下次再指派。"),
+                ("context", "S2", "對，目前還沒有負責人。"),
+            ],
+            "eitheror": [
+                ("setup", "S2", f"{subject}要現在做還是再等等？"),
+                ("context", "S3", "兩邊都有道理。"),
+                ("revision", "S1", "這個還沒有定案。"),
+                ("context", "S2", "先保留兩個選項。"),
             ],
         }
     # Trap sits between setup and revision so the model must hold the revision across it.

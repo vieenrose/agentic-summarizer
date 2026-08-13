@@ -1,0 +1,18 @@
+TITLE: Kickoff Meeting: Television Remote Control
+SUMMARY:
+- Presentation of project goals and discussion about design stages [1:03]
+- Discussion on design goals and compatibility with other devices [11:39]
+DECISIONS:
+- Target international sales price: 25 Euros [11:10]
+ACTIONS:
+- Project manager to present the final design choice [5:48]
+- Discuss current remote controls and design goals [11:40]
+- Project manager to present final design choice [13:19]
+- Marketing to discuss material choices for the next meeting [22:49]
+OPEN:
+- Decision on target animal design is between a kangaroo and a hedgehog [4:28]
+- Design of universal remote with D_V_D_ player [12:27]
+- Selection between kangaroo and hedgehog as design target [20:29]
+TOPICS:
+- Intercultural compatibility [13:20]
+- Material choices for next meeting [22:23]

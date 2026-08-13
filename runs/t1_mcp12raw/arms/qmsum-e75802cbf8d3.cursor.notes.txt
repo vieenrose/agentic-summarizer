@@ -1,0 +1,21 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on remote control components and design. [4:23]
+- Discussion on interface design and features. [7:41]
+- Discussion on remote control features and design. [15:56]
+- Discussion on remote control design features. [24:38]
+- Decision not to reinvent the remote control wheel. [32:00]
+DECISIONS:
+- Use push buttons instead of L_C_D display to reduce cost. [4:43]
+- Use speech independent technology instead of millennium remote. [10:18]
+- Target fancy features to stand out. [28:26]
+ACTIONS:
+- Industrial Designer will develop speech independent device. [10:22]
+- Explore between titanium vs spongy panel design. [29:08]
+OPEN:
+- Selection of battery type will impact design and cost. [6:37]
+- How to define speech recognition in device. [7:06]
+- Define speech recognition features. [27:16]
+TOPICS:
+- Interface design [8:41]
+- UI design [27:09]

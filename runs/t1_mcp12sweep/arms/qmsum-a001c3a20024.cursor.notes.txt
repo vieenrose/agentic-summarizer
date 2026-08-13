@@ -1,0 +1,12 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+DECISIONS:
+- Focus on function key thing to come up on screen [17:08]
+- Target age group for remote control features [28:57]
+ACTIONS:
+- Project Manager to act as secretary and send minutes after the meeting [1:03]
+OPEN:
+-
+TOPICS:
+-

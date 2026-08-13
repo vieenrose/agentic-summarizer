@@ -1,0 +1,20 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+- Discussion on starting demo mode in science mode [12:10]
+DECISIONS:
+- Design the initial model by guessing our dependencies [26:47]
+ACTIONS:
+- Explain the concept of "synthesis" to the team [7:48]
+- Prepare internal demo showing what the system does [14:45]
+- Check if "reference frames" will be included in the project scope [33:21]
+- Grad E to continue building the project despite challenges [57:17]
+- PhD A to attend the O point nine meeting next week [57:27]
+- Grad B to contact Bhaskara for a reading group on schema formalization [1:00:22]
+OPEN:
+- Difficulty starting the synthesis module due to LISP structure [4:26]
+- Next meeting to focus on ontology and construction parser [14:32]
+- Whether to continue the belief-net effort separate from formalization [57:17]
+TOPICS:
+- Smarticus dialogue manager [0:05]
+- System integration and construction [15:35]
+- OWL2Vec description of bike location [29:25]

@@ -1,0 +1,22 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on remote control components and configuration options [0:57]
+- Presentation on user interface options and features [9:21]
+- Consensus on using L_C_D_s for the interface [23:27]
+DECISIONS:
+- Include voice recognition and scroll button [13:33]
+- Include voice recognition [16:43]
+- Use L_C_D_s as the standard design [22:15]
+- Use plastic or titanium cases [35:24]
+- Include integrated circuits [37:42]
+ACTIONS:
+- Use whiteboard for initial introduction [0:59]
+- Select push-buttons [32:22]
+- Match remote color with company theme [37:24]
+OPEN:
+- Suitability of different components for the intended use [4:50]
+- Whether sample sender includes voice recognition [9:12]
+- Availability of cases with different surfaces [26:05]
+- Spinning vs scrolling [33:31]
+TOPICS:
+- Case design [38:29]

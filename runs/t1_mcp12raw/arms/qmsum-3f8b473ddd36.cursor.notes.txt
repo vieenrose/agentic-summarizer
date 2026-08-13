@@ -1,0 +1,20 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on conceptual design and final decisions on the prototype. [0:03]
+- Discussion on user interface concepts and design challenges. [9:23]
+DECISIONS:
+- Presenting to Nathan the option to go first. [1:28]
+- Target larger form factor with extra face plate for changeable casings. [14:37]
+- Drop voice recognition to reduce initial cost. [20:57]
+- Stick with traditional buttons and minimal features. [34:47]
+- Target youth market between 18-35 years. [36:01]
+ACTIONS:
+- Explore cheaper manufacturing options. [19:45]
+- Develop a basic prototype soon after design. [25:24]
+OPEN:
+- Selection of energy source and case material is challenging due to manufacturer limitations. [5:40]
+- Cost of additional features vs. expected increase in usability. [14:20]
+- Market research on target price point. [21:49]
+- Selection of materials for the case and further features. [25:48]
+TOPICS:
+- Component design and options [3:56]

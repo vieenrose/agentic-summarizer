@@ -1,0 +1,14 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on remote control components and design. [4:23]
+- Discussion on remote control design and trends. [23:55]
+DECISIONS:
+- Use push buttons instead of L_C_D display to reduce cost. [4:43]
+- Remote control should be smart and capable of speech recognition. [17:15]
+- Explore titanium panels on an entire rubber body. [29:44]
+ACTIONS:
+-
+OPEN:
+- Selection of battery type (nickel/alkaline) will reduce cost. [6:37]
+TOPICS:
+-

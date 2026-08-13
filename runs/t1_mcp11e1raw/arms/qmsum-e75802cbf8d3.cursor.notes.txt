@@ -1,0 +1,19 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on remote control components and design goals [6:01]
+- Discussion on interface design and user options [8:23]
+- Discussion on remote control features and design goals [16:34]
+- Presentation on smart features of remote controls [16:28]
+- Discussion on trend-driven design evolution [23:56]
+DECISIONS:
+- Use simple push buttons and speech recognition to reduce cost [5:02]
+- Remote should be smart [16:34]
+- Focus on be fancy, technologically innovative, and easy to use [21:27]
+- Explore titanium panels on an entire rubber body [29:44]
+ACTIONS:
+- Discussing smart features in remote control [16:44]
+OPEN:
+- Selection of display type (L_C_D or push buttons) [5:24]
+- Design must be recognizable and useful [21:27]
+TOPICS:
+- Remote control components [0:26]

@@ -1,0 +1,16 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on remote control components and design goals [6:37]
+- Discussion on interface design and user options [8:23]
+- Discussion on remote control design trends and specifications [23:55]
+DECISIONS:
+- Use simple push buttons and speech recognition to reduce cost [5:02]
+- Remote control should be real smart to detect user behavior [16:44]
+- Explore titanium panels on a rubber body for a fruit-like shape [29:44]
+- Classical design with linear output is more common than battery-based systems [32:00]
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+-

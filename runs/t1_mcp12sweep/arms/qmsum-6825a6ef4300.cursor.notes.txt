@@ -1,0 +1,16 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on waiting for Grad F before presenting proposal [1:05]
+- Discussion on using a larger data set for VAD [6:09]
+- Discussion on VAD problem with decreasing SNR [32:01]
+- Discussion on combining different signal processing methods [54:28]
+DECISIONS:
+- Use clean TI-digits training data for SRI [27:17]
+ACTIONS:
+- Grad F to finish proposal by Monday [1:39]
+- Use the Macrophone read speech set for further training [6:09]
+- Try to put a floor on SNR [43:42]
+OPEN:
+-
+TOPICS:
+-

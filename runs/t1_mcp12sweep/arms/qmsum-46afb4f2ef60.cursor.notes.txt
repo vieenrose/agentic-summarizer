@@ -1,0 +1,13 @@
+TITLE: Remote Design Review
+SUMMARY:
+-
+DECISIONS:
+- Remote will use multiple colors and be interactive via touchscreen and voice recognition [3:57]
+- Exclude back-up battery to reduce cost [13:38]
+- Celebrate with champagne or something [43:04]
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+-

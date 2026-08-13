@@ -1,0 +1,19 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Discussion on remote features and design based on previous meeting points [6:57]
+- Discussion on the lack of creativity and information during the design phase [25:22]
+DECISIONS:
+- Remote will use interchangeable faces for the exterior [6:57]
+- Multiple colors will be available [3:57]
+- Voice recognition area is at the back and includes the solar cell and battery [12:14]
+- Do your own what is to do with the remaining work [26:02]
+- Functional design prioritized over aesthetic [37:38]
+ACTIONS:
+- UI designer to develop remote prototype [3:57]
+- Marketing to doodle more in digital format [31:36]
+OPEN:
+- Need to review minutes from previous meeting [0:54]
+- Project to itemize parts and estimate cost [11:51]
+TOPICS:
+- Finance and pricing [11:21]
+- Industrial Designer's focus on ideas beyond the board [32:29]

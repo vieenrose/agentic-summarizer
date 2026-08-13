@@ -1,0 +1,24 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on conceptual design and final decisions on the prototype layout [0:03]
+- Discussion on conceptual design and final decisions on prototype layout [13:10]
+DECISIONS:
+- Present first person interface (FIP) off the battery [5:04]
+- Use visible light as a gimmick to distinguish the remote [5:21]
+- Target larger form factor than traditional iPod with hard plastic casing [14:24]
+- Stick with traditional buttons and minimal features [35:17]
+- Target youth market with十八到三十五岁 [36:00]
+ACTIONS:
+- Explore cheaper manufacturing options [19:45]
+- Develop a basic prototype soon after [25:24]
+- Develop basic prototype by [39:50]
+OPEN:
+- 能否使用橡胶作为 casing to increase durability [11:42]
+- Define target market and price strategy [19:23]
+- Materials for the case and screen are still under discussion [25:48]
+- Location of next prototype building materials [38:56]
+TOPICS:
+- Component design and limitations [3:56]
+- FIP options [3:56]
+- Case material choices [3:02]
+- Marketing piloting with pre-launch feedback [7:06]

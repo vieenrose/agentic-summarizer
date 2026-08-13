@@ -1,0 +1,13 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+-
+DECISIONS:
+- Focus on basic issues and move to science mode in summer [12:10]
+ACTIONS:
+- Prepare for next meeting by flipping into science mode [12:10]
+- Grad B to implement the parser and build the formalization system [48:46]
+- Grad E to deliver O point nine structure next week [57:27]
+OPEN:
+-
+TOPICS:
+-

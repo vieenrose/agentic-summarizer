@@ -1,0 +1,19 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on waiting for Grad F for final proposal draft [1:15]
+- Discussion on using a larger data set for VAD training [6:09]
+- Discussion on VAD type and evaluation boundaries [36:49]
+DECISIONS:
+- Use the new Aurora front-end with HTK for better performance [19:25]
+- Use clean training data with TI-digits for better model performance [27:17]
+ACTIONS:
+- Grad F to submit proposal draft by Monday [1:39]
+- Tested two VADs before re-implementing a more energy-based one [35:55]
+- Try to put a floor on SNR [43:42]
+OPEN:
+- Performance of SRI on Near-Mic data is limited [5:46]
+- Impact of removing DC component on signal-to-noise ratio [16:36]
+- Combination of different methods for speech feature extraction [54:56]
+TOPICS:
+- Intermediate feature extraction [3:01]
+- VAD parameter boundaries [32:01]

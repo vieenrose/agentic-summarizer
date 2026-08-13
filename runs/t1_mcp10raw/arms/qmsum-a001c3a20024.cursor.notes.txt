@@ -1,0 +1,20 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- Marketing presented a graph illustrating the importance of function key, volume, and channel selection [20:12]
+- Marketing presented a graph illustrating function key importance [24:26]
+- Discussion on target age group and remote control functions [37:42]
+- Project manager to send email with component presentations next time [40:41]
+DECISIONS:
+- Target age group for remote control features [28:57]
+- Include voice recognition to target young, hip, and trendy users [33:22]
+- Include voice recognition to target young users [35:05]
+ACTIONS:
+- Project Manager to send email with project documents next time [0:55]
+- UI Designer to send email with component presentations next time [40:41]
+OPEN:
+- Voice recognition implementation is complex and potentially limiting [31:17]
+TOPICS:
+- Functional design process [8:07]
+- User interface design [25:44]
+- Voice recognition [32:28]

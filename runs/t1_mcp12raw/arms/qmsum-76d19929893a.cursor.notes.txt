@@ -1,0 +1,15 @@
+TITLE: Kickoff Meeting: Television Remote Control
+SUMMARY:
+- Discussed design features for universal remote control [14:24]
+DECISIONS:
+- Target international sales price: 25 Euros [11:10]
+ACTIONS:
+- Project Manager to design a new television remote control [5:59]
+- Design user interface for compatibility with D_V_D_ and T_F_T players [14:48]
+- Marketing to discuss material choices in next meeting [22:49]
+OPEN:
+- Project Manager to choose between a mouse, a rat, or a hedgehog as the animal on the Smartboard [5:48]
+- Remote design must be original and trendy [16:44]
+- Selection of which function to prioritize on the button [20:42]
+TOPICS:
+-

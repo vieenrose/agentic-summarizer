@@ -1,0 +1,12 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+DECISIONS:
+- Include voice recognition for the 15-35 age group [31:17]
+- Include voice recognition for 15-35 age group [35:05]
+ACTIONS:
+- Research target demographics for voice recognition software [27:43]
+OPEN:
+- Voice recognition would be extra but likely not reduce size [34:57]
+TOPICS:
+-

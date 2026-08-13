@@ -1,0 +1,20 @@
+TITLE: Kick-off Meeting: Original TV Remote
+SUMMARY:
+-
+DECISIONS:
+- Design a new television remote control for young people and modernize its design. [0:12]
+- Target retail price: 25 Euros internationally [11:10]
+- Use a case made of plastic, hard, or rubbery [23:06]
+- Universal remote compatibility [24:24]
+- Bright, flashy, or minimal color scheme rejected [26:34]
+ACTIONS:
+- Review competitors' remote controls for design inspiration [15:04]
+OPEN:
+- Determine if the remote should be compatible with the D_V_D_ player [12:34]
+TOPICS:
+- Project agenda and tools [0:07]
+- "Don't throw anything away" policy [3:33]
+- Design aim in the market [6:45]
+- Universal compatibility [12:48]
+- D_V_D_ player compatibility [12:34]
+- Material selection for the remote [22:25]

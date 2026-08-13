@@ -1,0 +1,14 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+-
+DECISIONS:
+- Include LCD as core function. [30:46]
+- Use rubber case and external buttons. [38:36]
+ACTIONS:
+- Use L_C_D_ display if available for channel selection. [30:54]
+- Match remote color with company values (e.g., yellow, green, orange). [37:24]
+OPEN:
+- Determine which components to use based on design goals. [3:06]
+TOPICS:
+- Remote control components [1:42]
+- Remote control components and UI. [19:21]

@@ -1,0 +1,12 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on waiting for Grad F for his proposal (2:51) [0:55]
+- Discussion on using a larger data set for VAD training (6:09) [6:09]
+DECISIONS:
+-
+ACTIONS:
+- Grad F to finish proposal by Monday (2:51) [1:39]
+OPEN:
+-
+TOPICS:
+-

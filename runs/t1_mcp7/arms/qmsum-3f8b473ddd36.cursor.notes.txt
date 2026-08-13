@@ -1,0 +1,18 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on conceptual design and final decisions regarding the remote's form and function. [7:42]
+- Discussion on user interface concepts and design goals. [11:02]
+DECISIONS:
+- Present first person name: Nathan [1:28]
+- Prototipally offer touch screen with voice recognition. [19:23]
+- Voice recognition will be the only feature in the next model. [25:10]
+- Stick with traditional buttons and minimal features. [35:17]
+ACTIONS:
+- Develop a basic prototype by next week. [25:33]
+- Hit the bricks with basic design features. [39:50]
+OPEN:
+- Selection of energy source and case material is challenging due to manufacturer limitations. [5:40]
+- Case material selection is challenging. [22:20]
+TOPICS:
+- Component design and remote functionality [3:56]
+- Expanding features vs. adding battery. [24:42]

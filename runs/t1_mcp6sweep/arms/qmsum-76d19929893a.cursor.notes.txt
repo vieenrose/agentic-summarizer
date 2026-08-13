@@ -1,0 +1,14 @@
+TITLE: Kickoff Meeting: Television Remote Control
+SUMMARY:
+- Project manager to present the kick-off meeting agenda and discuss the design of the television remote control. [0:27]
+DECISIONS:
+-
+ACTIONS:
+- Design a new television remote control. [1:03]
+- Design a new television remote control [15:06]
+OPEN:
+- Decision on which animal to draw on the Smartboard. [4:28]
+- Decide between triangle or oval shape for the remote face [16:05]
+- Case material and button size specifics needed before final design [22:54]
+TOPICS:
+- Project plan from "Real Reaction" [0:38]

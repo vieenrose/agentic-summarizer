@@ -1,0 +1,14 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on conceptual design and final decisions regarding the remote's form and function. [7:42]
+- Discussion on user interface concepts and design goals. [11:36]
+DECISIONS:
+- Target larger form factor than traditional IPeds. [14:24]
+- Omit the touch screen in favor of voice recognition [25:10]
+ACTIONS:
+- Research user interface concepts further. [12:09]
+- Explore cheaper manufacturing options. [19:45]
+OPEN:
+- Limited by available components and manufacturer offerings [5:40]
+TOPICS:
+-

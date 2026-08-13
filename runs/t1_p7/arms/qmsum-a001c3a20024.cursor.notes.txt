@@ -1,0 +1,19 @@
+TITLE: Functional Design Meeting: Remote Control
+SUMMARY:
+- ID presented functional components and process for the remote control. [8:31]
+- Basic buttons identified; UI design focused on simplicity. [15:26]
+DECISIONS:
+- Teletext is outdated and will be replaced with television only. [7:04]
+- Include voice recognition for basic commands. [34:27]
+- Remote must be kept close to the user for efficiency. [36:29]
+- Components concept can be developed. [41:11]
+- User questionnaire completed. [42:08]
+ACTIONS:
+-
+OPEN:
+- Signal strength and TV compatibility. [9:32]
+- Efficient channel navigation with voice recognition. [34:26]
+TOPICS:
+- Functional components and process. [8:31]
+- Basic buttons and UI design. [15:26]
+- Target age group and income. [31:17]

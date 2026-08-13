@@ -1,0 +1,15 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on waiting for Grad F for his proposal (2:35) [0:55]
+- Discussion on using a larger data set for VAD training (6:09) [6:09]
+- Discussion on using a larger data set for VAD training [6:09] [28:22]
+DECISIONS:
+- Use a larger data set for VAD training [6:09]
+- Use a combined VAD that considers both energy and spectral information [39:18] [39:51]
+ACTIONS:
+- Grad F to finish proposal by Monday (2:35) [1:39]
+- Read digits on next session to compare different VAD methods [55:03]
+OPEN:
+- Impact of removing DC component on signal-to-noise ratio [17:38] [18:30]
+TOPICS:
+-

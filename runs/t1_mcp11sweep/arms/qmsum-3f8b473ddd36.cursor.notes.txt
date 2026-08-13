@@ -1,0 +1,15 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on conceptual design and final decisions regarding the remote's form and function. [7:42]
+- Discussion on user interface concepts and design priorities. [11:36]
+DECISIONS:
+-
+ACTIONS:
+- Explore cheaper manufacturing options [19:45]
+- Figure out which buttons to use and whether to stick with traditional or unique features [34:47]
+- User interface designer to focus on basic look and feel [38:08]
+OPEN:
+- Limited by available components and manufacturer offerings [5:40]
+- How to place all menu options in the same place [38:57]
+TOPICS:
+- Voice recognition technology [23:59]

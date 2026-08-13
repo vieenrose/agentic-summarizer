@@ -1,0 +1,12 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on remote control components and options. [5:56]
+DECISIONS:
+- Include voice recognition. [16:43]
+ACTIONS:
+- Include voice recognition and scroll button. [13:33]
+- Match remote color with company theme. [37:24]
+OPEN:
+- Prioritize between push-buttons and L_C_D_ display. [32:18]
+TOPICS:
+- Remote control components [1:42]

@@ -1,0 +1,25 @@
+TITLE: German SmartKom System
+SUMMARY:
+- Discussion on XML syntax trees and modules [3:16]
+- Discussion on formalizing notations and formalizing the ontology [11:04]
+- Discussion on linguistic and neurological differences in spatial description [39:28]
+- Discussion on MRI and brain area specialization [40:14]
+DECISIONS:
+- Funding and resources committed for the research [8:49]
+- Demo requirements for the Fall [10:49]
+- Focus on solving basic issues in the demo [12:14]
+- Finalize the proposal and questions by end of week [58:22]
+ACTIONS:
+- Suggested approach: Use LISP notation to generate XML syntax trees [4:23]
+- Review Hugin or other GUI tools for necessary features [23:14]
+- Build the parser and analyzer for the project [48:32]
+- Grad B to read traditional questions and review concepts [53:14]
+- Grad B to coordinate with Ellen for image schemas [1:00:13]
+OPEN:
+-
+TOPICS:
+- System setup and XML syntax trees [7:48]
+- Formalizing notations and formalizing the ontology [11:04]
+- Spatial description generation [32:25]
+- Spatial description differences [39:28]
+- System components and requirements [46:27]

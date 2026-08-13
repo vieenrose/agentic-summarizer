@@ -1,0 +1,17 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- Discussion on target audience and remote control features [26:47]
+- Discussion on function key feature and user interface [41:15]
+DECISIONS:
+- Focus on function key feature to encourage user engagement [17:08]
+- Target young adults (25-35) for stylish remote control [26:48]
+ACTIONS:
+- Project Manager to email presentations by next meeting [3:07]
+- Research voice recognition popularity among 25-35 age group [27:43]
+OPEN:
+- Cost analysis of components [7:50]
+- Voice recognition with TV remote feasible for 25-35 age group [33:22]
+- Whether to include voice recognition as an option [38:36]
+TOPICS:
+- User interface requirements [39:09]

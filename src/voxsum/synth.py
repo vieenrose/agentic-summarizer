@@ -30,7 +30,7 @@ from .transcript import Utterance
 
 __all__ = ["REVISION_KINDS", "SynthMeeting", "build_set", "build_meeting"]
 
-REVISION_KINDS = ("reversal", "deadline", "reassign", "withdraw", "combined", "plain", "twotopic", "proposal", "nocommit", "rejpref", "rejectact")
+REVISION_KINDS = ("reversal", "deadline", "reassign", "withdraw", "combined", "plain", "twotopic", "proposal", "nocommit", "rejpref", "rejectact", "nofollow")
 
 LINE_GAP = 30  # seconds between lines
 
@@ -206,6 +206,15 @@ def _beats(
                 ("revision", "S1", "Then we will not email it; the folder is the source."),
                 ("context", "S2", "Right, no email then."),
             ],
+            # INFORMAL negation of a proposed action (the a001c3a20024 class — the
+            # transcript says "then you don't have to email them" and the student
+            # asserts the email as an action).
+            "nofollow": [
+                ("setup", "S2", f"We should email {subject} to everyone."),
+                ("context", "S3", f"Oh, you don't have to email them, the folder has {subject}."),
+                ("revision", "S1", "Right, no need to email anything then."),
+                ("context", "S2", "Okay, the folder it is."),
+            ],
         }
     else:
         opening = [
@@ -286,6 +295,12 @@ def _beats(
                 ("context", "S3", "資料夾裡已經有了。"),
                 ("revision", "S1", "那就不要寄了，以資料夾為準。"),
                 ("context", "S2", "對，不用寄信。"),
+            ],
+            "nofollow": [
+                ("setup", "S2", f"我們應該把{subject}寄給大家。"),
+                ("context", "S3", f"喔，不用寄啊，資料夾裡都有{subject}了。"),
+                ("revision", "S1", "對，那就不用寄了。"),
+                ("context", "S2", "好，以資料夾為準。"),
             ],
         }
     # Trap sits between setup and revision so the model must hold the revision across it.

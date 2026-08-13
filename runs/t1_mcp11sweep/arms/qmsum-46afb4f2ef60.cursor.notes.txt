@@ -1,0 +1,12 @@
+TITLE: Remote Design Review
+SUMMARY:
+-
+DECISIONS:
+- Voice recognition area doubles as solar cell area [12:14]
+- Celebrate [43:20]
+ACTIONS:
+-
+OPEN:
+- Need to determine if rot factors are a concern [6:14]
+TOPICS:
+- Remote features [6:48]

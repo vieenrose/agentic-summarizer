@@ -1,0 +1,14 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on user interface features and options [9:21]
+DECISIONS:
+- Include scroll button and voice recognition if possible [13:33]
+- Use a curved surface for the display to be suitable for the right hand [23:02]
+- Use a curved surface for the display [32:25]
+ACTIONS:
+- Match remote color with company branding [37:24]
+OPEN:
+- Determine whether to use a flat case or curved one [28:15]
+- Include or exclude solar panels based on case material [38:23]
+TOPICS:
+-

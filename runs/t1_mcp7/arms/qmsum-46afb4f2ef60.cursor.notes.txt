@@ -1,0 +1,17 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Discussion on remote features and design constraints [6:57]
+- Discussion on functional remote features and design [38:10]
+DECISIONS:
+- Remote will be developed with interchangeable faces [6:57]
+- Will not use touch screen due to available features [2:36]
+- Voice recognition area will be discontinued [13:38]
+- Functional remote will be developed with a smiling face design [37:38]
+- Celebrate with champagne or something [43:01]
+ACTIONS:
+- UI designer to develop prototype with functional buttons [2:59]
+OPEN:
+- Need to determine if additional marketing areas are relevant [7:11]
+- How will we market a functional remote? [37:06]
+TOPICS:
+-

@@ -1,0 +1,21 @@
+TITLE:
+SUMMARY:
+- Discussed role and task definitions in the project process [21:16]
+DECISIONS:
+- Develop prototype for remote with voice recognition [0:49]
+- Use a simple remote [14:37]
+- Final report and documentation to be compiled [40:01]
+- UI designer to focus on visual elements and user flow [41:11]
+- UI Designer to develop user-centered design for the project [41:11]
+ACTIONS:
+- Review teamwork and brainstorming during meetings [29:10]
+OPEN:
+- Evaluate cost-effectiveness of prototype development [7:11]
+- Pricing and material costs for solar cells [11:13]
+- Assess the effectiveness of whiteboard usage [22:19]
+- Efficient teamwork during meetings [29:17]
+TOPICS:
+- Prototype development [0:49]
+- Cost-effectiveness of solar cells [9:12]
+- Project process [20:53]
+- Project evaluation [33:51]

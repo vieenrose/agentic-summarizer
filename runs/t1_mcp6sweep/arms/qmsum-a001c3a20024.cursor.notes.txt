@@ -1,0 +1,12 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+DECISIONS:
+- Remote control function key expected to come up on entry [17:08]
+ACTIONS:
+-
+OPEN:
+- Cost calculation pending component identification [7:45]
+- User interface design must be simple enough for 15-35 year olds [38:36]
+TOPICS:
+-

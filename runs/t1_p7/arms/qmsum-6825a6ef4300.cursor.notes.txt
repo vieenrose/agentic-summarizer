@@ -1,0 +1,28 @@
+TITLE: Proposal for Aurora Interchangeable Categories
+SUMMARY:
+- Proposal for Aurora intermediate categories [1:39]
+- Aurora system performance on meeting digits improved [19:24]
+- PhD C: Aurora system performance on meeting digits improved [19:24]
+- Comparison of SRI and Aurora system performance [27:08]
+- Discussion on VTS and cepstral normalization [52:14]
+DECISIONS:
+- Training on larger data sets for HTK [6:09]
+- Test SRI system on and on Aurora TI-digits [28:35]
+- Use energy and zero-crossing thresholds for speech detection [36:19]
+- Apply Wiener filter to smooth noisy speech and reduce musical noise [43:34]
+- Use a floor on SNR to prevent it from becoming very low [44:21]
+ACTIONS:
+- Morgan to submit proposal for Aurora intermediate categories [1:32]
+- Grad E to use the Macrophone set for speech and HMM [6:09]
+- PhD C to listen to SRI system performance [14:48]
+- PhD C to train gender-aware models [26:47]
+- Use SRI system for Aurora TI-digits training [28:35]
+- Implement VAD for speech detection and noise estimation [36:44]
+OPEN:
+- SRI system performance on far-mic and near-mic data [6:05]
+- Aurora system performance on far-mic and near-mic data [11:09]
+TOPICS:
+- System performance on meeting digits [14:48]
+- Aurora system performance on meeting digits [28:22]
+- Training on Macrophone test data for SRI [29:28]
+- Noise reduction in speech signals [40:45]

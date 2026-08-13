@@ -1,0 +1,12 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on waiting for Sunil to complete the task [0:55]
+- Discussion on using a larger data set for VAD training [6:09]
+DECISIONS:
+- Use clean training data with TI-2 digits for SRI [27:17]
+ACTIONS:
+- Try to reduce SNR variance by increasing smoothing factors [42:25]
+OPEN:
+-
+TOPICS:
+-

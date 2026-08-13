@@ -1,0 +1,16 @@
+TITLE: Remote Control Conceptual Design
+SUMMARY:
+- Marketing presented research on current casing trends [7:24]
+DECISIONS:
+- Focus on the remote for the prototype [0:05]
+- Keep the touch screen as the main selling point [19:18]
+- Include a menu and navigation buttons [34:47]
+- Prioritize menu and navigation functions [34:12]
+- Stick with a basic non-remote design for the prototype [38:16]
+ACTIONS:
+- Develop the basic look and feel of the prototype [38:16]
+OPEN:
+- Evaluate if a casing option like leather or wood is preferable [9:10]
+TOPICS:
+- Interface concepts and design team research [11:35]
+- Prototype development [38:57]

@@ -1,0 +1,11 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+DECISIONS:
+- Target age group for remote control features [28:57]
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+-

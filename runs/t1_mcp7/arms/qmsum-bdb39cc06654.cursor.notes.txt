@@ -1,0 +1,19 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Grad B to generate XML trees starting in October [4:26]
+- Grad B to flip into science mode next meeting [12:46]
+- Put a link to the EML page. [39:55]
+- Grad E to continue with belief net construction [57:17]
+- Grad B to do the belief net construction by end of week [58:33]
+- Professor C to coordinate the final project date and deliverables [59:23]
+OPEN:
+- Understanding the module's goal requires further explanation [6:57]
+- Next meeting to discuss ontology and construction engine [14:32]
+- Decision on which ontology to use for the parser [46:48]
+- Finalize belief net construction before the end of the week [58:33]
+TOPICS:
+- System integration and collaboration [15:35]

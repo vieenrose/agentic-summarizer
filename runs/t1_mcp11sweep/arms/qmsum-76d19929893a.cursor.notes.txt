@@ -1,0 +1,14 @@
+TITLE: Kickoff Meeting: Television Remote Control
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Project Manager to design a new television remote control [1:03]
+- Discuss design goals and market target with team [11:26]
+- Design a new television remote control [15:06]
+OPEN:
+- Decision on target animal design [4:34]
+- Selection of button layout and materials [22:54]
+TOPICS:
+-

@@ -1,0 +1,11 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+-
+DECISIONS:
+- Focus on design before learning [26:48]
+ACTIONS:
+- Put a link to "Anatomy of a Spatial Description" on the page [39:45]
+OPEN:
+-
+TOPICS:
+-

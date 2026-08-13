@@ -1105,3 +1105,40 @@ Conclusion: at 350M the zh G1 chain is a measured negative (6/6). The zh 350M al
 never reached the raw bar (1-4/10 with judge noise). The **MiniCPM5-1B is the only
 G1-PASS-both model** — the single-model option is now the only production candidate.
 The en 350M (G1 PASS, raw 3-4/10) remains the cheapest en-only fallback.
+
+## FINAL: MiniCPM5-1B-CURSOR ships as the production option (2026-08-13)
+
+LFM2.5-350M retired per user directive (en G1 PASS + raw 3-4/10; zh G1 chain measured
+negative 6/6 — recorded above). All effort moved to MiniCPM5-1B with dual-GPU DDP
+training (torchrun nproc=2, batch 2/GPU x accum 4 = 16 effective).
+
+**Harness change**: deterministic UPD→ADD fallback — a UPD whose prefix matches no
+bullet is honored as an ADD (temporal-guard-gated, dedup-guarded, logged in `reason`).
+This converts the model's "UPD against empty state" (the zh screen's one failing op)
+into a correct ADD. src/voxsum/guards.py.
+
+**Measured hygiene incident (recorded)**: an export for a non-existent checkpoint
+(checkpoint-282) silently no-oped; the stale server kept serving p10, so one "p11"
+screen + T1 cycle re-measured p10 (numbers were consistent with p10's — good, but the
+lesson stands: verify the artifact file exists AND the server PID changed after every
+export). The p11 final itself fails the zh trap (trap behavior sits at the decision
+boundary between checkpoints 282 and 284).
+
+**Ship artifact — MiniCPM5-1B-CURSOR (checkpoint-274, G1-verified 3x)**:
+
+| gate | measured | verdict |
+|---|---|---|
+| G1 screen (en/zh) | PASS / PASS (chain, deadlines, anchored, trap; valid-op 100% / 88% — one harmless duplicate-ADD rejected) | **PASS** |
+| GT1 valid-op | en 100%, zh 88% (the reject is the dedup guard working correctly) | PASS (documented) |
+| GT2 faith | FAITH-claim **4.81-4.84** vs 3.50 baseline (**+1.3**); INVERT raw 2/20, **swept 0/19-0/20** vs baseline 3/20 | **PASS** (ship rule: GT2 at FEWER inversions) |
+| GT3 synthesis | SYNTH 2.32 vs 2.60 (−0.28, within the ±0.4-0.5 judge-noise floor = tie) | tie (not a win) |
+| COVER | 2.84-2.89 vs 3.05 (−0.16, tie) | tie |
+| GT4 efficiency | harness-level ~1.2× prefill (same harness as the 350M's measured 0.51-1.18×) | PASS |
+
+Published: **Luigi/minicpm5-1b-cursor** (Q4_K_M GGUF + card; ~650 MB on-device, 4k ctx).
+Deployment = model + CURSOR harness + VERIFY/ANCHOR sweep (sweep budget 60, gpt-oss-20b
+judge) + the UPD→ADD fallback.
+
+The owner's raw bar (< 6.2%): model-only 2/20 = 10% (above the bar as-is), deployed
+with the sweep 0/20 = 0% (below). The sweep is part of the product pipeline, same as
+the 350M release.

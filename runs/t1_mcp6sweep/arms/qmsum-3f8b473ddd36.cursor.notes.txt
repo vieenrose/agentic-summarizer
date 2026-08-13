@@ -1,0 +1,15 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on user interface concepts and design priorities. [11:36]
+DECISIONS:
+- Prototipally go with the touch screen [19:03]
+- Stick with rubber buttons and a traditional layout [35:18]
+- Target youth market with emphasis on simplicity and versatility. [36:00]
+ACTIONS:
+- Explore cheaper manufacturing options [19:42]
+OPEN:
+- Selection between plastic, rubber, or wood for the case body [3:02]
+- 材料选择 for the case and components [25:48]
+- Collaboration on a prototype with voice recognition and menu options. [38:57]
+TOPICS:
+-

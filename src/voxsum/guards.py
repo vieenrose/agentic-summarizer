@@ -212,6 +212,21 @@ def apply_ops(
             case Upd(section, prefix, bullet, anchor):
                 resolved, note = _resolve_anchor(chunk, bullet, anchor)
                 reason = state.update(section, prefix, bullet, resolved)
+                if reason == "prefix did not match exactly one bullet":
+                    # Deterministic fallback: the model wants this bullet in the state
+                    # but misjudged the op type (UPD against an empty/mismatched
+                    # prefix). Honor the intent as an ADD; the timeline guard still
+                    # vetoes contradictory DECISIONS/ACTIONS, and state.add still
+                    # rejects duplicates. Logged in `reason` for full transparency.
+                    if contradiction := _contradicts_timeline(state, section, bullet, resolved):
+                        outcome.results.append(AppliedOp(op, False, contradiction))
+                        continue
+                    reason2 = state.add(section, bullet, resolved)
+                    outcome.results.append(
+                        AppliedOp(op, reason2 is None, reason2 or f"upd-as-add: {reason}")
+                    )
+                    substantive = substantive or reason2 is None
+                    continue
                 outcome.results.append(AppliedOp(op, reason is None, reason or note))
                 substantive = substantive or reason is None
 

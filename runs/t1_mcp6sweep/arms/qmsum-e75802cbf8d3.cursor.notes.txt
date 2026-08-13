@@ -1,0 +1,11 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Design prototype using modeling clay [26:47]
+OPEN:
+- Selection of display type (L_C_D or push buttons) [5:24]
+TOPICS:
+- UI features [27:16]

@@ -1,0 +1,22 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on remote control components and options. [5:56]
+- Consensus on using L_C_D_s for the remote control layout. [23:01]
+DECISIONS:
+- Include voice recognition. [16:43]
+- Use L_C_D_s as the standard design. [23:51]
+- Include push-buttons. [32:22]
+- Use plastic or titanium instead of rubber case. [38:23]
+ACTIONS:
+- Use a flat case for simplicity. [5:47]
+- Include voice recognition and scroll button. [13:33]
+OPEN:
+- Effectiveness of kinetic energy remote vs battery. [4:50]
+- Include UI definition in product specs. [9:21]
+- Availability of cases with different surfaces. [26:05]
+- Incorporating company colors in buttons is likely impossible with L_C_D_s. [37:31]
+TOPICS:
+- Remote control components [1:42]
+- Case shape options [5:47]
+- UI features [11:21]
+- Expanding case design [38:29]

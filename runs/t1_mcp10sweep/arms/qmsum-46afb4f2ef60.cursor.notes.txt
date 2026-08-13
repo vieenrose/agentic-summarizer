@@ -1,0 +1,11 @@
+TITLE: Remote Design Review
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+-
+OPEN:
+- Need to review minutes from previous meeting [0:54]
+TOPICS:
+- Finance and pricing [11:21]

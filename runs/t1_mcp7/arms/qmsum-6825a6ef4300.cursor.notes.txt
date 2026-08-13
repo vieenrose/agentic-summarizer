@@ -1,0 +1,19 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on waiting for Grad F before presenting proposal [1:05]
+- Discussion on using a larger data set for VAD [6:09]
+- Discussion on VAD problem and boundary definition [32:01]
+DECISIONS:
+- Use the new Aurora system with better error rates [19:30]
+- Use clean training data with G-7 filter for SRI [27:17]
+- Combine MLP and energy-based VAD to discard low-energy speech frames [39:51]
+- Try a fixed time constant for smoothing clean speech [42:25]
+ACTIONS:
+- Grad F to finish proposal by Monday [1:39]
+- Compare performance of SRI on Near-Mic data [15:07]
+OPEN:
+- Performance of SRI on Near-Mic data is poor [6:09]
+- Whether putting a floor on SNR helps [43:34]
+- Combination of different methods? [54:56]
+TOPICS:
+-

@@ -1,0 +1,13 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Evaluation of new design against seven-point scale [8:17]
+DECISIONS:
+- Intuitive layout given a rating of 7 [17:17]
+- Finance first before assessing rating [21:57]
+- Add beeping sound instead of speaker [31:21]
+ACTIONS:
+- Provide project feedback for next meeting [32:19]
+OPEN:
+- Mirror image model likely problematic [11:46]
+TOPICS:
+-

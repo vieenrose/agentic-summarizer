@@ -1,0 +1,14 @@
+TITLE: Kickoff Meeting: Television Remote Control
+SUMMARY:
+- Presentation of project goals and discussion about design stages [1:03]
+- Discussion on design stages and compatibility with D_V_D_ player [12:41]
+DECISIONS:
+- Keep remote control costs at 12.50 Euros and focus on selling it at 25 Euros internationally [11:10]
+ACTIONS:
+- Project Manager to design a new television remote control [1:03]
+- Marketing to come up with ideas for remote materials and features [22:23]
+OPEN:
+- Project Manager to choose between a mouse or a rat [4:48]
+- Selection of button layout and design [22:26]
+TOPICS:
+- Project goals [1:03]

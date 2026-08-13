@@ -1,0 +1,11 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Presentation on remote with shape and buttons [3:57]
+DECISIONS:
+- Consider switching away from solar cells or back-up battery to reduce cost [13:38]
+ACTIONS:
+-
+OPEN:
+- Need to determine if remote can be turned off [3:49]
+TOPICS:
+-

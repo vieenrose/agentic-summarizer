@@ -1,0 +1,17 @@
+TITLE: Concept Design Meeting: Remote Control
+SUMMARY:
+- Proposal for battery-free, simple, and cost-effective remote control design [6:28]
+- Marketing discussed the importance of trends in the fashion industry [24:23]
+DECISIONS:
+- Use simple battery instead of solar cells [2:34]
+- Proposal for battery-free, simple, and cost-effective design [6:28]
+- Prototype development using modelling clay [26:59]
+- Use minimal buttons to reduce cost and complexity [31:19]
+- Use a sponge-like material for the casing [30:29]
+ACTIONS:
+- Sammy to research features like fruit and vegetable aesthetics [27:28]
+OPEN:
+- Efficient remote control use in darkness [15:56]
+TOPICS:
+- Color and design options [14:27]
+- Fancy features vs trend travel [27:32]

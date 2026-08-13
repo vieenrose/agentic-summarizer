@@ -1,0 +1,12 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Prepare an internal demo showing what the SmartKom project does [12:47]
+OPEN:
+-
+TOPICS:
+- SmartKom project report [0:05]
+- Honorable thesis topic [53:05]

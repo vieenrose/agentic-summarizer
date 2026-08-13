@@ -1,0 +1,23 @@
+TITLE: Kip-off Meeting: Original TV Remote Design
+SUMMARY:
+- Kick-off meeting to discuss the design of an original television remote control. [0:12]
+DECISIONS:
+- Design a new television remote control for young people and modernize its design. [0:21]
+- Save current blue and white color for the document. [9:27]
+- Use a new pen width and line width for the document. [9:52]
+- Use a case made of plastic, hard, or rubbery material [23:06]
+- Universal remote compatibility with brands and TVs [26:14]
+ACTIONS:
+- Marketing to open the meeting and discuss the design of an original TV remote control. [0:12]
+- Review of shape recognition for the remote [16:21]
+- Review of design and materials with the team for next meeting. [22:22]
+- Research front and center aesthetics [26:46]
+OPEN:
+- Decide between a trendy, modern look and a classic, original design. [0:21]
+TOPICS:
+- Project agenda and tools [0:07]
+- "Don't throw anything away" policy [3:33]
+- D_V_D_ compatibility [14:33]
+- Long box shape and hand compatibility [17:58]
+- Color scheme and brightness [26:27]
+- Remote functionality [26:44]

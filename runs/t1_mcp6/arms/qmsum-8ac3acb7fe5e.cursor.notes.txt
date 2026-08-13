@@ -1,0 +1,21 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on remote control components and options. [5:56]
+- Presentation on user interface features and options. [11:21]
+DECISIONS:
+- Include voice recognition. [16:43]
+- Use L_C_D_s. [23:01]
+- Include push-buttons. [30:20]
+- Use integrated circuits instead of rubber case. [35:09]
+ACTIONS:
+- Use whiteboard for introduction. [1:59]
+- Include voice recognition and scroll button. [13:33]
+- Use L_C_D_ display if available. [31:12]
+- Match remote color with company theme. [37:24]
+OPEN:
+- Suitability of different components for the target audience. [3:33]
+- Whether to include the sample sender and UI definition. [9:51]
+- Prioritize between push-buttons and L_C_D_ display. [32:18]
+- Alternative casing (rubber vs plastic) affects usability. [38:23]
+TOPICS:
+- Remote control components [1:42]

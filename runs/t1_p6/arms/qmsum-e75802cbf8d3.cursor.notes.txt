@@ -1,0 +1,17 @@
+TITLE: Conceptual Design Meeting: Remote Control
+SUMMARY:
+- Proposal for battery-free, simple, and cost-effective remote control design [6:28]
+- Agreed to prioritize usability and novelty in design [22:26]
+DECISIONS:
+- Proposed battery-only display [6:28]
+- "Spongy" -> "Smoother" [23:24]
+- Use rubber for body [29:54]
+- Use paintbrush for aesthetics [30:45]
+- Use two batteries for simplicity and functionality [31:52]
+ACTIONS:
+-
+OPEN:
+- Balance between simplicity and functionality [12:38]
+TOPICS:
+- Remote control design [12:39]
+- Smart features [16:23]

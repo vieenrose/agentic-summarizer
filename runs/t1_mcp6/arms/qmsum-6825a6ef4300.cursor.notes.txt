@@ -1,0 +1,18 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on waiting for Sunil to complete the task [0:55]
+- Discussion on using a larger data set for VAD training [6:09]
+- Comparison of signal after processing with and without echo removal [11:25]
+- Discussion on VAD problem and boundary definition [32:01]
+- Discussion on VAD type and evaluation boundaries [34:38]
+DECISIONS:
+- Use clean training data with TI-2 digits for SRI [27:17]
+- Do not apply VTS in the cepstral domain [52:03]
+ACTIONS:
+- Grad F to submit a proposal by Monday [2:36]
+- Check if meeting digits have DC component [19:34]
+- Try to reduce SNR variance by increasing smoothing factors [42:25]
+OPEN:
+- Performance of SRI on Near-Mic performance unclear [5:46]
+TOPICS:
+-

@@ -1,0 +1,22 @@
+TITLE: Proposal for Aurora Interchangeable Categories
+SUMMARY:
+- Discussion on intermediate categories and phoneme recognition [3:02]
+- Discussion on signal-to-noise ratio in training/testing data [14:21]
+- Comparison of mean normalization with and without DC offset compensation [18:30]
+- Discussion on signal-to-noise ratio and VTS/CT normalization [49:10]
+DECISIONS:
+- VAD parameters set to zero [11:24]
+- Test SRI system on noisy TI-digit data [28:32]
+- Use energy and zero-crossing thresholds to distinguish speech from noise [36:19]
+ACTIONS:
+- PhD A to write a proposal and give it to Morgan [2:36]
+- Grad E to measure reverberation time in the room [11:48]
+- PhD C to listen to SRI system performance data [14:21]
+- Implement energy-based VAD for speech detection [36:45]
+- Try different time constants for smoothing noise and speech estimates [43:44]
+- Read digits during the session [55:11]
+OPEN:
+- SRI system performance on far-mic and near-mic data [6:04]
+TOPICS:
+- Aurora system performance [12:17]
+- Speech vs noise energy characteristics [37:08]

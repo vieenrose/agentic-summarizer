@@ -1,0 +1,18 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on remote control components and design decisions [6:28]
+- Discussion on remote control design trends and features [24:38]
+DECISIONS:
+- Use simple push buttons and speech recognition to reduce cost [5:02]
+- Do not use the millennium remote control [10:17]
+- Remote control should be smart to detect user behavior [16:44]
+- Display type: fruit/vegetable shape [28:14]
+ACTIONS:
+- Change interface color and shape to suit user preferences [11:47]
+- Design prototype using modeling clay [26:47]
+OPEN:
+- Selection of display type (L_C_D or push buttons) [5:24]
+- Farthest feature to prioritize [28:23]
+TOPICS:
+- Remote control components [0:26]
+- UI features [27:16]

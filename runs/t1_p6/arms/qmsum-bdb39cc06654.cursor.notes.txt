@@ -1,0 +1,26 @@
+TITLE: German SmartKom System
+SUMMARY:
+- Comparison of data sources [28:41]
+- Proposal for data-driven design [27:10]
+- Discussion on spatial navigation and distance perception [41:28]
+DECISIONS:
+- Use the concept-to-speech approach for the initial utterance [0:54]
+- Funding and demo requirements are committed for the research [8:49]
+- Use Java applets for data visualization [26:25]
+- Finish all next Monday by end of week [58:21]
+ACTIONS:
+- Grad B to generate XML syntax trees using LISP notation [4:26]
+- Grad B to focus on building the internal demo for SmartKom [12:15]
+- Bhaskara to review technical aspects and solve problems [22:02]
+- Grad B to place a link on the webpage [39:55]
+- Build the system components as needed [46:27]
+- Grad B to review technical aspects and solve problems [53:05]
+OPEN:
+-
+TOPICS:
+- System setup and language independence [6:19]
+- Formalizing notations and formalizing the demo system [11:02]
+- Technical challenges in Hugin [23:14]
+- System components and tools [46:27]
+- System design and development [52:24]
+- Formalization of parsers [59:13]

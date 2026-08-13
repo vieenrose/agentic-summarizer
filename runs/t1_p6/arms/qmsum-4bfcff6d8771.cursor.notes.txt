@@ -1,0 +1,18 @@
+TITLE: Production and Design Evaluation
+SUMMARY:
+- Prototype presentation and evaluation criteria [0:29]
+DECISIONS:
+- Finance criteria checked [0:22]
+- Average score: 6 [21:52]
+- UI design score: 6 [20:14]
+- Use a whiteboard digital pen for notes [34:30]
+- Production costs within budget [38:45]
+ACTIONS:
+- Marketing to record and rehash sample speech samples [28:39]
+- Marketing to rehash sample speech samples [37:11]
+OPEN:
+- Budget for initial cost estimation [33:12]
+- Efficient whiteboard use [34:17]
+TOPICS:
+- Project evaluation criteria [30:04]
+- Project process and budget [33:51]

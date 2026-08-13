@@ -1,0 +1,23 @@
+TITLE:
+SUMMARY:
+-
+DECISIONS:
+- Develop remote with voice recognition [0:24]
+- Use the whiteboard at all times [22:18]
+- Remote control concept was inspired by a "slinky-chomp" face design [37:24]
+- Marketing to put most of the recording into reports [40:01]
+- Marketing to focus on the "donor" aspect of the evaluation [43:51]
+ACTIONS:
+-
+OPEN:
+- Determine if the television should be edible [6:10]
+- Cost of 11.10 Euro [7:30]
+- Budget and resource constraints for the project [23:14]
+- Role and task definition for the team [24:55]
+TOPICS:
+- Prototype development [0:24]
+- Interchangeable faces [4:17]
+- Durability and shock resistance [5:46]
+- Team collaboration and brainstorming [29:45]
+- "Don't care about the box" mindset [33:42]
+- "Donor" aspect of the evaluation [39:36]

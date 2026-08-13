@@ -1,0 +1,21 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on conceptual design and final decisions regarding the remote's form and components. [7:46]
+- Discussion on user interface concepts and design priorities. [11:36]
+DECISIONS:
+- Presenting to Nathan the option to go first [1:28]
+- Target larger form factor with extra features to stand out. [14:24]
+- Prototipally go with the touch screen [19:03]
+- Stick with rubber buttons and a traditional layout [35:18]
+- Target youth market with emphasis on simplicity and versatility. [36:00]
+ACTIONS:
+- Explore cheaper manufacturing options [19:42]
+- Develop basic prototypes by [25:24]
+- Focus on basic design features to appeal to young customers. [38:16]
+OPEN:
+- Selection between plastic, rubber, or wood for the case body [3:02]
+- Affording a more robust interface and features for the base case. [14:37]
+- 材料选择 for the case and components [25:48]
+- Collaboration on a prototype with voice recognition and menu options. [38:57]
+TOPICS:
+- Component design and limitations [3:56]

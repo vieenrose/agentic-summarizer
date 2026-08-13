@@ -1,0 +1,20 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+- Discussion on switching to science mode for the next meeting [12:47]
+- Discussion on English vs Japanese prepositional phrases [29:36]
+DECISIONS:
+- Next meeting should focus on basic issues and move to science mode [9:20]
+ACTIONS:
+- Explain the concept of "synthesis" to the team [7:48]
+- Prepare an internal demo showing what the SmartKom project does [12:47]
+- Prepare presentation on spatial reference frames [36:20]
+- Grad E to continue the belief-net effort for next few weeks [53:35]
+- PhD A to visit the German AI center in July [55:07]
+- Grad B to contact Bhaskara for reading group on schema capture [1:00:22]
+OPEN:
+- Difficulty starting the synthesis module due to code changes [4:26]
+- Next meeting to discuss ontology, constructions, and the execution engine [14:32]
+- Determining whether to formalize beliefs separately [57:17]
+TOPICS:
+- SmartKom project report [0:05]
+- Honorable thesis topic [53:05]

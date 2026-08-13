@@ -1,0 +1,23 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- Discussion on target audience and remote control features [26:47]
+- Discussion on target young audience and remote control features [37:42]
+- Project manager to email presentations by end of meeting [40:38]
+DECISIONS:
+- Remote control function key expected to come up on entry [17:08]
+- Function key needed to come up on entry [17:17]
+- Target young audience for stylish remote control [26:08]
+- Include voice recognition to target young, hip, and trendy users [33:22]
+ACTIONS:
+- Project Manager to email presentations by end of meeting [3:01]
+- Marketing to send PowerPoint presentations in project documents folder by next Monday [39:21]
+OPEN:
+- Cost calculation pending component identification [7:45]
+- Cost of features high vs low [24:27]
+- Voice recognition feasible within 35 age range [33:38]
+- User interface design must be simple enough for 15-35 year olds [38:36]
+TOPICS:
+- Functional requirements [17:26]
+- Voice recognition [34:07]
+- User interface concept [41:03]

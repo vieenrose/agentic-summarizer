@@ -1,42 +1,21 @@
-# NEXT STEPS — resume point (2026-08-12, after the pi-agent restart)
+# Next steps (2026-08-12)
 
-Everything needed to resume is in this repo; `RESULTS.md` has the full measured record.
+## 1. Push MiniCPM5-1B p6 (the current best raw: 2/20, G1 PASS both langs)
+- The remaining 2 flags are the garbled-claim + commitment-inversion classes. Targeted
+  moves: (a) harvest the p6 model's fabrications on the train pool (it has shifted —
+  new negatives), (b) add a "no-email" style counterfactual (meeting explicitly decides
+  NOT to do X → trap: asserting X as an action) — the a001c3a20024 class, constructible
+  with a `reject-action` synth kind like the hard-class set.
+- Then re-measure raw T1. Target: ≤ 1/20 (the 6.2% bar).
 
-## Running right now (nohup'd, survive the restart)
+## 2. 350M p5 stays the primary composite (raw ~4/20)
+- The hard-class POSITIVE traces are a measured negative for the 350M (G1/UPD-conflict).
+  Only NEGATIVE-form hard-class samples (harvest-style, vetoed fabrications) are safe.
+- Run the harvest on the p5 en model (student-url 8093) — its fabrications on the train
+  pool (incl. the 15 new real meetings) → p7 with x1 dose.
 
-- GPU 1: gpt-oss-20b FAITH judge (8090), en student phase-3 candidate (8093),
-  zh student v2 (8094)
-- GPU 0: qwen3.6-35B COVER judge (8091) — **currently OFF** (killed for training)
-- Restore everything with: `tools/serve_stack.sh`
+## 3. MiniCPM zh trap + valid-op (88% zh): 3 more zh trap-demo waves or a zh trapfix x2.
 
-## Where we are
+## 4. HF publish when stable: MiniCPM p6 GGUF + card (single-model both-language story).
 
-- **Primary (LFM2.5-350M):** phase-3 (sweep-feedback negatives) raw T1 INVERT
-  **4/20 → 3/20** (recorded in RESULTS.md). **G1 regression to fix**: deadlines anchored
-  one line off ([5:00] vs 6:00) — the negatives perturbed anchor placement. Candidate
-  fix: retrain phase-3 with negatives at ×1.5 instead of ×3, or a targeted
-  deadline-anchor data add. The p3 GGUF is served on 8093.
-- **Secondaries (all three trained, 6 epochs, checkpoints on disk — finals/GGUFs NOT yet
-  saved):**
-  - `runs/sft-qwen06` (agentlans/Qwen3-0.6B-notetaker base, checkpoint-240)
-  - `runs/sft-lfm-12b` (LFM2.5-1.2B-Thinking, checkpoint-480)
-  - `runs/sft-minicpm` (openbmb/MiniCPM5-1B, checkpoint-480)
-  - Next: save finals + export Q4_K_M GGUFs → serve → G1 screen (en + zh) → raw T1
-    INVERT for the best one → compare with the primary's 3/20 and the owner's 6.2% bar.
-- **Owner (VoxSumDroid) thread:** `agentic-summarizer-feedback.md` — verdict open,
-  narrowing; re-eval bar = raw INVERT < 6.2%; target metric = raw INVERT.
-
-## Pipeline notes (so a fresh agent doesn't re-learn them)
-
-- Trace data: `data/traces_v2/` (26 waves); SFT builders in `tools/` (split-filtered to
-  train; eval tiers held out).
-- Training: `train/sft_unsloth.py --resume <ckpt>` for phase-2/3 continuation; pre-tokenized
-  dataset path (trl map pickling workaround); `UNSLOTH_COMPILE_DISABLE` NOT usable at 4096
-  (OOM), torch 2.10 pinned (2.11 breaks unsloth's fused CE).
-- The judge is stochastic on borderline inputs → always 3× majority (eval/judge.py and
-  src/voxsum/sweep.py); warm the judge after any restart before runs; never mix instruments'
-  JSONs in one report.
-- Sweep (src/voxsum/sweep.py) is part of the pipeline: anchor-first, verify-last,
-  FAITH-protocol parsing, FIX-as-DROP, full-text delete prefixes.
-- HF: weights live on HF only (`Luigi/lfm2.5-350m-cursor-en/-zh`); the GitHub pre-push
-  hook refuses weights; `.gitignore` blocks *.gguf/*.safetensors/checkpoints.
+## 5. T2 tier (≥80k) still blocked: needs real audio or concatenation decisions.

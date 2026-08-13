@@ -1,0 +1,26 @@
+TITLE: Remote Control Design Meeting
+SUMMARY:
+- Discussed target groups and functions of the remote control [0:55]
+- Excluded teletext as it is outdated and incompatible with modern televisions [7:04]
+- Review of basic buttons and user interface requirements [15:26]
+- Discussed voice recognition and remote control design [36:08]
+- Explored alternatives to traditional buttons [36:29]
+DECISIONS:
+- Remote must be used only for television for simplicity [7:04]
+- Include functional requirements in the design [17:08]
+- Include voice recognition for basic commands [34:26]
+- Develop a component concept for the remote [41:11]
+- Prepare questionnaire and summary [41:59]
+ACTIONS:
+- Marketing to create PowerPoint presentations [40:28]
+- UI to place minutes and summaries in a folder [40:28]
+OPEN:
+- Decide between video and D_V_D_ for functionality [14:47]
+- Efficient channel selection with minimal buttons [20:12]
+TOPICS:
+- Target groups and functions [0:31]
+- Remote control design process [8:31]
+- User survey results [18:32]
+- Voice recognition popularity among younger people [26:34]
+- Target audience age [26:34]
+- Voice recognition feasibility [33:09]

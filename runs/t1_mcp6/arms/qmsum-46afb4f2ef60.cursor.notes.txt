@@ -1,0 +1,16 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Presentation on remote with shape and buttons [3:57]
+- Marketing shared user interface feedback [36:51]
+DECISIONS:
+- Remote will use shape as the primary contact method [3:46]
+- Consider switching away from solar cells or back-up battery to reduce cost [13:38]
+- Move to project evaluation without solar cell [17:43]
+- Discussed de-briefing in next meeting [32:37]
+ACTIONS:
+- Industrial Designer to develop remote prototype [3:57]
+OPEN:
+- Need to determine if remote can be turned off [3:49]
+- Compromise on removing the push buttons [17:38]
+TOPICS:
+- Remote features [3:57]

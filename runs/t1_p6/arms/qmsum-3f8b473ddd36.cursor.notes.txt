@@ -1,0 +1,21 @@
+TITLE: Remote Control Conceptual Design
+SUMMARY:
+- Discussion on component design and energy sources for remote control [2:05]
+DECISIONS:
+- Focus on making the remote control look and work better with standard flat cases [3:31]
+- Replace voice rec with a simpler alternative [21:01]
+- Design for basic functions and a minimal touch screen [33:04]
+- Focus on essential functions and a simple touch screen [33:04]
+- Stick with a basic non-remote design for the initial prototype [38:16]
+ACTIONS:
+- Develop prototype next year [25:24]
+- Develop a prototype using the basic non-remote design [38:16]
+OPEN:
+- Interchangeable face plates [14:19]
+TOPICS:
+- Component design [2:05]
+- Energy source [2:04]
+- Case materials [3:21]
+- Solar battery route [5:23]
+- Solar power as a backup [26:08]
+- Prototype development [39:50]

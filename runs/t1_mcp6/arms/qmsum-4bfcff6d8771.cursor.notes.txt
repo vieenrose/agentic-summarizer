@@ -1,0 +1,22 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Presentation of prototype and evaluation criteria [0:23]
+- Evaluation of new design against seven-point scale [8:17]
+- Discussion on budget constraints and interface type [25:00]
+- Final design review and score presentation [40:46]
+DECISIONS:
+- Focus on user location (right-handed vs left-handed) [11:33]
+- Finance and first-offload date [22:12]
+- User interface score on scale 7 [40:25]
+- Final design approved based on score 7 [40:25]
+- User location focus [38:33]
+ACTIONS:
+- Marketing to discuss dual-use features [2:09]
+- Compare with mirror image version [11:45]
+- Compare design against mirror image version [27:28]
+- Present final design and score [40:46]
+OPEN:
+- Mirror image version likely problematic [11:46]
+- Beeping sound color [31:48]
+TOPICS:
+-

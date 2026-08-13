@@ -1053,3 +1053,34 @@ demonstrates NOP/OPEN at the deferral chunk.
 Lesson: the hard-class counterfactuals are usable as NEGATIVES (student-fabrication
 harvest) but NOT as positive protocol traces for the 350M — they over-teach NOP at
 revision chunks. The 350M en p6 kept G1 because its dose was smaller and en-only.
+
+## Phase-6 results: MiniCPM5-1B p6 = best raw rate measured (2026-08-12)
+
+**MiniCPM5-1B p6** (p5 + 6 en + 7 zh hard-class trace samples, LR 1e-5, 2 epochs):
+- G1 **PASS both languages** (en 100% / zh 88% valid-op; chain/deadlines/trap/anchored/UPD all PASS)
+- raw T1 INVERT **2/20 (10%)** — the best raw rate measured on ANY system in the project
+  (350M p5 4/20 · MiniCPM p5 4/20 · 9B baseline's own 3/20). Both flags verified against
+  the transcript: qmsum-46afb4f2ef60 (garbled contact-method claim at a noise anchor) and
+  qmsum-a001c3a20024 ("Project manager to email presentations" — the transcript's
+  "then you don't have to email them" states the opposite; a commitment inversion).
+- The hard-class counterfactuals (proposal/nocommit/rejpref) WORKED at 1B: p6 cleared
+  3 of p5's 4 flags (8ac3acb7fe5e, 4bfcff6d8771, synth-zh-reversal-0) at the cost of one
+  returning (46afb4f2ef60, last seen in p4).
+
+**350M p6** (p5 + 6 en hard samples): **raw 8/20 — regression** (en 4 + zh 4). The zh
+regression is the UNCHANGED v2 model re-measured at 4/10 vs 1/10 earlier — judge-noise
+band on the synthetic zh tier (the FAITH 3x majority does not fully stabilise marginal
+zh retrievals). The en p6 (4/10 vs p5's 3/10) confirms: hard-class POSITIVE traces hurt
+the 350M (same UPD-conflict mechanism as zh p3's G1 break) — the 350M can only absorb
+them as harvest-style NEGATIVES, never as protocol positives.
+
+**Final standings (all measured, same judge pipeline):**
+
+| option | G1 en/zh | raw T1 INVERT | sweep | models |
+|---|---|---|---|---|
+| 1st: LFM2.5-350M p5 + zh v2 | PASS/PASS (composite) | ~4/20 | 0/20 | 2 × ~215 MB |
+| **2nd: MiniCPM5-1B p6** | **PASS/PASS (one model)** | **2/20** | — | 1 × ~650 MB |
+
+The 2nd option has overtaken the 1st on the raw metric — at 1B the hard-class
+counterfactuals land; at 350M they corrupt the UPD lesson. Both remain above the owner's
+< 6.2% bar; the sweep stays the 0/20 deployment net.

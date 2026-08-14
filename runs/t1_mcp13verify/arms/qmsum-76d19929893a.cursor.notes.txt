@@ -1,0 +1,15 @@
+TITLE: Kickoff Meeting: Television Remote Control
+SUMMARY:
+- Presentation of project goals and discussion about design. [1:03]
+- Discussed design and compatibility with other devices. [13:30]
+DECISIONS:
+-
+ACTIONS:
+- Industrial Designer to draw the remote control animal. [4:28]
+- Discuss material and feature ideas in next meeting. [22:23]
+OPEN:
+- Project manager to choose between a mouse or a rat for the remote control. [5:40]
+- Accurate international sales price of 25 Euros. [6:39]
+- Remote shape must be useful for daily control. [17:16]
+TOPICS:
+- Interop with other devices. [14:24]

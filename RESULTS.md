@@ -1142,3 +1142,28 @@ judge) + the UPD→ADD fallback.
 The owner's raw bar (< 6.2%): model-only 2/20 = 10% (above the bar as-is), deployed
 with the sweep 0/20 = 0% (below). The sweep is part of the product pipeline, same as
 the 350M release.
+
+## p13 + in-stream verification: 0/20 all-on-device, COVER/SYNTH above baseline (2026-08-14)
+
+**Model-side (p13)**: real-context hard-class augmentation — the over-assertion
+counterfactual beats injected into REAL transcripts (14 augmented meetings, 4 beat types:
+soft-action, either/or, informal-negation "you don't have to email them", intention
+"the intention is that..."). The teacher traces filtered to drop its own beat-action
+assertions. p13 = p12 + the filtered samples. **Result: raw 2/20** (matches the best-ever
+p6) with **COVER 3.20 and SYNTH 2.75 — both above the map-reduce baseline (3.05/2.60)
+for the first time on any configuration**. 8ac3acb7fe5e (the biggest persistent flag)
+cleared. G1 PASS both, valid-op 100% both. p14/p14b (nofollow/intention beats + trap
+booster) regressed the zh trap / en chain — reverted; the p13 balance is the stable
+optimum (the zh trap sits at a decision boundary that en-heavy data crosses).
+
+**Pipeline-side (in-stream verification)**: new harness mode `--verify-url` — every
+ADD/UPD touching DECISIONS/ACTIONS is judged by the on-device verifier
+(`Luigi/lfm2.5-350m-verifier`, 96% agreement with gpt-oss-20b) against the chunk's
+anchor neighborhood BEFORE application; UNSUPPORTED/CONTRADICTED ops are dropped
+(logged). This closes the over-assertion class at application time, on-device.
+
+**p13 + in-stream verification (n=20): INVERT 0/20, FAITH 4.10, COVER 3.20, SYNTH 2.75**
+— the full pipeline on-device (student 688MB + verifier 215MB ≈ 900MB, within the 2.05GB
+device ceiling). The model-only raw (2/20 = 10%) remains above the 6.2% bar without the
+verifier; with it, the device runs 0 inversions at better-than-baseline coverage and
+synthesis.

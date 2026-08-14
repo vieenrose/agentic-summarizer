@@ -1,0 +1,15 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Presentation of remote design options and selection process [3:57]
+- Discussion on Team Collaboration and Board Output [29:46]
+- Discussion on design challenges and logical flow [38:10]
+DECISIONS:
+-
+ACTIONS:
+-
+OPEN:
+- Marketing strategy and budget concerns [7:11]
+- Define what constitutes a higher-level voice recognition model [19:40]
+- Comparison of design styles across cultural groups [33:48]
+TOPICS:
+-

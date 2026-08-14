@@ -1,0 +1,20 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+-
+DECISIONS:
+- Design the network first, then learn from data [27:00]
+- Leave Japanese constructions outside the scope for now [33:21]
+ACTIONS:
+- Explain the concept of "synthesis" to the team [7:48]
+- Prepare for next meeting to discuss ontology and engine details [14:32]
+- visualization effort limited by resource constraints [22:21]
+- Grad E to continue the belief-net effort for next few weeks [53:35]
+- PhD A to visit the German AI center in July [55:19]
+- Grad B to contact Bhaskara for reading group on schemas [1:00:22]
+OPEN:
+- Difficulty starting the synthesis module due to code changes [3:11]
+- consensus on the net belief difficult to achieve [21:41]
+- How to continue the belief-net effort given time constraints [52:52]
+- Group size minimum for formalization effort [59:47]
+TOPICS:
+- Belief-net structure [57:17]

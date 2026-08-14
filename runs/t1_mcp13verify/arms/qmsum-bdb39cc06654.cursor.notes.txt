@@ -1,0 +1,16 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+- Discussion on data collection and connection modeling [29:28]
+- Discussion on directionality and reference frames [35:07]
+- Discussion on the "within-reach" mechanism in spatial reasoning [41:47]
+DECISIONS:
+-
+ACTIONS:
+- Grad B to formalize image schemas by end of week [58:33]
+- Professor C to do the last Friday's work by end of week [59:23]
+OPEN:
+- Difficulty starting the synthesis module due to code changes [3:11]
+- Whether visualizing all connections will suffice given current constraints [21:41]
+- Group on formalization will only do two or three people [59:47]
+TOPICS:
+-

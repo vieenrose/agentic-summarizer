@@ -1,0 +1,17 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Remote design review and teaming up with an industrial designer [6:57]
+- Interface concept research into speech recognition and the spinning wheel [9:23]
+DECISIONS:
+- Present first person or participant two as preferred [1:38]
+- Prototipally offer the touch screen (18:03) [19:03]
+- Voice recognition will be prioritized over the touch screen [25:10]
+- Stick with traditional buttons and a minimal design [35:17]
+- Focus on basic design and non-remote features [38:16]
+ACTIONS:
+- User Interface: Focus on simplicity and versatility [39:49]
+OPEN:
+- Limited by available components and manufacturer offers [3:56]
+- Integrating voice recognition into the design [38:57]
+TOPICS:
+- Component design and options [3:56]

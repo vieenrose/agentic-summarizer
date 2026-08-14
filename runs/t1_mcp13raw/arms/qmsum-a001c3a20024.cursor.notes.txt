@@ -1,0 +1,19 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- User interface targeting age group based on survey data [26:47]
+DECISIONS:
+- Include video and D_V_D_ features based on management directive [14:03]
+- Focus on function key feature to encourage user interaction [17:08]
+- Target function key feature to encourage user interaction [28:57]
+- Target age group 25-35 for voice recognition remote [33:22]
+- Include video and D_V_D features based on management directive [35:24]
+ACTIONS:
+- Project Manager to act as secretary and send project documents next time [1:03]
+OPEN:
+- Cost discussion on continued development [7:41]
+- Cost of additional features high vs low [16:11]
+- Voice recognition would reduce remote size and increase user need [34:17]
+TOPICS:
+- Function key feature [17:08]
+- Voice recognition [34:07]

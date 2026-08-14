@@ -1,0 +1,16 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- User interface popularity among age groups [26:47]
+- Decision on including video and D_V_D functions [35:24]
+DECISIONS:
+-
+ACTIONS:
+-
+OPEN:
+- Cost discussion on continued development [7:41]
+- Decision on including video and D_V_D functions [14:23]
+- Cost of additional features high vs low [16:11]
+- Feasibility of voice recognition in all age groups [38:36]
+TOPICS:
+- User survey results [18:32]

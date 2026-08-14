@@ -1,0 +1,17 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Presentation of remote design options and selection process [3:57]
+- Marketing emphasized the functional nature of the device [36:51]
+DECISIONS:
+- Remote will use multiple colors and be interchangeable faces [3:57]
+- Voice recognition area is part of the solar cell design [12:39]
+- Move to project evaluation without solar cell [17:43]
+- No team building initiative at this stage [30:11]
+- Celebrate with the new player (a doner) [43:20]
+ACTIONS:
+- Industrial Designer to develop remote prototype [3:48]
+OPEN:
+- Marketing strategy and budget concerns [7:11]
+- Define what constitutes a higher-value model [19:40]
+TOPICS:
+-

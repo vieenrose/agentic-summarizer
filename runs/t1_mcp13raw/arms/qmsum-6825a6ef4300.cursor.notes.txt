@@ -1,0 +1,19 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on mean subtraction approach for audio processing [6:09]
+- Discussion on VAD problem with reduced SNR for some noises [32:01]
+- Discussion on VAD problem with reduced SNR [35:33]
+- Comparison of energy-based and MLP-based VAD [38:22]
+DECISIONS:
+- Use clean training data to normalize audio signals [27:17]
+- Use a combined decision of speech detection and energy-based features [39:18]
+- Do not apply VTS in the cepstral domain [51:51]
+ACTIONS:
+- Grad F to finish proposal by Monday [1:39]
+- Use Macrophone set of read speech with VAD [6:09]
+- Try to put a floor on SNR [43:42]
+OPEN:
+- Discussion on intermediate feature classification [3:01]
+- Effectiveness of mean subtraction on PZM signals [6:09]
+TOPICS:
+- TORRENT chip project [0:08]

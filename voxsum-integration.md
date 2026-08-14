@@ -245,11 +245,30 @@ on-device verifier as the sweep judge:
 | COVER | 2.95 (baseline 3.05, tie) |
 | SYNTH | 2.50 (baseline 2.60, tie) |
 
-Memory: 688 + 215 MB ≈ 900 MB if both models resident; ~750 MB peak with sequential
-loading (student for the stream, verifier swapped in for the sweep) — within the
-device's 2.05 GB ceiling. The model-only raw rate (no sweep at all) is 3/20 (15%) on
-pass p12 (raw runs: p10 3/20, p11-e1 4/20, p12 4/20 — 15-20%); the sweep remains the
-0-inversion backstop, now on-device.
+Memory: 688 + 215 MB ≈ 900 MB if both models resident — within the device's 2.05 GB
+ceiling.
+
+**Updated 2026-08-14 (p13 + in-stream verification).** The recommended artifact is now
+**`minicpm5-1b-cursor-p13.Q4_K_M.gguf`** (same HF repo), and the harness gained an
+**in-stream verification mode** (`--verify-url <verifier endpoint>`): every ADD/UPD
+touching DECISIONS/ACTIONS is judged by the on-device verifier against the chunk's
+anchor neighborhood BEFORE application; UNSUPPORTED/CONTRADICTED ops are dropped. This
+closes the over-assertion class at application time instead of in a final sweep.
+
+| configuration | INVERT (n=20) | FAITH | COVER | SYNTH |
+|---|---|---|---|---|
+| p13 model-only (no verifier) | 2/20 (10%) | 3.94 | **3.20** | **2.75** |
+| p13 + in-stream verification (all on-device) | **0/20** | 4.10 | **3.20** | **2.75** |
+| map-reduce baseline | 3/20 | 3.50 | 3.05 | 2.60 |
+
+Model-side progress that produced p13: the over-assertion counterfactual beats
+(soft-action, either/or, informal-negation, intention-statement) injected into REAL
+transcripts (14 augmented meetings), teacher-traced with beat-assertion records
+filtered out. p13 is G1 PASS both languages with 100% valid-op on both.
+
+The model-only raw rate without any verifier is 2/20 (10%) — still above the 6.2% bar
+on its own. With the in-stream verifier (part of the harness the device runs), the
+device measures 0 inversions at better-than-baseline COVER and SYNTH.
 
 Ship-rule reading (spec §7.7): GT2 (faith) clears decisively — FAITH +1.3 at fewer
 inversions than the baseline (0 vs 3, swept). GT3 (SYNTH) is a statistical tie, not a

@@ -1,0 +1,20 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on control remote control components and design. [6:37]
+- Discussion on design features for the remote control. [24:38]
+DECISIONS:
+- Use simple push buttons and speech recognition to reduce cost. [5:09]
+- Do not use the millennium remote control. [10:18]
+- Do not use the Iridium transmission. [16:20]
+- Focus on simplicity in design to reduce user friction. [24:21]
+- Explore titanium panels on an entire body. [29:44]
+ACTIONS:
+- Industrial Designer to research available shapes with different colors. [11:47]
+- Research available shapes with different colors. [15:10]
+- Develop a base version of the remote control. [12:35]
+OPEN:
+- Selection of battery type (nickel/alkaline) will reduce cost. [6:37]
+- Remote control must be smart to understand user preferences. [16:38]
+- Balance features like sponginess and fruit color against cost. [24:23]
+TOPICS:
+-

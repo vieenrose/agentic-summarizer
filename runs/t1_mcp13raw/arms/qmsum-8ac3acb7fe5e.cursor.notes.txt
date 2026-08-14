@@ -1,0 +1,21 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on remote control components and options. [5:56]
+- Discussion on user interface features and their importance. [11:21]
+- Consensus on using L_C_D_s due to style and ergonomics. [23:51]
+DECISIONS:
+- Include voice recognition and scroll button if possible. [13:33]
+- Target user group is expected to be technologically advanced. [18:37]
+- Use L_C_D_s as the standard design element. [22:15]
+- Include push-buttons. [32:22]
+- Use rubber case and edges instead of plastic. [38:36]
+ACTIONS:
+- Use titanium in design if possible. [6:21]
+- Match remote color scheme with case material. [37:24]
+OPEN:
+- Whether kinetic energy is suitable for remote. [4:50]
+- Suitability of L_C_D_s for the target television speed. [19:49]
+- Availability of case materials. [26:05]
+TOPICS:
+- Remote control components [1:42]
+- Interfacing with the human hand. [5:18]

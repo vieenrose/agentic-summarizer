@@ -61,6 +61,13 @@ def main(argv: list[str] | None = None) -> int:
     )
     p.add_argument("--sweep-budget", type=int, default=20)
     p.add_argument("--sweep-judge", default="local:8090/gpt-oss-20b")
+    p.add_argument(
+        "--verify-url",
+        default="",
+        help="on-device in-stream verification: an LFM2.5-350m-verifier endpoint. Every "
+        "ADD/UPD touching DECISIONS/ACTIONS is judged against the chunk's anchor "
+        "neighborhood before application; UNSUPPORTED/CONTRADICTED ops are dropped.",
+    )
     p.add_argument("--tokenizer", default="google/functiongemma-270m-it",
                   help="student tokenizer for chunk budgets (must match the served model)")
     p.add_argument(
@@ -73,6 +80,41 @@ def main(argv: list[str] | None = None) -> int:
 
     from voxsum.backends.llama_server import LlamaServer
     from voxsum.chunker import heuristic_token_len
+
+    verify_filter = None
+    if args.verify_url:
+        from voxsum.ops import Add, Upd
+        from voxsum.transcript import sec_to_clock
+        from judge import _FAITH_SYS, faith_prompt
+
+        verifier = LlamaServer(base_url=args.verify_url, max_tokens=8, temperature=0.0)
+
+        class _Ev:
+            def __init__(self, text: str):
+                self.text = text
+
+            def render(self) -> str:
+                return self.text
+
+        def verify_filter(op, chunk):
+            if not isinstance(op, (Add, Upd)):
+                return None
+            if op.section not in ("DECISIONS", "ACTIONS"):
+                return None
+            anchor = getattr(op, "anchor", None)
+            if anchor is None:
+                return None
+            near = [u for u in chunk.utterances if abs(u.start - anchor) <= 90]
+            if not near:
+                near = list(chunk.utterances)[:6]
+            ev = [_Ev(f"[{sec_to_clock(u.start)}] {u.speaker + ': ' if u.speaker else ''}{u.text}") for u in near]
+            raw = verifier(_FAITH_SYS, faith_prompt(op.bullet, ev)).upper()
+            import re
+            m = re.search(r"(SUPPORTED|CONTRADICTED|UNSUPPORTED)", raw)
+            verdict = m.group(1) if m else "PARSE_FAIL"
+            if verdict in ("UNSUPPORTED", "CONTRADICTED"):
+                return f"in-stream verifier: {verdict}"
+            return None
 
     token_len = heuristic_token_len
     if not args.heuristic_tokens:
@@ -130,6 +172,7 @@ def main(argv: list[str] | None = None) -> int:
                         budget=args.budget,
                         token_len=token_len,
                         declarations=args.declarations,
+                        op_filter=verify_filter,
                     )
                     state, use = result.state, result.usage
                     sweep_extra = {}

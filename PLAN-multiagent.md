@@ -143,13 +143,32 @@ end:        A4 verifies every bullet (whole-transcript evidence)
 | DECISIONS + ACTIONS on the real meeting | ACTIONS only | both non-empty |
 | SYNTH | 2.75 (tie) | ≥ baseline +0.5 |
 
-## 5. Risks
+## 5. Risks (amended after self-review 2026-08-14)
 
-- **Capacity:** low-rank adapters may not overwrite the base's generation bias for
-  A3/A4 (the probe in Phase 0.2 answers this first).
-- **Switching overhead:** per-chunk adapter applies on CPU — measure; if slow,
-  batch A3 gate calls per chunk (the plan already batches).
-- **Zh trap:** the base is frozen, so the trap cannot regress — the adapters only
-  touch their role's layers.
-- **A6 overreach:** the compiler must only rewrite SUMMARY/TITLE, never DECISIONS
-  (faithfulness stays the guards' + A3/A4's job).
+- **A2 breaks the byte-stable contract (highest risk):** highlight markers change
+  A1's input rendering, which p13 never saw (spec §7.8). Phase 0.1 must therefore
+  measure BOTH the real-meeting coverage AND the G1 screen with highlights on; the
+  fallbacks are (a) highlights only for the deterministic content-rich detection
+  (no render change), or (b) retrain A1 on highlighted chunks (a new base pass).
+- **A6 is a fabrication source unless chained:** rewritten SUMMARY/TITLE bullets
+  must pass the deterministic anchor matcher AND A4 before landing. A6 never
+  touches DECISIONS/ACTIONS.
+- **Memory is rank-dependent:** 4 adapters at rank 32 ≈ 928 MB (worse than
+  today's 903); the ≤800 MB one-process target requires rank 8-16. llama.cpp keeps
+  loaded adapters resident — switching avoids reloads, not residency.
+- **Deployment contract = all six roles:** A3's ±90s window is structurally blind
+  to later reversals (measured 1/20 in-stream-only); the final sweep (A4+A5) is
+  MANDATORY, not optional, in every shipped configuration.
+- **Kotlin port dependency:** the maintainer's Android runtime must support
+  multi-LoRA switching (POST /lora-adapters) in their binding; otherwise N server
+  instances invert the memory win. Confirm before Phase 2.
+- **A4 data starvation:** the CONTRADICTED pool is ~150 (84 judged + 69 flips);
+  scale the synthetic flip builder (more patterns, zh included) before training A4.
+- **A2 lexicon precision:** zh commitment markers (會/將…) false-positive heavily —
+  measured in Phase 0; a noisy highlighter can be worse than none.
+- **Capacity (the Phase 0.2 question):** low-rank adapters may not overwrite the
+  base's generation bias for A3/A4 — answered before anything else is built.
+- **Switching overhead:** per-chunk adapter applies on CPU — measure; the plan
+  batches A3 gate calls per chunk already.
+- **Zh trap:** the base is frozen, so the trap cannot regress via adapter
+  training; runtime apply/unapply round-trips are numerically exact.

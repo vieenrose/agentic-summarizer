@@ -48,3 +48,39 @@ second model on-device at all", this still fails — that raw rate is the active
 training target, and it has moved 60% → 15-20% but not below the bar. If your bar is
 "no 20B judge on-device", the verifier answers it: the sweep, and therefore the 0/20
 inversion rate, is now fully on-device.
+
+---
+
+## Round 5 reply (2026-08-14): coverage is now the target — plan and fixes
+
+Accepted in full. Faithfulness landed; coverage is the new target. Response per finding:
+
+1. **Coverage collapse (blocker).** Root cause: the zh pool is clean synth — the model
+   has never seen real noisy-zh ASR, and its op emission collapses on it (the en side
+   has real transcripts; zh has none — the known gap). Three levers now in work:
+   (a) **your real zh-TW transcript** — please send it; it becomes the first real
+   noisy-zh training data (teacher-traced at the production budget). (b) A synthetic
+   ASR-noise augmentation of the zh synth meetings (fillers, disfluency, homophone
+   errors — 10 meetings built) so the model learns to emit ops on noisy input.
+   (c) Un-silencing: the zh trapfix lineage is NOP-heavy (silence at trap chunks
+   plausibly over-generalized); decision-dense zh demonstrations get a higher dose.
+   Success metric: ops/chunk and non-empty DECISIONS/ACTIONS on your real meeting.
+   Near-duplicate suppression harness-side is yours — agreed, and we'll also raise
+   the diverse-SUMMARY dose training-side.
+2. **GGUF metadata.** All three accepted and fixed in the integration note: the arch
+   is dense GQA (llama-style, not hybrid — that claim was carried over from the LFM
+   student and is wrong for MiniCPM5); ctx 131072 is the base's native context,
+   4096 is the train/serve context (pin it); "Checkpoint 302" IS the p13 (p13 =
+   checkpoint-302 — RESULTS.md now names it; p10 = 274, p11 = 282/284).
+3. **Verifier.** The n=1 polarity-flip false SUPPORTED: we built 69 synthetic
+   polarity-flip counterfactual triples (numbers/verbs flipped against the same
+   evidence → CONTRADICTED) and are retraining with them + a per-class held-out
+   check. The reversal-clause point is correct and structural: at ±90s the in-stream
+   verifier cannot see later reversals — the **temporal guard + the final VERIFY
+   sweep (whole-transcript evidence) own the reversal case**, and the deployment
+   configuration is in-stream + final sweep (both on-device, verifier-judged). With
+   in-stream alone we measured 1/20 (a zh stale-state — exactly this class); with
+   the final sweep it is 0/20. Also: the verifier is now based on
+   **ibm-granite/granite-4.0-350m (Apache-2.0)** — `Luigi/granite-4.0-350m-verifier`
+   (97% agreement with gpt-oss-20b; the LFM-based one is deprecated for commercial
+   use). (Granite 4.1 has no 350M — 3B is its smallest; too big for the device.)

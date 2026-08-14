@@ -1,0 +1,15 @@
+TITLE: Kickoff Meeting: Television Remote Control
+SUMMARY:
+- Presentation of project goals and discussion about design process [1:03]
+- Discussion on design process and compatibility with other devices [11:58]
+DECISIONS:
+- Target international sales price: 25 Euros [11:10]
+ACTIONS:
+- Design user interface for universal compatibility [13:30]
+- Discuss material and function features in next meeting [22:52]
+OPEN:
+- Decision on which animal to design [4:28]
+- Shape of the remote must be internationally recognizable [16:23]
+- Case material and function features continue to be developed [22:54]
+TOPICS:
+-

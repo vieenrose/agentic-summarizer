@@ -1,0 +1,12 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on control remote control components and interface. [6:37]
+DECISIONS:
+- Use simple push buttons and speech recognition to reduce cost. [5:09]
+- Target either fruit-shaped panels or sponge-like bodies. [29:38]
+ACTIONS:
+-
+OPEN:
+- Selection of battery type (nickel/alkaline) will reduce cost. [6:37]
+TOPICS:
+- Remote control components and interface. [32:07]

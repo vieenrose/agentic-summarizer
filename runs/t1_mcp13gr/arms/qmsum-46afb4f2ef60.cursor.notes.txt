@@ -1,0 +1,15 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Presentation of remote design options and selection of features [3:57]
+- Discussion on design challenges and functional requirements [36:51]
+DECISIONS:
+- Exclude back-up battery to reduce cost [13:38]
+- Move to project evaluation without the solar cell [17:43]
+- Celebrate [43:20]
+ACTIONS:
+-
+OPEN:
+- Budget and production goals [7:11]
+- Define target market and pricing strategy [19:40]
+TOPICS:
+-

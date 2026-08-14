@@ -1,0 +1,11 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on remote control design and components [7:36]
+DECISIONS:
+- Voice recognition will be prioritized over touch screen [25:10]
+ACTIONS:
+-
+OPEN:
+- 是否考虑使用橡胶 casement [11:42]
+TOPICS:
+- UI design [28:40]

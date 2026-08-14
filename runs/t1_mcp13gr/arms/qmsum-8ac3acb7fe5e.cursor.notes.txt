@@ -1,0 +1,19 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on remote control components and options. [5:56]
+- Discussion on user interface features and their importance. [11:21]
+- Consensus on including L_C_D features for style. [22:15]
+DECISIONS:
+- Include a scroll button and voice recognition? [13:33]
+ACTIONS:
+-
+OPEN:
+- Whether kinetic energy is suitable for remote. [4:50]
+- Whether to include a L_C_D display? [13:27]
+- Suitability of case material for kinetic energy. [24:16]
+- Whether kinetic energy is suitable? [27:30]
+TOPICS:
+- Remote control components [1:42]
+- Interfacing with the human hand [5:33]
+- Three case shape options [5:38]
+- User interface features [11:49]

@@ -1,0 +1,16 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+- Discussion on initial connection design vs learning from data [26:42]
+- Discussion on spatial descriptions vs linguistic facts [39:45]
+DECISIONS:
+- Focus on basic demos first before switching to science mode [12:47]
+- Focus on design before learning [26:48]
+ACTIONS:
+- Grad B to continue research into spatial descriptions in German [32:25]
+- Grad E to continue research into belief-net structures by next week [57:27]
+- Ami to provide a talk at EML focusing on belief-net structures next week [56:28]
+OPEN:
+- Difficulty starting the synthesis module due to code quantity [3:11]
+- Whether to visualize all nodes and connections or just the belief network [22:21]
+TOPICS:
+-

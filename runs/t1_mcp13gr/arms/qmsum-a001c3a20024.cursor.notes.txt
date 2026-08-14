@@ -1,0 +1,15 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- Function key requirement and marketing survey [17:08]
+- User interface target group recommendation [28:57]
+DECISIONS:
+- Include voice recognition for the 15-35 age group [31:17]
+ACTIONS:
+- Define user interface requirements based on basic buttons [13:57]
+OPEN:
+- Cost discussion on continued development [7:41]
+- Decision on including video and D_V_D functions [14:23]
+- Selection of beeping or non-beeping features [25:44]
+TOPICS:
+- User interface requirements [41:15]

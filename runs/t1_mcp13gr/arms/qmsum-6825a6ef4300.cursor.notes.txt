@@ -1,0 +1,16 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on mean subtraction approach for audio processing [6:09]
+- Discussion on comparing VAD with speech boundary detection [32:01]
+- Discussion on VAD type and approach for future evaluation [38:22]
+- Discussion on combining different speech processing methods [54:28]
+DECISIONS:
+-
+ACTIONS:
+- Grad F to finish proposal by Monday [1:39]
+- Use Macrophone set of read speech on larger data [6:09]
+OPEN:
+- Discussion on intermediate feature classification [3:01]
+- Effectiveness of mean subtraction on PZM signals [6:09]
+TOPICS:
+- TORRENT chip project [0:08]

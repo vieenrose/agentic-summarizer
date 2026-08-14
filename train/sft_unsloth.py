@@ -41,7 +41,7 @@ STUDENT = "google/functiongemma-270m-it"
 # Gemma/Qwen turn markers — the boundary completion-only masking keys on.
 # tokenize_sample auto-detects which one the rendered template actually uses.
 INSTRUCTION_PARTS = ("<start_of_turn>user\n", "<|im_start|>user\n")
-RESPONSE_PARTS = ("<start_of_turn>model\n", "<|im_start|>assistant\n", "Assistant:")
+RESPONSE_PARTS = ("<start_of_turn>model\n", "<|im_start|>assistant\n", "<|start_of_role|>assistant<|end_of_role|>", "Assistant:")
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -109,7 +109,9 @@ def tokenize_sample(row: dict, tokenizer, max_length: int) -> dict:
         {"role": "assistant", "content": row["completion"]},
     ]
     text = tokenizer.apply_chat_template(messages, tokenize=False)
-    if text.count(tokenizer.bos_token or "<bos>") > 1:
+    if tokenizer.bos_token != tokenizer.eos_token and text.count(tokenizer.bos_token or "<bos>") > 1:
+        # (Granite uses bos == eos == <|end_of_text|>, which the template legitimately
+        # emits once per turn — the double-bos bug this guards against does not apply.)
         raise SystemExit("template produced two <bos> tokens — fix before training")
     def _ids(text: str) -> list[int]:
         out = tokenizer(text=text, add_special_tokens=False)["input_ids"]
@@ -195,10 +197,14 @@ def main(argv: list[str] | None = None) -> int:
     )
     # Qwen3.5 ships eos_token="<EOS_TOKEN>" (a training-only token absent from the
     # vocab); the chat template's real terminator is <|im_end|>. trl's collator needs
-    # a vocab-present eos, so normalise here (model config untouched).
-    if tokenizer.eos_token != "<|im_end|>":
-        tokenizer.eos_token = "<|im_end|>"
-        tokenizer.eos_token_id = tokenizer.convert_tokens_to_ids("<|im_end|>")
+    # a vocab-present eos, so normalise here (model config untouched). Non-Qwen models
+    # (e.g. Gemma: <end_of_turn>) keep their own vocab-present eos untouched.
+    _eos = tokenizer.eos_token or "<end_of_turn>"
+    if "<|im_end|>" in tokenizer.get_vocab():
+        if tokenizer.eos_token != "<|im_end|>":
+            tokenizer.eos_token = "<|im_end|>"
+            tokenizer.eos_token_id = tokenizer.convert_tokens_to_ids("<|im_end|>")
+        _eos = "<|im_end|>"
     if args.regime == "lora":
         model = FastLanguageModel.get_peft_model(
             model,
@@ -241,7 +247,7 @@ def main(argv: list[str] | None = None) -> int:
             dataset_text_field=None,
             seed=args.seed,
             report_to="none",
-            eos_token="<|im_end|>",
+            eos_token=_eos,
         )
     print(f"[sft] cfg eos_token={sft_cfg.eos_token!r} type={type(sft_cfg).__module__}.{type(sft_cfg).__name__}", flush=True)
     trainer = SFTTrainer(
@@ -268,7 +274,7 @@ def main(argv: list[str] | None = None) -> int:
             dataset_text_field=None,  # pre-tokenized; labels carry the completion mask
             seed=args.seed,
             report_to="none",
-            eos_token="<|im_end|>",
+            eos_token=_eos,
         ),
     )
 

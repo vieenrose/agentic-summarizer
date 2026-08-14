@@ -28,9 +28,16 @@ specific state rendering under a specific system prompt at a specific chunk size
 verifier emits single-word verdicts under the FAITH prompt. All of these must match
 exactly (§5, §6) or the output will not parse.
 
-Base model: `openbmb/MiniCPM5-1B` (4k context, linear+full attention hybrid), fine-tuned
-on CURSOR-protocol teacher traces, sweep-feedback negatives, and hard-class
+Base model: `openbmb/MiniCPM5-1B` — a dense GQA transformer (the GGUF declares
+`general.architecture = llama`, 24 blocks, head_dim 128 — NOT a hybrid). Trained and
+served at 4096 context; the GGUF declares `llama.context_length = 131072` (the base's
+native context) — pin the server to `--ctx-size 4096` for the training distribution.
+Fine-tuned on CURSOR-protocol teacher traces, sweep-feedback negatives, and hard-class
 counterfactuals (see the HF card).
+
+**Checkpoint naming:** the published p13 GGUF declares `general.name = Checkpoint 302`
+— that IS the p13 (p13 = checkpoint-302 of the p13 run). Earlier artifacts: p10 =
+checkpoint-274, p11 = checkpoint-282/284.
 
 ---
 
@@ -238,8 +245,8 @@ are not claimable.
 
 - **zh trap checkpoint sensitivity** — the zh trap-drop behavior sits at a decision
   boundary between adjacent checkpoints: p14/p14b (later passes) fail the zh trap or
-  the en chain. Use the published p13 artifact; always re-screen after re-exporting or
-  re-quantizing.
+  the en chain. Use the published p13 artifact (checkpoint-302); always re-screen
+  after re-exporting or re-quantizing.
 - **zh T2 is synthetic; the zh pool is largely monologic** (VCSum-derived) —
   contested-zh is unmeasured.
 - Judge-noise floor ±0.4–0.5 (FAITH/SYNTH); n = 20/tier; sign tests, not magnitude

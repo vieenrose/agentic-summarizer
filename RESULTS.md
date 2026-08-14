@@ -1167,3 +1167,22 @@ anchor neighborhood BEFORE application; UNSUPPORTED/CONTRADICTED ops are dropped
 device ceiling). The model-only raw (2/20 = 10%) remains above the 6.2% bar without the
 verifier; with it, the device runs 0 inversions at better-than-baseline coverage and
 synthesis.
+
+## Multi-role fine-tune (one model, three roles): measured negative (2026-08-14)
+
+Experiment: one MiniCPM5-1B fine-tuned on all three model-role distributions
+(proposer CURSOR traces + critic FAITH triples 3000 + anchor-picker triples 2100,
+prompt-role conditioned, tagged `multirole-v1`). Results vs the two-specialist
+baseline:
+
+| role | multi-role model | two specialists |
+|---|---|---|
+| proposer (G1 screen) | en PASS, zh trap FAIL | PASS both (p13) |
+| critic (200-triple agreement vs gpt-oss) | **38%** (SUPPORTED collapse, 139/200) | **97%** (Granite-4.0-350M) |
+| anchor picker | 66% | deterministic matcher (fallback-equivalent) |
+
+The roles interfere: the summarizer's generation training overwhelms the verdict
+classification, and the verifier/anchor data crosses the zh-trap boundary (the same
+seesaw as every mixed pass). One 1B model cannot hold both roles at excellence —
+**the two-specialist design (MiniCPM proposer + Granite critic) is the measured
+optimum**. Deployment stays 688 MB + 215 MB.

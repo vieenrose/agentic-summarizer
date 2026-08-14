@@ -62,6 +62,11 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--sweep-budget", type=int, default=20)
     p.add_argument("--sweep-judge", default="local:8090/gpt-oss-20b")
     p.add_argument(
+        "--highlight",
+        action="store_true",
+        help="A2: mark commitment-bearing lines in the CHUNK rendering (deterministic).",
+    )
+    p.add_argument(
         "--verify-url",
         default="",
         help="on-device in-stream verification: an LFM2.5-350m-verifier endpoint. Every "
@@ -173,6 +178,7 @@ def main(argv: list[str] | None = None) -> int:
                         token_len=token_len,
                         declarations=args.declarations,
                         op_filter=verify_filter,
+                        highlight=args.highlight,
                     )
                     state, use = result.state, result.usage
                     sweep_extra = {}

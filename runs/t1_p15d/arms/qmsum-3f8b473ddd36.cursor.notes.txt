@@ -1,0 +1,22 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Remote design review and selection of components [4:47]
+- UI design focused on simplicity and versatility [13:10]
+DECISIONS:
+- Take control case first [1:28]
+- Target larger form factor than traditional iPod [14:24]
+- Prototopic touch screen only [19:55]
+- Voice recognition will be the only feature [25:10]
+- Stick with traditional buttons and minimal features [35:17]
+ACTIONS:
+- Develop prototype soon after [25:33]
+- Hit the bricks with prototype using basic design materials [39:50]
+OPEN:
+- Component design limited by available materials [5:40]
+- Ability to block channels for children [13:44]
+- Determine whether to include voice recognition based on cost [21:01]
+- Selection of between voice recognition and physical remote [25:34]
+TOPICS:
+- Remote design [0:05]
+- Case material options [3:02]
+- UI evolution [25:17]

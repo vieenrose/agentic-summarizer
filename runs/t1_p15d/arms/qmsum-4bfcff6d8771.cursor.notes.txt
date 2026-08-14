@@ -1,0 +1,23 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Presentation of prototype and evaluation against criteria. [0:23]
+- Presentation of evaluation criteria and final score. [8:09]
+- Presentation of final design score and point system. [29:38]
+DECISIONS:
+- Use a seven-point scale to evaluate the design against requirements. [8:17]
+- Target score: 6 [20:48]
+- Target score: 56 [22:11]
+- Retain only two buttons (up and down) to reduce cost. [34:38]
+- No response to "Did I save this one?" [41:12]
+ACTIONS:
+- Marketing to discuss dual-use features. [2:00]
+- Marketing to evaluate the new design against seven-point criteria. [8:17]
+- Marketing to explain the one-digit layout. [13:10]
+- Project manager to present project summary for next meeting. [32:19]
+OPEN:
+- Volume limit set up to maximum 9.7.8.9. [4:14]
+- Potential for additional finance issues and cost reduction. [8:13]
+- Target overall score: 56 [21:30]
+- Whether pushbutton counts as 1 or 2 point [25:24]
+TOPICS:
+- User interface design and accessibility. [11:03]

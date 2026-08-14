@@ -1,0 +1,18 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+-
+DECISIONS:
+- Next meeting should flip into scientific mode [12:47]
+- Design the belief network first, then learn from data [27:00]
+- Direct hand sensation experience not available with current tools [42:00]
+ACTIONS:
+- Explain the concept of "synthesis" to the team [7:48]
+- Check if we can visualize the belief network by end of week [22:41]
+- Check if KLEIST project can be done in English [32:25]
+- Grad F to be polite to the professor [50:47]
+- Grad E to find contact information for ICSI and EPFL [56:22]
+- Grad B to contact Bhaskara for reading group on schemas [1:00:22]
+OPEN:
+- Difficulty starting the synthesis module due to code quantity [3:11]
+TOPICS:
+- Belief network construction [15:35]

@@ -1,0 +1,18 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- Analysis of remote control requirements based on user feedback [18:06]
+- User interface must include voice recognition to target young users [41:15]
+DECISIONS:
+- Focus on basic functions (on-off button, channel numbers, volume) [12:51]
+- Target age group for remote control features [28:57]
+- Include voice recognition to target young, hip, and trendy users [31:22]
+ACTIONS:
+- Project Manager to send email with project documents next time [0:55]
+- User Interface requirements must include only necessary buttons [12:51]
+OPEN:
+- Initial identification of remote control components [2:38]
+- Implementation of user interface based on requirements [12:51]
+- Voice recognition would be extra but could reduce remote size [34:17]
+TOPICS:
+-

@@ -1,0 +1,21 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on control remote control components and interface. [6:37]
+- Discussion on remote control features and interface. [17:15]
+DECISIONS:
+- Use simple push buttons and speech recognition to reduce cost. [5:02]
+- Do not use the millennium remote control. [10:18]
+- Remote control should be smart to detect user. [16:34]
+- Target a fancy design to stand out from competitors. [28:26]
+ACTIONS:
+- Industrial Designer will develop a simple interface with few buttons. [10:22]
+- Research development of smart remote control. [16:44]
+- Marketing to research market trends and compare them to current models. [23:55]
+- Explore between titanium panels and spongy panels. [29:18]
+OPEN:
+- Selection of battery type (nickel/alkaline) will determine long-term cost. [6:37]
+- How to define speech recognition in a simple interface. [7:06]
+- Design criteria for remote control based on trends in appearance and functionality. [24:38]
+- Decide on specific features or design criteria. [27:33]
+TOPICS:
+- Interface design and user settings. [8:44]

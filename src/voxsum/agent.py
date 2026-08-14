@@ -162,6 +162,7 @@ def run_cursor(
     op_filter: OpFilter | None = None,
     step_filter: StepFilter | None = None,
     on_step: Callable[[int, float, int], None] | None = None,
+    highlight: bool = False,
 ) -> Trace:
     """Stream `utterances` past `model`, curating one NOTES state.
 
@@ -182,7 +183,7 @@ def run_cursor(
     consecutive_nops = 0
 
     for chunk in iter_chunks(utterances, budget=budget, token_len=token_len):
-        state_before = build_step_prompt(trace.state, chunk)
+        state_before = build_step_prompt(trace.state, chunk, highlight=highlight, lang=lang)
         prompt_tokens = token_len(sys) + token_len(state_before)
         if prompt_tokens > step_budget:
             raise StepBudgetExceeded(

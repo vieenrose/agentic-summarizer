@@ -168,13 +168,20 @@ def system_prompt(lang: str = "en", *, declarations: bool = False) -> str:
     return f"{sys}\n{function_declarations()}\n" if declarations else sys
 
 
-def build_step_prompt(state: NotesState, chunk: Chunk) -> str:
+def build_step_prompt(state: NotesState, chunk: Chunk, *, highlight: bool = False, lang: str = "en") -> str:
     """The per-step user content: STATE then CHUNK, in that fixed order.
 
     Order matters for prompt caching and for learnability — STATE is small and stable in
     shape, CHUNK is the varying part, and the model always reads them in the same places.
+
+    `highlight` prepends a marker to commitment-bearing lines (A2, deterministic) —
+    the [m:ss] text stays byte-intact, so the anchor-copy rule is unaffected.
     """
-    return f"STATE:\n{render_for_prompt(state)}\nCHUNK:\n{chunk.render()}"
+    rendered = chunk.render()
+    if highlight:
+        from .highlight import highlight_chunk
+        rendered = highlight_chunk(rendered, lang)
+    return f"STATE:\n{render_for_prompt(state)}\nCHUNK:\n{rendered}"
 
 
 # --- map-reduce baseline prompts ------------------------------------------------

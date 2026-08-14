@@ -1,0 +1,16 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on mean subtraction approach and data set performance [6:09]
+- Discussion on comparing VAD between HTK and SRI training sets [32:01]
+DECISIONS:
+- Use clean training data to normalize models [27:17]
+- Combine MLP and energy-based VAD to reduce noise (39:51) [39:58]
+ACTIONS:
+- Grad F to finish proposal by Monday [1:39]
+- Try to place a floor on SNR [48:43]
+OPEN:
+- Discussion on intermediate feature classification [3:01]
+- Combination of different feature normalization techniques [54:56]
+TOPICS:
+- TORRENT chip project [0:08]
+- Reverb analysis and data set performance [6:09]

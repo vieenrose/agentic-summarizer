@@ -1,0 +1,16 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Summary of design discussion and selection of remote features [6:57]
+- Discussion on remote design features and evaluation [33:17]
+DECISIONS:
+- Remote will use multiple colors and be interactive via touchscreen and voice recognition [3:57]
+- Exclude back-up battery to reduce cost [13:38]
+- Move to project evaluation after evaluating criteria [17:43]
+- Exclude back-up battery [33:49]
+- Celebrate [43:20]
+ACTIONS:
+- UI Designer to develop remote prototype [3:56]
+OPEN:
+- Need to determine if remote will be edible inside [4:15]
+TOPICS:
+-

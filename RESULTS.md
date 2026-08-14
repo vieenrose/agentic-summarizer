@@ -1209,3 +1209,17 @@ their real meeting) met; DECISIONS on that meeting resists the targeted dose wit
 crossing the en chain. The real-meeting trace is ADD-dense (a status meeting — no
 revision arc), which leaks over-ADD into the en screen unless counter-weighted with
 pure UPD-step samples.
+
+## Phase 0.1 (PLAN-multiagent): A2 highlighter probe — G1-safe, coverage-neutral (2026-08-14)
+
+A2 (deterministic commitment-line marker `»` in the CHUNK rendering) wired through
+run_cursor/build_step_prompt/screen/run_arms. Measured on the frozen p15d:
+- G1 screen with highlights: **PASS both languages, 100% valid-op** — the marker does
+  not break the byte-stable contract's observable behavior (risk #1 did not
+  materialize at the G1 level).
+- The maintainer's real meeting: ACTIONS 2 vs 3 unhighlighted, decode 251 vs 311 —
+  coverage-neutral; the marker shifts the op mix without raising density.
+
+Verdict: A2 as designed is insufficient for the coverage bar; shelved (the fallback
+paths — deterministic-only use or retraining the base on highlighted renderings —
+remain open). Proceeding to Phase 0.2 (critic rank sweep).

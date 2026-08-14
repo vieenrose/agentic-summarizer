@@ -181,6 +181,7 @@ def screen_model(
     declarations: bool = False,
     budget: int = 128,
     repeat_filler: int = 1,
+    highlight: bool = False,
 ) -> list[tuple[ScreenResult, Trace, NotesState]]:
     """Run the screen set through `model`. Returns (result, trace, final state) per meeting."""
     out = []
@@ -193,6 +194,7 @@ def screen_model(
             lang=meeting.lang,
             declarations=declarations,
             budget=budget,
+            highlight=highlight,
         )
         out.append((score_meeting(trace, meeting), trace, trace.state))
     return out
@@ -217,6 +219,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     p.add_argument("--repeat-filler", type=int, default=1)
     p.add_argument("--max-tokens", type=int, default=512, help="output budget per step")
+    p.add_argument("--highlight", action="store_true", help="A2: mark commitment lines")
     p.add_argument(
         "--thinking",
         action="store_true",
@@ -251,6 +254,7 @@ def main(argv: list[str] | None = None) -> int:
         declarations=args.declarations,
         budget=args.budget,
         repeat_filler=args.repeat_filler,
+        highlight=args.highlight,
     )
 
     for result, _, state in results:

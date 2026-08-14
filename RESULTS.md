@@ -1186,3 +1186,26 @@ classification, and the verifier/anchor data crosses the zh-trap boundary (the s
 seesaw as every mixed pass). One 1B model cannot hold both roles at excellence —
 **the two-specialist design (MiniCPM proposer + Granite critic) is the measured
 optimum**. Deployment stays 688 MB + 215 MB.
+
+## Coverage pass (p15 lineage): real-zh coverage vs the G1 seesaw (2026-08-14)
+
+The maintainer's real zh-TW procurement meeting (203 lines, ASR echo-loop noise)
+reproduced the failure: p13 emitted ~1.25 ops/chunk with empty DECISIONS/ACTIONS.
+Teacher-traced at 2048 (4.3 ops/chunk — the coverage teaching signal) + ASR-noise
+augmentation of 10 zh synth meetings.
+
+Dose sweep measured (resume p13, LR 1e-5, 2 epochs):
+
+| pass | mix | G1 | real-meeting coverage |
+|---|---|---|---|
+| p15 | real×3 + noisy + zhcomb×2 | en chain FAIL + zh trap FAIL | **ACTIONS 5** |
+| p15b | real×2 + noisy + zhcomb + encomb | en chain FAIL, zh PASS | ACTIONS 3 |
+| p15c | real×1 + noisy + zhcomb + encomb×2 | **PASS both** | ACTIONS 0 |
+| **p15d** | real×2 + noisy + zhcomb + en-UPD-steps×3 | **PASS both** (zh 86% valid-op) | **ACTIONS 3, OPEN 4, real content through the noise** |
+| p15e | p15d + real-ADD-DECISIONS×3 | en chain FAIL | DECISIONS still empty |
+
+p15d is the optimum: G1 PASS both + the maintainer's first bar (ACTIONS non-empty on
+their real meeting) met; DECISIONS on that meeting resists the targeted dose without
+crossing the en chain. The real-meeting trace is ADD-dense (a status meeting — no
+revision arc), which leaks over-ADD into the en screen unless counter-weighted with
+pure UPD-step samples.

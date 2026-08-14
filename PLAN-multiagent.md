@@ -1,3 +1,6 @@
+<!-- SUPERSEDED 2026-08-14: abandoned per user decision in favor of the two-model
+deployment (MiniCPM5-1B proposer + granite-4.0-h-350m verifier). Kept for the
+research notes and the Phase-0 capacity measurements (r8 64%, r32 85%). -->
 # PLAN — Multi-agent CURSOR with multiple LoRA adapters · v2 (research-revised)
 
 **Status:** design v2 · **Date:** 2026-08-14 · **v1:** single-model multi-role SFT

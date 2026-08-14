@@ -1223,3 +1223,21 @@ run_cursor/build_step_prompt/screen/run_arms. Measured on the frozen p15d:
 Verdict: A2 as designed is insufficient for the coverage bar; shelved (the fallback
 paths — deterministic-only use or retraining the base on highlighted renderings —
 remain open). Proceeding to Phase 0.2 (critic rank sweep).
+
+## Architecture decision: 2-agent deployment locked (2026-08-14)
+
+Per user direction, the multi-agent/multi-LoRA plan (PLAN-multiagent.md) is
+abandoned — marked superseded in the file, with the Phase-0 capacity measurements
+kept (critic rank 8 = 64%, rank 32 = 85%: the generation bias resists low-rank
+correction, corroborating the two-specialist design). Granite-4.1 has no 350M (the
+line starts at 3B); granite-4.0-h-350m exists but the user selected the plain
+granite-4.0-350m. The deployment is:
+
+- **Main (proposer): MiniCPM5-1B p15d** — G1 PASS both, real-meeting ACTIONS
+  populated via the real-zh coverage training.
+- **Verifier (critic): granite-4.0-350m** (`Luigi/granite-4.0-350m-verifier`,
+  Apache-2.0, 97% agreement, epoch-4 GGUF).
+
+Configuration: in-stream verification + final VERIFY sweep, both judged by the
+granite verifier (the deployment measured 0/20 inversions with the LFM-based
+verifier; the granite one is 97%-equivalent and re-measurement is in progress).

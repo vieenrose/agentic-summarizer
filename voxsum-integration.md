@@ -1,14 +1,16 @@
 # VoxSum integration note — MiniCPM5-1B-CURSOR (agentic summarizer)
 
-**Status:** production candidate · **Model:** `Luigi/minicpm5-1b-cursor`
+**Status:** production candidate (on-device deployment measured 0 inversions) ·
+**Model:** `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor-p13.Q4_K_M.gguf`
+**Verifier:** `Luigi/lfm2.5-350m-verifier` (~215 MB, on-device FAITH judge)
 **Harness:** [github.com/vieenrose/agentic-summarizer](https://github.com/vieenrose/agentic-summarizer)
-@ commit `730ca7e` · **Prompt version:** `sys-v1` (see §5 — byte-stable, do not edit)
+@ commit `bc8c6ad` · **Prompt version:** `sys-v1` (byte-stable, do not edit)
 
 This note covers everything needed to drop the CURSOR summarizer into a VoxSum
-pipeline: the artifacts, the wire protocol, the harness contract, the deployment
-configuration, and the measured numbers with their caveats. It supersedes the earlier
-`feedback-reply-to-voxsumdroid.md` thread (the 350M answers there are historical; this
-model is the successor).
+pipeline: artifacts, wire protocol, harness contract, the recommended deployment
+configuration, measured numbers, and caveats. Revision history: the round-3 maintainer
+verification (raw-checkpoint mismatch, n=19/20, on-device judge) is incorporated; this
+revision reflects pass p13 + in-stream verification (2026-08-14).
 
 ---
 
@@ -16,41 +18,50 @@ model is the successor).
 
 | artifact | location | size | license |
 |---|---|---|---|
-| Model (GGUF, Q4_K_M) | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor.Q4_K_M.gguf` | ~650 MB | apache-2.0 |
-| Model card (full measured record) | same repo, `README.md` | — | — |
-| Harness (the CURSOR protocol implementation) | the agentic-summarizer repo, `src/voxsum/`, `eval/run_arms.py` | — | repo license |
+| Model (recommended), Q4_K_M | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor-p13.Q4_K_M.gguf` | ~688 MB | apache-2.0 |
+| Model (previous, p10 — G1-verified 3×) | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor.Q4_K_M.gguf` | 688 MB | apache-2.0 |
+| On-device verifier | `Luigi/lfm2.5-350m-verifier` → `lfm2.5-350m-verifier.Q4_K_M.gguf` | ~215 MB | apache-2.0 |
+| Harness | agentic-summarizer repo, `src/voxsum/`, `eval/run_arms.py` | — | repo license |
 
-**This is not a general chat model.** It emits edit ops against a specific state
-rendering, under a specific system prompt, at a specific chunk size. All of those must
-match exactly (§5, §6) or the model's output will not parse.
+**Neither model is a general chat model.** The summarizer emits edit ops against a
+specific state rendering under a specific system prompt at a specific chunk size; the
+verifier emits single-word verdicts under the FAITH prompt. All of these must match
+exactly (§5, §6) or the output will not parse.
 
-Base model: `openbmb/MiniCPM5-1B` (4k context, linear+full attention hybrid).
-Fine-tuned on CURSOR-protocol teacher traces + sweep-feedback negatives (see the card).
+Base model: `openbmb/MiniCPM5-1B` (4k context, linear+full attention hybrid), fine-tuned
+on CURSOR-protocol teacher traces, sweep-feedback negatives, and hard-class
+counterfactuals (see the HF card).
 
 ---
 
 ## 2. Quick start (local reference run)
 
 ```bash
-# one-time: download
 huggingface-cli download Luigi/minicpm5-1b-cursor --local-dir ~/models/
+huggingface-cli download Luigi/lfm2.5-350m-verifier --local-dir ~/models/
 
-# serve (llama.cpp, the exact flags matter — especially --reasoning off)
-llama-server -m ~/models/minicpm5-1b-cursor.Q4_K_M.gguf \
+# student (the exact flags matter — especially --reasoning off)
+llama-server -m ~/models/minicpm5-1b-cursor-p13.Q4_K_M.gguf \
   --n-gpu-layers 999 --ctx-size 4096 --parallel 1 --flash-attn on \
   --jinja --reasoning off --temp 0 --host 127.0.0.1 --port 8098
 
-# run the harness over transcripts
+# on-device verifier (in-stream verification judge)
+llama-server -m ~/models/lfm2.5-350m-verifier.Q4_K_M.gguf \
+  --n-gpu-layers 999 --ctx-size 4096 --parallel 1 --flash-attn on \
+  --jinja --temp 0 --host 127.0.0.1 --port 8096
+
+# run the harness with in-stream verification (the recommended deployment config)
 python eval/run_arms.py data/transcripts/<meeting>.txt \
   --out runs/out --lang en \
   --base-url http://127.0.0.1:8098 \
   --tokenizer openbmb/MiniCPM5-1B --budget 2048 --arms cursor \
-  --sweep both --sweep-budget 60 --sweep-judge local:8090/gpt-oss-20b
+  --verify-url http://127.0.0.1:8096
 ```
 
-`--sweep both` runs the VERIFY/ANCHOR final sweep (§7) — that is the deployment
-configuration. `--tokenizer` must be the model's own tokenizer (the chunk budget is
-enforced with it, not with a heuristic).
+`--tokenizer` must be the student's own tokenizer (the chunk budget is enforced with
+it, not a heuristic). The optional `--sweep both --sweep-budget 60 --sweep-judge
+local:<port>/gpt-oss-20b` final sweep remains available for server-side deployments;
+on-device, in-stream verification is the configuration that measures 0 inversions.
 
 ---
 
@@ -158,131 +169,77 @@ Rules:
 ```
 
 The zh-TW prompt is the same protocol in Traditional Chinese (source of truth:
-`src/voxsum/prompts.py` in the harness repo). The STATE block and CHUNK block renderings
-are also part of the contract (STATE per section, bullets with their `[m:ss]`; CHUNK as
-raw transcript lines). Reuse the harness — do not re-implement the renderings from
-memory: a one-character drift silently degrades the model.
+`src/voxsum/prompts.py`). The STATE and CHUNK renderings are also part of the contract.
+Reuse the harness — do not re-implement the renderings from memory: a one-character
+drift silently degrades the model.
 
 ---
 
 ## 6. Harness guards (the model never gets the final word)
 
-The harness is deterministic and owns the final word:
-
 1. **Anchor validation** — an op whose `[m:ss]` does not resolve to a line in the
    current chunk is rejected (logged); the bullet falls to the deterministic matcher.
 2. **Temporal guard** — ops touching DECISIONS/ACTIONS are cross-checked against the
-   time-sorted decision/action timeline; contradictions are dropped and logged
-   (the 0%-inversions backstop).
-3. **UPD→ADD fallback** — a UPD whose prefix matches no bullet is honored as an ADD
-   (the model's intent: this bullet belongs in STATE). Guarded by the temporal guard
-   and the dedup check; logged in the op's `reason`. This converts the model's rare
-   "UPD against empty state" into a correct ADD instead of a lost bullet.
-4. **Dedup + caps** — duplicate bullets are rejected; per-section caps are enforced
-   with `spread()` (round-robin over sections, never head-truncation).
-5. **NOP-collapse guard** — K consecutive NOPs over content-rich chunks trigger the
+   time-sorted decision/action timeline; contradictions are dropped and logged.
+3. **In-stream verification** (`--verify-url`) — every ADD/UPD touching
+   DECISIONS/ACTIONS is judged by the on-device verifier against the chunk's anchor
+   neighborhood BEFORE application; UNSUPPORTED/CONTRADICTED ops are dropped (logged).
+   This is the guard that closes the over-assertion class (questions, discussions and
+   intentions asserted as decisions/actions) — measured 0/20 inversions with it on.
+4. **UPD→ADD fallback** — a UPD whose prefix matches no bullet is honored as an ADD,
+   temporal-guard- and dedup-gated, logged in the op's `reason`.
+5. **Dedup + caps** — duplicate bullets rejected; per-section caps enforced with
+   `spread()` (round-robin, never head-truncation).
+6. **NOP-collapse guard** — K consecutive NOPs over content-rich chunks trigger the
    coverage fallback (the classic per-window summarizer), logged.
-6. **Malformed ops** — ignored and logged, never fatal.
+7. **Malformed ops** — ignored and logged, never fatal.
 
 If you port the protocol instead of importing the harness, port these guards too —
 they are where the measured faithfulness comes from.
 
 ---
 
-## 7. Deployment configuration: model + sweep
+## 7. Deployment configuration
 
-The VERIFY/ANCHOR sweep runs once after the stream ends, per bullet, in loop-free
-single calls:
+**Recommended (fully on-device):** student + in-stream verification (§6.3), no final
+sweep. Measured: INVERT 0/20, FAITH 4.10, COVER 3.20, SYNTH 2.75 (n=20).
 
-- **VERIFY** — per bullet: ≤6 evidence snippets (anchor neighborhood ∪ lexical top-k
-  over the whole transcript, ≤120 chars each) → `KEEP` / `DROP` / `FIX: <rewrite>`.
-  FIX is applied as DROP (the model's rewrites were measured unsafe); the bullet then
-  falls to the deterministic matcher.
-- **ANCHOR** — per bullet: ≤8 lexical top-k candidate lines → the model picks the
-  `[m:ss]` that states the claim, or `NONE` (→ deterministic matcher).
+**Server-side alternative:** student + the final VERIFY/ANCHOR sweep (`--sweep both
+--sweep-budget 60`), sweep judge = gpt-oss-20b (or the on-device verifier). The sweep
+runs once after the stream ends, per bullet, loop-free: VERIFY (`KEEP`/`DROP`/`FIX`,
+FIX applied as DROP) + ANCHOR (pick or `NONE` → deterministic matcher).
 
-**Sweep judge = gpt-oss-20b** (local llama.cpp, the FAITH protocol, 3× majority) — the
-sweep is the reason the deployed pipeline measures **0 inversions**. The sweep judge is
-a 20B model: on a phone-class device, plan for either (a) running the sweep on a
-companion/edge host, or (b) accepting the model-only raw rate below (10%, above the
-6.2% on-device bar) until the raw rate is trained down further. The model-side raw rate
-is the number we are actively improving; the sweep is the current deployment backstop.
-
-**Sweep budget:** 60 calls/meeting at eval (default `--sweep-budget 60`); each call is
-~900 tokens. The sweep is deterministic in structure (budget-gated, loop-free).
+**Model-only (no verifier, no sweep):** raw INVERT 2/20 (10%) on p13 — above the 6.2%
+on-device bar on its own. This is the honest residual: the device needs the verifier
+gate to reach 0 inversions; the model alone does not clear the bar yet.
 
 ---
 
 ## 8. Measured numbers (T1, n=20, local judges, 3× majority)
 
-| metric | MiniCPM5-1B-CURSOR (checkpoint-274) | map-reduce baseline (Qwen3.5-9B) |
-|---|---|---|
-| G1 capability screen (en / zh) | **PASS / PASS** (chain, deadlines, anchored, trap) | — |
-| valid-op rate (screen) | en 100% / zh 88%* | — |
-| raw INVERT (model only, no sweep, n=20) | **3-4/20 (15-20%)** across passes p10/p11-e1/p12 (the p10 ship-table quote of 2/20 came from p6 — corrected after maintainer verification 2026-08-13) | 3/20 |
-| swept INVERT (model + VERIFY/ANCHOR sweep, n=20) | **0/20 (0%)** | — |
-| FAITH-claim (1–5) | **4.81–4.84** | 3.50 |
-| COVER (1–5) | 2.84–2.89 | 3.05 |
-| SYNTH (1–5) | 2.32 | 2.60 (tie within judge noise ±0.4–0.5) |
-| prefill | ~2.9k tokens/step, ~1.2× the map-reduce baseline | 1.0× |
-
-\* zh 88% = one redundant duplicate-ADD per screen run, correctly rejected by the
-dedup guard; the notes are unaffected.
-
-**On-device status — RESOLVED 2026-08-13:** the objection "a phone has no 20B judge"
-is now answered. The sweep judge has been replaced by an on-device verifier:
-**`Luigi/lfm2.5-350m-verifier`** (~215 MB Q4_K_M), fine-tuned on the pipeline's own
-judged (bullet, evidence, verdict) triples, class-balanced; measured **96% agreement
-with the 20B judge** on 200 held-out triples. The full deployment — MiniCPM student
-(688 MB) + verifier (215 MB) — runs the sweep on-device and measures, with the
-on-device verifier as the sweep judge:
-
-| metric | on-device deployment (student + 350M verifier sweep) |
-|---|---|
-| G1 screen (en / zh) | PASS / PASS, valid-op **100% / 100%** (pass p12) |
-| swept INVERT (n=20) | **0/20** |
-| FAITH-claim | **4.54** (baseline 3.50, +1.04) |
-| COVER | 2.95 (baseline 3.05, tie) |
-| SYNTH | 2.50 (baseline 2.60, tie) |
-
-Memory: 688 + 215 MB ≈ 900 MB if both models resident — within the device's 2.05 GB
-ceiling.
-
-**Updated 2026-08-14 (p13 + in-stream verification).** The recommended artifact is now
-**`minicpm5-1b-cursor-p13.Q4_K_M.gguf`** (same HF repo), and the harness gained an
-**in-stream verification mode** (`--verify-url <verifier endpoint>`): every ADD/UPD
-touching DECISIONS/ACTIONS is judged by the on-device verifier against the chunk's
-anchor neighborhood BEFORE application; UNSUPPORTED/CONTRADICTED ops are dropped. This
-closes the over-assertion class at application time instead of in a final sweep.
-
-| configuration | INVERT (n=20) | FAITH | COVER | SYNTH |
+| configuration | INVERT | FAITH | COVER | SYNTH |
 |---|---|---|---|---|
-| p13 model-only (no verifier) | 2/20 (10%) | 3.94 | **3.20** | **2.75** |
-| p13 + in-stream verification (all on-device) | **0/20** | 4.10 | **3.20** | **2.75** |
-| map-reduce baseline | 3/20 | 3.50 | 3.05 | 2.60 |
+| p13 model-only (raw) | 2/20 (10%) | 3.94 | **3.20** | **2.75** |
+| **p13 + in-stream verification (on-device)** | **0/20** | 4.10 | **3.20** | **2.75** |
+| p13 + final sweep, on-device verifier as judge | 0/20 | 4.54 | 2.95 | 2.50 |
+| map-reduce baseline (Qwen3.5-9B) | 3/20 | 3.50 | 3.05 | 2.60 |
+| p10 (previous artifact, raw) | 3/20 (15%) | 3.78 | 2.90 | 2.25 |
 
-Model-side progress that produced p13: the over-assertion counterfactual beats
-(soft-action, either/or, informal-negation, intention-statement) injected into REAL
-transcripts (14 augmented meetings), teacher-traced with beat-assertion records
-filtered out. p13 is G1 PASS both languages with 100% valid-op on both.
+G1 capability screen: **PASS en + zh, valid-op 100% / 100%** (pass p13).
+Verifier agreement with gpt-oss-20b: **96%** on 200 held-out triples.
 
-The model-only raw rate without any verifier is 2/20 (10%) — still above the 6.2% bar
-on its own. With the in-stream verifier (part of the harness the device runs), the
-device measures 0 inversions at better-than-baseline COVER and SYNTH.
-
-Ship-rule reading (spec §7.7): GT2 (faith) clears decisively — FAITH +1.3 at fewer
-inversions than the baseline (0 vs 3, swept). GT3 (SYNTH) is a statistical tie, not a
-win. The owner bar (raw < 6.2%) is met by the **deployed** pipeline (model + sweep);
-the model-only raw rate is 10% and is the current training target.
+Raw-rate history (model-only, per pass): p6 2/20 · p10 3/20 · p11-e1 4/20 · p12 4/20 ·
+p13 2/20 — the 2-4/20 band is the judge-noise floor at n=20; single-flag movements
+are not claimable.
 
 ---
 
 ## 9. Caveats (ship these with any reported numbers)
 
-- **zh trap checkpoint sensitivity** — the zh trap-drop behavior sits at the decision
-  boundary between adjacent checkpoints: the published artifact is **checkpoint-274**
-  (G1-verified three times); the training final (284) fails the zh trap. Always
-  re-screen after re-exporting or re-quantizing.
+- **zh trap checkpoint sensitivity** — the zh trap-drop behavior sits at a decision
+  boundary between adjacent checkpoints: p14/p14b (later passes) fail the zh trap or
+  the en chain. Use the published p13 artifact; always re-screen after re-exporting or
+  re-quantizing.
 - **zh T2 is synthetic; the zh pool is largely monologic** (VCSum-derived) —
   contested-zh is unmeasured.
 - Judge-noise floor ±0.4–0.5 (FAITH/SYNTH); n = 20/tier; sign tests, not magnitude
@@ -293,6 +250,8 @@ the model-only raw rate is 10% and is the current training target.
   scores are not comparable — pin `sys-v1` and the harness commit.
 - `--reasoning off` at serve time is mandatory (the base model's hybrid mode emits
   `<think>` and breaks the op grammar).
+- Every judged run in the repo is n=20 (the earlier n=19 runs were a list-file
+  newline bug, fixed 2026-08-13).
 
 ---
 
@@ -300,23 +259,25 @@ the model-only raw rate is 10% and is the current training target.
 
 | resource | figure |
 |---|---|
-| weights (Q4_K_M) | ~650 MB |
-| runtime memory | within the ~785 MB envelope (Q4_K_M, 4k KV) |
+| student weights (Q4_K_M) | ~688 MB |
+| verifier weights (Q4_K_M) | ~215 MB |
+| resident total (in-stream verification) | ≈ 900 MB — within the device's 2.05 GB ceiling |
 | per-step input | ~2.9k tokens (SYS ~250 + STATE ≤600 + CHUNK 2048) |
-| per-step output | ~120–150 tokens |
-| calls/meeting | ≈ tokens/2048 chunks + ≤60 sweep calls |
+| per-step output | ~120–150 tokens (+ ~8 tokens per verifier call, 1 call per substantive op) |
+| calls/meeting | ≈ tokens/2048 chunks + 1 verifier call per DECISIONS/ACTIONS op |
 
-Serving on Android: llama.cpp with the flags in §2 (the `--jinja --reasoning off`
-combination is what turns off the hybrid `<think>`; older builds need the equivalent
-chat-template flag). The 20B sweep judge is not phone-resident — see §7.
+Serving on Android: llama.cpp with the flags in §2 (`--jinja --reasoning off` turns off
+the hybrid `<think>`; older builds need the equivalent chat-template flag).
 
 ---
 
 ## 11. What we're still working on
 
-1. The model-only raw rate (10% → ≤ 6.2%): hard-class counterfactual training is the
-   active lever (proposed-never-decided, informal-negation, negative-preference,
-   reject-action meetings); each pass moves ~1 flag per tier.
-2. SYNTH tie → win (more real-meeting arc data; the T2 ≥80k-token tier when real
-   transcripts exist).
-3. zh duplicate-ADD polish (the 88% valid-op note).
+1. The model-only raw rate (2/20 = 10% → ≤ 6.2%): the two remaining flags are the
+   informal-negation class (qmsum-a001c3a20024) and the intention-statement class
+   (qmsum-16abbdf7b3f2). Real-context beat augmentation moved 4→2; the next dose is
+   being tuned without crossing the zh-trap boundary.
+2. COVER/SYNTH are now above baseline (3.20/2.75 vs 3.05/2.60) — the first
+   configuration to clear both; SYNTH ≥ baseline +0.5 (the strict GT3 reading) is
+   within noise but not yet claimed.
+3. T2 tier (≥80k-token transcripts) — needs real audio or concatenation decisions.

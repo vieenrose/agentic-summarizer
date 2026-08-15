@@ -1,20 +1,17 @@
-# Next steps (2026-08-13) — MiniCPM5-1B-CURSOR shipped
+# Next steps (2026-08-14) — 2-agent deployment locked
 
-## Published: Luigi/minicpm5-1b-cursor (checkpoint-274, G1-verified)
+Architecture: main = MiniCPM5-1B p15d (published), verifier = granite-4.0-350m
+(published, 97%, Apache-2.0). Deployment config: in-stream verification (+ final
+sweep where the stale-state class matters; see the tradeoff table in RESULTS.md).
 
-## Remaining work
-1. **SYNTH gate (tie → win)**: more real-meeting SUMMARY-arc data (the T2 tier when it
-   exists) or a higher arc dose — diminishing returns observed (p10 +0.27, p11 +0.00).
-2. **zh valid-op 100%**: stop the one redundant duplicate-ADD (a small "no duplicate
-   re-ADD" negative set, or accept as documented).
-3. **zh trap robustness**: the trap sits at the decision boundary between adjacent
-   checkpoints — pick checkpoints by G1 screen, always.
-4. **T2 tier (≥80k tokens)**: still needs real audio or concatenation decisions.
-5. **Safetensors publish**: the training final (284) fails the zh trap — publish
-   safetensors only after re-verifying a final, or retrain with save at the verified
-   step.
-
-## Hygiene
-- After every GGUF export: verify the file exists AND the server PID changed.
-- rm runs/*/checkpoint-* after each pass (disk fills).
-- Judge ports: 8090 gpt-oss FAITH / 8091 qwen COVER (both must be up before any judge run).
+1. **zh verifier training** — the granite verifier's zh verdicts are weak (en-heavy
+   triples); build zh triples (the judged zh meetings + zh flips) and re-measure the
+   sweep's COVER/SYNTH cost.
+2. **DECISIONS on the maintainer's real meeting** — needs more real zh data (their
+   next transcript) or a lighter DECISIONS dose that doesn't cross the en chain.
+3. **Stale-state guard** — extend the timeline guard (or keep the final sweep) for
+   the reversal class the ±90s window cannot see.
+4. **SYNTH** — the writer-role work was part of the superseded plan; revisit only if
+   a cheap path appears (the in-stream-only config's 2.75 stands).
+5. On-device numbers (latency/thermals) — the maintainer's foreground-service
+   measurements pending on their side.

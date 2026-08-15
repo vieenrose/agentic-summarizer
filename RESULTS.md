@@ -1241,3 +1241,31 @@ granite-4.0-350m. The deployment is:
 Configuration: in-stream verification + final VERIFY sweep, both judged by the
 granite verifier (the deployment measured 0/20 inversions with the LFM-based
 verifier; the granite one is 97%-equivalent and re-measurement is in progress).
+
+## FINAL DEPLOYMENT MATRIX — 2-agent architecture (2026-08-14)
+
+Architecture locked per user: **main = MiniCPM5-1B, verifier = granite-4.0-350m**
+(Apache-2.0). Full measured matrix (T1, n=20, local judges, 3x majority):
+
+| configuration | INVERT | FAITH | COVER | SYNTH |
+|---|---|---|---|---|
+| p13 raw | 2/20 | 3.94 | 3.20 | 2.75 |
+| p13 + in-stream (verifier) | 0/20 | 4.10 | 3.20 | 2.75 |
+| p13 + in-stream + final sweep | 0/20 | 4.54 | 2.95 | 2.50 |
+| p15d raw (coverage pass) | 3/20 | 3.80 | 2.95 | 2.40 |
+| p15d + granite in-stream + granite sweep | 1/20 | 4.20 | 2.50 | 1.95 |
+| baseline (Qwen3.5-9B map-reduce) | 3/20 | 3.50 | 3.05 | 2.60 |
+
+Findings:
+1. The granite sweep judge over-drops relative to the LFM-based one — its zh
+   verdicts are weaker (the triples are en-heavy; zh-only verifier training is the
+   open follow-up). COVER/SYNTH pay for it.
+2. The best balance remains **in-stream verification only**: 0/20 with COVER 3.20 /
+   SYNTH 2.75 — with the documented structural caveat (the ±90s window cannot see
+   later reversals; the stale-state class needs the final sweep or the timeline
+   guard's extension).
+3. The coverage pass (p15d) delivered the maintainer's first bar (ACTIONS non-empty
+   on the real noisy meeting, G1 PASS both) at the cost of one raw flag (3 vs 2).
+
+Open items carried into NEXT_STEPS: zh-verifier training (zh triples), the DECISIONS
+emptiness on the real meeting, the stale-state guard extension, SYNTH.

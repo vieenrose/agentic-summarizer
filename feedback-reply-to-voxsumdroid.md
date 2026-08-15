@@ -84,3 +84,37 @@ Accepted in full. Faithfulness landed; coverage is the new target. Response per 
    **ibm-granite/granite-4.0-350m (Apache-2.0)** — `Luigi/granite-4.0-350m-verifier`
    (97% agreement with gpt-oss-20b; the LFM-based one is deprecated for commercial
    use). (Granite 4.1 has no 350M — 3B is its smallest; too big for the device.)
+
+---
+
+## Round 5 follow-up (2026-08-14): architecture locked, coverage progress, honest residuals
+
+1. **Architecture (final):** two specialists — **main = MiniCPM5-1B p15d**, **verifier
+   = granite-4.0-350m** (Apache-2.0, `Luigi/granite-4.0-350m-verifier`, 97% agreement
+   with gpt-oss-20b). The multi-agent/multi-LoRA alternative was measured and
+   abandoned (critic adapters on the 1B base reach only 64-85% agreement — the
+   base's generation bias resists low-rank correction; recorded in
+   PLAN-multiagent.md, superseded).
+2. **Your real meeting, p15d (trained on it + ASR-noise augmentation):** G1 PASS both
+   languages; on the meeting itself ACTIONS is now non-empty (price/quantity
+   discussions, D4-margin decisions, the SOC timeline — real content through the
+   echo-loop noise) vs the p13's empty sections. **DECISIONS on that meeting is
+   still empty** — the one open item on your bar; the targeted dose crossed the en
+   chain (recorded) and is shelved pending more real zh data.
+3. **Deployment matrix (n=20, same judges as always):**
+
+| configuration | INVERT | FAITH | COVER | SYNTH |
+|---|---|---|---|---|
+| p15d raw | 3/20 | 3.80 | 2.95 | 2.40 |
+| p15d + in-stream + sweep (granite) | 1/20 | 4.20 | 2.50 | 1.95 |
+| p13 + in-stream only | 0/20 | 4.10 | 3.20 | 2.75 |
+| your baseline reference (9B map-reduce) | 3/20 | 3.50 | 3.05 | 2.60 |
+
+   Honest note: the granite sweep judge over-drops vs the earlier verifier (its zh
+   verdicts are weaker — the training triples are en-heavy); zh-verifier training is
+   the open follow-up. The best balance remains in-stream-only (0/20, COVER 3.20) —
+   with the structural caveat we already agreed on: ±90s cannot see later
+   reversals; that class is the final-sweep/timeline-guard's job.
+4. **Weights:** `minicpm5-1b-cursor-p15d.Q4_K_M.gguf` is on HF (same repo). If you
+   send more real zh transcripts, they become training data immediately — that's
+   the single most valuable input for the DECISIONS gap.

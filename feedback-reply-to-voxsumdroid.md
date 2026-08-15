@@ -154,3 +154,21 @@ deficiency, not extraction**. We agree with both readings.
 
 Your port's audit trail is better tooling than our own harness logging — we'd be
 glad to add the same per-op record to our eval output if useful.
+
+---
+
+## Verifier A/B on the real zh meeting — first pass (2026-08-14)
+
+Ran the A/B you suggested on our harness, same meeting, p15d main, in-stream only:
+
+- **granite-4.0-350m in-stream: 0 vetoes**
+- **lfm2.5-350m in-stream: 0 vetoes**
+
+Both runs' only rejections were the dedup duplicates (the STATE-reading class from
+your audit). Inconclusive for veto behaviour — on our run the p15d proposed no
+borderline DECISIONS/ACTIONS ops (your run's question-as-action didn't appear in
+this trajectory). The verifier difference we *have* measured is in the final sweep
+(granite over-drops on zh: COVER 2.50 vs 2.95-3.20) — so your A/B should compare
+the sweep path too, or re-run in-stream on a meeting with a denser op mix. Your
+port's run is the better test for in-stream; we'll post the sweep A/B numbers here
+next.

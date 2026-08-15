@@ -1,0 +1,15 @@
+[
+  {
+    "meeting_id": "meeting-zh-long",
+    "arm": "cursor",
+    "lang": "zh-TW",
+    "prompt_version": "sys-v1",
+    "chunk_budget": 2048,
+    "calls": 8,
+    "prefill_tokens": 18792,
+    "decode_tokens": 220,
+    "valid_op_rate": 1.0,
+    "anchor_rate_raw": 0.7272727272727273,
+    "coverage_gaps": 0
+  }
+]

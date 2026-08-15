@@ -1305,3 +1305,16 @@ Deployment (p15d + gr4, in-stream + sweep):
   quality metric, at +1 inversion vs its 1/20.
 - The best-balance config remains p13 + in-stream-only (0/20, COVER 3.20,
   SYNTH 2.75) for en-primary; for zh-primary the gr4 stack is now the choice.
+
+## DECISIONS blocker cleared: p17c (2026-08-14)
+
+The VoxSum author's structural suggestion (a DECISIONS-specific pass) was the fix:
+**DECISIONS-only distillation** — 193 teacher records reduced to their ADD/UPD
+DECISIONS lines only, ×4 dose + the en-UPD counterweight ×3 on p15d. Dose sweep:
+p17 (×4): DECISIONS fired (4 bullets on the real meeting, incl. the supplier
+decision) but en chain FAIL; p17b (×2): no DECISIONS, en chain FAIL; **p17c
+(×4 + en_upd×3): G1 PASS both (100% valid-op) AND DECISIONS non-empty on the
+maintainer's real meeting** ("Support R&D for higher price points"). The
+harness-side promotion (`--promote-decisions`, decision-shaped SUMMARY bullets →
+DECISIONS at render) also landed. The zero-DECISIONS class is broken for the
+first time; the raw T1 validation is running.

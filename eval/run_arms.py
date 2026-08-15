@@ -67,6 +67,12 @@ def main(argv: list[str] | None = None) -> int:
         help="A2: mark commitment-bearing lines in the CHUNK rendering (deterministic).",
     )
     p.add_argument(
+        "--promote-decisions",
+        action="store_true",
+        help="deterministic harness-side mitigation for the zero-DECISIONS class: "
+        "decision-shaped SUMMARY bullets are promoted into DECISIONS at render time.",
+    )
+    p.add_argument(
         "--verify-url",
         default="",
         help="on-device in-stream verification: an LFM2.5-350m-verifier endpoint. Every "
@@ -238,7 +244,8 @@ def main(argv: list[str] | None = None) -> int:
                 continue
 
             (args.out / f"{path.stem}.{arm}.notes.txt").write_text(
-                render_state(state), encoding="utf-8"
+                render_state(state, lang=args.lang, promote_decisions=args.promote_decisions),
+                encoding="utf-8",
             )
             usage.append(
                 {

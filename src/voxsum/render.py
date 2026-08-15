@@ -17,11 +17,32 @@ __all__ = ["EMPTY_SECTION", "render_state", "render_for_prompt"]
 EMPTY_SECTION = "-"
 
 
-def render_state(state: NotesState, *, enforce_caps: bool = True) -> str:
+def promote_decision_summaries(state: NotesState, lang: str = "en") -> int:
+    """Deterministic harness-side mitigation for the measured zero-DECISIONS class
+    (the student puts decision-shaped content in SUMMARY and never emits DECISIONS
+    ops — VoxSum round-5.2, their op-level audit). Any SUMMARY bullet whose text
+    matches the commitment lexicon is promoted into DECISIONS with its anchor,
+    guarded by the dedup check and the section cap. Returns the promoted count.
+    """
+    from .highlight import is_commit_line
+
+    promoted = 0
+    for b in list(state.bullets("SUMMARY")):
+        if is_commit_line(b.text, lang):
+            reason = state.add("DECISIONS", b.text, b.anchor)
+            if reason is None:
+                promoted += 1
+    return promoted
+
+
+def render_state(state: NotesState, *, enforce_caps: bool = True, lang: str = "en",
+                 promote_decisions: bool = False) -> str:
     """Render NOTES v2. Caps are applied by default — this is the shipping output."""
     if enforce_caps:
         state = state.clone()
         state.enforce_caps()
+    if promote_decisions:
+        promote_decision_summaries(state, lang)
 
     lines = [f"TITLE: {state.title}".rstrip()]
     for section in BULLET_SECTIONS:

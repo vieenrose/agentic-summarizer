@@ -22,7 +22,7 @@ revision reflects pass p13 + in-stream verification (2026-08-14).
 | Model (previous, p10 — G1-verified 3×) | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor.Q4_K_M.gguf` | 688 MB | apache-2.0 |
 | On-device verifier (zh-augmented, recommended) | `Luigi/granite-4.0-350m-verifier` → `granite-4.0-350m-verifier-zh.Q4_K_M.gguf` | ~215 MB | apache-2.0 |
 | On-device verifier (en-primary) | `Luigi/granite-4.0-350m-verifier` → `granite-4.0-350m-verifier.Q4_K_M.gguf` | ~215 MB | apache-2.0 |
-| On-device verifier (legacy LFM base) | `Luigi/lfm2.5-350m-verifier` → `lfm2.5-350m-verifier.Q4_K_M.gguf` | ~215 MB | apache-2.0 (base license restricts commercial use — deprecated) |
+| On-device verifier (legacy LFM base — **deprecated**) | `Luigi/lfm2.5-350m-verifier` → `lfm2.5-350m-verifier.Q4_K_M.gguf` | ~215 MB | **LFM Open License (non-commercial) — NOT for commercial/F-Droid builds; the earlier Apache-2.0 label was an error, corrected on the card 2026-08-14** |
 | Harness | agentic-summarizer repo, `src/voxsum/`, `eval/run_arms.py` | — | repo license |
 
 **Neither model is a general chat model.** The summarizer emits edit ops against a
@@ -297,7 +297,8 @@ movements are not claimable.
 | resident total (in-stream verification) | ≈ 900 MB — within the device's 2.05 GB ceiling |
 | per-step input | ~2.9k tokens (SYS ~250 + STATE ≤600 + CHUNK 2048) |
 | per-step output | ~120–150 tokens (+ ~8 tokens per verifier call, 1 call per substantive op) |
-| calls/meeting | ≈ tokens/2048 chunks + 1 verifier call per DECISIONS/ACTIONS op |
+| calls/meeting | ≈ tokens/2048 chunks + 1 verifier call per DECISIONS/ACTIONS op (on their real meeting: 1 verifier call across 8 chunks — the verifier is idle until the student proposes ops) |
+| verifier latency note | granite is 28 blocks vs the LFM 350M's 16 → +54% wall-clock per verifier call on their measurement; relevant for on-device latency budgeting |
 
 Serving on Android: llama.cpp with the flags in §2 (`--jinja --reasoning off` turns off
 the hybrid `<think>`; older builds need the equivalent chat-template flag).

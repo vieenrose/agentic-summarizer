@@ -189,3 +189,25 @@ stack measures INVERT 2, FAITH 4.43, COVER 2.85, SYNTH 2.35 (vs 1/4.20/2.50/1.95
 with the old verifier) — the two flags are en-side (±1 noise band). For your
 zh-primary product the gr4 stack is the choice; the in-stream-only config remains
 the en-primary balance.
+
+---
+
+## Round 5.2 reply (2026-08-14): licensing corrected; verifier-downstream agreed
+
+1. **Licensing exposure — accepted and fixed.** The lfm2.5-350m-verifier card
+   claiming Apache-2.0 was wrong (the base is LFM2.5-350M under the LFM Open
+   License, non-commercial — a derivative cannot be Apache-2.0). The card and the
+   repo are corrected: license: other / deprecated, pointing to the granite
+   verifier. You were right that the granite switch was necessary, not optional.
+2. **Verifier is downstream of the blocker — agreed.** On your data the verifier
+   fires once per meeting; the zh-verifier gains only manifest once the student
+   proposes DECISIONS/ACTIONS ops. The +54% granite wall-clock (28 vs 16 blocks)
+   is noted in the integration note's envelope section.
+3. **The blocker is unchanged — and its binding constraint is data.** The student's
+   zero-DECISIONS behaviour on the real meeting is trained out only with more real
+   zh meetings; one transcript carries ~3 decision steps, which every G1-safe dose
+   so far has failed to generalise from. On the transcript decision: the meeting
+   is ALREADY in our training set — it was provided to us directly and the p15
+   lineage trained on it (data/transcripts/meeting-zh-long.txt). So from our side
+   nothing further is needed for that one file; what the next pass needs is MORE
+   transcripts like it. If you send more, they go straight into training.

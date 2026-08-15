@@ -1285,3 +1285,23 @@ in TITLE/SUMMARY/ACTIONS/TOPICS), new bracket artifacts ([ SUMMARY ] leaks), and
 the en chain crossed. p16 reverted; **p15d remains the optimum**. The DECISIONS
 extraction needs more real-zh data — the single transcript's 3 decision steps are
 not enough signal at any dose that holds the G1.
+
+## zh verifier training (gr4): the sweep over-drop fixed (2026-08-14)
+
+NEXT_STEPS #1 executed: zh triples (64 judged zh bullets, both evidence forms) +
+12 zh polarity-flips (通過/否決, Q1/Q4, 2027/2028…) ×3, trained on the granite
+verifier (2 epochs, LR 1e-5). Published as
+`granite-4.0-350m-verifier-zh.Q4_K_M.gguf` in the verifier repo.
+
+- en agreement: 96% (held; 97% → 96% within noise), distribution healthy.
+- zh agreement: **92%** on the zh triples (the previously-unmeasured weak spot).
+
+Deployment (p15d + gr4, in-stream + sweep):
+- **zh half (n=10): INVERT 0, FAITH 4.73, COVER 3.80, SYNTH 3.40** — the over-drop
+  is gone (the old verifier's zh-collapsed run measured COVER 2.50/SYNTH 1.95
+  overall; the zh half now clears the baseline by a wide margin).
+- Full n=20: INVERT 2 (4bfcff6d8771, e75802cbf8d3 — en flags, ±1 noise band),
+  FAITH 4.43, COVER 2.85, SYNTH 2.35 — better than the old-granite stack on every
+  quality metric, at +1 inversion vs its 1/20.
+- The best-balance config remains p13 + in-stream-only (0/20, COVER 3.20,
+  SYNTH 2.75) for en-primary; for zh-primary the gr4 stack is now the choice.

@@ -1,0 +1,13 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+- Presentation on the extension of the hand. [43:00]
+DECISIONS:
+- Next meeting to flip into scientific mode. [12:46]
+ACTIONS:
+- Prepare internal demo with XML messages. [12:47]
+- Explore free-to-academic packages for visualization. [23:22]
+- Implement a small enough system to be usable. [50:47]
+OPEN:
+-
+TOPICS:
+-

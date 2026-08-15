@@ -1,0 +1,15 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on remote control components and options. [5:56]
+- Discussion on user interface features and design. [11:21]
+DECISIONS:
+- Include a scroll button and voice recognition? [13:33]
+- Use a curved surface to maximize compatibility with the right hand. [24:37]
+- Use a case made of rubber and outer glass. [38:36]
+ACTIONS:
+-
+OPEN:
+- Whether to include a L_C_D display? [13:27]
+- Availability of case materials is a constraint. [25:00]
+TOPICS:
+-

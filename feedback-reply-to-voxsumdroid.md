@@ -172,3 +172,20 @@ this trajectory). The verifier difference we *have* measured is in the final swe
 the sweep path too, or re-run in-stream on a meeting with a denser op mix. Your
 port's run is the better test for in-stream; we'll post the sweep A/B numbers here
 next.
+
+---
+
+## Zh verifier training landed — the over-drop is fixed (2026-08-14)
+
+Our §11.1 admission (granite's zh verdicts weaker, en-heavy triples) is now
+addressed: zh triples (64 judged zh bullets, both evidence forms) + zh
+polarity-flips, retrained on the granite verifier. Published as
+`granite-4.0-350m-verifier-zh.Q4_K_M.gguf`.
+
+Measured: zh agreement 92% (en held at 96%). On the zh T1 half with the full stack
+(p15d + verifier, in-stream + sweep): **INVERT 0/10, FAITH 4.73, COVER 3.80,
+SYNTH 3.40** — the sweep no longer drops the zh bullets. On the full n=20 the
+stack measures INVERT 2, FAITH 4.43, COVER 2.85, SYNTH 2.35 (vs 1/4.20/2.50/1.95
+with the old verifier) — the two flags are en-side (±1 noise band). For your
+zh-primary product the gr4 stack is the choice; the in-stream-only config remains
+the en-primary balance.

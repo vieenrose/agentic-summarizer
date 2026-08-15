@@ -1,0 +1,11 @@
+TITLE: Kickoff Meeting: Television Remote Control
+SUMMARY:
+- Discussion on remote design and function. [17:23]
+DECISIONS:
+- Target international sales price: 25 Euros [11:10]
+ACTIONS:
+-
+OPEN:
+- Design shape must be useful for connecting to other devices. [17:23]
+TOPICS:
+-

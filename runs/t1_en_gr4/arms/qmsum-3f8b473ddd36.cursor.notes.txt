@@ -1,0 +1,13 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- UI design focusing on speech recognition and features [11:18]
+- Discussion on simple function vs. additional features [34:47]
+DECISIONS:
+- Voice recognition first on market [25:10]
+- Focus on basic functions and minimal features [33:15]
+ACTIONS:
+-
+OPEN:
+- Need to get back to brushed aluminum material [30:09]
+TOPICS:
+- Case material options [3:02]

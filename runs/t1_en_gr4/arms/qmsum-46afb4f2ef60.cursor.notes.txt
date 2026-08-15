@@ -1,0 +1,12 @@
+TITLE: Remote Design Review
+SUMMARY:
+-
+DECISIONS:
+- Move to project evaluation without solar cell [17:43]
+- Celebrate [43:20]
+ACTIONS:
+-
+OPEN:
+- Marketing strategy and budget [7:11]
+TOPICS:
+-

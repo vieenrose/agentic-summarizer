@@ -1,0 +1,13 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on remote control design trends and features. [23:56]
+DECISIONS:
+- Use simple push buttons and speech recognition to reduce cost. [5:02]
+- Focus on simplicity and ease of use over fancy aesthetics. [21:27]
+- Target either fruit-shaped or sponge-like designs. [29:18]
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+-

@@ -1,0 +1,15 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Presentation of design criteria and financial limits [0:23]
+- Evaluation of new design against seven-point scale [8:17]
+DECISIONS:
+- Single curve instead of scrolling [31:24]
+- Two buttons for volume and side navigation [29:38]
+ACTIONS:
+- Marketing to evaluate design against seven-point scale [8:17]
+- Marketing to score layout on five- to seven scale [17:02]
+OPEN:
+- Potential for additional versions based on mirror image [11:33]
+- Color of beeping feature [31:43]
+TOPICS:
+- Budget constraints [25:00]

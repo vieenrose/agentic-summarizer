@@ -1,0 +1,13 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- Discussion on target audience and voice recognition [26:47]
+- User interface concept [41:15]
+DECISIONS:
+- Include voice recognition to target young, hip, and trendy users [31:22]
+ACTIONS:
+-
+OPEN:
+- Identification of remote control components and process [2:26]
+TOPICS:
+-

@@ -118,3 +118,39 @@ Accepted in full. Faithfulness landed; coverage is the new target. Response per 
 4. **Weights:** `minicpm5-1b-cursor-p15d.Q4_K_M.gguf` is on HF (same repo). If you
    send more real zh transcripts, they become training data immediately — that's
    the single most valuable input for the DECISIONS gap.
+
+---
+
+## Round 5.1 reply (2026-08-14): op-level trace accepted — both signals acted on
+
+Your audit log is the sharpest feedback we've received, and your hypothesis retraction
+is the useful outcome: **zero DECISIONS ops proposed across 8 chunks is checkpoint-
+side**, and **~30% of output re-proposing existing STATE is a STATE-reading
+deficiency, not extraction**. We agree with both readings.
+
+1. **STATE utilisation:** we built a capture for exactly this class
+   (`tools/build_state_negatives.py` — the harvest never saw the dedup-guard
+   rejections, only the sweep's drops; this tool reconstructs the negative sample
+   from the step's state+chunk with the corrected target). The first pass (4
+   negatives ×3, p16) raised op density on your meeting (decode 311→432 tokens) but
+   the re-propose loop persisted and the en chain crossed — recorded, reverted to
+   p15d. The class is now a named, captured training signal with a tool; it needs
+   more instances than one meeting provides.
+2. **DECISIONS extraction:** the teacher's trace on your meeting has the decision
+   steps (qualification priority, AVL checks); the doses that teach them cross the
+   en chain (p15e/p16, recorded). The binding constraint is data: one real zh
+   meeting carries ~3 decision steps. **This is where your transcript matters
+   most** — the content leaving your machine is the decision we can't make for
+   you; we will only train on it if you send it. (Note for clarity: our zh
+   training currently contains only clean synthetic zh plus our own ASR-noise
+   augmentations — no third-party real zh.)
+3. **Re-pinning p15d** — agreed on your evidence; our T1 table agrees it's the
+   right choice for your product even where p13 scores better on the synthetic
+   tier.
+4. **Verifier A/B (granite vs lfm2.5 in-stream on your real zh meeting):** agreed
+   it's the right test given our own §11.1 admission (granite's zh verdicts are
+   weaker — the triples are en-heavy). We'll run it on our harness with the same
+   meeting and post the veto-by-veto comparison.
+
+Your port's audit trail is better tooling than our own harness logging — we'd be
+glad to add the same per-op record to our eval output if useful.

@@ -208,18 +208,28 @@ they are where the measured faithfulness comes from.
 
 ## 7. Deployment configuration
 
-**Recommended (fully on-device):** student + in-stream verification (§6.3), no final
-sweep. Measured: INVERT 0/20, FAITH 4.10, COVER 3.20, SYNTH 2.75 (n=20).
+**Architecture (final, 2026-08-14): two specialists.** main = MiniCPM5-1B p15d;
+verifier = granite-4.0-350m (`Luigi/granite-4.0-350m-verifier`, Apache-2.0, 97%
+agreement with gpt-oss-20b). The multi-agent/multi-LoRA alternative was measured and
+abandoned (critic adapters on the 1B base reach 64-85% agreement — the base's
+generation bias resists low-rank correction; PLAN-multiagent.md, superseded).
 
-**Server-side alternative:** student + the final VERIFY/ANCHOR sweep (`--sweep both
---sweep-budget 60`), sweep judge = gpt-oss-20b (or the on-device verifier). The sweep
-runs once after the stream ends, per bullet, loop-free: VERIFY (`KEEP`/`DROP`/`FIX`,
-FIX applied as DROP) + ANCHOR (pick or `NONE` → deterministic matcher).
+**Three configurations, measured (n=20):**
 
-**Model-only (no verifier, no sweep):** raw INVERT 3/20 (15%) on p15d, the current
-main (p13: 2/20) — above the 6.2% on-device bar on its own. This is the honest
-residual: the device needs the verifier gate to reach 0 inversions; the model alone
-does not clear the bar yet.
+1. **In-stream verification only** (`--verify-url`): the verifier gates every
+   DECISIONS/ACTIONS op against its ±90s anchor neighbourhood. Measured on the p13
+   lineage: **INVERT 0/20, FAITH 4.10, COVER 3.20, SYNTH 2.75** — the best COVER/
+   SYNTH balance. Structural caveat: ±90s cannot see reversals that happen later in
+   the meeting — the stale-state class is the timeline guard's / a later pass's job.
+2. **In-stream + final sweep** (`--sweep both --sweep-budget 60`, sweep judge = the
+   same verifier): the sweep re-verifies every bullet against whole-transcript
+   evidence (the reversal clause is enforceable only here). Measured on the p15d:
+   INVERT 1/20, FAITH 4.20 — but **COVER 2.50 / SYNTH 1.95**: the granite sweep
+   judge over-drops on zh (its training triples are en-heavy — the open item #1 in
+   §11). Until zh-verifier training lands, prefer configuration 1; add the sweep
+   where the stale-state class matters more than coverage.
+3. **Model-only** (no verifier): raw 3/20 (15%) on p15d (p13: 2/20) — above the
+   6.2% bar on its own; the verifier gate is what the device needs to reach ~0.
 
 ---
 
@@ -227,12 +237,13 @@ does not clear the bar yet.
 
 | configuration | INVERT | FAITH | COVER | SYNTH |
 |---|---|---|---|---|
-| **p15d (current main), raw** | 3/20 (15%) | 3.80 | 2.95 | 2.40 |
-| p13 (previous main), raw | 2/20 (10%) | 3.94 | **3.20** | **2.75** |
-| p13 + in-stream verification | **0/20** | 4.10 | 3.20 | 2.75 |
-| p13 + final sweep, on-device verifier as judge | 0/20 | 4.54 | 2.95 | 2.50 |
+| p13 + in-stream verification (best balance) | **0/20** | 4.10 | **3.20** | **2.75** |
+| p13 + in-stream + final sweep | 0/20 | 4.54 | 2.95 | 2.50 |
+| p15d + granite in-stream + sweep (current main, full stack) | 1/20 | 4.20 | 2.50 | 1.95 |
+| p15d raw (current main, model-only) | 3/20 (15%) | 3.80 | 2.95 | 2.40 |
+| p13 raw (previous main, model-only) | 2/20 (10%) | 3.94 | 3.20 | 2.75 |
+| p10 raw (previous artifact) | 3/20 (15%) | 3.78 | 2.90 | 2.25 |
 | map-reduce baseline (Qwen3.5-9B) | 3/20 | 3.50 | 3.05 | 2.60 |
-| p10 (previous artifact, raw) | 3/20 (15%) | 3.78 | 2.90 | 2.25 |
 
 G1 capability screen: **PASS en + zh, valid-op 100% / 100%** (pass p15d).
 Verifier agreement with gpt-oss-20b: **97%** (granite-4.0-350m, 200 held-out triples).
@@ -251,9 +262,10 @@ movements are not claimable.
 ## 9. Caveats (ship these with any reported numbers)
 
 - **zh trap checkpoint sensitivity** — the zh trap-drop behavior sits at a decision
-  boundary between adjacent checkpoints: p14/p14b (later passes) fail the zh trap or
-  the en chain. Use the published p13 artifact (checkpoint-302); always re-screen
-  after re-exporting or re-quantizing.
+  boundary between adjacent checkpoints: p14/p14b/p15/p15e (adjacent passes) fail
+  the zh trap or the en chain. The published artifacts are p15d (checkpoint-348,
+  the current main) and p13 (checkpoint-302); always re-screen after re-exporting
+  or re-quantizing.
 - **zh T2 is synthetic; the zh pool is largely monologic** (VCSum-derived) —
   contested-zh is unmeasured.
 - Judge-noise floor ±0.4–0.5 (FAITH/SYNTH); n = 20/tier; sign tests, not magnitude
@@ -287,11 +299,19 @@ the hybrid `<think>`; older builds need the equivalent chat-template flag).
 
 ## 11. What we're still working on
 
-1. The model-only raw rate (2/20 = 10% → ≤ 6.2%): the two remaining flags are the
-   informal-negation class (qmsum-a001c3a20024) and the intention-statement class
-   (qmsum-16abbdf7b3f2). Real-context beat augmentation moved 4→2; the next dose is
-   being tuned without crossing the zh-trap boundary.
-2. COVER/SYNTH are now above baseline (3.20/2.75 vs 3.05/2.60) — the first
-   configuration to clear both; SYNTH ≥ baseline +0.5 (the strict GT3 reading) is
-   within noise but not yet claimed.
-3. T2 tier (≥80k-token transcripts) — needs real audio or concatenation decisions.
+1. **zh verifier training** — the granite verifier's zh verdicts are weaker than en
+   (the triples are en-heavy); this is what makes the sweep over-drop on zh
+   (COVER 2.50 vs 3.20 without it). zh triples + zh polarity-flips are the data.
+2. **DECISIONS on the maintainer's real meeting** — ACTIONS is populated (the
+   coverage pass); DECISIONS is still empty there. The targeted dose crossed the en
+   chain; the fix needs more real zh transcripts — **any real zh meeting you send
+   becomes training data immediately**.
+3. **The stale-state class** — the ±90s in-stream window cannot see later reversals;
+   the timeline-guard extension (or the final sweep) is the fix. Measured at
+   1/20 with in-stream alone on one run.
+4. **The model-only raw rate** (3/20 → ≤ 6.2%): the remaining flags are the
+   intention-statement (16abbdf7b3f2), either/or (8ac3acb7fe5e) and
+   negation/commitment (bdb39cc06654) classes.
+5. **SYNTH** — 2.75 at the best config (tie with the baseline within the ±0.4-0.5
+   noise floor); the strict +0.5 gate is unclaimed.
+6. T2 tier (≥80k-token transcripts) — needs real audio or concatenation decisions.

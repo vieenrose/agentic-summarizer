@@ -1269,3 +1269,19 @@ Findings:
 
 Open items carried into NEXT_STEPS: zh-verifier training (zh triples), the DECISIONS
 emptiness on the real meeting, the stale-state guard extension, SYNTH.
+
+## p16 (STATE-reading negatives + DECISIONS dose on p15d): seesaw again (2026-08-14)
+
+The maintainer's op-level audit sharpened the coverage problem into two training
+signals: (1) zero DECISIONS ops proposed on the real meeting, (2) ~30% of output
+re-proposing STATE bullets already present (weak STATE utilisation — a different
+fix from extraction). Built `tools/build_state_negatives.py` (captures the dedup-
+guard rejections the harvest misses — 4 negatives from the real + noisy meetings),
+trained p16 = p15d + DECISIONS-steps ×2 + state-negatives ×3.
+
+Result: op density UP on the real meeting (decode 311 → 432 tokens), ACTIONS 3 —
+but DECISIONS still zero, the stock-phrase loop returned (the re-proposed phrasing
+in TITLE/SUMMARY/ACTIONS/TOPICS), new bracket artifacts ([ SUMMARY ] leaks), and
+the en chain crossed. p16 reverted; **p15d remains the optimum**. The DECISIONS
+extraction needs more real-zh data — the single transcript's 3 decision steps are
+not enough signal at any dose that holds the G1.

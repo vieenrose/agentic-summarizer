@@ -1,0 +1,14 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+-
+DECISIONS:
+- Voice recognition first on market [25:10]
+- Focus on basic functions and minimal buttons [34:47]
+ACTIONS:
+- Explore cheaper manufacturing options [19:45]
+- Hit the bricks with prototype using available materials [39:50]
+OPEN:
+- Component design limited by available materials [5:40]
+- Feasibility of voice recognition with generic labels [11:09]
+TOPICS:
+- Case material options [3:02]

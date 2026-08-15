@@ -1,0 +1,16 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Presentation of prototype and evaluation against criteria [0:23]
+- Evaluation of new design against seven-point scale [8:17]
+DECISIONS:
+- Use a seven-point scale for all features [11:03]
+- Target three interface types: pushbutton, scroll wheel, and L_C_ display [25:34]
+ACTIONS:
+- Marketing to explain user interface features [2:24]
+- Marketing to evaluate design against seven-point scale [8:17]
+OPEN:
+- Volume limit set up to max 9-0 [4:14]
+- Budget limit is 12.50 [25:12]
+- Final color choice will reduce sound output [31:36]
+TOPICS:
+-

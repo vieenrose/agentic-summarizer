@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-4bfcff6d8771",
   "system": "cursor",
-  "faith_claim": 1.0,
-  "faith_anchor": 1.0,
+  "faith_claim": 2.6470588235294117,
+  "faith_anchor": 1.9411764705882353,
   "cover": 2,
   "synth": 1,
   "inverted": false,
-  "unsupported": 0,
+  "unsupported": 9,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -19,56 +19,70 @@
       "bullet": "Presentation of prototype and evaluation against criteria.",
       "anchor": 23,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "SUMMARY",
       "bullet": "Presentation of evaluation criteria and final score.",
       "anchor": 489,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "SUMMARY",
       "bullet": "Presentation of final design score and point system.",
       "anchor": 1778,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Use a seven-point scale to evaluate the design against requirements.",
       "anchor": 497,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Target score: 6",
       "anchor": 1248,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Target score: 56",
       "anchor": 1331,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Retain only two buttons (up and down) to reduce cost.",
       "anchor": 2078,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
@@ -83,208 +97,260 @@
       "bullet": "Marketing to discuss dual-use features.",
       "anchor": 120,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "ACTIONS",
       "bullet": "Marketing to evaluate the new design against seven-point criteria.",
       "anchor": 497,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "ACTIONS",
       "bullet": "Marketing to explain the one-digit layout.",
       "anchor": 790,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "ACTIONS",
       "bullet": "Project manager to present project summary for next meeting.",
       "anchor": 1939,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Volume limit set up to maximum 9.7.8.9.",
       "anchor": 254,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Potential for additional finance issues and cost reduction.",
       "anchor": 493,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Target overall score: 56",
       "anchor": 1290,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Whether pushbutton counts as 1 or 2 point",
       "anchor": 1524,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",
       "bullet": "User interface design and accessibility.",
       "anchor": 663,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "SUMMARY",
       "bullet": "Presentation of prototype and evaluation against criteria.",
       "anchor": 23,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "SUMMARY",
       "bullet": "Presentation of evaluation criteria and final score.",
       "anchor": 489,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "SUMMARY",
       "bullet": "Presentation of final design score and point system.",
       "anchor": 1778,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Use a seven-point scale to evaluate the design against requirements.",
       "anchor": 497,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Target score: 6",
       "anchor": 1248,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Target score: 56",
       "anchor": 1331,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Retain only two buttons (up and down) to reduce cost.",
       "anchor": 2078,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "No response to \"Did I save this one?\"",
       "anchor": 2472,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
     },
     {
       "section": "ACTIONS",
       "bullet": "Marketing to discuss dual-use features.",
       "anchor": 120,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "ACTIONS",
       "bullet": "Marketing to evaluate the new design against seven-point criteria.",
       "anchor": 497,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "ACTIONS",
       "bullet": "Marketing to explain the one-digit layout.",
       "anchor": 790,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "ACTIONS",
       "bullet": "Project manager to present project summary for next meeting.",
       "anchor": 1939,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Volume limit set up to maximum 9.7.8.9.",
       "anchor": 254,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Potential for additional finance issues and cost reduction.",
       "anchor": 493,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Target overall score: 56",
       "anchor": 1290,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Whether pushbutton counts as 1 or 2 point",
       "anchor": 1524,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
     },
     {
       "section": "TOPICS",
       "bullet": "User interface design and accessibility.",
       "anchor": 663,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     }
   ]
 }

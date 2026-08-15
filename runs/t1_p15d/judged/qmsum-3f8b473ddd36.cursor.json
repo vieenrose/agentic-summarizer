@@ -1,12 +1,12 @@
 {
   "meeting_id": "qmsum-3f8b473ddd36",
   "system": "cursor",
-  "faith_claim": 1.0,
-  "faith_anchor": 1.0,
+  "faith_claim": 3.25,
+  "faith_anchor": 3.25,
   "cover": 2,
   "synth": 1,
   "inverted": false,
-  "unsupported": 0,
+  "unsupported": 5,
   "judges": {
     "faith": "local:8090/gpt-oss-20b",
     "cover": "local:8091/qwen3.6-35b",
@@ -19,88 +19,110 @@
       "bullet": "Remote design review and selection of components",
       "anchor": 287,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "SUMMARY",
       "bullet": "UI design focused on simplicity and versatility",
       "anchor": 790,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Take control case first",
       "anchor": 88,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Target larger form factor than traditional iPod",
       "anchor": 864,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Prototopic touch screen only",
       "anchor": 1195,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Voice recognition will be the only feature",
       "anchor": 1510,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Stick with traditional buttons and minimal features",
       "anchor": 2117,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "ACTIONS",
       "bullet": "Develop prototype soon after",
       "anchor": 1533,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "ACTIONS",
       "bullet": "Hit the bricks with prototype using basic design materials",
       "anchor": 2390,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Component design limited by available materials",
       "anchor": 340,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Ability to block channels for children",
       "anchor": 824,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "OPEN",
@@ -115,160 +137,200 @@
       "bullet": "Selection of between voice recognition and physical remote",
       "anchor": 1534,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",
       "bullet": "Remote design",
       "anchor": 5,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "CONTRADICTED"
+      },
+      "majority": "CONTRADICTED"
     },
     {
       "section": "TOPICS",
       "bullet": "Case material options",
       "anchor": 182,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "TOPICS",
       "bullet": "UI evolution",
       "anchor": 1517,
       "mode": "claim",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "SUMMARY",
       "bullet": "Remote design review and selection of components",
       "anchor": 287,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "SUMMARY",
       "bullet": "UI design focused on simplicity and versatility",
       "anchor": 790,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Take control case first",
       "anchor": 88,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Target larger form factor than traditional iPod",
       "anchor": 864,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Prototopic touch screen only",
       "anchor": 1195,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Voice recognition will be the only feature",
       "anchor": 1510,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "DECISIONS",
       "bullet": "Stick with traditional buttons and minimal features",
       "anchor": 2117,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "ACTIONS",
       "bullet": "Develop prototype soon after",
       "anchor": 1533,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "ACTIONS",
       "bullet": "Hit the bricks with prototype using basic design materials",
       "anchor": 2390,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Component design limited by available materials",
       "anchor": 340,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Ability to block channels for children",
       "anchor": 824,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Determine whether to include voice recognition based on cost",
       "anchor": 1261,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "SUPPORTED"
+      },
+      "majority": "SUPPORTED"
     },
     {
       "section": "OPEN",
       "bullet": "Selection of between voice recognition and physical remote",
       "anchor": 1534,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",
       "bullet": "Remote design",
       "anchor": 5,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",
       "bullet": "Case material options",
       "anchor": 182,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     },
     {
       "section": "TOPICS",
       "bullet": "UI evolution",
       "anchor": 1517,
       "mode": "anchor",
-      "verdicts": {},
-      "majority": "MISSING"
+      "verdicts": {
+        "local:8090/gpt-oss-20b": "UNSUPPORTED"
+      },
+      "majority": "UNSUPPORTED"
     }
   ]
 }

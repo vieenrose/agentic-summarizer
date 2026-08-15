@@ -1,0 +1,11 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on mean subtraction approach and data set performance [6:09]
+DECISIONS:
+-
+ACTIONS:
+- Grad F to finish proposal by Monday [1:39]
+OPEN:
+-
+TOPICS:
+- TORRENT chip project [0:08]

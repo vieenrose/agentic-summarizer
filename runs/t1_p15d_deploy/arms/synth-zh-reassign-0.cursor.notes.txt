@@ -1,0 +1,11 @@
+TITLE: 廠商合約討論
+SUMMARY:
+-
+DECISIONS:
+- 廠商合約改由家豪負責 [2:54:30]
+ACTIONS:
+-
+OPEN:
+- 廠商合約 details [0:00]
+TOPICS:
+- 廠商合約 [0:00]

@@ -1,0 +1,12 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+- Discussion on reference frames and taxonomy of directions [36:20]
+DECISIONS:
+- Leave Japanese constructions outside the scope for now [33:21]
+ACTIONS:
+- Grad E to continue the thesis effort over the next few weeks [57:17]
+- Ami to provide a talk at EML regarding the belief-net structure [56:28]
+OPEN:
+- Direct sensory experience with a long tool [42:00]
+TOPICS:
+- Spatial descriptions [32:25]

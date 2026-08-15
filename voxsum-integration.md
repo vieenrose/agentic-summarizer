@@ -216,9 +216,10 @@ sweep. Measured: INVERT 0/20, FAITH 4.10, COVER 3.20, SYNTH 2.75 (n=20).
 runs once after the stream ends, per bullet, loop-free: VERIFY (`KEEP`/`DROP`/`FIX`,
 FIX applied as DROP) + ANCHOR (pick or `NONE` → deterministic matcher).
 
-**Model-only (no verifier, no sweep):** raw INVERT 2/20 (10%) on p13 — above the 6.2%
-on-device bar on its own. This is the honest residual: the device needs the verifier
-gate to reach 0 inversions; the model alone does not clear the bar yet.
+**Model-only (no verifier, no sweep):** raw INVERT 3/20 (15%) on p15d, the current
+main (p13: 2/20) — above the 6.2% on-device bar on its own. This is the honest
+residual: the device needs the verifier gate to reach 0 inversions; the model alone
+does not clear the bar yet.
 
 ---
 
@@ -226,18 +227,24 @@ gate to reach 0 inversions; the model alone does not clear the bar yet.
 
 | configuration | INVERT | FAITH | COVER | SYNTH |
 |---|---|---|---|---|
-| p13 model-only (raw) | 2/20 (10%) | 3.94 | **3.20** | **2.75** |
-| **p13 + in-stream verification (on-device)** | **0/20** | 4.10 | **3.20** | **2.75** |
+| **p15d (current main), raw** | 3/20 (15%) | 3.80 | 2.95 | 2.40 |
+| p13 (previous main), raw | 2/20 (10%) | 3.94 | **3.20** | **2.75** |
+| p13 + in-stream verification | **0/20** | 4.10 | 3.20 | 2.75 |
 | p13 + final sweep, on-device verifier as judge | 0/20 | 4.54 | 2.95 | 2.50 |
 | map-reduce baseline (Qwen3.5-9B) | 3/20 | 3.50 | 3.05 | 2.60 |
 | p10 (previous artifact, raw) | 3/20 (15%) | 3.78 | 2.90 | 2.25 |
 
-G1 capability screen: **PASS en + zh, valid-op 100% / 100%** (pass p13).
-Verifier agreement with gpt-oss-20b: **96%** on 200 held-out triples.
+G1 capability screen: **PASS en + zh, valid-op 100% / 100%** (pass p15d).
+Verifier agreement with gpt-oss-20b: **97%** (granite-4.0-350m, 200 held-out triples).
+
+**Architecture (locked 2026-08-14):** two specialists — main = MiniCPM5-1B p15d,
+verifier = granite-4.0-350m (Apache-2.0). The multi-agent/multi-LoRA plan was
+measured and abandoned (critic adapters: rank 8 = 64%, rank 32 = 85% agreement —
+the base's generation bias resists low-rank correction).
 
 Raw-rate history (model-only, per pass): p6 2/20 · p10 3/20 · p11-e1 4/20 · p12 4/20 ·
-p13 2/20 — the 2-4/20 band is the judge-noise floor at n=20; single-flag movements
-are not claimable.
+p13 2/20 · p15d 3/20 — the 2-4/20 band is the judge-noise floor at n=20; single-flag
+movements are not claimable.
 
 ---
 

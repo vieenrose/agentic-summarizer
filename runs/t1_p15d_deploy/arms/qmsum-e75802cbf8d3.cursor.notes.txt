@@ -1,0 +1,12 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on remote control design trends and features. [24:38]
+DECISIONS:
+- Use simple push buttons and speech recognition to reduce cost. [5:02]
+- Stay classical with single battery and input type. [32:00]
+ACTIONS:
+-
+OPEN:
+- Selection of battery type (nickel/alkaline) will reduce cost. [6:37]
+TOPICS:
+-

@@ -1,0 +1,14 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- User interface requirements [41:15]
+DECISIONS:
+- Include voice recognition for the 15-35 age group [31:22]
+ACTIONS:
+-
+OPEN:
+- Cost calculation based on component prices [7:50]
+- Implementation of additional functionalities vs简化 user interface [12:51]
+- Voice recognition would be extra but could reduce size [34:17]
+TOPICS:
+- User interface requirements [14:53]

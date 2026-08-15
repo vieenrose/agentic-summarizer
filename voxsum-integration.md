@@ -20,7 +20,9 @@ revision reflects pass p13 + in-stream verification (2026-08-14).
 |---|---|---|---|
 | Model (recommended), Q4_K_M | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor-p13.Q4_K_M.gguf` | ~688 MB | apache-2.0 |
 | Model (previous, p10 — G1-verified 3×) | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor.Q4_K_M.gguf` | 688 MB | apache-2.0 |
-| On-device verifier | `Luigi/lfm2.5-350m-verifier` → `lfm2.5-350m-verifier.Q4_K_M.gguf` | ~215 MB | apache-2.0 |
+| On-device verifier (zh-augmented, recommended) | `Luigi/granite-4.0-350m-verifier` → `granite-4.0-350m-verifier-zh.Q4_K_M.gguf` | ~215 MB | apache-2.0 |
+| On-device verifier (en-primary) | `Luigi/granite-4.0-350m-verifier` → `granite-4.0-350m-verifier.Q4_K_M.gguf` | ~215 MB | apache-2.0 |
+| On-device verifier (legacy LFM base) | `Luigi/lfm2.5-350m-verifier` → `lfm2.5-350m-verifier.Q4_K_M.gguf` | ~215 MB | apache-2.0 (base license restricts commercial use — deprecated) |
 | Harness | agentic-summarizer repo, `src/voxsum/`, `eval/run_arms.py` | — | repo license |
 
 **Neither model is a general chat model.** The summarizer emits edit ops against a
@@ -223,11 +225,13 @@ generation bias resists low-rank correction; PLAN-multiagent.md, superseded).
    the meeting — the stale-state class is the timeline guard's / a later pass's job.
 2. **In-stream + final sweep** (`--sweep both --sweep-budget 60`, sweep judge = the
    same verifier): the sweep re-verifies every bullet against whole-transcript
-   evidence (the reversal clause is enforceable only here). Measured on the p15d:
-   INVERT 1/20, FAITH 4.20 — but **COVER 2.50 / SYNTH 1.95**: the granite sweep
-   judge over-drops on zh (its training triples are en-heavy — the open item #1 in
-   §11). Until zh-verifier training lands, prefer configuration 1; add the sweep
-   where the stale-state class matters more than coverage.
+   evidence (the reversal clause is enforceable only here).
+   - with the **zh-augmented verifier** (`granite-4.0-350m-verifier-zh`, the
+     current recommendation for zh-primary): full n=20 **INVERT 2/20, FAITH 4.43,
+     COVER 2.85, SYNTH 2.35**; on the zh half alone **0/10, COVER 3.80, SYNTH
+     3.40** — the earlier over-drop (the en-only-triples verifier collapsed zh
+     COVER to 2.50) is FIXED.
+   - with the en-primary verifier: INVERT 1/20, FAITH 4.20, COVER 2.50, SYNTH 1.95.
 3. **Model-only** (no verifier): raw 3/20 (15%) on p15d (p13: 2/20) — above the
    6.2% bar on its own; the verifier gate is what the device needs to reach ~0.
 
@@ -239,14 +243,17 @@ generation bias resists low-rank correction; PLAN-multiagent.md, superseded).
 |---|---|---|---|---|
 | p13 + in-stream verification (best balance) | **0/20** | 4.10 | **3.20** | **2.75** |
 | p13 + in-stream + final sweep | 0/20 | 4.54 | 2.95 | 2.50 |
-| p15d + granite in-stream + sweep (current main, full stack) | 1/20 | 4.20 | 2.50 | 1.95 |
+| p15d + gr4 zh-augmented in-stream + sweep (current recommendation, zh-primary) | 2/20 | 4.43 | 2.85 | 2.35 |
+| p15d + gr4 on the zh half only | **0/10** | 4.73 | **3.80** | **3.40** |
+| p15d + granite in-stream + sweep (en-only-triples verifier) | 1/20 | 4.20 | 2.50 | 1.95 |
 | p15d raw (current main, model-only) | 3/20 (15%) | 3.80 | 2.95 | 2.40 |
 | p13 raw (previous main, model-only) | 2/20 (10%) | 3.94 | 3.20 | 2.75 |
 | p10 raw (previous artifact) | 3/20 (15%) | 3.78 | 2.90 | 2.25 |
 | map-reduce baseline (Qwen3.5-9B) | 3/20 | 3.50 | 3.05 | 2.60 |
 
 G1 capability screen: **PASS en + zh, valid-op 100% / 100%** (pass p15d).
-Verifier agreement with gpt-oss-20b: **97%** (granite-4.0-350m, 200 held-out triples).
+Verifier agreement with gpt-oss-20b (200 held-out triples): granite-4.0-350m **97%** (en);
+the zh-augmented variant: en 96% / **zh 92%**.
 
 **Architecture (locked 2026-08-14):** two specialists — main = MiniCPM5-1B p15d,
 verifier = granite-4.0-350m (Apache-2.0). The multi-agent/multi-LoRA plan was
@@ -299,13 +306,17 @@ the hybrid `<think>`; older builds need the equivalent chat-template flag).
 
 ## 11. What we're still working on
 
-1. **zh verifier training** — the granite verifier's zh verdicts are weaker than en
-   (the triples are en-heavy); this is what makes the sweep over-drop on zh
-   (COVER 2.50 vs 3.20 without it). zh triples + zh polarity-flips are the data.
+1. ~~zh verifier training~~ **DONE (2026-08-14):** the zh-augmented verifier
+   (`granite-4.0-350m-verifier-zh`) fixes the sweep over-drop (zh agreement 92%,
+   zh-half COVER 3.80).
 2. **DECISIONS on the maintainer's real meeting** — ACTIONS is populated (the
-   coverage pass); DECISIONS is still empty there. The targeted dose crossed the en
-   chain; the fix needs more real zh transcripts — **any real zh meeting you send
-   becomes training data immediately**.
+   coverage pass); DECISIONS is still empty there. Their op-level audit confirmed
+   the model proposes **zero DECISIONS ops** across 8 chunks (checkpoint-side, not
+   guard-side) and **~30% of output re-proposes STATE bullets already present**
+   (weak STATE utilisation — a capture tool exists: `tools/build_state_negatives.py`;
+   the first pass p16 raised op density but crossed the en chain, reverted). The
+   binding constraint is data: one real zh meeting carries ~3 decision steps —
+   **any real zh meeting you send becomes training data immediately**.
 3. **The stale-state class** — the ±90s in-stream window cannot see later reversals;
    the timeline-guard extension (or the final sweep) is the fix. Measured at
    1/20 with in-stream alone on one run.

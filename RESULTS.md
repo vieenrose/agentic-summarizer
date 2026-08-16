@@ -1318,3 +1318,28 @@ maintainer's real meeting** ("Support R&D for higher price points"). The
 harness-side promotion (`--promote-decisions`, decision-shaped SUMMARY bullets →
 DECISIONS at render) also landed. The zero-DECISIONS class is broken for the
 first time; the raw T1 validation is running.
+
+## Deep-research execution: NOP-poison audit + p19 lineage (2026-08-15)
+
+The ranked-experiment report was executed in order:
+
+1. **Training-target audit (exp. 1) — the data bug FOUND.** The targets are dense
+   on long/noisy meetings (the empty-label hypothesis falsified at the meeting
+   level), BUT four padded zh meetings (reassign-6, reversal-6, deadline-7,
+   withdraw-6) carry **96-98% NOP steps** (~244 steps) — the padding trick's filler
+   chunks taught "long padded zh ⇒ silence". p19 = p17c minus the NOP-poison
+   (NOP share 32% → 18%).
+2. **Sampling fix (finding 4):** the greedy temp-0 serve was contraindicated by both
+   vendor cards (Qwen: "endless repetitions"); the harness client now defaults to
+   the no-think card params (T=0.7, top_p=0.95, top_k=20). The stock-phrase loops
+   disappeared on the real meeting.
+3. **p19b/p19c:** the en chain broke after the NOP removal; three counterweights
+   (en_upd×2, J2_en128 screen-granularity UPDs ×2) did not hold it — the model
+   over-ADDs the approval beside the rejection. Resolved harness-side per the
+   spec's own principle (§6: the harness owns the final word): the deterministic
+   **decision-chain guard** (opposing-polarity bullets on one subject across
+   DECISIONS+SUMMARY → keep the latest), wired as --enforce-chain.
+4. **p19c + guard + promotion + T=0.7:** G1 PASS both languages (en chain PASS with
+   the guard; zh PASS, 86% valid-op) AND the maintainer's real meeting now yields
+   **DECISIONS 2 (genuine: the F20-negotiation and supplier decisions), ACTIONS 4,
+   TOPICS 6** — both of their bars met for the first time on the same checkpoint.

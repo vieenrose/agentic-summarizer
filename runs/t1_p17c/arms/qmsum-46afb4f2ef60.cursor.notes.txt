@@ -1,0 +1,19 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Summary of design meeting outcomes [6:57]
+- Discussion on creativity, collaboration, and process [26:18]
+- Overview of design review process [38:10]
+DECISIONS:
+- Remote will use multiple colors and be edible [3:57]
+- Voice recognition area doubles as solar cell area [12:14]
+- Move to branch out with product and expand voice recognition options later [19:40]
+- Focus on functional simplicity over complex design [38:18]
+- Celebrate [43:20]
+ACTIONS:
+- Industrial Designer to develop remote with voice recognition [6:25]
+- Marketing to discuss de-briefing ideas [32:37]
+OPEN:
+- Marketing strategy and budget concerns [7:11]
+- Comparison of design philosophy across cultural groups [33:48]
+TOPICS:
+-

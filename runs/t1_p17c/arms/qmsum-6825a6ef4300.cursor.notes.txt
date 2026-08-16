@@ -1,0 +1,18 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on using a larger data set to improve audio robustness [6:09]
+- Discussion on using a larger data set for audio robustness [14:48]
+DECISIONS:
+- Use the improved aurora system with back-end acoustic models [19:30]
+- Use clean training data to normalize audio [27:17]
+- Use a combined VAD that considers both energy and spectral information [39:58]
+ACTIONS:
+- Try to put a floor on SNR [43:23]
+OPEN:
+- Whether DC component is negligible in all microphones [20:06]
+- How do we choose between line normalization and VAD in the cepstral domain [52:03]
+TOPICS:
+- TORRENT chip project [0:08]
+- Intermediate feature classification [3:01]
+- Reverb signal enhancement [11:57]
+- Use of SRI vs. Aurora on TI digits [28:18]

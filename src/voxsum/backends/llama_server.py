@@ -58,9 +58,10 @@ class LlamaServer:
     """
 
     base_url: str = "http://127.0.0.1:8080"
-    temperature: float = 1.0
-    top_k: int = 64
-    top_p: float = 0.95
+    temperature: float = 0.7  # MiniCPM5 card, no-think mode (T=0.7, top_p=0.95);
+    top_k: int = 20           # greedy is contraindicated for Qwen-family hybrids
+    top_p: float = 0.95       # ("endless repetitions" warning — measured as the
+                              # stock-phrase loops)
     max_tokens: int = 512
     seed: int | None = 0
     grammar: str | None = None

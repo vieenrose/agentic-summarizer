@@ -26,9 +26,29 @@ from voxsum.prompts import PROMPT_VERSION, system_prompt  # noqa: E402
 NOP_PER_B128_MEETING = 2
 
 
-def build_sample(record: dict) -> dict:
-    """Text grammar, no declarations: system + user + raw target."""
+def _budget_reasoning(text: str, limit: int = 1200) -> str:
+    """Truncate the teacher's reasoning to a brief rationale the student can afford
+    at 4k context. Cut at a sentence boundary near the limit."""
+    text = (text or "").strip()
+    if len(text) <= limit:
+        return text
+    cut = text.rfind("。", 0, limit) if "。" in text[:limit] else text.rfind(".", 0, limit)
+    if cut < limit // 2:
+        cut = limit
+    return text[:cut].rstrip()
+
+
+def build_sample(record: dict, *, with_thinking: bool = False) -> dict:
+    """Text grammar, no declarations: system + user + raw target.
+
+    `with_thinking` prefixes a budgeted <think> rationale (the teacher's captured
+    reasoning) to the completion — the student learns brief reasoning + ops."""
     lang = record.get("lang", "en")
+    completion = record["target"]
+    if with_thinking and record.get("reasoning"):
+        brief = _budget_reasoning(record["reasoning"])
+        if brief:
+            completion = f"<think>{brief}</think>\n{completion}"
     return {
         "meeting": record.get("meeting"),
         "lang": lang,
@@ -36,7 +56,7 @@ def build_sample(record: dict) -> dict:
         "prompt_version": PROMPT_VERSION,
         "system": system_prompt(lang, declarations=False),
         "prompt": record["user"],
-        "completion": record["target"],
+        "completion": completion,
         "is_nop": record.get("is_nop", False),
         "has_revision": any(op in record["target"] for op in ("UPD ", "DEL ")),
         "prompt_tokens": record.get("prompt_tokens"),

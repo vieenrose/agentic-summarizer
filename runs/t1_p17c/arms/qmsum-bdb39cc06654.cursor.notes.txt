@@ -1,0 +1,20 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+-
+DECISIONS:
+- Focus on basic demos until next meeting [14:32]
+- Use design followed by heuristic guessing for initial connection definition [26:47]
+- Leave Japanese constructions outside the scope for now [33:21]
+- Direct sensory feedback via hand extension is a universal human experience [42:00]
+ACTIONS:
+- Explain concepts to Robert, Johno, and Grad E regarding the synthesis module [7:38]
+- Check if we can visualize the belief - net by looking at the code [22:41]
+- Grad B to implement the construction analyzer for the child language modeling [48:56]
+- Grad E to present the "structuration point nine" next week [57:17]
+- Grad B to contact Bhaskara for a reading group on schemas [1:00:22]
+OPEN:
+- Difficulty starting the synthesis module due to code complexity [3:11]
+- Whether building a consistent construction analyzer is expected given the system complexity [48:47]
+- Whether to develop the belief-net separately [57:27]
+TOPICS:
+-

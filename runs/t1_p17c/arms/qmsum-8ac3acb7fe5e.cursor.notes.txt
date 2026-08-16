@@ -1,0 +1,19 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on remote control components and options. [5:57]
+- Discussion on user interface features and design. [11:21]
+DECISIONS:
+- Use a third-party wind-up remote for more affordable options. [3:57]
+- Include a scroll button and voice recognition unit. [13:33]
+- Include voice recognition for basic control. [17:43]
+- Do we need push-buttons on the remote? [30:33]
+- Use a case in rubber and expanded buttons. [38:36]
+ACTIONS:
+- Include voice recognition unit in the product design. [13:33]
+- Design the interface with push-buttons. [30:20]
+OPEN:
+- Whether kinetic energy is suitable for a remote control. [4:50]
+- Availability of cases with flat or curved surfaces. [26:05]
+- Functional remote with L_C_D display. [31:38]
+TOPICS:
+-

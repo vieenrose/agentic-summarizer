@@ -35,14 +35,60 @@ def promote_decision_summaries(state: NotesState, lang: str = "en") -> int:
     return promoted
 
 
+def enforce_decision_chain(state: NotesState) -> int:
+    """Deterministic chain guard: across DECISIONS and SUMMARY, when two bullets
+    share a subject and carry opposite polarities (rejected vs approved), keep the
+    LATEST and drop the older one. The model's measured over-ADD failure leaves the
+    stale rejection beside the approval (in DECISIONS and/or SUMMARY); the harness
+    owns the final word (spec §6) and resolves the timeline. Returns the number
+    dropped."""
+    from voxsum.guards import _polarity
+
+    dropped = 0
+    # one decision timeline: SUMMARY bullets first (older), then DECISIONS
+    entries = [(b, "SUMMARY") for b in state.bullets("SUMMARY")] + \
+              [(b, "DECISIONS") for b in state.bullets("DECISIONS")]
+    for i, (b, sec) in enumerate(entries):
+        pi = _polarity(b.text)
+        if pi not in (1, -1):
+            continue
+        for j in range(i):
+            bj, secj = entries[j]
+            if bj.anchor is not None and b.anchor is not None and bj.anchor >= b.anchor:
+                continue
+            if _polarity(bj.text) == -pi and _subject_overlap(b.text, bj.text):
+                state.delete(secj, _prefix_of(bj.text))
+                dropped += 1
+                entries = [(x, s) for s in ("SUMMARY", "DECISIONS")
+                           for x in state.bullets(s)]
+                break
+    return dropped
+
+
+def _subject_overlap(a: str, b: str) -> bool:
+    """Cheap subject-overlap test for the chain guard: significant token overlap
+    beyond the polarity words themselves."""
+    import re
+    toks_a = {t for t in re.findall(r"[\w\u4e00-\u9fff]+", a.lower()) if len(t) > 1}
+    toks_b = {t for t in re.findall(r"[\w\u4e00-\u9fff]+", b.lower()) if len(t) > 1}
+    inter = toks_a & toks_b
+    return len(inter) >= 2 or (inter and len(inter) >= max(1, min(len(toks_a), len(toks_b)) // 2))
+
+
+def _prefix_of(text: str) -> str:
+    return text[:6]
+
+
 def render_state(state: NotesState, *, enforce_caps: bool = True, lang: str = "en",
-                 promote_decisions: bool = False) -> str:
+                 promote_decisions: bool = False, enforce_chain: bool = False) -> str:
     """Render NOTES v2. Caps are applied by default — this is the shipping output."""
     if enforce_caps:
         state = state.clone()
         state.enforce_caps()
     if promote_decisions:
         promote_decision_summaries(state, lang)
+    if enforce_chain:
+        enforce_decision_chain(state)
 
     lines = [f"TITLE: {state.title}".rstrip()]
     for section in BULLET_SECTIONS:

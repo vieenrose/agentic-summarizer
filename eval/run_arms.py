@@ -73,6 +73,12 @@ def main(argv: list[str] | None = None) -> int:
         "decision-shaped SUMMARY bullets are promoted into DECISIONS at render time.",
     )
     p.add_argument(
+        "--enforce-chain",
+        action="store_true",
+        help="deterministic chain guard: opposing-polarity DECISIONS on the same "
+        "subject keep the latest (the over-ADD failure's harness-side resolution).",
+    )
+    p.add_argument(
         "--verify-url",
         default="",
         help="on-device in-stream verification: an LFM2.5-350m-verifier endpoint. Every "
@@ -244,7 +250,8 @@ def main(argv: list[str] | None = None) -> int:
                 continue
 
             (args.out / f"{path.stem}.{arm}.notes.txt").write_text(
-                render_state(state, lang=args.lang, promote_decisions=args.promote_decisions),
+                render_state(state, lang=args.lang, promote_decisions=args.promote_decisions,
+                             enforce_chain=args.enforce_chain),
                 encoding="utf-8",
             )
             usage.append(

@@ -1,0 +1,21 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- Comparison of available remote control functions [11:24]
+- Discussion on target age group and remote function [35:33]
+- Comparison of available remote functions [35:11]
+DECISIONS:
+- No decision made as the meeting began with no topic discussed [19:43]
+- Target age group for remote control features [28:57]
+- Target age group for voice recognition features [31:22]
+- Target age group for remote features [36:01]
+ACTIONS:
+- Project Manager to act as secretary and send minutes after the meeting [1:03]
+- Marketing to send usability report [17:26]
+OPEN:
+- Identification of remote control components and processes [2:38]
+- Implementation of user interface requirements [13:57]
+- Remote control design requirements unresolved [20:30]
+- Voice recognition capabilities limited by remote design [33:46]
+TOPICS:
+- Functional requirements [17:08]

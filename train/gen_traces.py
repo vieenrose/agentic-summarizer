@@ -170,6 +170,9 @@ def build_parser() -> argparse.ArgumentParser:
         "PLAN.md §2c — extra compute on the same input; only op lines are kept.",
     )
     p.add_argument("--max-tokens", type=int, default=6144, help="output budget per step")
+    p.add_argument("--temperature", type=float, default=0.5)
+    p.add_argument("--top-k", type=int, default=40)
+    p.add_argument("--top-p", type=float, default=0.9)
     p.add_argument(
         "--keep-nop",
         action="store_true",
@@ -203,6 +206,9 @@ def main(argv: list[str] | None = None) -> int:
             grammar=OP_GRAMMAR if args.grammar else None,
             thinking=not args.no_thinking,
             max_tokens=args.max_tokens,
+            temperature=args.temperature,
+            top_k=args.top_k,
+            top_p=args.top_p,
         )
         for url in urls
     ]
@@ -306,6 +312,7 @@ def main(argv: list[str] | None = None) -> int:
                             "chunk_end": step.chunk.end,
                             "content_rich": step.chunk.is_content_rich(),
                             "vetoed": [{"op": o, "reason": r} for o, r in step.vetoed],
+                            "reasoning": step.reasoning,
                         },
                         ensure_ascii=False,
                     )

@@ -182,6 +182,7 @@ def screen_model(
     budget: int = 128,
     repeat_filler: int = 1,
     highlight: bool = False,
+    enforce_chain: bool = False,
 ) -> list[tuple[ScreenResult, Trace, NotesState]]:
     """Run the screen set through `model`. Returns (result, trace, final state) per meeting."""
     out = []
@@ -196,6 +197,9 @@ def screen_model(
             budget=budget,
             highlight=highlight,
         )
+        if enforce_chain:
+            from voxsum.render import enforce_decision_chain
+            enforce_decision_chain(trace.state)
         out.append((score_meeting(trace, meeting), trace, trace.state))
     return out
 
@@ -220,6 +224,7 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--repeat-filler", type=int, default=1)
     p.add_argument("--max-tokens", type=int, default=512, help="output budget per step")
     p.add_argument("--highlight", action="store_true", help="A2: mark commitment lines")
+    p.add_argument("--enforce-chain", action="store_true", help="chain guard at score time")
     p.add_argument(
         "--thinking",
         action="store_true",
@@ -255,6 +260,7 @@ def main(argv: list[str] | None = None) -> int:
         budget=args.budget,
         repeat_filler=args.repeat_filler,
         highlight=args.highlight,
+        enforce_chain=args.enforce_chain,
     )
 
     for result, _, state in results:

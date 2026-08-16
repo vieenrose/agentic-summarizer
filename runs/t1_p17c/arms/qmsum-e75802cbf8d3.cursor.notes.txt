@@ -1,0 +1,18 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on remote control components and interface. [4:23]
+DECISIONS:
+- Use simple push buttons and speech recognition to reduce cost. [5:02]
+- Do not use the millennium remote control. [10:18]
+ACTIONS:
+- Industrial Designer to research available LCD screens in metal, plastic, and aluminum. [11:02]
+- Research LCD screens in metal, plastic, and aluminum. [16:43]
+- Project Manager to research functionable buttons in remote control. [24:16]
+- Explore between titanium panels and spongy panels. [27:30]
+OPEN:
+- Selection of battery type (nickel/alkaline) will determine long-term cost. [6:37]
+- User interface design requires specifying which buttons are functionable. [9:22]
+- Design of battery type (nickel/alkaline) affects long-term cost. [23:28]
+- Location and fancy features are important. [28:14]
+TOPICS:
+- User interface design. [12:19]

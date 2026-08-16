@@ -1,0 +1,17 @@
+TITLE: 产品供应现状
+SUMMARY:
+- 討論貨源廣度與價格要求 [13:49]
+- 討論低 power 要求與行業趋势 [28:23]
+- 分析當前供應器limitation與競爭環境 [43:37]
+- 討論支持哪些晶團定出口 [58:50]
+DECISIONS:
+- Support RKNlogic for D4DDR16G [24:39]
+- Support LCD for D4DDR4G [24:39]
+- 不提供 905 规格以結合 AQL due to limited domestic market presence [34:19]
+ACTIONS:
+-
+OPEN:
+- 未来三年半导体需求变化。 [7:04]
+TOPICS:
+- 供应现状 [9:29]
+- RKNlogic [27:39]

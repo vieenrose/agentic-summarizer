@@ -172,10 +172,13 @@ def parse_ops(text: str) -> list[Op]:
     """Parse a step's raw model output into ops. Never raises.
 
     Both wire formats may appear in one response; ops are returned in emission order.
-    Bare bullet lines are consumed by a preceding CMP.
+    Bare bullet lines are consumed by a preceding CMP. A leading <think> block (the
+    student's reasoning when thinking is enabled) is stripped before parsing.
     """
     if not text:
         return []
+    text = re.sub(r"<think>.*?</think>\s*", "", text, flags=re.S)
+    text = re.sub(r"^.*?</think>\s*", "", text, flags=re.S)  # unclosed/leading think
 
     # Function calls first — their bodies may span lines and must not be line-parsed.
     calls = list(_CALL_RE.finditer(text))

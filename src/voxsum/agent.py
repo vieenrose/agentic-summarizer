@@ -89,6 +89,8 @@ class Step:
     chunk: Chunk
     #: (rendered op, reason) for ops the filter vetoed before they reached STATE.
     vetoed: tuple[tuple[str, str], ...] = ()
+    #: the model's reasoning (thinking) text for this step, if it emitted any.
+    reasoning: str = ""
 
     @property
     def is_nop(self) -> bool:
@@ -194,6 +196,7 @@ def run_cursor(
         rendered_state = build_step_prompt(trace.state, Chunk(chunk.index, ()))
         started = time.monotonic()
         raw = model(sys, state_before)
+        step_reasoning = getattr(model, "last_reasoning", "") or ""
         elapsed = time.monotonic() - started
         trace.usage.record(prompt_tokens, token_len(raw))
         ops = parse_ops(raw)
@@ -225,6 +228,7 @@ def run_cursor(
             state_before=rendered_state,
             chunk=chunk,
             vetoed=tuple(vetoed),
+            reasoning=step_reasoning,
         )
         trace.steps.append(step)
 

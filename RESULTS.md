@@ -1421,3 +1421,19 @@ conversion.
 - The Apodex-1.0-2B-SFT (same base, agentic post-training) measured NEGATIVE as the
   base: zero parseable ops zero-shot — its agentic format ≠ the CURSOR grammar.
 - The real-meeting coverage + the raw T1 generalization numbers are running.
+
+## Round 6 (the uncontaminated podcast eval) — our probe + the language guard (2026-08-16)
+
+The author's n=3 real-podcast eval: protocol/guards held (13/13 anchors, 0
+inversions); failures all model-output. #1 finding: the loanword language flip
+(22.3% Latin zh transcript → English notes + invented content).
+
+Our side the same day:
+- `tools/probe_language_flip.py` (their suggested experiment): p15d's Han output
+  decays 95%→52-73% as Latin rises 17→21% (train-set meeting — underestimates); the
+  qwen3.5-2b holds better (74-86%).
+- `enforce_output_language` guard shipped (render-time, deterministic; `--enforce-lang`).
+- Qwen3.5-2B raw T1: INVERT 2, FAITH 3.93 / COVER 3.15 / SYNTH 2.60 — beats p15d on
+  every axis, matches p13 with richer notes. G1 PASS both, valid-op 100%.
+- The zh-loanword training round (Latin-injected augmentation, Chinese targets)
+  queued; the Cerebras episode is the held-out test case (transcripts requested).

@@ -1,0 +1,19 @@
+TITLE: SmartKom Project Update
+SUMMARY:
+- Discussion on German-to-English text-to-speech system and its limitations. [7:54]
+DECISIONS:
+-
+ACTIONS:
+- Keith to review system architecture. [6:53]
+- Professor C to develop a basic version of SmartKom for the Fall. [10:24]
+- Grad E to create an internal demo system. [13:08]
+- Johno to develop the parser and analyzer. [46:27]
+- PhD A to visit German AI center in Heidelberg or Switzerland. [55:19]
+- Professor C to contact Ellen about image schemas. [1:00:18]
+OPEN:
+- How does the knowledge base generate syntactic structures? [7:25]
+- Whether to develop a full version of SmartKom beyond the current demo. [10:45]
+- Whether to use an ontology API or standardize on a specific ontology. [46:27]
+TOPICS:
+- SmartKom system and its limitations. [7:54]
+- Expanding SmartKom to include formalism and system components. [46:27]

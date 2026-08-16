@@ -1,0 +1,25 @@
+TITLE: Remote Control Concept Review
+SUMMARY:
+- Discussion on remote control components, materials, and user interface. [5:09]
+- Discussion on user interface options and definitions. [10:49]
+- Marketing presented market trends and user expectations for the near future. [17:59]
+- Discussion on remote control design features and power sources. [24:45]
+DECISIONS:
+- Consider kinetic energy and solar cell options. [4:16]
+- Include voice recognition and 80 voice samples. [13:27]
+- Include voice recognition and L_C_D_s plus spinning. [16:33]
+- Use L_C_D_s for style and right-hand use. [22:15]
+- Double curved surface or one end flat for reach. [24:45]
+ACTIONS:
+- Marketing to research market trends. [17:59]
+- Industrial Designer to research interface options. [30:05]
+- UI Designer to define button layout. [32:27]
+- UI Designer to work on user interface design. [42:18]
+- Marketing to work on product evaluation. [42:18]
+- Industrial Designer to develop the look and feel design. [42:18]
+OPEN:
+- Cost of additional components. [28:08]
+- Cost of advanced integrated circuits. [40:23]
+TOPICS:
+- Remote control components [1:59]
+- User interface design [30:33]

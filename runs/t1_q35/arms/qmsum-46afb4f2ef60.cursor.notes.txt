@@ -1,0 +1,23 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Review of the remote prototype design and marketing strategy [6:57]
+- Discussion on remote design, materials, and finance [13:13]
+- Evaluation of the remote design against initial criteria [18:03]
+- Celebration meeting to discuss internet ubiquity [43:56]
+DECISIONS:
+- Avoid touch screens in favor of large buttons [2:36]
+- Use multiple colors for the visible light feature [3:07]
+- Voice recognition doubles as solar cell and speaker [12:14]
+- User interface will be the main selling point [15:54]
+- Celebrate the meeting [43:21]
+ACTIONS:
+- Sarah to take over project evaluation [17:43]
+- Project Manager to report on project process [20:53]
+- Project Manager to debrief on new ideas [32:28]
+- Project Manager to finalize report [40:01]
+OPEN:
+- Effectiveness of the coaching process [23:22]
+TOPICS:
+- Remote design and materials [8:39]
+- Project management [27:45]
+- Project evaluation [39:21]

@@ -1,0 +1,23 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussed functional components and identified user interface requirements. [14:53]
+- Discussed user interface requirements and identified basic buttons for the remote control. [14:53]
+DECISIONS:
+- Target group and functions of the remote control to be decided by the end of the meeting. [1:47]
+- Exclude video and D_V_D_ functionalities to keep the remote control simple and user-friendly. [15:50]
+- Avoid adding unnecessary functionalities to the design. [12:51]
+ACTIONS:
+- Marketing to present usability survey graph to team. [19:26]
+- Present usability survey graph to team. [27:01]
+- Target audience to be decided by end of meeting. [25:27]
+- Industrial Designer to present voice recognition features. [37:42]
+- UI Designer to find out what components concept entails. [41:12]
+OPEN:
+- Implications for technical specs and features. [31:24]
+- Next meeting time and location. [41:59]
+TOPICS:
+- Functional design of the remote control [2:56]
+- User interface requirements [14:53]
+- Usability survey and graph [19:26]
+- Target audience [27:55]
+- Voice recognition and beeper button [37:32]

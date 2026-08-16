@@ -1,0 +1,16 @@
+TITLE: TORRENT Chip Project Update
+SUMMARY:
+- Discussion on signal-to-noise ratio and system error rates [18:53]
+DECISIONS:
+-
+ACTIONS:
+- Grad F to present proposal draft by Monday [1:39]
+- Measure RT in the room [11:57]
+- Grad F to review DC offset compensation in meeting digits [20:05]
+- PhD G to fix Wiener filter bugs and improve VAD noise estimation [43:41]
+- PhD D to evaluate VTS in cepstral domain [50:39]
+- PhD D to develop a noise estimation method for VTS [54:26]
+OPEN:
+- Performance on near-mike data will worsen with current approach [5:46]
+TOPICS:
+- SRI system performance on different data [28:39]

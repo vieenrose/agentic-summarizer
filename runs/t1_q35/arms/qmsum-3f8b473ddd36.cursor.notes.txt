@@ -1,0 +1,25 @@
+TITLE: Remote Control Conceptual Design
+SUMMARY:
+- Discussion on remote control components and design constraints. [6:08]
+- Marketing presented trends in remote control design and interface concepts. [11:36]
+DECISIONS:
+- Target case thickness: 3-4mm [3:21]
+- Prefer solar battery over lithium [6:08]
+- Use visible light signaling feature [4:53]
+- Stick with current design direction and rubber casing option. [11:03]
+ACTIONS:
+- Marketing to research casing trends [7:29]
+- UI designer to develop user interface concepts. [11:36]
+- Marketing to research cheaper manufacturing options [19:45]
+- Prototype development to discuss materials and design. [25:35]
+- Project Manager to provide cost information for prototype. [32:17]
+OPEN:
+- Feasibility of duck tape casing vs. rubber. [11:25]
+- Cost of touch screen technology vs. other features [17:57]
+- Cost of updated design vs. traditional remote. [32:19]
+TOPICS:
+- Remote control design trends [7:48]
+- Voice command system [15:59]
+- Case materials [25:40]
+- Design evolution [27:16]
+- Case colors [38:01]

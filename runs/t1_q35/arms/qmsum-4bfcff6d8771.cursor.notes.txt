@@ -1,0 +1,27 @@
+TITLE: Final Design Meeting
+SUMMARY:
+- Presentation of the vegetable-themed remote control design and voice control feature [19:17]
+- Evaluation of the remote control design, including voice control [19:27]
+- Discussion on left-handed user experience and locator feature [15:51]
+- Discussion on time pressure and efficiency during design process [39:27]
+DECISIONS:
+- Remote control to be made in rubber [2:51]
+- Score all features on a 1-7 scale [9:14]
+- Target a 7-point score for all features [10:17]
+- Voice control to be included [19:23]
+- Finalize project documents with scores [39:04]
+ACTIONS:
+- Ma Maarika to explain the user interface [2:24]
+- Prepare the evaluation criteria list and investigate left-handed user experience [17:38]
+- Calculate production costs using the Excel spreadsheet [22:32]
+- Create a cost sheet at the beginning of the design process [33:40]
+- Project Manager to finalize project documents [39:04]
+- Complete final questionnaire and meeting summary [40:52]
+OPEN:
+- Volume and mute button features [5:41]
+- Budget constraints may cause minor finance issues [7:55]
+- Cost increase to point three over [29:18]
+- Cost of additional features may be high [33:18]
+TOPICS:
+- Remote control design [7:34]
+- Final design decisions [32:19]

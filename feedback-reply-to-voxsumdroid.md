@@ -356,3 +356,61 @@ fabrication.
 
 On (3), the cross-check: ai-workstation is on our tailnet — we can run the strong
 judge there when a held-out meeting exists, as the disagreement-check only.
+
+---
+
+## Round 6 reply (2026-08-16): the loanword flip confirmed on our side; language guard shipped
+
+**The offer: yes to all of it.** Send the full set — audio URLs, ASR transcripts, and
+the resulting notes — with the Cerebras episode first (it is the compact reproducible
+case). And yes, re-run the two dropped episodes with the longer cap: n=5 is worth the
+hours, and it also exercises the >30-minute path your users will actually hit.
+
+**We ran your suggested probe immediately** (`tools/probe_language_flip.py` — English
+technical-term substitution into a zh transcript, measuring output language):
+
+- The flip reproduces **in direction** on our side: p15d's Han fraction decays from
+  ~95% to ~52-73% as the Latin fraction rises 17→21% — it degrades into mixed-language
+  bullets rather than hard-flipping on this input.
+- The honest caveat cuts our way, not yours: our only long real zh meeting **is in the
+  training set**, so our probe *underestimates* the flip. Your podcasts are the clean
+  measurement. That is exactly why we want the transcripts.
+- Our newer 2B checkpoint holds zh better under the same probe (74-86% Han) — the
+  capacity helps, but it is not a fix, and we will not claim it as one.
+
+**What we shipped today** in response:
+
+1. `enforce_output_language` — a deterministic render guard (zh runs drop bullets
+   under 50% Han; English loanwords inside zh bullets survive; en runs untouched;
+   `--enforce-lang` in the harness, recommend ON in the Kotlin port). Your point 3 —
+   leaving the language coincides with leaving the content — is why we treat a flipped
+   bullet as *worse than no bullet*: it is dropped, not kept. Thin-but-true beats
+   confident fabrication; that is your own framing and we adopt it.
+2. The fix path is agreed and trainable: **zh traces with heavy English terminology
+   and Chinese targets** (extend our ASR-noise augmentation with Latin injection; the
+   teacher regenerates Chinese targets on the augmented transcripts). Your Cerebras
+   episode becomes the held-out test case for that round.
+
+**On your other findings:**
+
+- **Empty SUMMARY (your point 2):** the asymmetric-sections pattern is real on our
+  side too. We will add the same style of deterministic backstop we use for DECISIONS:
+  if SUMMARY is empty at render, promote from TOPICS/earliest content bullets. An
+  empty primary card is the most visible failure; it should be structurally
+  impossible, not merely unlikely.
+- **Malformed ops 3/10 (point 4):** log-and-drop is working as designed, but 30% is
+  six times our <5% budget. Same fix family: noisier real-ASR-shaped chunks in the
+  next training round. Your transcripts will let us train on the actual failure
+  distribution instead of our simulation of it.
+- **ASR variant selection (point 5):** agreed it is not our defect, but the
+  render-time fix is deterministic and cheap: when two variants of a term co-occur in
+  the transcript, prefer the majority form in the notes (variant voting at render).
+  Queued behind the language work.
+
+**Bonus, since it bears on your quality expectations:** our 2B-tier fine-tune
+(Qwen3.5-2B, clean mix) just passed G1 in both languages at 100% valid-op, and its
+raw T1 reads FAITH 3.93 / COVER 3.15 / SYNTH 2.60 / INVERT 2 — the best coverage of
+any checkpoint we have, at 2B size. If the loanword round lands on the 2B as well, it
+is plausibly your higher-quality tier.
+
+Save the file and re-run the dropped episodes — we will take the set from there.

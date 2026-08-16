@@ -73,6 +73,9 @@ def main(argv: list[str] | None = None) -> int:
         "decision-shaped SUMMARY bullets are promoted into DECISIONS at render time.",
     )
     p.add_argument(
+        "--enforce-lang",
+        action="store_true",
+        help="drop zh-run bullets written in English (the round-6 loanword-flip guard).",
         "--enforce-chain",
         action="store_true",
         help="deterministic chain guard: opposing-polarity DECISIONS on the same "
@@ -260,7 +263,7 @@ def main(argv: list[str] | None = None) -> int:
                     )
             (args.out / f"{path.stem}.{arm}.notes.txt").write_text(
                 render_state(state, lang=args.lang, promote_decisions=args.promote_decisions,
-                             enforce_chain=args.enforce_chain,
+                             enforce_chain=args.enforce_chain, enforce_lang=args.enforce_lang,
                              evidence_lookup=evidence_lookup),
                 encoding="utf-8",
             )

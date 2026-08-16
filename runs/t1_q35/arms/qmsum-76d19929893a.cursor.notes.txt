@@ -1,0 +1,23 @@
+TITLE: Kick-off Meeting
+SUMMARY:
+- Discussed design stages and tools for the new television remote control project. [1:03]
+- Discussed design stages, tools, and the process of creating a new remote control. [9:37]
+- Discussed adding a button to switch between different remote systems. [20:39]
+DECISIONS:
+- Save the current document and start a new blank one. [8:37]
+- Choose a new color and pen width for the drawing. [9:47]
+- Include a button to switch between different remote systems. [20:39]
+ACTIONS:
+- Industrial Designer to draw the animal on the Smartboard. [6:28]
+- UI Designer to save the current document and start a new blank one. [8:41]
+- Project Manager to take notes on design goals. [13:30]
+- Industrial Designer to suggest a shape that fits the hand. [18:27]
+- Industrial Designer to note how the remote works. [23:45]
+- UI Designer to investigate technical design and form of the remote. [27:10]
+OPEN:
+- Efficient use of Smartboard features. [3:21]
+TOPICS:
+- Remote control design process. [9:37]
+- Universal remote design. [12:21]
+- Materials and markets. [22:03]
+- User interface design. [27:10]

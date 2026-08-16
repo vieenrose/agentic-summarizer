@@ -1,0 +1,25 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussed component concepts and user interface options [1:36]
+- Discussed interface concepts and remote control features [8:44]
+- Discussed remote control features and integration options [16:01]
+- Marketing shared three key aspects of remote control trends [21:27]
+- Discussed shape and material options for remote control [30:57]
+DECISIONS:
+- Use push buttons instead of LCD displays [5:24]
+- Remote control should be a signature item [14:01]
+- Remote control should be able to identify the user [17:19]
+- Explore two shape options (titanium or spongy) [30:20]
+- Use two batteries instead of solar [31:59]
+ACTIONS:
+- Industrial Designer to provide trend watching on design [0:34]
+- User Interface to develop concept and user manual [8:51]
+- UI designer to develop concept and user manual [25:43]
+- UI designer to provide trend watching on design [27:28]
+- UI designer to design the new remote control prototype [26:47]
+- Industrial Designer to explore shape and material options [30:57]
+OPEN:
+- Cost of speech recognition technology [5:50]
+- Confidence in creating fruit/vegetable trends [27:55]
+TOPICS:
+- Remote control design and trends [21:27]

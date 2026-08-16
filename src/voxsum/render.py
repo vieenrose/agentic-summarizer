@@ -118,6 +118,7 @@ def _subject_overlap(a: str, b: str) -> bool:
 
 def render_state(state: NotesState, *, enforce_caps: bool = True, lang: str = "en",
                  promote_decisions: bool = False, enforce_chain: bool = False,
+                 enforce_lang: bool = False,
                  evidence_lookup: callable | None = None) -> str:
     """Render NOTES v2. Caps are applied by default — this is the shipping output."""
     if enforce_caps:
@@ -127,6 +128,8 @@ def render_state(state: NotesState, *, enforce_caps: bool = True, lang: str = "e
         promote_decision_summaries(state, lang, evidence_lookup=evidence_lookup)
     if enforce_chain:
         enforce_decision_chain(state)
+    if enforce_lang:
+        enforce_output_language(state, lang)
 
     lines = [f"TITLE: {state.title}".rstrip()]
     for section in BULLET_SECTIONS:
@@ -142,3 +145,33 @@ def render_for_prompt(state: NotesState) -> str:
     Identical format to the product output, so the model only ever learns one shape.
     """
     return render_state(state, enforce_caps=True)
+
+
+_HAN_RE = __import__("re").compile(r"[\u4e00-\u9fff]")
+_LATIN_RE = __import__("re").compile(r"[A-Za-z]")
+
+
+def enforce_output_language(state, lang: str) -> int:
+    """Round-6 guard: a zh run must produce zh bullets.
+
+    The loanword flip (VoxSum round 6): a zh transcript with heavy English
+    technical vocabulary can push the model into English bullets — and when it
+    leaves the source language it also leaves the source content (their Cerebras
+    episode: invented content, anchors resolving to unrelated lines). A bullet
+    whose Han fraction is under 50% in a zh run is dropped and logged; English
+    loanwords inside a zh bullet (DDR4, wafer) survive the 50% threshold.
+    Returns the number of bullets dropped.
+    """
+    if not lang.startswith("zh"):
+        return 0
+    dropped = 0
+    for section in BULLET_SECTIONS:
+        for b in list(state.bullets(section)):
+            body = b.text.split("[")[0]
+            han = len(_HAN_RE.findall(body))
+            latin = len(_LATIN_RE.findall(body))
+            if han + latin >= 4 and han / (han + latin) < 0.5:
+                if not state.delete(section, b.text[:24]) and not state.delete(section, b.text):
+                    continue
+                dropped += 1
+    return dropped

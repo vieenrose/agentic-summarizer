@@ -210,7 +210,11 @@ they are where the measured faithfulness comes from.
 
 ## 7. Deployment configuration
 
-**Architecture (final, 2026-08-14): two specialists.** main = MiniCPM5-1B p15d;
+**Architecture (final, 2026-08-15): two specialists.** main = MiniCPM5-1B **p19c**
+(`minicpm5-1b-cursor-p19c.Q4_K_M.gguf` — the NOP-poison audit + T=0.7 sampling +
+the decision-chain guard); the thinking-enabled p18-think line was measured and
+closed as net-negative at our data scale (round-5.3). The earlier p15d;
+
 verifier = granite-4.0-350m (`Luigi/granite-4.0-350m-verifier`, Apache-2.0, 97%
 agreement with gpt-oss-20b). The multi-agent/multi-LoRA alternative was measured and
 abandoned (critic adapters on the 1B base reach 64-85% agreement — the base's
@@ -255,7 +259,8 @@ G1 capability screen: **PASS en + zh, valid-op 100% / 100%** (pass p15d).
 Verifier agreement with gpt-oss-20b (200 held-out triples): granite-4.0-350m **97%** (en);
 the zh-augmented variant: en 96% / **zh 92%**.
 
-**Architecture (locked 2026-08-14):** two specialists — main = MiniCPM5-1B p15d,
+**Architecture (locked 2026-08-15):** two specialists — main = MiniCPM5-1B **p19c**
+(the final artifact; p15d superseded),
 verifier = granite-4.0-350m (Apache-2.0). The multi-agent/multi-LoRA plan was
 measured and abandoned (critic adapters: rank 8 = 64%, rank 32 = 85% agreement —
 the base's generation bias resists low-rank correction).

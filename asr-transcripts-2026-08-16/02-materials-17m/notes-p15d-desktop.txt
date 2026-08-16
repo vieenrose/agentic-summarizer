@@ -1,0 +1,33 @@
+TITLE: 臺灣材料分析科技
+[op] c1 [ok] ADD TOPICS - 臺灣半導體進一步製成
+[op] c1 [ok] ADD OPEN - 表面分析與化學分析的必要性
+[op] c1 [ok] ADD OPEN - 可靠度測試的價格與具體操作
+[cursor]   step 2/4
+[op] c2 [dropped: in-stream verifier: UNSUPPORTED] ADD ACTIONS - 定期更新分析硬件以适应新接口要求 [7:40]
+[op] c2 [ok] ADD TOPICS - 微细结构分析 [7:13]
+[cursor]   step 3/4
+[op] c3 [ok] ADD ACTIONS - 服務全球客戶並規劃國際辦公室 [14:08]
+[op] c3 [ok] ADD TOPICS - 創業訓練與人才管理 [11:40]
+[cursor]   step 4/4
+[op] c4 [ok] NOP
+[cursor] === DONE in 116s === stats=Stats(chunks=4, opsEmitted=9, opsApplied=8, vetoed=1, malformed=0, nopCollapses=0)
+TITLE: 臺灣材料分析科技
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- 服務全球客戶並規劃國際辦公室 [14:08]
+OPEN:
+- 表面分析與化學分析的必要性 [3:51]
+- 可靠度測試的價格與具體操作 [3:15]
+TOPICS:
+- 臺灣半導體進一步製成 [0:33]
+- 微细结构分析 [7:13]
+- 創業訓練與人才管理 [11:40]
+
+[cursor] parsed=true
+[cursor] anchors=6 resolving=6 bogus=[]
+[cursor] span=815s of 1025s
+[cursor] sections: summary=0 decisions=0 actions=1 open=2 topics=3
+[cursor] INVERSION polarity-bearing bullets=0: inverted=0 consistent=0 unverifiable=0

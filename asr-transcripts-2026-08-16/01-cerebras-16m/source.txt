@@ -1,0 +1,5 @@
+series:   科技浪 Tech.wav
+episode:  【試聽】XEP27 - Cerebras 深度分析：高速推論市場、競爭壁壘與成長空間
+duration: 16m15s
+audio:    https://m.cdn.firstory.me/track/cm3o5681s06e801v3fxpjehwb/cmrnksru20u4101w4el931xxz/https%3A%2F%2Ffile.cdn.firstory.me%2FRecord%2Fcm3o5681s06e801v3fxpjehwb%2Fcmrnksru20u4201w459nca1if.mp3?v=1784210416139
+note:     THE FLIP CASE — 22.3% Latin, both checkpoints answer in English

@@ -1437,3 +1437,25 @@ Our side the same day:
   every axis, matches p13 with richer notes. G1 PASS both, valid-op 100%.
 - The zh-loanword training round (Latin-injected augmentation, Chinese targets)
   queued; the Cerebras episode is the held-out test case (transcripts requested).
+
+## Real-ASR eval tier — first genuinely-unseen numbers (2026-08-16)
+
+The author's three podcasts (Cerebras/materials/tsmc), byte-exact parser round-trip,
+0 format violations, both checkpoints' notes included. Reproduced on OUR harness:
+
+| episode | Latin% | valid-op | anchors | FAITH | COVER | SYNTH | UNSUPPORTED |
+|---|---|---|---|---|---|---|---|
+| cerebras (flip) | 23.2 | 0.62 | 0.75 | — (guard-emptied) | 1 | 1 | — |
+| materials | 5.7 | 1.00 | 1.00 | 2.6 | 2 | 2 | 2 |
+| tsmc (garble) | 8.3 | 0.86 | 0.80 | 2.6 | 2 | 1 | 3 |
+
+vs clean T1 (p15d): FAITH 3.80 / COVER 2.95 / SYNTH 2.40. **The gap, measured: FAITH
+−1.2, COVER −1.0, SYNTH −1.3** on unseen input. Key corroborations:
+- The flip reproduced; our `enforce-lang` guard dropped the English bullets → empty
+  notes (thin-but-true vs fabrication — COVER 1 is the honest price, and the fix is
+  training the flip away, not guarding harder).
+- valid-op on real ASR = 0.62-1.00 (vs 100% clean) — the ship gate fails exactly as
+  predicted.
+- The 離岸封建 garble reproduced verbatim; the bullets built on garble are judged
+  UNSUPPORTED (faith-claim 2.6 vs faith-anchor 4.2 — "anchored but wrong" shape).
+- #167 instruments: 0 candidate inversions on all three (matches their audit).

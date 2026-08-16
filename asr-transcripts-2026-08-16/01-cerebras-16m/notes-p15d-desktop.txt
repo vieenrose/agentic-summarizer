@@ -1,0 +1,32 @@
+TITLE: Cerebrus Market Analysis
+[op] c1 [ok] ADD SUMMARY - Discussion on market share and future potential of Cerebrus. [6:18]
+[op] c1 [ok] ADD OPEN - Whether Cerebrus will expand in the future. [3:34]
+[op] c1 [ok] ADD TOPICS - Market share and future potential of Cerebrus [6:18]
+[cursor]   step 2/3
+[op] c2 [ok] ADD SUMMARY - Analysis of the market dynamics and contract between OpenAI and Cerebrus. [9:37]
+[op] c2 [ok] ADD OPEN - Potential for Cerebrus in high-rent AI market. [12:24]
+[cursor]   step 3/3
+[op] c3 [dropped: duplicate bullet] ADD SUMMARY - Discussion on market share and future potential of Cerebrus. [6:18]
+[op] c3 [dropped: does not match the op grammar] - Analysis of contract between OpenAI and Cerebrus. [9:37]
+[op] c3 [dropped: does not match the op grammar] - Market analysis of AI market dynamics. [12:24]
+[op] c3 [dropped: does not match the op grammar] - Comparison of fast mode performance and pricing. [13:09]
+[cursor] === DONE in 122s === stats=Stats(chunks=3, opsEmitted=10, opsApplied=6, vetoed=0, malformed=3, nopCollapses=0)
+TITLE: Cerebrus Market Analysis
+SUMMARY:
+- Discussion on market share and future potential of Cerebrus. [6:18]
+- Analysis of the market dynamics and contract between OpenAI and Cerebrus. [9:37]
+DECISIONS:
+-
+ACTIONS:
+-
+OPEN:
+- Whether Cerebrus will expand in the future. [3:34]
+- Potential for Cerebrus in high-rent AI market. [12:24]
+TOPICS:
+- Market share and future potential of Cerebrus [6:18]
+
+[cursor] parsed=true
+[cursor] anchors=5 resolving=5 bogus=[]
+[cursor] span=530s of 963s
+[cursor] sections: summary=2 decisions=0 actions=0 open=2 topics=1
+[cursor] INVERSION polarity-bearing bullets=0: inverted=0 consistent=0 unverifiable=0

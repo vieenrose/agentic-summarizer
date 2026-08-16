@@ -1,0 +1,11 @@
+TITLE: Warehouse Consolidation
+SUMMARY:
+-
+DECISIONS:
+- Approve warehouse consolidation plan [5:30]
+ACTIONS:
+- Complete site surveys by end of April [7:00]
+OPEN:
+-
+TOPICS:
+-

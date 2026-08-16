@@ -1,0 +1,25 @@
+TITLE: n 觀點相關討論
+[op] c1 [ok] ADD SUMMARY - 討論臺灣是否需要發展離岸封建，並分析其必要性和成本 [4:24]
+[op] c1 [dropped: in-stream verifier: CONTRADICTED] ADD ACTIONS - 臺積電需要尽快购买足够的再生能源以滿足蘋果需求 [3:21]
+[op] c1 [ok] ADD OPEN - 訂单获取會相對提高下一個階段的需求量 [3:47]
+[cursor]   step 2/2
+[op] c2 [ok] ADD SUMMARY - 分享了離岸風電的性質與對臺灣電力體制的影響 [8:48]
+[cursor] === DONE in 69s === stats=Stats(chunks=2, opsEmitted=5, opsApplied=4, vetoed=1, malformed=0, nopCollapses=0)
+TITLE: n 觀點相關討論
+SUMMARY:
+- 討論臺灣是否需要發展離岸封建，並分析其必要性和成本 [4:24]
+- 分享了離岸風電的性質與對臺灣電力體制的影響 [8:48]
+DECISIONS:
+-
+ACTIONS:
+-
+OPEN:
+- 訂单获取會相對提高下一個階段的需求量 [3:47]
+TOPICS:
+-
+
+[cursor] parsed=true
+[cursor] anchors=3 resolving=3 bogus=[]
+[cursor] span=301s of 573s
+[cursor] sections: summary=2 decisions=0 actions=0 open=1 topics=0
+[cursor] INVERSION polarity-bearing bullets=0: inverted=0 consistent=0 unverifiable=0

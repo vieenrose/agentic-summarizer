@@ -1,0 +1,3 @@
+[cursor] === DONE in 116s === stats=Stats(chunks=4, opsEmitted=9, opsApplied=8, vetoed=1, malformed=0, nopCollapses=0)
+[cursor] anchors=6 resolving=6 bogus=[]
+[cursor] INVERSION polarity-bearing bullets=0: inverted=0 consistent=0 unverifiable=0

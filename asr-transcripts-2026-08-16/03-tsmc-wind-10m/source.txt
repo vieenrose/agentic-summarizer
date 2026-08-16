@@ -1,0 +1,5 @@
+series:   M觀點 | 科技X商業X投資
+episode:  【M觀點】#47 台積電為何一口氣採購二十年份的離岸風電？離岸風電與再生能源的問題與討論！
+duration: 9m41s
+audio:    https://track.fstry.me/p/hr2cabaf/rss.soundon.fm/rssf/b8f5a471-f4f7-4763-9678-65887beda63a/feedurl/6ae3a794-da08-4d44-9cce-29bddf4ae2ed/rssFileVip.mp3?timestamp=1687901119082
+note:     3.5% Latin — stays Chinese; ASR garble 離岸封建 copied into notes

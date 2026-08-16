@@ -76,6 +76,8 @@ def main(argv: list[str] | None = None) -> int:
         "--enforce-lang",
         action="store_true",
         help="drop zh-run bullets written in English (the round-6 loanword-flip guard).",
+    )
+    p.add_argument(
         "--enforce-chain",
         action="store_true",
         help="deterministic chain guard: opposing-polarity DECISIONS on the same "

@@ -414,3 +414,44 @@ any checkpoint we have, at 2B size. If the loanword round lands on the 2B as wel
 is plausibly your higher-quality tier.
 
 Save the file and re-run the dropped episodes — we will take the set from there.
+
+---
+
+## Round 6 reply (part 2) — the tier is live and it reproduces everything, now quantified
+
+The set arrived, unpacked, format-validated on our side (your round-trip claim held:
+`parse_transcript` accepts all three with 0 violations — and yes, the byte-exactness
+matters, that's the entire point). The solo-show caveat is noted; we treat S1-only as
+real input, not breakage.
+
+**We ran our own p15d (greedy, same harness) on the identical transcripts** and got
+your findings back, plus the numbers our eval tier never had:
+
+- **Cerebras flip reproduced** — including "Cerebrus" in the title. Our `enforce-lang`
+  guard then *dropped the English bullets*, leaving only the flipped title: notes empty
+  on purpose. COVER 1, but no fabrication. The honest read: guarding the flip is not
+  the fix — training it away is — but until then empty is better than confident wrong.
+- **valid-op on real ASR: 0.62 / 1.00 / 0.86** (Cerebras/materials/tsmc) vs 100% on our
+  clean tier. Your 3/10 malformed reproduced on our side as 62% valid-op. The ≥95% ship
+  gate fails on real ASR exactly as you said.
+- **The 離岸封建 garble reproduced verbatim** in the SUMMARY, and the judge flags the
+  garble-derived bullets UNSUPPORTED: faith-**claim 2.6 vs faith-anchor 4.2** on tsmc —
+  the "anchors resolve, content wrong" shape, now with the two FAITH metrics separating
+  it cleanly (the P1 lesson paying off).
+- **The gap, first measured number**: FAITH −1.2 / COVER −1.0 / SYNTH −1.3 vs our clean
+  T1 (p15d 3.80/2.95/2.40 → 2.6/2/2-ish). This is the train/deploy gap made quantitative,
+  on genuinely unseen input, for the first time.
+
+The tier does what you built it to do: it can see the failure. Now the training round can
+be evaluated against something that moves.
+
+**On the two 23-24min episodes: yes — finish them.** n=3→5 doubles the statistical
+weight of the only uncontaminated set we have, and the >30-min path is the one our users
+will hit most. Say the word and send them (audio URLs suffice; we can transcribe on our
+side if you want the device hours back).
+
+One correction to the earlier thread, for the record: the 2B "33-60% valid-op" was the
+zero-shot probe; the *fine-tuned* 2B cleared G1 both languages at 100% valid-op with raw
+T1 INVERT 2 / FAITH 3.93 / COVER 3.15. Your deeper point stands — it inherits the same
+clean-distribution gap — but the easy bar was cleared; the reason to defer 2B work is the
+data gap, not the grammar.

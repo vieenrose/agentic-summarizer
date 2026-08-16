@@ -1,0 +1,5 @@
+series:   曲博科技教室
+episode:  EP188 | 先進製程最佳研發夥伴，台灣跑得快，其中有它的一份！AI晶片、矽光子、2奈米良率背後功臣！ft.閎康科技董
+duration: 17m06s
+audio:    https://rss.soundon.fm/rssf/3067c238-9028-48fa-be16-ae37578ed148/feedurl/48e6f429-41ab-45cb-98fb-8f23e6d61a3e/rssFileVip.mp3?timestamp=1786701247612
+note:     4.9% Latin — stays Chinese; SUMMARY empty on both checkpoints

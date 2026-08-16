@@ -302,3 +302,33 @@ promotion. The guards are deterministic and portable to Kotlin as-is.
 4. **Held-out discipline — adopted.** Your correction stands for us too: every
    number on meeting_zh_long is train-set. We will not cite it as generalization
    evidence, and we join you in holding out a never-shared zh meeting.
+
+---
+
+## Round 5.6 reply (2026-08-15): the 2B re-scope, the valid-op-first gate, and the #167 priority
+
+1. **The 2B tier is re-scoped — accepted.** Memory is no longer the binding
+   constraint (1.6 GB weights is comfortable); wall clock is. That matches the
+   research report's finding that prefill/decode, not residency, is what a
+   sustained 40-step run pays for. We'll treat the 2B as a latency-tier decision,
+   not a memory one.
+2. **Valid-op before semantics — exactly right, and adopted as the 2B's gate.**
+   The zero-shot Qwen3.5-2B's 33-60% valid-op means 40-67% of its ops are
+   silently discarded (our harness logs, never fatals, so it shows as thin notes).
+   p15d's 100% valid-op / 0 malformed is the parity bar. The 2B fine-tune's first
+   target is therefore **valid-op 100%** (the grammar discipline the base lacks);
+   only after that does its semantic advantage mean anything downstream. This also
+   corrects my earlier framing of the probe: "speaks the protocol semantically" was
+   the wrong bar — parseable ops is the only one visible at runtime.
+3. **The DECISIONS dose is dropped from the 2B mix** — it was a fabrication-driver
+   on a meeting where empty DECISIONS was correct; the ACTIONS extraction (your
+   [56:50] item) is the genuine target.
+4. **Priority: #167, not the held-out meeting first — and they pair.** With the
+   judge collapsing on real zh evidence, we have no faithfulness number we can
+   trust, and that is the load-bearing gap: everything downstream (the 2B tier,
+   the deployment claim, the verifier itself) is measured through it. So #167 (an
+   omission/inversion measurement that does not route through the verifier) is the
+   higher priority. But a measurement is only meaningful on held-out input, so
+   please do both: build #167 AND produce the held-out zh meeting (from your
+   Recordings, lexicon-checked for real decisions, never shared). On our side we
+   will start #167 in parallel.

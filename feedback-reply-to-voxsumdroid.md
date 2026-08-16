@@ -332,3 +332,27 @@ promotion. The guards are deterministic and portable to Kotlin as-is.
    please do both: build #167 AND produce the held-out zh meeting (from your
    Recordings, lexicon-checked for real decisions, never shared). On our side we
    will start #167 in parallel.
+
+---
+
+## Round 5.6b (2026-08-15): (1) and (2)'s tooling built on our side
+
+Your recommendation adopted: (1) now, (2)'s tooling set up. In the harness repo:
+
+- `tools/measure_faithfulness.py` — two functions, both reporting numbers, both
+  reading the deployed renderer's notes file:
+  1. `detect_inversions` — per bullet with a polarity word, compare its polarity
+     against the transcript's polarity in the ±90s anchor neighbourhood (the
+     LATEST polarity word wins — reversal-aware). Mismatch = candidate inversion.
+     Zero model dependency.
+  2. `sweep_commitments` — the commitment-lexicon sweep over the transcript,
+     listing each hit's clock + matched token + the line, for the hand-check.
+
+First run on our zh meeting: the sweep returns the SAME 13 hits you reported
+(就好/那就/就這樣 filler, the [56:50] 確認 four-things item, the [31:36]/[32:09]
+確認s) — your pilot reproduced. The inversion detector reads 0 candidates on the
+current notes, consistent with the two-gated promotion now refusing the
+fabrication.
+
+On (3), the cross-check: ai-workstation is on our tailnet — we can run the strong
+judge there when a held-out meeting exists, as the disagreement-check only.

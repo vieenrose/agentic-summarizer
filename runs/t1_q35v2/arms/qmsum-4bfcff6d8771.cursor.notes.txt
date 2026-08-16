@@ -1,0 +1,28 @@
+TITLE:
+SUMMARY:
+- Presentation of the banana-shaped remote control and its user interface. [1:47]
+- Evaluation of the new remote control design using a seven-point scale. [8:29]
+- Discussion on the R_S_I_ and B_L_C_D_ issues and potential locator addition. [17:38]
+- Discussion on the final design features and budget constraints. [34:31]
+- Evaluation of the banana remote control design and presentation of the final criteria list. [38:58]
+DECISIONS:
+- Remote control to be made. [1:25]
+- Give maximum points for all criteria. [9:39]
+- Include a beeping locator instead of a speaker. [31:21]
+- Use whiteboard digital pens for notes. [35:03]
+- Project complete. [38:42]
+ACTIONS:
+- Prepare the evaluation criteria list and B_L_C_D_ list. [18:52]
+- Prepare speaker for locator. [15:28]
+- Calculate production costs using the Excel spreadsheet. [22:32]
+- Prepare the final design criteria list. [34:27]
+- Add final criteria list to project documents. [39:04]
+- Complete final questionnaire and meeting summary. [40:46]
+OPEN:
+- Potential finance issues during evaluation. [7:55]
+- Affordability after finance review. [22:18]
+- Cost of additional features vs. budget. [29:16]
+- Time pressure during evaluation. [39:20]
+TOPICS:
+- Remote control design [1:27]
+- Final design criteria [35:29]

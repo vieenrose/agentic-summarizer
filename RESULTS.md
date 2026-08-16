@@ -1459,3 +1459,41 @@ vs clean T1 (p15d): FAITH 3.80 / COVER 2.95 / SYNTH 2.40. **The gap, measured: F
 - The 離岸封建 garble reproduced verbatim; the bullets built on garble are judged
   UNSUPPORTED (faith-claim 2.6 vs faith-anchor 4.2 — "anchored but wrong" shape).
 - #167 instruments: 0 candidate inversions on all three (matches their audit).
+
+## 2B thinking sub-experiment (2026-08-16) — thinking ON collapses to zero ops
+
+Three configs on G1 (agency proxy: chain/UPD/trap):
+- **A: FT-2B thinking OFF @4k — G1 PASS both, valid-op 100%** (the working config)
+- **B: FT-2B thinking ON @16k — zero ops**: 8192 tokens of pure reasoning,
+  finish_reason=length, no CURSOR grammar ever emitted. The think→ops transition is
+  unlearned (the closed p18-think finding reproduced at 2B — capacity did not fix it).
+- **C: Apodex-1.0-2B-SFT thinking ON @16k — zero ops**: its verification-centric
+  agentic format is not the CURSOR grammar; thinking does not unlock it.
+
+Verdict: thinking OFF is the only working 2B config. Apodex-2B-SFT is out (unhelpful
+as a base, both thinking off and on). The best FT 2B = raw Qwen3.5-2B, thinking off,
+on the improved (real-ASR-augmented) mix.
+
+## 2B as 1st solution — delivered: qwen35-2b-cursor-v2 (2026-08-16)
+
+**Sub-experiment (thinking off @4k vs on @16k vs Apodex):**
+- A: FT-2B thinking OFF @4k — G1 PASS both, valid-op 100% (the working config)
+- B: FT-2B thinking ON @16k — zero ops (8192 tokens pure reasoning, no CURSOR grammar;
+  the think→ops transition is unlearned — the closed p18 finding reproduced at 2B)
+- C: Apodex-1.0-2B-SFT thinking ON @16k — zero ops (agentic format ≠ CURSOR; out)
+
+**Delivered checkpoint: qwen35-2b-cursor-v2** (raw Qwen3.5-2B, thinking off, ctx 4k,
+improved mix = clean p15d + 6.3% real-ASR-augmented traces). On the real-ASR tier
+(v1 = the clean-mix checkpoint):
+
+| episode | metric | v1 | v2 |
+|---|---|---|---|
+| tsmc (garble) | FAITH / COVER / INVERT | 2.33 / 2 / **True** | **4.0 / 3 / False** |
+| materials | FAITH / COVER | 3.29 / 3 | 3.86 / 2 |
+| cerebras (flip) | FAITH / COVER | 3.0 / 1 | 3.0 / 1 |
+
+The garble fix is the headline: v2 correctly writes 離岸風電 where v1 copied the
+garbled 離岸封建 (FAITH +1.67), and it clears the tsmc inversion. Regression: the
+synthetic zh G1 trap (咖啡機) leaks once ("決定不討論...") where v1 passed — a
+candidate for trap-reinforcement in the next mix round. T1 clean-tier regression
+check running.

@@ -1,0 +1,20 @@
+TITLE: Remote Control Conceptual Design
+SUMMARY:
+- Discussion on component design and potential limitations due to manufacturer constraints. [6:08]
+- Marketing presented trends in remote control design and interface concepts. [10:29]
+- Discussion on touch screen feature and potential cost implications. [17:07]
+DECISIONS:
+- Solar battery route preferred over lithium for environmental reasons. [6:08]
+- Visible light signaling as a fun gimmick. [5:21]
+- Stick with the double curve and rubber option for the casing. [10:42]
+- Provisionally go with the touch screen feature. [19:03]
+ACTIONS:
+- UI designer to develop user interface concept based on the rubber casing. [11:36]
+- UI designer to develop user interface concept based on the new design. [17:23]
+- Prototype development to discuss materials and power sources. [25:35]
+OPEN:
+- Cost of voice recognition vs. touch screen. [24:47]
+TOPICS:
+- Component design [1:48]
+- Remote control design [7:48]
+- UI design [38:57]

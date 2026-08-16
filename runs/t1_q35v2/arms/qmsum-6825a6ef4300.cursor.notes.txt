@@ -1,0 +1,16 @@
+TITLE: TORRENT Chip Project Update
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Grad F to present proposal draft by Monday [0:40]
+- Measure RT in the room [11:57]
+- Test SRI system on noisy TI-digits [29:30]
+- Continue testing Wiener filter with different time constants [44:37]
+- Evaluate VTS in cepstral domain [50:40]
+- Combine VTS with noise estimation by first frames [54:20]
+OPEN:
+- Performance on near-mike data will worsen with current approach [5:46]
+TOPICS:
+- SRI system performance [28:39]

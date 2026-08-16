@@ -1,0 +1,25 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Review of the voice recognition remote prototype and its features [6:48]
+- Discussion on the remote's design, materials, and potential cost-saving measures [7:30]
+- Evaluation of the remote design against initial criteria [18:03]
+DECISIONS:
+- Avoid touch screens in favor of large buttons [2:59]
+- Include a slide-out panel for advanced functions [2:59]
+- Use multiple colors for the visible light feature [3:48]
+- Move forward with the project without the solar cell [17:38]
+- Keep the back-up battery [14:44]
+ACTIONS:
+- UI and ID to develop the remote prototype [0:49]
+- Finance to itemize parts list [11:51]
+- Marketing to develop wider voice recognition range [23:18]
+- Present new remote design concepts [33:01]
+- Final report with project evaluation [39:59]
+- Celebrate the meeting end [43:56]
+OPEN:
+- Cost exceeded goal by 5.10 Euro [7:11]
+- Process unclear and may require new coaching [23:22]
+- Marketing to develop wider voice recognition range [32:19]
+- Disfluencies in marketing communication [40:55]
+TOPICS:
+- Remote evaluation [18:03]

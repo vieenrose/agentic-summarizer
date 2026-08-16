@@ -1,0 +1,12 @@
+TITLE: Cerebrous: AI 推論芯片商業分析
+SUMMARY:
+- 分析 Cerebrous 從技術角度出發，評估其 AI 推論市場需求與產能挑戰 [4:16]
+- 分析 Cerebrous 透過 MVDR-GPU 技術提供更快 token，但企業傾向為高價值企業支付更高價格 [15:56]
+DECISIONS:
+-
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+-

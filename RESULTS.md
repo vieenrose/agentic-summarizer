@@ -1359,3 +1359,26 @@ Ranked-experiment status: exp 1 (audit) DONE — the NOP-poison found and remove
 finding 4 (sampling) DONE; the chain guard added. Remaining: exp 2 (the thinking
 on/off gating ablation), exp 3 (the reasoning-length elbow on the teacher), exp 4
 (the target-format/loss-masking ablation) — the p18-think lineage.
+
+## Experiment 2 (thinking on/off ablation): thinking does NOT earn its keep — CLOSED (2026-08-15)
+
+The gating experiment ran to completion. The p18-think lineage (v1: 30 think
+samples; v2: 55 M3 reasoning-capture samples, budgeted <think> + ops targets,
+33% think / 67% no-think, 3 epochs, seq 8192) fails BOTH arms:
+- **think mode** (T=0.9): the model emits ~80 chars of reasoning then STOPS — the
+  think→ops transition is not learned (the literature's Q3 scale requirement is
+  ~140k hybrid samples; we have 55 — three orders of magnitude short).
+- **no-think mode**: the think block LEAKS into the no-think arm (the Q3 finding:
+  "reasoning behaviors often leak into the no-think mode") — the mixed model is
+  degraded in both modes.
+
+Verdict: finding 2 confirmed empirically — at our per-step token budget and data
+scale, thinking is net-negative. The reasoning-distillation programme (exps 3-4)
+is CLOSED without running: the gating decision that would have scoped them says
+thinking is not worth building at this scale. **The no-think p19c is the final
+artifact.**
+
+FINAL STATE: p19c (G1 PASS both with the chain guard; the maintainer's real-meeting
+coverage bar met — DECISIONS 2 + ACTIONS 4 genuine; raw T1 4/20; deployment with
+the verifier = the 0-inversion path). The NOP-poison audit (exp 1), the sampling
+fix (finding 4), and the chain guard are the shipped improvements.

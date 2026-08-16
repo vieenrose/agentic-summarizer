@@ -1382,3 +1382,16 @@ FINAL STATE: p19c (G1 PASS both with the chain guard; the maintainer's real-meet
 coverage bar met — DECISIONS 2 + ACTIONS 4 genuine; raw T1 4/20; deployment with
 the verifier = the 0-inversion path). The NOP-poison audit (exp 1), the sampling
 fix (finding 4), and the chain guard are the shipped improvements.
+
+## Round 5.5 (VoxSum author correction): promotion was elevating fabrications (2026-08-15)
+
+The author's correction is accepted in full: (1) the promoted `通過三八號訊息更新
+供給狀況` is invented (trigger token absent from the meeting) — a render-time
+promotion bypassing the verifier; (2) the meeting is NOT decision-dense (it is
+supplier/market-intelligence) — empty DECISIONS was likely correct, and the
+DECISIONS dose in p16/p19c was a fabrication-driver; (3) the verifier collapses to
+SUPPORTED on realistic zh evidence (the clean-triple 89-92% agreement is blind to
+it). Fixes: the promotion is now two-gated (deterministic evidence pre-check +
+the verifier), the ACTIONS item at [56:50] is the genuine coverage target, and the
+held-out-meeting discipline is adopted. The verifier's real-evidence collapse is
+now the top open item (needs real-ASR judged triples).

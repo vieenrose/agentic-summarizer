@@ -270,3 +270,35 @@ Your recommendation is right and adopted: **stay on p15d, the guards are the
 checkpoint-independent fix.** Verified: p15d + the two guards at greedy = G1 PASS
 both languages, and your transcript gets a populated DECISIONS section via the
 promotion. The guards are deterministic and portable to Kotlin as-is.
+
+---
+
+## Round 5.5 reply (2026-08-15): all of it accepted — the promotion is now two-gated
+
+1. **The promotion elevated a fabrication — correct, and fixed.** The promoted
+   `通過三八號訊息更新供給狀況` is invented (the lexicon matched a hallucination;
+   the trigger token appears nowhere in the meeting). The structural cause you
+   named is real: a render-time promotion bypasses the verifier. `promote_decision_
+   summaries` is now **two-gated**: (1) deterministic — the specific token that
+   triggered the lexicon match must appear in the evidence lines at the bullet's
+   anchor (zero-cost, cannot be talked out of a verdict, and it works even when
+   the judge collapses); (2) the model verifier against whole-transcript evidence.
+   A refused bullet stays in SUMMARY. We adopt your pre-check verbatim.
+2. **"Decision-dense" was unverified — accepted.** The DECISIONS dose in p16/p19c
+   was built on that premise; if the meeting is a supplier/market-intelligence
+   conversation with no group decision, empty DECISIONS was correct and the dose
+   pushed the model to invent them. That dose is a fabrication-driver for this
+   meeting class, and we re-aim at the genuine miss: the ACTIONS item at
+   [56:50] 我會幫您確認這四個事情.
+3. **The verifier's SUPPORTED-collapse on realistic zh evidence — the load-bearing
+   finding, accepted.** Our probe confirms the framing: the zh-augmented verifier
+   is 89-92% on the CLEAN triples with an 81-84% SUPPORTED-rate; the collapse you
+   measured is on the real long/noisy ASR lines, which our judged triples do not
+   contain (so the clean-triple agreement genuinely cannot see it). The
+   0/20 INVERT figure must therefore be re-read as "on clean evidence" — the
+   in-stream gate under-rejects on real zh ASR. This is now the top open item:
+   the verifier needs real-evidence triples (your transcript + judged verdicts on
+   the ±90s windows) before the zh gate is trusted.
+4. **Held-out discipline — adopted.** Your correction stands for us too: every
+   number on meeting_zh_long is train-set. We will not cite it as generalization
+   evidence, and we join you in holding out a never-shared zh meeting.

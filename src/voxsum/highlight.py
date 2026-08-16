@@ -32,6 +32,14 @@ def is_commit_line(text: str, lang: str) -> bool:
     return bool((_COMMIT_ZH if lang == "zh-TW" else _COMMIT_EN).search(text))
 
 
+def commit_token(text: str, lang: str) -> str | None:
+    """The specific lexicon token that matched, or None. The promotion's evidence
+    pre-check requires this token in the supporting lines (it cannot be talked out
+    of a verdict)."""
+    m = (_COMMIT_ZH if lang == "zh-TW" else _COMMIT_EN).search(text)
+    return m.group(0) if m else None
+
+
 def highlight_line(line: str, lang: str) -> str:
     """Render one chunk line, marking it if it bears commitment language.
 

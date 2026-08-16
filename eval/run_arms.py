@@ -249,9 +249,19 @@ def main(argv: list[str] | None = None) -> int:
                 print(f"[arms] SKIPPED {path.stem}/{arm}: {exc}", file=sys.stderr)
                 continue
 
+            evidence_lookup = None
+            if args.promote_decisions:
+                from voxsum.transcript import sec_to_clock
+                lines = [u for u in utterances]
+                def evidence_lookup(anchor, _lines=lines):
+                    return "".join(
+                        f"[{sec_to_clock(u.start)}] {u.text}\n"
+                        for u in _lines if abs(u.start - anchor) <= 90
+                    )
             (args.out / f"{path.stem}.{arm}.notes.txt").write_text(
                 render_state(state, lang=args.lang, promote_decisions=args.promote_decisions,
-                             enforce_chain=args.enforce_chain),
+                             enforce_chain=args.enforce_chain,
+                             evidence_lookup=evidence_lookup),
                 encoding="utf-8",
             )
             usage.append(

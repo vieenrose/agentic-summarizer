@@ -1,0 +1,11 @@
+TITLE:
+SUMMARY:
+- «-» -> "Warehouse consolidation plan approved." [5:30]
+DECISIONS:
+- «-» -> "Plan approved." [5:30]
+ACTIONS:
+- «-» -> "Submit revised plan by 14 March." [6:00]
+OPEN:
+- «-» -> "Review progress at next meeting." [7:30]
+TOPICS:
+- «-» -> "Site surveys finished before end of April." [7:00]

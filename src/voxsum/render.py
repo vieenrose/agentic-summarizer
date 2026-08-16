@@ -17,29 +17,37 @@ __all__ = ["EMPTY_SECTION", "render_state", "render_for_prompt"]
 EMPTY_SECTION = "-"
 
 
-def promote_decision_summaries(state: NotesState, lang: str = "en") -> int:
-    """Deterministic harness-side mitigation for the measured zero-DECISIONS class
-    (the student puts decision-shaped content in SUMMARY and never emits DECISIONS
-    ops — VoxSum round-5.2, their op-level audit). Any SUMMARY bullet whose text
-    matches the commitment lexicon is promoted into DECISIONS with its anchor,
-    guarded by the dedup check and the section cap. Returns the promoted count.
-    """
-    from .highlight import is_commit_line
+def promote_decision_summaries(
+    state: NotesState, lang: str = "en",
+    evidence_lookup: callable | None = None,
+) -> tuple[int, int]:
+    """Deterministic promotion of decision-shaped SUMMARY bullets into DECISIONS.
 
-    promoted = 0
+    Two gates (VoxSum round-5.5): (1) the SPECIFIC token that triggered the lexicon
+    match must appear in the evidence lines at the bullet's anchor — the claim the
+    promotion makes, checked for free; (2) the caller may also run the model
+    verifier against whole-transcript evidence. A refused bullet stays in SUMMARY
+    (the model did say it; the guard decides what gets promoted, not what gets
+    censored). Returns (promoted, refused).
+    """
+    from .highlight import is_commit_line, commit_token
+
+    promoted = refused = 0
     for b in list(state.bullets("SUMMARY")):
-        if is_commit_line(b.text, lang):
-            reason = state.add("DECISIONS", b.text, b.anchor)
-            if reason is not None:
-                continue  # dedup/cap rejected — leave the SUMMARY bullet alone
-            # MOVE: the promoted bullet must not render in both sections
-            drop_reason = state.delete("SUMMARY", b.text[:24])
-            promoted += 1
-            if drop_reason:
-                # prefix didn't match (should not happen with the full leading text) —
-                # fall back to the first-6-char prefix the matcher is defined on
-                drop_reason = state.delete("SUMMARY", b.text[:6])
-    return promoted
+        if not is_commit_line(b.text, lang):
+            continue
+        token = commit_token(b.text, lang)
+        if evidence_lookup is not None and token:
+            evidence = evidence_lookup(b.anchor) if b.anchor is not None else ""
+            if token not in evidence:
+                refused += 1
+                continue
+        reason = state.add("DECISIONS", b.text, b.anchor)
+        if reason is not None:
+            continue
+        drop_reason = state.delete("SUMMARY", b.text[:24]) or state.delete("SUMMARY", b.text[:6])
+        promoted += 1
+    return promoted, refused
 
 
 def enforce_decision_chain(state: NotesState) -> int:
@@ -104,13 +112,14 @@ def _subject_overlap(a: str, b: str) -> bool:
 
 
 def render_state(state: NotesState, *, enforce_caps: bool = True, lang: str = "en",
-                 promote_decisions: bool = False, enforce_chain: bool = False) -> str:
+                 promote_decisions: bool = False, enforce_chain: bool = False,
+                 evidence_lookup: callable | None = None) -> str:
     """Render NOTES v2. Caps are applied by default — this is the shipping output."""
     if enforce_caps:
         state = state.clone()
         state.enforce_caps()
     if promote_decisions:
-        promote_decision_summaries(state, lang)
+        promote_decision_summaries(state, lang, evidence_lookup=evidence_lookup)
     if enforce_chain:
         enforce_decision_chain(state)
 

@@ -1395,3 +1395,29 @@ it). Fixes: the promotion is now two-gated (deterministic evidence pre-check +
 the verifier), the ACTIONS item at [56:50] is the genuine coverage target, and the
 held-out-meeting discipline is adopted. The verifier's real-evidence collapse is
 now the top open item (needs real-ASR judged triples).
+
+## Apodex-1.0-2B-SFT as the 2B CURSOR base: measured negative (2026-08-15)
+
+The Apodex-2B (Qwen3.5-2B + the verification-centric agentic post-training,
+Apache-2.0) zero-shot G1: **valid-op n/a — no parseable ops at all**, chain FAIL,
+UPD FAIL. Its agentic tuning is a different tool format than the CURSOR op grammar
+(the same finding as the 0.8B verifier probe). The raw Qwen3.5-2B (33-60% valid-op,
+chain/trap/anchors PASS) is the better base — less to unlearn. The 2B fine-tune
+proceeds on the raw Qwen3.5-2B.
+
+## Qwen3.5-2B fine-tune (the 2B tier): G1 PASS both, 100% valid-op (2026-08-16)
+
+The 2B tier's first milestone. Base Qwen3.5-2B (qwen3_5 family, same as the Qwen3.8
+teacher; linear-attention hybrid), fine-tuned 3 epochs on the clean CURSOR mix (the
+p15d data, NO DECISIONS dose). Trainer fixes along the way: the VL processor unwrap,
+the vision-tower DDP flag, the MTP-weight config restore + the --no-mtp GGUF
+conversion.
+
+- **valid-op 100% on both languages** (zero-shot was 33-60% — the grammar discipline
+  installed; the author's valid-op-first gate met).
+- **G1 PASS both** (chain/deadlines/trap/UPD; the en chain needed the order-
+  independent chain-guard fix — the newer approved bullet sat earlier in the section
+  list than the older rejection).
+- The Apodex-1.0-2B-SFT (same base, agentic post-training) measured NEGATIVE as the
+  base: zero parseable ops zero-shot — its agentic format ≠ the CURSOR grammar.
+- The real-meeting coverage + the raw T1 generalization numbers are running.

@@ -195,6 +195,10 @@ def main(argv: list[str] | None = None) -> int:
         load_in_4bit=False,
         full_finetuning=args.regime == "full",
     )
+    # Qwen3.5 ships a Qwen3VLProcessor (image-text-to-text) whose .tokenizer is the
+    # real PreTrainedTokenizer; the text-only SFT path wants the plain tokenizer.
+    if hasattr(tokenizer, "tokenizer") and not hasattr(tokenizer, "get_vocab"):
+        tokenizer = tokenizer.tokenizer
     # Qwen3.5 ships eos_token="<EOS_TOKEN>" (a training-only token absent from the
     # vocab); the chat template's real terminator is <|im_end|>. trl's collator needs
     # a vocab-present eos, so normalise here (model config untouched). Non-Qwen models
@@ -247,6 +251,7 @@ def main(argv: list[str] | None = None) -> int:
             dataset_text_field=None,
             seed=args.seed,
             report_to="none",
+            ddp_find_unused_parameters=True,  # Qwen3.5's vision tower is idle in text-only SFT
             eos_token=_eos,
         )
     print(f"[sft] cfg eos_token={sft_cfg.eos_token!r} type={type(sft_cfg).__module__}.{type(sft_cfg).__name__}", flush=True)
@@ -274,6 +279,7 @@ def main(argv: list[str] | None = None) -> int:
             dataset_text_field=None,  # pre-tokenized; labels carry the completion mask
             seed=args.seed,
             report_to="none",
+            ddp_find_unused_parameters=True,  # Qwen3.5's vision tower is idle in text-only SFT
             eos_token=_eos,
         ),
     )

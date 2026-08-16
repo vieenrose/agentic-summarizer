@@ -60,8 +60,9 @@ def enforce_decision_chain(state: NotesState) -> int:
     from voxsum.guards import _polarity
 
     dropped = 0
-    # one decision timeline: SUMMARY bullets first (older), then DECISIONS.
-    # Re-read the sections each outer iteration so a delete actually takes effect.
+    # one decision timeline across SUMMARY and DECISIONS, ORDER-INDEPENDENT: for any
+    # opposing-polarity pair on one subject, drop the OLDER (by anchor), wherever it
+    # sits in the section ordering.
     changed = True
     while changed:
         changed = False
@@ -71,17 +72,21 @@ def enforce_decision_chain(state: NotesState) -> int:
             pi = _polarity(b.text)
             if pi not in (1, -1):
                 continue
-            for j in range(i):
-                bj, secj = entries[j]
-                if bj.anchor is not None and b.anchor is not None and bj.anchor >= b.anchor:
+            for j, (bj, secj) in enumerate(entries):
+                if i == j:
                     continue
-                if _polarity(bj.text) == -pi and _subject_overlap(b.text, bj.text):
-                    reason = state.delete(secj, bj.text[:24])
-                    if reason:  # unambiguous-identity fallback, and NOT silent
-                        reason = state.delete(secj, bj.text)
-                    dropped += 1
-                    changed = True
-                    break
+                if b.anchor is None or bj.anchor is None:
+                    continue
+                if _polarity(bj.text) != -pi or not _subject_overlap(b.text, bj.text):
+                    continue
+                # drop the OLDER bullet, whichever section it is in
+                older_sec, older_text = (sec, b.text) if b.anchor <= bj.anchor else (secj, bj.text)
+                reason = state.delete(older_sec, older_text[:24])
+                if reason:
+                    reason = state.delete(older_sec, older_text)
+                dropped += 1
+                changed = True
+                break
             if changed:
                 break
     return dropped

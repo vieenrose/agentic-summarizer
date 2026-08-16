@@ -18,7 +18,8 @@ revision reflects pass p13 + in-stream verification (2026-08-14).
 
 | artifact | location | size | license |
 |---|---|---|---|
-| Model (final main), Q4_K_M | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor-p19c.Q4_K_M.gguf` | ~688 MB | apache-2.0 |
+| Model (pinned main), Q4_K_M | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor-p15d.Q4_K_M.gguf` | ~688 MB | apache-2.0 |
+| Model (experiment — coverage pass) | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor-p19c.Q4_K_M.gguf` | ~688 MB | apache-2.0 |
 | Model (previous, p13 — G1-verified 3×) | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor-p13.Q4_K_M.gguf` | 688 MB | apache-2.0 |
 | Model (p10) | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor.Q4_K_M.gguf` | 688 MB | apache-2.0 |
 | On-device verifier (zh-augmented, recommended) | `Luigi/granite-4.0-350m-verifier` → `granite-4.0-350m-verifier-zh.Q4_K_M.gguf` | ~215 MB | apache-2.0 |
@@ -222,7 +223,7 @@ the verifier-gated configuration. The verifier is a 215 MB granite-4.0-350m
 (Apache-2.0) co-resident with the main — the two-specialist design measured to be
 the optimum (the single-model multi-role alternative collapsed the critic to 38%).
 
-**The recommended configuration (all on-device):** main p19c + zh-augmented
+**The recommended configuration (all on-device):** main p15d + zh-augmented
 verifier, in-stream gating + final VERIFY sweep + the two deterministic guards
 (`--promote-decisions --enforce-chain`). Measured on the zh half: INVERT 0/10,
 FAITH 4.73, COVER 3.80, SYNTH 3.40; full n=20: INVERT 2, FAITH 4.43, COVER 2.85,
@@ -270,10 +271,11 @@ movements are not claimable.
 ## 9. Caveats (ship these with any reported numbers)
 
 - **zh trap checkpoint sensitivity** — the zh trap-drop behavior sits at a decision
-  boundary between adjacent checkpoints: p14/p14b/p15/p15e (adjacent passes) fail
-  the zh trap or the en chain. The published artifacts are p15d (checkpoint-348,
-  the current main) and p13 (checkpoint-302); always re-screen after re-exporting
-  or re-quantizing.
+  boundary between adjacent checkpoints: p14/p14b/p15/p15e/p19c (adjacent passes)
+  fail the zh trap or the en chain, or regress the published metrics. **The pinned
+  main is p15d (checkpoint-348)** — it holds G1 PASS both at greedy with the two
+  deterministic guards (see §7); p19c is kept as an experiment, not the main.
+  Always re-screen after re-exporting or re-quantizing.
 - **zh T2 is synthetic; the zh pool is largely monologic** (VCSum-derived) —
   contested-zh is unmeasured.
 - Judge-noise floor ±0.4–0.5 (FAITH/SYNTH); n = 20/tier; sign tests, not magnitude

@@ -240,3 +240,33 @@ closed as net-negative at our data scale (the think→ops transition is unlearna
 from our reasoning-trace volume).
 
 The p19c artifact is on HF (`minicpm5-1b-cursor-p19c.Q4_K_M.gguf`).
+
+---
+
+## Round 5.4 reply (2026-08-15): all three points accepted — re-pinned to p15d
+
+1. **Metrics.** Accepted. p19c is the worst on the published numbers (4/20, FAITH
+   3.57, COVER 3.00); its coverage gain was measured on your transcript, which is
+   in-training (your acceptance-gate point — non-generalization evidence). The
+   §8 table now carries the p19c row, §9 names p15d as the pinned main, and
+   "final main" is corrected to **p15d**. p19c stays published as an experiment.
+2. **Sampling.** Accepted — the T=0.7 switch was my call from the research report's
+   vendor-card note, but you're right that the eval distribution and your port are
+   greedy, and a grammar output should not be sampled. **Reverted to greedy
+   temp 0.** The stock-phrase loops the sampling change had masked are back in
+   scope — but the chain guard and the promotion, not the sampling, are the
+   intended fixes for the coverage blocker.
+3. **Promotion copies rather than moves.** Fixed — `promote_decision_summaries`
+   now MOVES (deletes from SUMMARY, adds to DECISIONS). A promoted bullet no
+   longer renders twice.
+4. **The two code bugs.** Both fixed: the delete now uses the full leading text
+   (no 6-char `_prefix_of` collision), checks the delete's return value (no silent
+   failure), and `enforce_decision_chain` re-reads the sections each outer
+   iteration (the dead rebuild is gone). Also fixed a third bug the zh test
+   exposed: `_subject_overlap` treated an unspaced zh string as one token — the
+   overlap is now zh-bigram-aware.
+
+Your recommendation is right and adopted: **stay on p15d, the guards are the
+checkpoint-independent fix.** Verified: p15d + the two guards at greedy = G1 PASS
+both languages, and your transcript gets a populated DECISIONS section via the
+promotion. The guards are deterministic and portable to Kotlin as-is.

@@ -30,8 +30,15 @@ def promote_decision_summaries(state: NotesState, lang: str = "en") -> int:
     for b in list(state.bullets("SUMMARY")):
         if is_commit_line(b.text, lang):
             reason = state.add("DECISIONS", b.text, b.anchor)
-            if reason is None:
-                promoted += 1
+            if reason is not None:
+                continue  # dedup/cap rejected — leave the SUMMARY bullet alone
+            # MOVE: the promoted bullet must not render in both sections
+            drop_reason = state.delete("SUMMARY", b.text[:24])
+            promoted += 1
+            if drop_reason:
+                # prefix didn't match (should not happen with the full leading text) —
+                # fall back to the first-6-char prefix the matcher is defined on
+                drop_reason = state.delete("SUMMARY", b.text[:6])
     return promoted
 
 
@@ -45,38 +52,55 @@ def enforce_decision_chain(state: NotesState) -> int:
     from voxsum.guards import _polarity
 
     dropped = 0
-    # one decision timeline: SUMMARY bullets first (older), then DECISIONS
-    entries = [(b, "SUMMARY") for b in state.bullets("SUMMARY")] + \
-              [(b, "DECISIONS") for b in state.bullets("DECISIONS")]
-    for i, (b, sec) in enumerate(entries):
-        pi = _polarity(b.text)
-        if pi not in (1, -1):
-            continue
-        for j in range(i):
-            bj, secj = entries[j]
-            if bj.anchor is not None and b.anchor is not None and bj.anchor >= b.anchor:
+    # one decision timeline: SUMMARY bullets first (older), then DECISIONS.
+    # Re-read the sections each outer iteration so a delete actually takes effect.
+    changed = True
+    while changed:
+        changed = False
+        entries = [(b, "SUMMARY") for b in state.bullets("SUMMARY")] + \
+                  [(b, "DECISIONS") for b in state.bullets("DECISIONS")]
+        for i, (b, sec) in enumerate(entries):
+            pi = _polarity(b.text)
+            if pi not in (1, -1):
                 continue
-            if _polarity(bj.text) == -pi and _subject_overlap(b.text, bj.text):
-                state.delete(secj, _prefix_of(bj.text))
-                dropped += 1
-                entries = [(x, s) for s in ("SUMMARY", "DECISIONS")
-                           for x in state.bullets(s)]
+            for j in range(i):
+                bj, secj = entries[j]
+                if bj.anchor is not None and b.anchor is not None and bj.anchor >= b.anchor:
+                    continue
+                if _polarity(bj.text) == -pi and _subject_overlap(b.text, bj.text):
+                    reason = state.delete(secj, bj.text[:24])
+                    if reason:  # unambiguous-identity fallback, and NOT silent
+                        reason = state.delete(secj, bj.text)
+                    dropped += 1
+                    changed = True
+                    break
+            if changed:
                 break
     return dropped
 
 
 def _subject_overlap(a: str, b: str) -> bool:
-    """Cheap subject-overlap test for the chain guard: significant token overlap
-    beyond the polarity words themselves."""
+    """Subject-overlap test for the chain guard. En: word tokens; zh: character
+    bigrams (the whole zh string is one whitespace-free run, so word tokenization
+    yields an empty intersection). Polarity words (the rejected/approved verbs) are
+    excluded so the subject, not the decision, carries the overlap."""
     import re
-    toks_a = {t for t in re.findall(r"[\w\u4e00-\u9fff]+", a.lower()) if len(t) > 1}
-    toks_b = {t for t in re.findall(r"[\w\u4e00-\u9fff]+", b.lower()) if len(t) > 1}
-    inter = toks_a & toks_b
-    return len(inter) >= 2 or (inter and len(inter) >= max(1, min(len(toks_a), len(toks_b)) // 2))
 
+    def toks(text: str) -> set:
+        s = set()
+        # en words
+        s |= {w for w in re.findall(r"[a-zA-Z]{3,}", text.lower())}
+        # zh bigrams (and the lone char as a fallback for 2-char subjects)
+        cjk = re.sub(r"[^\u4e00-\u9fff]", "", text)
+        s |= {cjk[i:i + 2] for i in range(len(cjk) - 1)}
+        s |= {ch for ch in cjk}
+        return s
 
-def _prefix_of(text: str) -> str:
-    return text[:6]
+    ta, tb = toks(a), toks(b)
+    inter = ta & tb
+    # the overlap must be SUBSTANTIAL relative to the smaller subject, and exceed
+    # what the polarity verb alone would contribute
+    return len(inter) >= 3 and len(inter) >= min(len(ta), len(tb)) // 3
 
 
 def render_state(state: NotesState, *, enforce_caps: bool = True, lang: str = "en",

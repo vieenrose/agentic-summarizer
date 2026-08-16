@@ -1,0 +1,19 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussion on target group and remote control functions [1:47]
+- Marketing presented a graph illustrating the importance of function key and volume selection [20:30]
+- User interface target recommendation [26:47]
+- Discussion on target function set and user features [39:21]
+DECISIONS:
+- Target age group for remote control features [28:57]
+- Include voice recognition and channel numbers [34:17]
+ACTIONS:
+- Project Manager to act as secretary and send minutes after the meeting [1:03]
+- Industrial Designer to consider including video and D_V_D_ functions [12:16]
+- Marketing to submit PowerPoint presentations by end of day [40:20]
+OPEN:
+- Identification of functional components [7:05]
+- How to implement user requirements for more functions [14:23]
+- User interface layout must be simple and compact [38:36]
+TOPICS:
+- User interface design [25:44]

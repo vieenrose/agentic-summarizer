@@ -1343,3 +1343,19 @@ The ranked-experiment report was executed in order:
    the guard; zh PASS, 86% valid-op) AND the maintainer's real meeting now yields
    **DECISIONS 2 (genuine: the F20-negotiation and supplier decisions), ACTIONS 4,
    TOPICS 6** — both of their bars met for the first time on the same checkpoint.
+
+## p19c raw T1 (2026-08-15)
+
+p19c + chain guard + promotion + T=0.7 (n=20): **INVERT 4/20**
+(synth-zh-reversal-0/1 — the stale-state class, qmsum-e75802cbf8d3,
+qmsum-8ac3acb7fe5e), FAITH 3.57, COVER 3.00, SYNTH 2.30. The coverage breakthrough
+(the real-meeting DECISIONS/ACTIONS, the maintainer's blocker) cost 1 raw flag and
+pulled FAITH/COVER/SYNTH back to the baseline band (3.50/3.05/2.60). The deployment
+config with the verifier (in-stream + sweep) remains the 0-inversion path; the raw
+rate's remaining classes: the zh stale-state (the guard only resolves over-ADDs —
+the stale-only case has no newer bullet to keep) and the two en persistent classes.
+
+Ranked-experiment status: exp 1 (audit) DONE — the NOP-poison found and removed;
+finding 4 (sampling) DONE; the chain guard added. Remaining: exp 2 (the thinking
+on/off gating ablation), exp 3 (the reasoning-length elbow on the teacher), exp 4
+(the target-format/loss-masking ablation) — the p18-think lineage.

@@ -1,0 +1,17 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Summary of design meeting outcomes [6:57]
+- Discussion on creative process and role definition [26:02]
+- Discussion on De-Briefing strategy and digital output [31:33]
+DECISIONS:
+- Remote will not use touch screen [2:59]
+- Interchangeable faces will be used [4:17]
+- Voice recognition area will be used [8:23]
+- Move to project evaluation after Sarah takes over [17:43]
+- Celebrate [43:20]
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+-

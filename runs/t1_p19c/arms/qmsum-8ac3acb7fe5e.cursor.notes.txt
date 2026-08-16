@@ -1,0 +1,18 @@
+TITLE: Remote Control Components Presentation
+SUMMARY:
+- Presentation on remote control components and options. [5:57]
+- Discussion on remote control design and case material. [26:51]
+DECISIONS:
+- Use a third-party battery, as they are typically cheaper. [3:57]
+- Include voice recognition and scroll button. [13:33]
+- Keep the simple, large number interface for basic functions. [17:43]
+- Exclude wood case due to excessive bulk. [29:50]
+- Use rubber case and open case for additional connectivity. [38:29]
+ACTIONS:
+- Match button and case colors using company colors (e.g., green and yellow). [37:23]
+OPEN:
+- Whether kinetic energy is suitable for a remote. [4:50]
+- Include voice recognition for user simplicity. [17:43]
+- Determine if kinetic energy is suitable. [29:05]
+TOPICS:
+- Interface design and options. [30:01]

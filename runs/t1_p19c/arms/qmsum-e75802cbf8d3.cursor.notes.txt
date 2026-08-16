@@ -1,0 +1,19 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on control remote control components and interface. [6:37]
+DECISIONS:
+- Use simple push buttons and speech recognition to reduce cost. [5:02]
+- Do not use the millennium remote control. [10:18]
+- Do not integrate light/radium chips to be simple. [16:28]
+- Target either fruit-shaped panels or spongy panels. [29:38]
+- Stay classical with single battery and minimal buttons. [32:00]
+ACTIONS:
+- Industrial Designer to develop a simple interface with enough buttons to find functions within a few minutes. [8:01]
+- UI to be smart to reduce complexity. [16:43]
+- Marketing to research trend-based design for remote controls. [23:55]
+- Industrial Designer to develop one of the two options. [29:08]
+OPEN:
+- How to handle speech recognition with the new interface. [7:06]
+- How to achieve the desired fancy features. [28:55]
+TOPICS:
+- Interface design and components. [8:41]

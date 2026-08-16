@@ -1,0 +1,17 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+- Discussion on data error rates and model improvements [19:37]
+DECISIONS:
+- Use gender-dependent models to address system differences [26:32]
+- Use a combination of energy and spectral features to identify speech frames [39:58]
+ACTIONS:
+- Use the Macrophone read speech set to high value [6:09]
+- Put a floor for SNR to reduce variance in low-energy regions [48:43]
+OPEN:
+- Effectiveness of data set size vs. negative value removal [6:09]
+- Method selection based on data method [54:28]
+TOPICS:
+- TORRENT chip project [0:08]
+- SRI feature addition [3:16]
+- TIMIT classification [4:31]
+- Data set selection [6:09]

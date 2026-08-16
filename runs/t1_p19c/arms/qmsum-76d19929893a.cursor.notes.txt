@@ -1,0 +1,14 @@
+TITLE: Kickoff Meeting: Television Remote Control
+SUMMARY:
+- Discussed design goals and process with industrial designer. [1:27]
+DECISIONS:
+- Target international sales price of 25 Euros. [6:39]
+ACTIONS:
+- Discuss material and function ideas for the next meeting. [22:23]
+OPEN:
+- Project manager to draw a design preference between kangaroo and bear. [4:28]
+- Accurate international sales price of 25 Euros. [6:39]
+TOPICS:
+- Project goals and process [1:03]
+- Design process with three stages [1:54]
+- Kickoff meeting purpose and tools [0:27]

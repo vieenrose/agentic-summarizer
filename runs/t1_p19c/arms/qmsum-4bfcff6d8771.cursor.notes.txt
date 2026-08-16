@@ -1,0 +1,21 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Presentation of prototype and evaluation against criteria [0:23]
+DECISIONS:
+- Use a seven-point scale for evaluation [10:25]
+- Use an 7-point scale for evaluation [13:15]
+- Finance limit restricts further changes [22:11]
+- Target three interface types: pushbutton, L_C_D display, and speaker. [34:27]
+- User interface score between 1-9 (low score = poorly evaluated) [38:33]
+ACTIONS:
+- Marketing to explain user interface features [2:24]
+- Compare new design against seven-point scale [8:17]
+- Test with a 7-point scale first [15:47]
+- Present feedback summary for next meeting to management [32:45]
+- User to submit final questionnaire by [40:46]
+OPEN:
+- Volume capacity limited to 0-9 [4:08]
+- Potential for alternative design versions [11:33]
+- Budget limits for each interface [25:54]
+TOPICS:
+- User interface design [6:09]

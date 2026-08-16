@@ -1,0 +1,20 @@
+TITLE: SmartKom Project Report
+SUMMARY:
+-
+DECISIONS:
+- Leave Japanese constructions outside the scope for now [33:21]
+- Direct sensory feedback taken from the tool/body is a unique human experience [42:00]
+ACTIONS:
+- Explain the concept of "synthesis" to Johno [1:14]
+- Flip into science mode on next meeting [14:32]
+- visualization effort separable from parsing [22:06]
+- Grad B to implement the parser in a reasonable time [48:47]
+- Grad E and Grad B to present a "stub" at the end of O point nine next week [57:17]
+- Contact Bhaskara for reading group on schemas further [1:00:48]
+OPEN:
+- Difficulty starting the synthesis module in October [4:26]
+- problem in getting a running belief net [21:59]
+- Define reference frames more explicitly [36:38]
+- How to integrate the "stub" into O point nine after next week [57:27]
+TOPICS:
+- belief-net structure [18:35]

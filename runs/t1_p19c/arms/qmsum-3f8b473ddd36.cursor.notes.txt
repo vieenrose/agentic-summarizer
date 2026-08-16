@@ -1,0 +1,19 @@
+TITLE: Remote Control Conceptual Design
+SUMMARY:
+- Discussion on final design decisions and remote function. [1:47]
+- Discussion on interface trends and design directions. [13:10]
+DECISIONS:
+- User will choose between the available battery types or continue with standard battery. [5:12]
+- Target a larger case with a front plate to allow for changed settings. [14:37]
+- Drop voice recognition to reduce cost. [20:57]
+- Voice recognition will be the only feature on the next model. [25:10]
+ACTIONS:
+- Explore cheaper manufacturing options. [19:45]
+- Develop a basic prototype within 48 hours. [25:33]
+- Hit the bricks with basic design using standard materials. [39:50]
+OPEN:
+- Calculate profit margins based on price. [19:03]
+- Selection of between voice recognition and touch screen. [23:15]
+TOPICS:
+- Component design and limitations of current manufacturers. [3:55]
+- Expanded feature set and materials. [25:48]

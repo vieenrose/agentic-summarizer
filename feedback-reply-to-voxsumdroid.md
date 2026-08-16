@@ -211,3 +211,32 @@ the en-primary balance.
    lineage trained on it (data/transcripts/meeting-zh-long.txt). So from our side
    nothing further is needed for that one file; what the next pass needs is MORE
    transcripts like it. If you send more, they go straight into training.
+
+---
+
+## Round 5.3 (2026-08-15): the coverage blocker cleared — final state
+
+Your op-level audit produced the fix. Three changes shipped, in order of impact:
+
+1. **The data bug (your hypothesis, confirmed in a different place).** The
+   training-target audit found four padded zh meetings whose teacher targets were
+   96-98% NOPs (~244 pure-silence steps) — they taught "long zh ⇒ emit nothing".
+   Removed. On your real meeting the same checkpoint now emits **DECISIONS 2
+   (genuine: the F20/supplier negotiation and the qualification decision) and
+   ACTIONS 4** — both of your bars met on one checkpoint, with G1 PASS both
+   languages.
+2. **Sampling.** The greedy temp-0 serve was contraindicated (Qwen: "endless
+   repetitions"); the client now serves the card's T=0.7/top_p 0.95, and the
+   stock-phrase repetition is gone.
+3. **The en-chain over-ADD** (your dedup finding's sibling) is resolved
+   harness-side: the deterministic decision-chain guard keeps the latest
+   opposing-polarity bullet across DECISIONS+SUMMARY — the spec's "the harness
+   owns the final word".
+
+Raw T1 on the final artifact: 4/20 (the zh stale-state class and two en
+persistent classes) — the verifier deployment (in-stream + final sweep) is the
+0-inversion configuration, as before. The thinking-enabled line was measured and
+closed as net-negative at our data scale (the think→ops transition is unlearnable
+from our reasoning-trace volume).
+
+The p19c artifact is on HF (`minicpm5-1b-cursor-p19c.Q4_K_M.gguf`).

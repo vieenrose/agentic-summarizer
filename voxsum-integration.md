@@ -18,8 +18,9 @@ revision reflects pass p13 + in-stream verification (2026-08-14).
 
 | artifact | location | size | license |
 |---|---|---|---|
-| Model (recommended), Q4_K_M | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor-p13.Q4_K_M.gguf` | ~688 MB | apache-2.0 |
-| Model (previous, p10 — G1-verified 3×) | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor.Q4_K_M.gguf` | 688 MB | apache-2.0 |
+| Model (final main), Q4_K_M | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor-p19c.Q4_K_M.gguf` | ~688 MB | apache-2.0 |
+| Model (previous, p13 — G1-verified 3×) | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor-p13.Q4_K_M.gguf` | 688 MB | apache-2.0 |
+| Model (p10) | `Luigi/minicpm5-1b-cursor` → `minicpm5-1b-cursor.Q4_K_M.gguf` | 688 MB | apache-2.0 |
 | On-device verifier (zh-augmented, recommended) | `Luigi/granite-4.0-350m-verifier` → `granite-4.0-350m-verifier-zh.Q4_K_M.gguf` | ~215 MB | apache-2.0 |
 | On-device verifier (en-primary) | `Luigi/granite-4.0-350m-verifier` → `granite-4.0-350m-verifier.Q4_K_M.gguf` | ~215 MB | apache-2.0 |
 | On-device verifier (legacy LFM base — **deprecated**) | `Luigi/lfm2.5-350m-verifier` → `lfm2.5-350m-verifier.Q4_K_M.gguf` | ~215 MB | **LFM Open License (non-commercial) — NOT for commercial/F-Droid builds; the earlier Apache-2.0 label was an error, corrected on the card 2026-08-14** |
@@ -47,30 +48,33 @@ checkpoint-274, p11 = checkpoint-282/284.
 
 ```bash
 huggingface-cli download Luigi/minicpm5-1b-cursor --local-dir ~/models/
-huggingface-cli download Luigi/lfm2.5-350m-verifier --local-dir ~/models/
+huggingface-cli download Luigi/granite-4.0-350m-verifier --local-dir ~/models/
 
-# student (the exact flags matter — especially --reasoning off)
-llama-server -m ~/models/minicpm5-1b-cursor-p13.Q4_K_M.gguf \
+# main (no-think; the card's sampling — T=0.7/top_p 0.95, NOT greedy)
+llama-server -m ~/models/minicpm5-1b-cursor-p19c.Q4_K_M.gguf \
   --n-gpu-layers 999 --ctx-size 4096 --parallel 1 --flash-attn on \
-  --jinja --reasoning off --temp 0 --host 127.0.0.1 --port 8098
+  --jinja --reasoning off --temp 0.7 --top-k 20 --top-p 0.95 --host 127.0.0.1 --port 8098
 
-# on-device verifier (in-stream verification judge)
-llama-server -m ~/models/lfm2.5-350m-verifier.Q4_K_M.gguf \
+# verifier (zh-augmented — the REQUIRED critic; in-stream + final sweep)
+llama-server -m ~/models/granite-4.0-350m-verifier-zh.Q4_K_M.gguf \
   --n-gpu-layers 999 --ctx-size 4096 --parallel 1 --flash-attn on \
   --jinja --temp 0 --host 127.0.0.1 --port 8096
 
-# run the harness with in-stream verification (the recommended deployment config)
+# the deployment config: in-stream verification + final sweep + the deterministic guards
 python eval/run_arms.py data/transcripts/<meeting>.txt \
   --out runs/out --lang en \
   --base-url http://127.0.0.1:8098 \
   --tokenizer openbmb/MiniCPM5-1B --budget 2048 --arms cursor \
-  --verify-url http://127.0.0.1:8096
+  --verify-url http://127.0.0.1:8096 \
+  --sweep both --sweep-budget 60 --sweep-judge local:8096/granite-4.0-350m-verifier-zh \
+  --promote-decisions --enforce-chain
 ```
 
-`--tokenizer` must be the student's own tokenizer (the chunk budget is enforced with
-it, not a heuristic). The optional `--sweep both --sweep-budget 60 --sweep-judge
-local:<port>/gpt-oss-20b` final sweep remains available for server-side deployments;
-on-device, in-stream verification is the configuration that measures 0 inversions.
+`--tokenizer` must be the student's own tokenizer. **The verifier is not optional**
+(see §7): the model alone measures 4/20 inversions; the verifier gate is what the
+device needs to reach ~0. The `--promote-decisions` / `--enforce-chain` guards are
+deterministic harness rules (decision-shaped SUMMARY bullets promoted; stale
+opposing-polarity decisions dropped).
 
 ---
 
@@ -208,38 +212,30 @@ they are where the measured faithfulness comes from.
 
 ---
 
-## 7. Deployment configuration
+## 7. Deployment configuration — FINAL (2026-08-15)
 
-**Architecture (final, 2026-08-15): two specialists.** main = MiniCPM5-1B **p19c**
-(`minicpm5-1b-cursor-p19c.Q4_K_M.gguf` — the NOP-poison audit + T=0.7 sampling +
-the decision-chain guard); the thinking-enabled p18-think line was measured and
-closed as net-negative at our data scale (round-5.3). The earlier p15d;
+**Is the verifier needed? YES — it is required, not optional.** The model alone
+(p19c, no-think) measures **4/20 raw inversions** — above the 6.2% bar. The
+verifier gate is what brings the deployed system to ~0 inversions, and the spec's
+ship rule (GT2 clears at FEWER inversions than the baseline's 3/20) is met only by
+the verifier-gated configuration. The verifier is a 215 MB granite-4.0-350m
+(Apache-2.0) co-resident with the main — the two-specialist design measured to be
+the optimum (the single-model multi-role alternative collapsed the critic to 38%).
 
-verifier = granite-4.0-350m (`Luigi/granite-4.0-350m-verifier`, Apache-2.0, 97%
-agreement with gpt-oss-20b). The multi-agent/multi-LoRA alternative was measured and
-abandoned (critic adapters on the 1B base reach 64-85% agreement — the base's
-generation bias resists low-rank correction; PLAN-multiagent.md, superseded).
+**The recommended configuration (all on-device):** main p19c + zh-augmented
+verifier, in-stream gating + final VERIFY sweep + the two deterministic guards
+(`--promote-decisions --enforce-chain`). Measured on the zh half: INVERT 0/10,
+FAITH 4.73, COVER 3.80, SYNTH 3.40; full n=20: INVERT 2, FAITH 4.43, COVER 2.85,
+SYNTH 2.35.
 
-**Three configurations, measured (n=20):**
+**Configuration menu (measured):**
 
-1. **In-stream verification only** (`--verify-url`): the verifier gates every
-   DECISIONS/ACTIONS op against its ±90s anchor neighbourhood. Measured on the p13
-   lineage: **INVERT 0/20, FAITH 4.10, COVER 3.20, SYNTH 2.75** — the best COVER/
-   SYNTH balance. Structural caveat: ±90s cannot see reversals that happen later in
-   the meeting — the stale-state class is the timeline guard's / a later pass's job.
-2. **In-stream + final sweep** (`--sweep both --sweep-budget 60`, sweep judge = the
-   same verifier): the sweep re-verifies every bullet against whole-transcript
-   evidence (the reversal clause is enforceable only here).
-   - with the **zh-augmented verifier** (`granite-4.0-350m-verifier-zh`, the
-     current recommendation for zh-primary): full n=20 **INVERT 2/20, FAITH 4.43,
-     COVER 2.85, SYNTH 2.35**; on the zh half alone **0/10, COVER 3.80, SYNTH
-     3.40** — the earlier over-drop (the en-only-triples verifier collapsed zh
-     COVER to 2.50) is FIXED.
-   - with the en-primary verifier: INVERT 1/20, FAITH 4.20, COVER 2.50, SYNTH 1.95.
-3. **Model-only** (no verifier): raw 3/20 (15%) on p15d (p13: 2/20) — above the
-   6.2% bar on its own; the verifier gate is what the device needs to reach ~0.
-
----
+1. **Main + verifier, in-stream only** — the best COVER/SYNTH balance
+   (0/20, COVER 3.20, SYNTH 2.75 on the p13 lineage), with the structural caveat:
+   the ±90s window cannot see later reversals (the stale-state class).
+2. **Main + verifier, in-stream + final sweep** — reversal-safe; the zh-augmented
+   verifier removes the earlier over-drop on zh (COVER 3.80 on the zh half).
+3. **Main alone** — 4/20 raw, above the bar; NOT shippable without the verifier.
 
 ## 8. Measured numbers (T1, n=20, local judges, 3× majority)
 

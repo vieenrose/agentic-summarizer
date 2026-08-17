@@ -1,0 +1,23 @@
+TITLE: Final Design Review
+SUMMARY:
+- Presentation of the final design and evaluation criteria [0:23]
+DECISIONS:
+- Remote control must be within financial limits [0:29]
+- Remote control must meet Cat's evaluation criteria [0:29]
+- Remote control must be dual-use [2:07]
+- Remote control must be within budget [38:45]
+- Process wheel had no major problems [39:41]
+ACTIONS:
+- Prepare evaluation criteria list [9:31]
+- Prepare evaluation criteria list in red [10:02]
+- Investigate R_S_I_ issue [11:56]
+- Finalize design based on updated criteria [29:57]
+- Present feedback to management [32:19]
+- Complete final questionnaire and meeting summary [40:52]
+OPEN:
+- Whether the R_S_I issue is novel [37:32]
+TOPICS:
+- Final design presentation [0:23]
+- Evaluation criteria [0:29]
+- Remote control features [5:24]
+- Process wheel [39:06]

@@ -1,0 +1,23 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on component design and remote control specifications [7:35]
+DECISIONS:
+-
+ACTIONS:
+- Marketing to research casing trends for pre-launch [7:29]
+- UI designer to develop interface graphics [10:32]
+- Industrial Designer to estimate touch screen cost [17:08]
+- Prototype development next step [25:35]
+- Industrial Designer to estimate cost of new remote design [32:17]
+- Nathan to work on basic look and feel of non-remote design [38:57]
+OPEN:
+- Feasibility of lithium battery route vs solar [2:05]
+- Feasibility of voice recognition vs other interfaces [12:09]
+- Cost of new remote design vs traditional [32:19]
+- Cost of multiple case colors vs single case [37:44]
+TOPICS:
+- Component design [1:48]
+- Casing design [14:37]
+- Voice recognition [14:37]
+- Touch screen technology [17:08]
+- Power source and backup battery [27:09]

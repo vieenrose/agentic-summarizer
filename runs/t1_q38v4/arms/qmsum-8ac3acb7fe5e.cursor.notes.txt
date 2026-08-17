@@ -1,0 +1,25 @@
+TITLE: Remote Control Concepts
+SUMMARY:
+- Discussion on remote control components, materials, and user interface options [5:19]
+- Marketing presented future trends and user expectations [17:59]
+DECISIONS:
+- Include voice recognition, L_C_D_s, and spinning features [16:33]
+ACTIONS:
+- User Interface to present user interface options [9:51]
+- Define which components to include [33:27]
+- Design curved-on-one-side, flat-on-top rubber case [40:48]
+- Incorporate vegetable-colored buttons [41:04]
+- User Interface Designer to work on user interface design [42:18]
+- Designer to work on prototype using modelling clay [42:48]
+OPEN:
+- Comparison of user interface options [12:28]
+- Integration of TV screen on remote [20:47]
+- Effectiveness of spinning wheel vs. scrolling [34:06]
+- Cost of voice recognition vs. L_C_D_s [40:32]
+TOPICS:
+- Remote control components [1:42]
+- Battery options [3:25]
+- Kinetic energy remote [4:04]
+- Solar cell remote [5:08]
+- Future trends and user expectations [17:59]
+- User interface components [33:27]

@@ -1,0 +1,20 @@
+TITLE: SmartKom System Demo
+SUMMARY:
+- Introduction to the SmartKom system and its German language capabilities [0:05]
+DECISIONS:
+-
+ACTIONS:
+- Robert and Johno to report on last week's adventures [0:03]
+- Grad B to continue working on the demo requirements [10:24]
+- Bhaskara to leave next week with a belief-net inheritance [18:36]
+- Start building the parser and analyzer in parallel with grammar [46:27]
+- PhD A to visit the German AI center in Heidelberg or Switzerland [55:07]
+- Grad B to contact Ellen about image schemas [1:00:18]
+OPEN:
+- How does the system handle non-English word orders? [6:47]
+- Whether to expand SmartKom beyond its current requirements [10:50]
+- Whether to include German language data [28:29]
+- How to handle the final exam for Grad D [59:17]
+TOPICS:
+- SmartKom system and its limitations [8:55]
+- Expanding SmartKom to include distant spatial relationships [38:51]

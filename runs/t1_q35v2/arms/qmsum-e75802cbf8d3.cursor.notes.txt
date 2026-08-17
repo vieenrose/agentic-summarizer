@@ -1,0 +1,26 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on remote control components, interface, and speech recognition technology. [5:28]
+- Discussion on interface design, color options, and the "Millennium remote control" concept. [9:57]
+- Discussion on upgrading the remote control with additional features and options. [14:30]
+- Marketing presented three key aspects of a modern remote control: it must be fancy, technologically innovative, and useful. [21:27]
+- Decision on whether to include titanium or spongy features. [30:20]
+DECISIONS:
+- Use push buttons instead of L_C_D_ displays to reduce cost. [5:28]
+- Avoid the "Millennium remote control" concept to reduce user confusion. [10:22]
+- Make the pink color an optional add-on feature. [14:30]
+- Choose between titanium or spongy features (not both). [30:30]
+ACTIONS:
+- Rama Wil to design the user interface. [26:32]
+- Sammy to evaluate the product. [26:47]
+- UI to design the user interface. [31:43]
+OPEN:
+- Confidence on creating trends. [27:56]
+- Finalize feature set before design. [32:28]
+TOPICS:
+- Remote control components [1:12]
+- Interface type [1:12]
+- Speech recognition [3:30]
+- Interface design [8:41]
+- Remote control options [14:30]
+- Remote control trends [23:21]

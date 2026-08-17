@@ -1,0 +1,25 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussed the design of the remote control and identified key components [4:19]
+- Discussed design requirements and identified key functional elements [12:16]
+DECISIONS:
+- Exclude teletext functionality as it is outdated [4:20]
+- Limit remote control use to television only [4:20]
+- Design must be unique and incorporate company's color and slogan [4:20]
+- Exclude video and DVD functionality [12:16]
+- Exclude VCR functionality [12:16]
+ACTIONS:
+- Define user interface requirements based on identified buttons [14:53]
+- Present graph of functional requirements to team [19:50]
+- Target audience: 25-35 years old [27:09]
+- Evaluate voice recognition feature for limited functionality [33:09]
+- Complete questionnaire and summarize requirements [39:21]
+- Present functional requirements graph [40:41]
+OPEN:
+- Determine which buttons to include based on graph [20:47]
+- Determine which features to include based on target audience [30:25]
+- Determine if voice recognition is necessary [33:42]
+TOPICS:
+- Remote control components [2:38]
+- Voice recognition and beeper button [37:32]
+- User interface concept [41:15]

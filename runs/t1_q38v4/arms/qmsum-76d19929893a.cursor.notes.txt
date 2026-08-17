@@ -1,0 +1,24 @@
+TITLE: Kick-off Meeting
+SUMMARY:
+- Kick-off meeting to discuss the new television remote control project and design stages. [0:38]
+- Discussed design stages and new remote control project. [10:16]
+- Discussed user interface precision and design features. [27:10]
+DECISIONS:
+- Use a white rabbit for the first design. [7:36]
+- Do not name the specific species of the bird. [8:36]
+- Save the current design and start a new blank document. [8:37]
+- Industrial Designer to investigate user interface and form. [27:15]
+- Industrial Designer to research start-up page. [28:08]
+ACTIONS:
+- Take notes on current remote controls and competitor features. [11:39]
+- Include D_V_D_ player compatibility in the design. [12:34]
+- Keep the design consistent with competitor features. [15:23]
+- Present the design concept with round edges and a button for system switching. [20:29]
+- Present design concept with round edges and a button for system switching. [25:37]
+OPEN:
+-
+TOPICS:
+- New television remote control design [1:03]
+- Remote control design stages [6:28]
+- Design features for D_V_D_ players [20:39]
+- Universal remote control [24:53]

@@ -1,0 +1,24 @@
+TITLE: Remote Prototype Review
+SUMMARY:
+- Review of the remote prototype and its features [6:48]
+- Discussion on remote prototype features and pricing [7:11]
+- Evaluation of remote prototype against initial criteria [18:08]
+- Celebration meeting to end project [43:56]
+DECISIONS:
+- Target price: 11.99 Euro [7:11]
+- Voice recognition doubles as solar cell and speaker [12:14]
+- Two push-button interfaces possible [13:03]
+- Move forward with project without the solar cell [17:58]
+- Celebrate after 43 minutes [43:53]
+ACTIONS:
+- Marketing to take over project evaluation [17:43]
+- Project Manager to report on project process and satisfaction [20:53]
+- Project Manager to present project process and satisfaction [35:15]
+- Project Manager to finalize report with all evaluation data [39:59]
+OPEN:
+- Effectiveness of remote control concepts [33:46]
+TOPICS:
+- Remote prototype features [7:30]
+- Project process and satisfaction [20:53]
+- Team collaboration and communication [29:46]
+- Project evaluation [39:21]

@@ -1,0 +1,11 @@
+TITLE: 人事凍結討論
+SUMMARY:
+-
+DECISIONS:
+- 將人事凍結從計畫中移除 [2:54:30]
+ACTIONS:
+-
+OPEN:
+- 人事凍結缺乏預算科目 [2:00]
+TOPICS:
+- 人事凍結 [0:00]

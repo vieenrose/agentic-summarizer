@@ -1,0 +1,13 @@
+TITLE: Cerebrus: AI 推論芯片與商業機會
+SUMMARY:
+- 分析 Cerebrus 的業務、市場需求與產能挑戰 [7:01]
+- 分析 Cerebrus 的業務狀況與市場機會 [12:24]
+DECISIONS:
+- 不建議立即出售 Cerebrus 股票 [2:46]
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+- 市場需求與產能 [4:16]
+- 極高速極高溢價的 AI 推論市場 [12:24]

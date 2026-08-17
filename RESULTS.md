@@ -1497,3 +1497,29 @@ garbled 離岸封建 (FAITH +1.67), and it clears the tsmc inversion. Regression
 synthetic zh G1 trap (咖啡機) leaks once ("決定不討論...") where v1 passed — a
 candidate for trap-reinforcement in the next mix round. T1 clean-tier regression
 check running.
+
+## Qwen3.8-2B as the 2B base (v4) — the knowledge hypothesis validated (2026-08-17)
+
+The user's proposal: `empero-ai/Qwen3.8-2B` (Qwen3.8-2.4T-A95B distilled into the
+Qwen3.5-2B arch, Apache-2.0, same tokenizer/template = drop-in). Zero-shot it is 0%
+valid-op (no base speaks the CURSOR grammar), so the test is the FT: **v4 = Qwen3.8-2B
++ the clean mix (no rasr augmentation)** — isolating the base's effect.
+
+| | INVERT | FAITH | COVER | SYNTH | real-tier garble |
+|---|---|---|---|---|---|
+| v1 Qwen3.5 clean | **2** | 3.93 | 3.15 | 2.60 | FAIL (離岸封建) |
+| v4 Qwen3.8 clean | 6 | 4.00 | **3.30** | **3.00** | **fixed via knowledge** |
+
+- **The knowledge hypothesis is validated**: v4 writes 離岸風電 correctly (never saw
+  the garble-augmentation) — the Qwen3.8 distillation supplies the world knowledge the
+  rasr augmentation was a blunt substitute for.
+- **SYNTH 3.00** — the first checkpoint to reach +0.40 over the map-reduce baseline
+  (2.60), the closest any run has come to the GT3 gate (+0.5). COVER 3.30 best.
+- Cerebras (flip case) FAITH 3.0→5.0.
+- The cost: **INVERT 6** (vs v1's 2) — all en assignment/polarity claims (names,
+  prices, counts). More specific extraction → some confidently-wrong specifics. The
+  deployed verifier+guards (temporal guard cross-checks ACTIONS/DECISIONS) are built
+  for exactly this class.
+
+Verdict: Qwen3.8-2B is the better base on quality/agency; its inversion count is the
+one gap, targeted next by inversion-reinforcement (the same pattern as trap-reinforce).

@@ -1,0 +1,41 @@
+[
+  {
+    "meeting_id": "01-cerebras-16m",
+    "arm": "cursor",
+    "lang": "zh-TW",
+    "prompt_version": "sys-v1",
+    "chunk_budget": 2048,
+    "calls": 3,
+    "prefill_tokens": 5998,
+    "decode_tokens": 317,
+    "valid_op_rate": 0.5714285714285714,
+    "anchor_rate_raw": 1.0,
+    "coverage_gaps": 0
+  },
+  {
+    "meeting_id": "02-materials-17m",
+    "arm": "cursor",
+    "lang": "zh-TW",
+    "prompt_version": "sys-v1",
+    "chunk_budget": 2048,
+    "calls": 3,
+    "prefill_tokens": 6115,
+    "decode_tokens": 111,
+    "valid_op_rate": 1.0,
+    "anchor_rate_raw": 1.0,
+    "coverage_gaps": 0
+  },
+  {
+    "meeting_id": "03-tsmc-wind-10m",
+    "arm": "cursor",
+    "lang": "zh-TW",
+    "prompt_version": "sys-v1",
+    "chunk_budget": 2048,
+    "calls": 2,
+    "prefill_tokens": 4193,
+    "decode_tokens": 204,
+    "valid_op_rate": 1.0,
+    "anchor_rate_raw": 1.0,
+    "coverage_gaps": 0
+  }
+]

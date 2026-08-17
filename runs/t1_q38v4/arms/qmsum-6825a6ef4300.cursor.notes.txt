@@ -1,0 +1,17 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Grad F to finish proposal draft by Monday [1:39]
+- Measure RT in the room [11:57]
+- PhD C to compare Aurora system with previous system [18:53]
+- Try to smooth the SNR estimate using a Wiener filter [43:23]
+- Compare VTS with VAD in cepstral domain [50:39]
+- Read transcript L-2-15 [55:09]
+OPEN:
+- Presentation of intermediate categories to the team [2:36]
+TOPICS:
+- TORRENT chip project [0:08]
+- SRI system comparison [27:00]

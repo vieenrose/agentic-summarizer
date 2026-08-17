@@ -1,0 +1,18 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Grad F to present the proposal draft by Monday [1:39]
+- Measure RT in the room [11:57]
+- Compare Aurora front-end performance with previous system [18:53]
+- Try to smooth the SNR estimate using a Wiener filter [43:46]
+- Try to smooth the current estimate of the clean speech for deriving the SNR [44:37]
+- Read transcript L-2-1-5 [55:09]
+OPEN:
+- Whether to proceed with the Aurora project after Sunil's arrival [0:55]
+TOPICS:
+- Aurora project [1:38]
+- VAD [10:32]
+- SRI system differences [25:42]

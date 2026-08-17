@@ -1,0 +1,18 @@
+TITLE: SmartKom System Presentation
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Keith to review the system and make 17 module changes [4:26]
+- Grad E to present the system to the institute [13:44]
+- Build the parser, analyzer, and grammar in parallel [46:49]
+- Use the same construction analyzer for both projects [48:00]
+- Finish the design of the system by Monday [58:33]
+- Contact Ellen about image schemas [1:00:18]
+OPEN:
+- Understanding of system modules and information flow [7:38]
+- Visualization of belief-net nodes and connections [21:41]
+TOPICS:
+- SmartKom system modules [11:24]
+- Expanding belief-net with data [27:39]

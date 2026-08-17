@@ -1,0 +1,32 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Final design meeting to evaluate prototype against Cat's criteria, user requirements, and fashion [20:57]
+- Marketing presented a list of user requirements for evaluation [9:11]
+- Updated design to include scroll wheel and two side buttons [29:38]
+- Discussed adding a vibrating beeper and whiteboard for feedback [35:09]
+- Project completed within budget and time [38:58]
+DECISIONS:
+- Start presentation with shape and color (banana approximation) [1:47]
+- Evaluate each requirement against the seven-point scale [8:29]
+- Add two side buttons for up/down selection [29:43]
+- Include a vibrating beeper and whiteboard [35:09]
+- Leave the meeting early [40:13]
+ACTIONS:
+- Ma Maarika to explain user interface [2:24]
+- Prepare the evaluation list and mark requirements [9:58]
+- Investigate left-handed user experience [11:33]
+- Jen to research cost of whiteboard and pens [34:55]
+- Marketing to research patent possibilities [38:14]
+- Complete final questionnaire and meeting summary [40:52]
+OPEN:
+- Volume location and mute button [4:47] [5:41]
+- Budget may be tight [7:55]
+- Left-handed scrolling may be an issue [11:21]
+- Cost of additional features [34:55]
+TOPICS:
+- Design criteria [0:23]
+- Financial limits [0:29]
+- User interface features [2:37]
+- Production costs [22:32]
+- Project completion [38:58]
+- User interface [40:31]

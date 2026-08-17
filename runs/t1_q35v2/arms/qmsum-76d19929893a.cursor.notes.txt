@@ -1,0 +1,27 @@
+TITLE: Kick-off Meeting
+SUMMARY:
+- Kick-off meeting to discuss the new television remote control design and project tools. [0:38]
+- Discussion on new remote control design and project tools. [10:16]
+- Discussion on universal remote control design and compatibility with D_V_D_ player and T_F_T_ device. [14:38]
+- Review of potential remote control shape and button placement. [21:40]
+DECISIONS:
+- Design a new, modern, and friendly television remote control. [1:27]
+- Save drawings and start a new blank document. [7:15]
+- Do not name the specific species of the bird. [8:37]
+- Remote must fit in the hand and be recognizable as a remote control. [17:57]
+- Include a large, recognizable button on top to switch between systems. [20:39]
+ACTIONS:
+- Industrial Designer to save the current drawing. [8:37]
+- Project Manager to add notes about the remote control design. [13:30]
+- Industrial Designer to suggest a remote shape that fits the hand. [18:37]
+- Marketing to develop a design that is not boxy. [17:57]
+- Marketing to dispatch universal front fronts around the world. [25:37]
+- Project Manager to restore desktop. [28:40]
+OPEN:
+- Finalize the universal remote control design. [15:41]
+- Cost of universal front fronts. [25:43]
+TOPICS:
+- Remote control design [1:27]
+- Project stages [1:54]
+- Project management tools [1:54]
+- Remote control design goals [1:27]

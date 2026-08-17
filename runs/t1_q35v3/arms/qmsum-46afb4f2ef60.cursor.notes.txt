@@ -1,0 +1,26 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Discussion on the design of a voice-activated remote and potential edible television features. [6:48]
+- Evaluation of the remote design against initial criteria. [18:04]
+DECISIONS:
+- Opt for large buttons and a slide-out panel for advanced functions. [2:59]
+- Edible television is a possible new product, not immediate. [6:43]
+- Use a classic rubber button instead of scroll buttons to reduce cost. [7:30]
+- Keep the push buttons and case as is. [17:38]
+- Celebrate the end of the meeting. [43:59]
+ACTIONS:
+- Finance to itemize parts list. [11:51]
+- Project Manager to evaluate the remote against design criteria. [17:57]
+- Manager to report on project process and satisfaction. [20:53]
+- User Interface to present the design concept. [28:50]
+- Final report to be completed by end of project. [40:01]
+OPEN:
+- Cost of the remote vs. alternative manufacturers. [7:46]
+- Effectiveness of the design process. [21:54]
+TOPICS:
+- Remote design [2:36]
+- Marketing strategy [6:57]
+- Process and collaboration [21:51]
+- Collaboration [29:08]
+- Final report [40:01]
+- Meeting conclusion [43:59]

@@ -1,0 +1,20 @@
+TITLE: Remote Control Conceptual Design
+SUMMARY:
+- Discussion on component design and potential limitations due to manufacturer constraints. [7:35]
+DECISIONS:
+- Target energy source: solar battery [6:08]
+- Use visible light for remote signaling [4:53]
+ACTIONS:
+- Marketing to research casing trends [7:29]
+- Explore cheaper manufacturing options [19:45]
+- Develop prototype design [25:35]
+- Design basic look and feel [38:57]
+- Coordinate with Ron on prototype layout [38:57]
+OPEN:
+- Interface graphics for the touch screen [10:29]
+- Cost of touch screen technology [17:07]
+- Color of the remote [38:01]
+TOPICS:
+- Remote control design [7:48]
+- Prototype design [21:05]
+- Material and form [30:38]

@@ -1,0 +1,24 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discuss trends in remote control design and the importance of being fancy and innovative [21:27]
+- Marketing decided to keep the L_C_D_ with information output [31:09]
+DECISIONS:
+- Use simple battery instead of solar cells [2:34]
+- Use push buttons instead of LCD displays to reduce cost [3:10]
+- Include LCD display for information output only, not touch-sensitive [6:19]
+- Remote controls should be easy to use [21:27]
+- Stay classical and avoid reinventing the wheel [32:06]
+ACTIONS:
+- Define speech recognition requirements [7:06]
+- Integrate light feature into remote control [16:26]
+- Rama to design user interface [26:47]
+- Sammy to evaluate the product [26:47]
+- Create a prototype using modelling clay [26:47]
+- Explore two shape options [31:04]
+OPEN:
+-
+TOPICS:
+- Component concept [1:11]
+- User interface concept [1:37]
+- Remote control concept [9:57]
+- Remote control design [22:26]

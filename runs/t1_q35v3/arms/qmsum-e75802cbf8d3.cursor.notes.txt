@@ -1,0 +1,27 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussion on remote control components, energy source, and interface. [1:37]
+- Discussion on interface design and color options. [10:58]
+- Discussion on remote control features, including option for chameleon-like color changes and infrared integration. [16:26]
+- Marketing presented trends in remote control design, emphasizing the need for a fancy look, technological innovation, and usefulness. [21:27]
+- Marketing presented trends in remote control design, emphasizing the need for a fancy look and technological innovation. [28:26]
+DECISIONS:
+- Use simple battery instead of solar cells [2:48]
+- Use push buttons instead of L_C_D_ display [5:24]
+- Use L_C_D_ screen with backlight [10:54]
+- Remote control should be able to identify the user (e.g., via fingerprint or voice). [17:48]
+- Explore two shape options (titanium or spongy) [30:57]
+ACTIONS:
+- Define speech recognition requirements [7:06]
+- Marketing to present trends and design inspiration. [20:31]
+- UI design using modelling clay [26:47]
+- Product evaluation using modelling clay [26:47]
+- Explore shape and material options [30:57]
+OPEN:
+- Cost of speech recognition technology [5:50]
+- Cost of L_C_D_ screen [11:46]
+- Cost of titanium vs spongy materials [30:20]
+TOPICS:
+- Remote control components [1:11]
+- User interface design [27:16]
+- Remote control features [32:07]

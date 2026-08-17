@@ -1,0 +1,22 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussed target group and remote control functions. [7:41]
+- Discussed design issues and technical functions. [8:37]
+- Marketing shared user survey data on remote control usage and preferences. [18:06]
+DECISIONS:
+- Remove teletext functionality and limit use to television only. [4:20]
+- Exclude video and D_V_D_ functionalities to keep the remote small and simple. [12:16]
+- Exclude volume selection and power buttons as they are rarely used. [20:47]
+ACTIONS:
+- Review user interface requirements after identifying basic buttons. [14:53]
+- Present graph of button importance to the team. [19:26]
+- Target younger audience (15-35) for sleek design. [25:27]
+- Target 15-35 age group for sleek design. [28:57]
+- Evaluate voice recognition features against channel number display. [34:27]
+- Complete questionnaire and summarize findings. [42:07]
+OPEN:
+- Whether to include voice recognition in the design. [31:28]
+TOPICS:
+- Remote control components [3:26]
+- Voice recognition [27:09]
+- Components concept [41:03]

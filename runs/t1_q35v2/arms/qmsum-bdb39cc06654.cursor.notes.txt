@@ -1,0 +1,18 @@
+TITLE: SmartKom System Demo
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Robert and Johno to report on last week's adventures [0:35]
+- Professor C to develop the basic issues for the Fall demo [10:57]
+- Finish belief-net stuff by next few weeks [18:36]
+- Build the parser and analyzer system [46:27]
+- PhD A to visit German AI center in Heidelberg or Switzerland [55:19]
+- Catch up with Ellen on image schemas [1:00:55]
+OPEN:
+- Visualization of belief-net nodes and connections [21:41]
+- Whether to use an existing ontology API or standardize on one [46:27]
+TOPICS:
+- SmartKom system capabilities [0:35]
+- SmartKom system requirements [10:24]

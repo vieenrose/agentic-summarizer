@@ -1,0 +1,27 @@
+TITLE: Remote Control Concept Discussion
+SUMMARY:
+- Discussion on remote control components and options [5:08]
+- Discussion on user interface options and features [10:49]
+- Marketing presented market trends and user expectations [17:59]
+- Discussion on L_C_D_s and screen integration [22:18]
+- Finalized concept: simple battery, advanced ICs, curved rubber case, and voice recognition [40:41]
+DECISIONS:
+- Focus on components, properties, materials, UI, and trends [0:57]
+- Include voice recognition, L_C_D_s, and spinning [16:33]
+- Avoid flat surfaces on both sides of the remote [25:05]
+- Use simple battery and advanced integrated circuits [40:41]
+- Use vegetable-colored remote and buttons [41:04]
+ACTIONS:
+- User to present UI findings [11:49]
+- UI to present UI findings [26:29]
+- UI to present final design [40:02]
+- ID to work on look and feel design [42:18]
+- UI to work on user interface design [42:18]
+- ID and UI to work on prototype using modelling clay [42:18]
+OPEN:
+- Whether kinetic energy is practical [27:38]
+- Whether to include scrolling or spinning [33:55]
+TOPICS:
+- Remote control components [1:59]
+- UI design [30:04]
+- Final concept and components [40:41]

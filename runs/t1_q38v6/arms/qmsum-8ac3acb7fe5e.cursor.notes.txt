@@ -1,0 +1,25 @@
+TITLE: Remote Control Concept Discussion
+SUMMARY:
+- Discussion on remote control components, materials, and user interface [0:59]
+- Presentation of user interface features and their benefits [11:21]
+- Marketing presented future trends and user expectations [17:59]
+- Finalize remote control concept with all features [40:49]
+DECISIONS:
+- Include voice recognition, L_C_D_s, and spinning features [16:33]
+ACTIONS:
+- User interface design based on friendliness and aesthetics [11:21]
+- Choose between flat, single-sided, or double-sided curved cases [28:13]
+- Use simple battery and advanced integrated circuits [40:41]
+- Choose curved-on-one-side, rubber case with push-buttons [40:49]
+- User Interface Designer to work on user interface design [42:18]
+- Both designers to work on prototype using modelling clay [42:48]
+OPEN:
+- Cost of advanced chips vs. regular chips [8:08]
+- Energy source compatibility with materials [24:16]
+- Compatibility of spinning wheel with rubber casing [34:06]
+- Cost of advanced integrated circuits [40:23]
+TOPICS:
+- Remote control components [1:42]
+- Future trends and user expectations [17:59]
+- Material and energy source [23:12]
+- Interface design [30:01]

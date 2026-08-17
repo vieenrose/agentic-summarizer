@@ -1,0 +1,22 @@
+TITLE: Final Design Review
+SUMMARY:
+-
+DECISIONS:
+- Remote control to be made in a smaller size. [3:00]
+- Costs are within budget. [38:42]
+- Process wheel had no major problems. [39:06]
+ACTIONS:
+- Prepare evaluation criteria list. [9:31]
+- Investigate left-handed user experience. [17:38]
+- Calculate production costs using Excel spreadsheet. [22:32]
+- Include vibrating remote control in design. [32:04]
+- Complete final questionnaire and meeting summary. [40:58]
+OPEN:
+- Mute button placement. [5:41]
+- Budget issues and manufacturing location. [7:55]
+- Fashionable remote control features. [20:46]
+- Cost of additional features. [34:55]
+TOPICS:
+- Left-handed user experience. [11:11]
+- Production costs and budget. [22:18]
+- Time pressure and efficiency. [39:20]

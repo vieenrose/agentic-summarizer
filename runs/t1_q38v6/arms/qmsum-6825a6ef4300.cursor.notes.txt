@@ -1,0 +1,17 @@
+TITLE: TORRENT Chip Project Review
+SUMMARY:
+- Discussion on the TORRENT chip project and the Aurora paper proposal [5:59]
+DECISIONS:
+-
+ACTIONS:
+- Grad F to write the Aurora paper proposal by Monday [0:40]
+- Measure RT in the room [11:57]
+- PhD C to test Aurora system on meeting digits [18:40]
+- Try to smooth the SNR estimate using a Wiener filter [43:46]
+- PhD D to apply VTS in cepstral domain [50:40]
+- Read transcript L-2-1-5 [55:09]
+OPEN:
+- Performance on near-mike data with PZM F [6:05]
+TOPICS:
+- VAD and boundary estimation [32:02]
+- VTS in cepstral domain [50:19]

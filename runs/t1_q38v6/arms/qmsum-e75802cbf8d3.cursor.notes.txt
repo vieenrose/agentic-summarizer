@@ -1,0 +1,26 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussing upgrade options for remote control [12:21]
+- Marketing presented three key aspects of trend watching [20:41]
+- Discussed the importance of fancy, innovative, and useful features [21:27]
+- Discussed the importance of fancy features [28:59]
+DECISIONS:
+- Use simple battery instead of solar cells [2:34]
+- Use titanium design over rubber [1:37]
+- Use push buttons instead of L_C_D_ displays [3:10]
+- Use two batteries [31:52]
+- Stay classical in design [32:00]
+ACTIONS:
+- Sammy to provide trend watching on recent developments [0:13]
+- UI to develop a low-button concept [10:22]
+- Marketing to discuss optional remote features [14:35]
+- UI to design user interface [26:45]
+- Sammy to provide product evaluation [26:45]
+- Prototype using modelling clay [26:45]
+OPEN:
+- Whether to highlight speech recogniser and themes [27:16]
+TOPICS:
+- Interface design [8:41]
+- Remote control [15:29]
+- Trend watching [20:31]
+- UI design [27:28]

@@ -1554,3 +1554,29 @@ v5 = Qwen3.8-2B + clean mix + trap-reinforce + light rasr + 121 entity-swap twin
 Verdict: **the clean-mix v4 remains the locked 2B.** The training-side inversion fix is
 not worth its quality cost; inversion is handled at the deployment layer (verifier +
 temporal guard → 0 deployed). Final locked checkpoint: qwen38-2b-cursor-v4.
+
+## dose-01 retrain (v6) — 1B regresses, 2B improves real-ASR at sub-noise clean cost (2026-08-17)
+
+The author's real-ASR training dose (12 transcripts, 47 steps, DECISIONS-stripped per
+their guidance, ×3 weight), both models retrained in parallel (one per RTX 5090).
+
+**1B (MiniCPM5-1B): REGRESSION — revert to p15d.** valid-op 100%→75%, malformed ops
+leaking into bullets (`> 轉換成本`, double anchors `[7:00] [7:00]`), chain FAIL. The
+real-ASR fragmentation is too hard for the 1B's op-grammar discipline — the author's
+small-models-move-backwards warning, reproduced.
+
+**2B (Qwen3.8-2B): mixed.**
+
+| | INVERT | FAITH | COVER | SYNTH | real-tier highlights |
+|---|---|---|---|---|---|
+| v4 (clean) | 6 | 4.00 | 3.30 | 3.00 | cerebras FAITH 5.0 |
+| v6 (+dose01) | 7 | 3.91 | 3.00 | 2.55 | R100 fixed, materials COVER 4, 0 inv, flip Chinese |
+
+- Tier (the deployment target) improves: the ASR garble "R 一一百"→correct "R 100",
+  materials COVER 2→4, tsmc FAITH up, all inv=False, flip case stays Chinese.
+- Clean T1: FAITH -0.09, COVER -0.30, SYNTH -0.45 (0.45 is at the judge-noise boundary),
+  INVERT 6→7 (n=20, sub-noise).
+
+Decision: v6 is a plausible deployment upgrade (the tier is what the app sees) but the
+SYNTH dip makes it a genuine tradeoff, not a clean win. The 1B stays p15d. Pending the
+author's second batch / a controlled-dose validation before locking v6 as the 2B main.

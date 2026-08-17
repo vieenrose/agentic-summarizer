@@ -1,0 +1,13 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Grad F to finish proposal draft by Monday [1:39]
+- Implement energy-based VAD by adding a threshold to noise energy [35:55]
+OPEN:
+-
+TOPICS:
+- TORRENT chip project [0:08]
+- SRI system comparison [27:07]

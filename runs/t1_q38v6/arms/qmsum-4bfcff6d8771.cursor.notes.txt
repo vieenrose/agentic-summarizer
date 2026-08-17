@@ -1,0 +1,24 @@
+TITLE: Final Design Review
+SUMMARY:
+- Presentation of the final design and evaluation criteria [0:23]
+- Marketing prepared the evaluation criteria using a seven-point scale [8:29]
+- Discussion on left-handed design and locator placement [15:51]
+- Feedback on design features and budget constraints [34:58]
+- Evaluation of the banana remote control concept [38:21]
+DECISIONS:
+- Use a banana shape and color for the remote control [1:47]
+- Put locator on T_V_ [15:51]
+- Score 7 for fashionability [20:50]
+- Implement a vibrating beeper instead of a speaker [31:27]
+- Process wheel had no major problems [39:53]
+ACTIONS:
+- Cat to present evaluation criteria [0:23]
+- Prepare the evaluation criteria document [9:58]
+- Investigate left-handed design [17:38]
+- Present final design and evaluation criteria [34:27]
+- Present project scores in documents file [39:04]
+- Complete final questionnaire and meeting summary [40:58]
+OPEN:
+- Cost of additional features vs. existing budget [27:31]
+TOPICS:
+- Design review [0:23]

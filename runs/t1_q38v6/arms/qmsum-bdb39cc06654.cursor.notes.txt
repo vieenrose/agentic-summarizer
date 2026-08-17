@@ -1,0 +1,18 @@
+TITLE: SmartKom System Demo
+SUMMARY:
+- Introduction to the SmartKom system and its German-to-English translation capabilities. [0:05]
+DECISIONS:
+-
+ACTIONS:
+- Grad B to walk through the system with the team. [7:38]
+- Grad E to create an internal demo for the institute. [13:08]
+- Bhaskara to deliver a belief-net that supports the demo level subdomain by June 1. [22:36]
+- Build the parser, analyzer, and grammar components. [46:27]
+- PhD A to visit the German AI center in June or beginning of July. [55:07]
+- Finish the belief-net design by Monday, June 17. [58:33]
+OPEN:
+- How much of the system to build? [46:27]
+TOPICS:
+- Shift from applied project to basic issues. [11:02]
+- Designing the belief-net structure. [27:59]
+- Formalization of image schemas. [1:00:13]

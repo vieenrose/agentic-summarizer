@@ -1,0 +1,14 @@
+TITLE: Cerebrous: 商業分析與未來展望
+SUMMARY:
+- 分析 Cerebrous 依賴單一客戶的風險及 OpenAI 訂單帶來的機會 [8:15]
+- 探討 Fast Mode 高價 token 需求及企業支付意願 [15:14]
+DECISIONS:
+-
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+- AI 推論市場成長性 [3:34]
+- 技術挑戰與量產可行性 [3:34]
+- 極高速極高溢價 AI 推論市場 [12:24]

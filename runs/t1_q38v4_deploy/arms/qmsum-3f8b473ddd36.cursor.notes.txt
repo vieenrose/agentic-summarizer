@@ -1,0 +1,15 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Prototype development next step [25:35]
+OPEN:
+- Materials for case and other features [25:40]
+- Cost of new remote design [32:17]
+TOPICS:
+- Component design [1:48]
+- Casing design [14:37]
+- Voice recognition [14:37]
+- Remote control redesign [27:16]

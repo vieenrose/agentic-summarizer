@@ -1,0 +1,337 @@
+[0:06] S1: Hey everyone, I'm Alan Shummel.
+[0:08] S1: And this is mitch ashley.
+[0:10] S2: And you're listening to
+[0:12] S2: Devops chats.
+[0:15] S2: We're back.
+[0:16] S2: Mitch, I was away. I'm sorry. I well I'm not sorry.
+[0:20] S2: Sorry not to.
+[0:22] S2: I would not I'm not feeling sorry for you.
+[0:24] S2: Yeah, I know. Sorry that it looked like.
+[0:26] S1: I did. We had the greatest time up in Cape Cod.
+[0:30] S1: You know, we go there. I I used to try to go every year. Now I probably get there every other year, but
+[0:36] S1: You know,
+[0:37] S1: I I love it up there for you know especially if you're like a northeasterner like I am.
+[0:43] S1: It's just a great place to
+[0:45] S1: Go on vacation.
+[0:47] S1: It has a lot of the Hampton stuff without a lot of the Hampton stuff.
+[0:51] S1: Yeah, without the bougie part.
+[0:53] S1: Yeah, it's not bougie.
+[0:54] S1: Okay, God's not bougie. Don't get me wrong, it's
+[0:58] S1: There's plenty of, you know.
+[1:00] S1: huge multimillion dollar mansions and all kinds of nice stuff.
+[1:04] S1: But you you don't have to, you know, women don't have to put their makeup on to go to the store there and be cash.
+[1:11] S1: Yeah, it's very it's very casual. It's good.
+[1:14] S1: Well, how was the lobster?
+[1:16] S1: What lobster?
+[1:17] S1: Or should I say lobster? What's the lobster?
+[1:19] S1: Was there any lobster when you want a monster lobster. That's where you get him. A monster. You want a mini or a monster? And it's not just the lobster, it's the lobster rolls.
+[1:29] S1: And then it's the steamers and the fried whole belly clams and the
+[1:34] S1: What do they call the
+[1:35] S1: 哇。
+[1:36] S1: Not Quag, that'S A place in Long Island.
+[1:39] S1: Qua quahawk, quahawk.
+[1:41] S1: I don't know what that is. Cohog cohog. It's like a stock.
+[1:45] S1: Yeah.
+[1:45] S1: So it's clam with.
+[1:47] S1: With uh
+[1:48] S1: Breadcrumbs and and Pole not Polish, Portuguese sausage and stuff like that.
+[1:54] S1: So
+[1:55] S1: All good stuff.
+[1:56] S1: What a
+[1:57] S1: Just right there is a vacation.
+[1:59] S1: Yeah, yeah, it's all good eating.
+[2:01] S1: Anyway, enough about me and my vacation.
+[2:04] S1: Let's talk dog-ops.
+[2:06] S1: Okay.
+[2:07] S1: Let's talk about debo. What are we talking about today?
+[2:10] S1: No,
+[2:11] S1: One thing I wanted to talk, well, it's the same topic really two different angles.
+[2:16] S1: But that is the increasing uh
+[2:19] S1: joining if you will.
+[2:21] S1: Of devops and dev check ops.
+[2:24] S1: And
+[2:24] S1: Right and.
+[2:25] S1: We look, this is going on now three years or more.
+[2:30] S1: Devop ops is becoming devsite ops.
+[2:32] S1: Security's more important, but it really
+[2:35] S1: Has sort of,
+[2:36] S1: That all did if you will.
+[2:38] S1: And when we talk about software supply chain security,
+[2:42] S1: S bombs.
+[2:44] S1: All of these kinds of things. There was some news this week on the uh
+[2:50] S1: The S E C suited a company because they didn't do that.
+[2:53] S1: That's unequal, excuse me.
+[2:56] S1: Uh, I remember trying to court dismissed the S E C saying they didn't have power.
+[3:01] S1: Yeah, it was the big hack. It led to a big Microsoft, very similar to CrowdStrike kind of stuff became Microsoft's problem.
+[3:09] S1: This also became Microsoft's problems company out of Austin and I know SolarWind.
+[3:14] S1: Solar winds.
+[3:15] S1: There you go.
+[3:16] S2: Right.
+[3:17] S2: Yeah, little company called Little company.
+[3:21] S1: But
+[3:22] S1: In any event, mitch, you know,
+[3:25] S1: It's it's important.
+[3:27] S1: More important than ever,
+[3:30] S1: That we take
+[3:31] S1: Software supply chain security.
+[3:35] S1: You know, really it's it's top of mind. It's top priority.
+[3:39] S1: To the point where
+[3:40] S1: You know,
+[3:42] S1: Over the last three or four years, it's become paramount
+[3:45] S1: Right, when GitLab is a Devsk ops company and
+[3:48] S1: GitHub is about debt cops than Cloudvies is and
+[3:52] S1: J Frog is.
+[3:55] S1: And that's just the Devots companies, right? How many other
+[3:59] S1: Companies are, you know,
+[4:01] S2: Software supply chain, it seems to be the new
+[4:05] S2: The new battleground.
+[4:07] S2: It is, you know, it it.
+[4:09] S2: What it reminds me of uh Cisa came out with their, it's been a little while back in.
+[4:14] S2: Two thousand twenty three.
+[4:15] S2: Ah the secure by security by design.
+[4:19] S2: Um, a program to help kind of elevate, help you elevate security within your organization.
+[4:25] S2: In a software sense, but
+[4:27] S2: In a total security sense.
+[4:28] S2: To and there's even a pledge.
+[4:30] S2: I know AWS either was one of the first or one of the leaders that helped get it started.
+[4:34] S2: Um, there's I can't remember how many companies, you know like two hundred companies that have signed up, you know, vendor, technology vendors that have signed up.
+[4:41] S2: as part of that, and they give you some good
+[4:44] S2: Good ideas, good
+[4:45] S2: Come suggestions of how do you elevate this conversation of
+[4:49] S2: It isn't about, okay, I didn't want to make sure there's no no.
+[4:52] S2: Um,
+[4:53] S2: bad malware in the images I'm downloading from DockerHub. Well, that that's one of a thousand vectors, right?
+[5:00] S2: How do you think about this more holistically, the whole life cycle of how you're developing software?
+[5:04] S2: How do you secure this tool chain?
+[5:06] S2: Uh, that you're
+[5:07] S2: You're using, how do you secure the deployment channels of your software, right? So.
+[5:12] S2: People receive it. They know they're getting the valid stuff.
+[5:15] S2: And uh you know all the code that's yours and all the code that's not.
+[5:18] S2: You know what's in it.
+[5:19] S2: The cool old S bomb and
+[5:21] S1: How do you respond when there's an incident to that? So it's it's it's an industry. I like the program a lot. I don't know that it's gonna
+[5:27] S1: It's not gonna like swing the needle the other way, but I think it's a good start.
+[5:32] S1: Absolutely. You know Mitch, I was interviewing, I did a fireside chat for Cloud native now.
+[5:38] S1: A virtual event,
+[5:40] S1: On the twenty fifth.
+[5:42] S1: And I had the pleasure of interviewing George Castro.
+[5:46] S1: George is like Devrell and
+[5:49] S1: Evangelist for Cloud Native Computing foundation for the ecosystem and partners and everything.
+[5:55] S1: And we were talking about
+[5:58] S1: It's very topic, right? Where,
+[6:01] S1: Um
+[6:02] S1: You know.
+[6:03] S1: Think about
+[6:04] S1: What it used to be?
+[6:06] S1: Before we had open source, before we had cloud native.
+[6:10] S1: And
+[6:11] S1: I mean, even just the concept of
+[6:14] S1: Aversion control.
+[6:16] S1: Right using get.
+[6:18] S1: Perversion control and stuff and
+[6:21] S1: In many ways,
+[6:23] S1: You know george has this, he calls it a naturalist view.
+[6:27] S1: Of
+[6:28] S1: Of of this whole ecosystem.
+[6:31] S1: Where it's an evolving kind of thing. We went, you know, from single stone organisms.
+[6:36] S1: to multi-sell organisms to
+[6:39] S1: mass extinctions to the age of the dinosaurs and
+[6:43] S1: And you know, variations and and everything like this.
+[6:47] S1: And
+[6:49] S1: In some ways, you couldn't have software supply chain security today without having version version controls almost at the
+[6:56] S1: Oh, sure.
+[6:57] S1: At the root of it,
+[6:59] S1: But
+[7:00] S1: You know what we see today,
+[7:03] S1: Is such a
+[7:06] S1: It's very hard to get your head around is the is the problem, Mitch.
+[7:10] S1: It's really hard.
+[7:12] S1: Especially
+[7:14] S1: If you haven't
+[7:15] S1: Been in doing this for twenty years.
+[7:18] S1: Right, we
+[7:21] S2: Ideas kind of run their course too, right? I mean, when we start first start talking about
+[7:25] S2: Devsec ops, it was shipped left.
+[7:28] S2: Right? Well, ok, let's have the developers do it or let's,
+[7:31] S2: work with the developers and the design to kind of fix the problems upfront, which is a good quality and approach to security.
+[7:38] S2: And now I think we're you know now we're much more holistic, at least like most of us are.
+[7:43] S2: Good about.
+[7:44] S2: All of it matters, right? It's the entire tool chain end to end. It's the entire software workflow.
+[7:50] S2: And all parts of it. And then how do you secure elements that are touching those things, right?
+[7:54] S2: How do you secure your cicd platform?
+[7:57] S2: Right. Do you apply things like isolation.
+[8:00] S2: Ah segmentation
+[8:01] S2: Things that we know from the security world kind of entering into the
+[8:05] S2: software and configuration management world, but to your point,
+[8:08] S2: You don't have an S bomb if you don't have a version of the software that it's for, you don't have a version of software if you don't have.
+[8:14] S2: Verge of control.
+[8:15] S2: That's managing all that.
+[8:17] S2: kind of have the input to the whole process, so.
+[8:20] S2: It's.
+[8:21] S2: Much more connected in our thinking today, I think.
+[8:24] S2: versus,
+[8:24] S2: I'm going to solve these individual security problems.
+[8:28] S2: It might
+[8:28] S2: My software development.
+[8:31] S1: Agreed.
+[8:32] S1: Agreed
+[8:34] S1: Um
+[8:35] S1: In that same vein though, Mitchell.
+[8:39] S1: This is not new.
+[8:41] S1: Right, they have sec ops and and
+[8:45] S1: Whether you want to call it set up,
+[8:47] S1: Marrying Dev, breaking down the silos between them.
+[8:51] S1: You know I think,
+[8:53] S1: Sometimes we forget,
+[8:54] S1: Where we live.
+[8:57] S1: This is old hat for us.
+[8:59] S1: So.
+[9:01] S1: I was recently speaking with some of the few people like the forbes.
+[9:05] S1: Council.
+[9:06] S1: Someone had sent me an invite if I
+[9:09] S1: You know, wanted to join the Forbes Council and and let's be clear.
+[9:13] S1: Wanting to join the forms council means writing a check. Yeah, exactly. Because it's it's it's sponsored.
+[9:19] S1: It's pure sponsor stuff and if you're at, you check, you can write.
+[9:23] S1: What?
+[9:23] S1: You can write as much as you want, but getting them to approve it is a very time consuming thing.
+[9:28] S1: So it really comes down you could write maybe once a month, once every two months or something.
+[9:32] S1: But
+[9:33] S1: So I was looking at the Forbes Council and I see an article that came out in the last couple of days.
+[9:38] S1: About, you know, breaking down
+[9:42] S1: The silo between dev and
+[9:45] S1: I said, oh, someone's writing similar depths that God stuff, just like I would.
+[9:51] S1: And and yes, it is a pay for play.
+[9:54] S1: Bid for.
+[9:56] S1: Everybody, if you pay your money and you get your ticket.
+[9:59] S1: Right.
+[10:00] S1: You pays you money, you get your ticket.
+[10:03] S1: But I read this article and I say to myself.
+[10:08] S1: Delf.
+[10:09] S1: Is this the state? Is this the state?
+[10:14] S1: Like are we at this remedial level? Do people.
+[10:17] S1: Not in my bubble,
+[10:20] S1: Are they just discovering this? Is there such a time lag?
+[10:25] S1: Right between the early adopters to the early mainstream to the later mainstream to the laggards.
+[10:30] S1: Because this is kind of elementary.
+[10:34] S2: One plus one equal two stuff and I really
+[10:38] S2: If that's the state of the art, no wonder why we're so screwed up.
+[10:42] S2: Well, you know what, I think something that you and I just don't have the exposure to because we're not in a large enterprise.
+[10:48] S2: Like so many people work in,
+[10:50] S2: The size of the organizations.
+[10:52] S2: And you know the the mass of it and the uh
+[10:56] S2: The momentum kind of the flywheel of each one of those groups of what they're on and getting them to kind of step out of that group.
+[11:03] S2: Yeah we all live in that world. So,
+[11:05] S2: Rust, you know, it's just like the difference between you were talking about the Forbes. You could sign up and be paid to publish one article on Forbes.
+[11:13] S2: Uh, or you can you and I can turn around and post an article in the next half hour on our sites. You know, it's sort of like we're at the opposite ends of the spectrum.
+[11:21] S2: So I think it's hard for us to appreciate.
+[11:23] S2: Sometimes how hard it is to get
+[11:26] S2: Things changed inside of an organization.
+[11:29] S2: And uh what somebody like a a larry mashron,
+[11:32] S2: did when he was at Comcast.
+[11:34] S2: And give Dev ops and devsick ops rolling and you just have to have people.
+[11:39] S2: We're sort of a force of.
+[11:40] S2: Power.
+[11:41] S2: Source, you know,
+[11:42] S2: Well, force of nature
+[11:43] S2: That can just grind it out and and applicating.
+[11:47] S2: Be that advocate to get people on board and start making changes. So,
+[11:52] S2: I have to remind myself of that a lot, 'Cause you know we're talking about cloud native adoption. Well, how much.
+[11:56] S2: How many non you know mon modelith and non,
+[12:00] S2: What need of apps do we have out there? Well, ninety percent of it, ninety nine percent of it probably.
+[12:05] S2: You know it'S A small part of the world.
+[12:07] S2: Growing.
+[12:08] S2: Growing fast, but it's not what most of the world is.
+[12:11] S2: No.
+[12:12] S2: And you know.
+[12:13] S2: Speaking of Larry Mascheroni, uh he actually is presenting on our cloud Native Now virtual event on the twenty fifth.
+[12:20] S2: Then he is, you want to talk about a force of nature. Larry is. I I enjoy.
+[12:25] S2: Listening to his presentations.
+[12:27] S2: But um.
+[12:28] S2: In any event,
+[12:31] S1: You know Mitchell, it goes back to something I realized we're doing devops dot com ten years ago.
+[12:36] S1: We've lived in this devote spiral.
+[12:39] S1: Ten years.
+[12:40] S1: Class years.
+[12:41] S1: And
+[12:43] S1: For all the people, the naysayers, the platform engineerings and this and that, long live this.
+[12:50] S1: That's dead.
+[12:52] S1: The fact of the matter is.
+[12:55] S1: When you get out to the mainstream to these large organizations.
+[12:59] S1: All of these concepts are still relatively
+[13:03] S1: New and untested and
+[13:07] S1: Novel.
+[13:07] S1: To that.
+[13:08] S1: Right, they're still going through their adoption curves and so forth.
+[13:12] S1: So,
+[13:13] S1: I think it's important to remember that.
+[13:16] S1: When and when you see an article like this in a Forbes.
+[13:20] S1: You know you are reminded that, hey, the world.
+[13:23] S1: World does it
+[13:25] S1: Necessarily
+[13:27] S1: March to our drop.
+[13:28] S1: Or we don't march to their drum or we're, you know,
+[13:31] S1: There are things I'm sure we're drastically behind Dona Mitchell, such as.
+[13:36] S1: You know hot new music out there today, but
+[13:41] S1: You know it really struck me like man,
+[13:44] S1: Who the heck?
+[13:45] S1: Who the heck needs this?
+[13:46] S1: I know the article you were talking about. It was when I read it, it was like
+[13:51] S1: I felt like I was reading an article seven years ago or five years ago. That's something you know what I mean eight years ago. And that's no diss against the author of the article. It's I mean, it's it's where they are, right? So it's
+[14:03] S1: I gotta believe it's you know authentic and representing their thinking about this.
+[14:08] S1: So let me flip the coin on you though.
+[14:11] S2: I I think whether you you know the world has flipped over and everybody's doing dub ops and everything's changed, no.
+[14:17] S2: But I think what has changed is,
+[14:20] S2: DevOps has survived and and DevOps has thrived in its own way. Maybe it's not, you know.
+[14:26] S2: Pervasive on everything.
+[14:28] S2: But because devops,
+[14:29] S2: survived and thrived. I think that's why we have platform engineering as a as a discipline. That's why we have absolute.
+[14:37] S2: You know I think about before we had devops,
+[14:40] S2: What new thing was there? It was agile. That was noob.
+[14:46] S2: Yeah, we just had ops and development and database people and
+[14:50] S1: network people and cloud security and they all did their thing, right? They didn't they didn't pay attention to each other.
+[14:57] S1: They just fought over budget.
+[14:59] S1: Because that's that exactly because.
+[15:02] S1: I think that's part of the era of IT is cost better, not as IT is cost generator.
+[15:10] S1: Yep.
+[15:10] S1: Not part of the business cost of the business.
+[15:13] S1: Absolutely.
+[15:14] S2: So anyway, that's all.
+[15:16] S2: That's what I
+[15:17] S2: That's what I had for this week on devops.
+[15:20] S2: Um.
+[15:22] S2: I don't know if you have anything else you're working. Actually, we do. You have something you're working. Go ahead.
+[15:28] S2: Yeah, we're we're.
+[15:29] S2: Just putting the finishing touches on the, I know I've talked about it before, um, on the devox next.
+[15:35] S2: Um, report. That's looking forward to this.
+[15:38] S2: Yeah, I think we'll do a whole series of podcasts on that one next year. Good. I think it's gonna be really worthwhile because there's some great stuff in it.
+[15:45] S2: We're also um.
+[15:47] S2: And it looks like about August timeframe, gonna be doing our
+[15:50] S2: AI and Devops.
+[15:52] S2: Report.
+[15:53] S2: Uh, which has got some really great data. Well, annual AI.
+[15:57] S2: There you go.
+[15:58] S2: Yeah.
+[16:00] S1: Twenty twenty four, baby.
+[16:01] S1: Yeah, yeah.
+[16:03] S2: I get you.
+[16:04] S2: So, we did a we did a study a couple of years ago, which was more about kind of what do you think.
+[16:09] S2: is going to be happening with AI and delafs and it's it's pretty surprising how much
+[16:13] S2: People said it's influencing and impacting their work already, but I guess in the world of co-pilots and
+[16:19] S2: Generative AI, it's easy for developers to use it, so.
+[16:22] S2: On the other hand, it's not too surprising, but
+[16:24] S2: It's good stuff. It's so much fun to work on this stuff. I enjoy it so much.
+[16:28] S2: Cool.
+[16:29] S2: So
+[16:29] S2: All right.
+[16:30] S2: That's about all I have, Mitch. I gotta go actually hop on another recording.
+[16:35] S2: Uh,
+[16:36] S2: Great seeing you. I'm happy to be back.
+[16:38] S2: We'll be back next week.
+[16:40] S1: Absolutely. We'll be back. Is is next week Black Eye? No.
+[16:44] S1: Yeah.
+[16:45] S1: So we'll be back next week with another fresh DevOps chat.
+[16:49] S1: And until then though, this is alan shummel.
+[16:51] S1: And mitch ashley.
+[16:53] S1: And you just listened to another episode of
+[16:56] S1: Devops chance.
+[16:58] S1: We're out.

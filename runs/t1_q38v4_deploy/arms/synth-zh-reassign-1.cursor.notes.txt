@@ -1,0 +1,11 @@
+TITLE: 人事凍結討論
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+-
+OPEN:
+- 家豪請假三週 [2:00]
+TOPICS:
+- 人事凍結 [0:00]

@@ -1,0 +1,404 @@
+[0:14] S1: Hello, ladies and gentlemen.
+[0:15] S1: Welcome to another episode of
+[0:17] S1: Adventures in devox.
+[0:18] S1: Today, I am your acting host, Jonathan Hall.
+[0:21] S1: And i have with me.
+[0:23] S1: Absolutely no one.
+[0:25] S1: So.
+[0:26] S1: I'm gonna do a solo show.
+[0:27] S1: Or at least I'm going to try. It will be an adventure.
+[0:29] S1: I hope you'll join me.
+[0:33] S1: Before the show, as I was staring at my screen trying to decide what I could talk to you about.
+[0:38] S1: Without.
+[0:39] S1: Anybody.
+[0:39] S1: Helping me.
+[0:40] S1: I decided I'm gonna talk to you about getting a job.
+[0:44] S1: The new year is upon us.
+[0:45] S1: That means a lot of companies have new budgets, they've opened new positions. It's a great time for a lot of people to start looking for work.
+[0:52] S1: Or to continue if you've already started.
+[0:55] S1: So, I think it's a timely topic.
+[0:57] S1: Before I talk about some of my suggestions and advice on how you might go about getting a job.
+[1:03] S1: or more to the point, how you might interview for a job and what you might do in that regard.
+[1:07] S1: I want to talk about my background so you understand.
+[1:10] S1: Where I'm coming from and and my sort of employment history a little bit.
+[1:15] S1: So
+[1:15] S1: I have spent most of my career.
+[1:17] S1: As a software developer.
+[1:19] S1: Back in two thousand six, I applied for a job as a network administrator actually.
+[1:24] S1: During the job interview, they gave me a whiteboard and a marker.
+[1:27] S1: And they said, Jonathan, we just bought three new servers.
+[1:29] S1: And we want to set up our spam email filtering.
+[1:32] S1: service on these.
+[1:34] S1: Three servers.
+[1:35] S1: To serve customers in the cloud.
+[1:37] S1: Sort of a sass.
+[1:38] S1: How would you do that?
+[1:39] S1: And so I drew some squgly lines between these three boxes that represented servers.
+[1:44] S1: And I guess they liked it because they said, great, Jonathan, we want to hire you to come do that for us.
+[1:48] S1: So I I joined this company.
+[1:50] S1: as a essentially an operations network engineer.
+[1:53] S1: But within a couple of months, the lead developer of the project, and it was a small team. There were two or three of us at the time.
+[1:59] S1: The lead developer left the company.
+[2:01] S1: So they were looking to
+[2:03] S1: To replace him, of course.
+[2:04] S1: And
+[2:05] S1: While they were looking.
+[2:06] S1: Of course, they still needed some work done. Customer requests came in or bugs needed to be fixed.
+[2:11] S1: So I was sort of filling the gap in in helping with some of these requests for a while.
+[2:15] S1: So after a while of doing that, they decided I was doing a reasonable job and and they didn't necessarily need to replace me. So they said, Jonathan, would you
+[2:23] S1: Be willing to be.
+[2:24] S1: Our new software developer and and I agreed and we we did hire some uh some other help over time, but uh for for a long time.
+[2:30] S1: I was the elite developer on this project.
+[2:32] S1: And also the lead network slash only network engineer on this project.
+[2:37] S1: So.
+[2:38] S1: Although my career has been mostly software development, it has been
+[2:41] S1: With a slant towards.
+[2:43] S1: Backend services, software deployment.
+[2:46] S1: network infrastructure and and all of these sorts of things. So so very much what we would nowadays call devops, although that term didn't exist at the time.
+[2:52] S1: I worked at that company for close to ten years and since then I've
+[2:56] S1: Applied it.
+[2:57] S1: a large number of other companies. I've interviewed at probably several dozen.
+[3:01] S1: I probably had at least.
+[3:02] S1: One or two dozen job offers in the last.
+[3:05] S1: Say five years.
+[3:06] S1: Because i like to.
+[3:07] S1: I I like to when possible, have two or three offers on the table and then I can choose the best one.
+[3:11] S1: So that's a little bit about my experience as a software engineer as it relates to finding a job. I have also been on the other side of the table. I have been an engineering manager. I have hired, I have interviewed and hired a large number of developers for multiple companies.
+[3:23] S1: And so I've I also have my own style of
+[3:26] S1: of interviewing.
+[3:27] S1: Candidates.
+[3:28] S1: And that definitely influences the things I'm going to be telling you today.
+[3:31] S1: So, with that background in mind.
+[3:33] S1: Let me talk a little bit about
+[3:35] S1: What I like to do.
+[3:37] S1: To prepare.
+[3:38] S1: For a job interview as a candidate.
+[3:40] S1: And actually, before I talk about what I do.
+[3:43] S1: To prepare.
+[3:44] S1: Let me tell you what I don't do.
+[3:46] S1: To prepare.
+[3:46] S1: I see a lot of.
+[3:48] S1: Talk.
+[3:48] S1: On LinkedIn, on social media.
+[3:50] S1: Book titles.
+[3:51] S1: About,
+[3:52] S1: Essentially cramming.
+[3:54] S1: For a job interview.
+[3:55] S1: Cramming is of course the idea of
+[3:57] S1: Learning,
+[3:58] S1: Facts, memorizing facts about something about.
+[4:01] S1: Say AWS.
+[4:03] S1: or about a programming language.
+[4:05] S1: or about network infrastructure or whatever the topic is. Learning these facts so that when they ask you a question.
+[4:12] S1: When they say how do you do X?
+[4:13] S1: On AWS, you can give them an answer.
+[4:16] S1: Or when they say how many bytes.
+[4:18] S1: In or how how many.
+[4:19] S1: Bites in a TCP header or something like that.
+[4:21] S1: You have an answer.
+[4:22] S1: I don't do that and I don't think you should either.
+[4:25] S1: Don't think cramming.
+[4:26] S1: For.
+[4:27] S1: Interviews is a good idea.
+[4:28] S1: And and let me explain.
+[4:30] S1: Why?
+[4:30] S1: First, I believe that.
+[4:32] S1: An interview.
+[4:33] S1: is about, it really is about or should be about getting to know each other.
+[4:37] S1: The company getting to know you and you getting to know the company.
+[4:40] S1: And if you are
+[4:41] S1: Reciting memorized facts.
+[4:43] S1: You're not
+[4:43] S1: Giving an accurate representation of yourself.
+[4:46] S1: And I don't want to get hired.
+[4:48] S1: based on a false representation of myself because that means that I will have unrealistic expectations.
+[4:53] S1: On the job.
+[4:54] S1: And I'm setting my own self up for failure.
+[4:56] S1: So I don't want that.
+[4:58] S1: If I know an answer by heart.
+[5:00] S1: That's a different thing because it's not a sort of false sense of
+[5:03] S1: who I am. If somebody asks me.
+[5:05] S1: how many bytes are in a TCP header and I actually know the answer because I've done TCP engineering for so long that I know the answer.
+[5:11] S1: Then it's fine to give that answer.
+[5:12] S1: And by the way, I don't know the answer, but cramming.
+[5:15] S1: The idea of memorizing facts quickly for a short-term recall.
+[5:19] S1: I think is is a dishonest way.
+[5:22] S1: Maybe dishonest isn't the right answer, but it is it's not a genuine way of giving.
+[5:25] S1: An interview.
+[5:26] S1: And it's setting yourself up for failure.
+[5:28] S1: That's the first reason I don't like this approach. Second.
+[5:30] S1: I think it's a terrible way to do an interview.
+[5:33] S1: It's terrible for the company doing the interview.
+[5:35] S1: So as a candidate.
+[5:37] S1: I don't really want to work for a company.
+[5:39] S1: That does that style of interview.
+[5:40] S1: Because I'm
+[5:41] S1: likely to be working for a company that doesn't understand engineering correctly.
+[5:45] S1: And let me explain what I mean by that.
+[5:46] S1: As a hiring manager or a development manager, a software development manager or an engineering manager.
+[5:52] S1: I want to hire engineers who can solve problems. I don't want to hire engineers who have answers memorized. In fact, the memorized answers are usually the least valuable.
+[6:01] S1: I want an engineer who when they're faced with a new problem they've never seen before.
+[6:05] S1: They know how to find an answer.
+[6:06] S1: Now, I don't care if they find the answer in their own head.
+[6:09] S1: If they invent something, I don't care if they go to Google.
+[6:12] S1: I don't care if they ask their grandmother.
+[6:14] S1: I don't care if they go to a meetup and talk about it over the weekend. I don't care how they get the answer. What I care about is that they can provide an answer to solve my business needs.
+[6:22] S1: And canned.
+[6:23] S1: trivia questions like how many bytes in a TCP header.
+[6:26] S1: Don't help solve those problems.
+[6:28] S1: So.
+[6:29] S1: As a candidate again.
+[6:30] S1: I avoid this sort of cramming approach because I think it's not genuine.
+[6:34] S1: And it's also
+[6:35] S1: Not useful.
+[6:36] S1: And so I don't want to work for companies that that rely on that sort of interview process.
+[6:40] S1: Well, that's what I don't do. Let me talk about some things I do.
+[6:43] S1: do when I'm preparing for an interview. I'm still talking about before I'm at the interview, right?
+[6:47] S1: One of the first things I will do is I will read up on the company.
+[6:50] S1: I think that's really important.
+[6:51] S1: Now there there are times, they're rare, but there are times when this is not practical. If you're interviewing at a stealth mode startup and they
+[6:58] S1: have
+[6:59] S1: No website or the website is intentionally vague and I've had this experience once. I once interviewed at a startup in this stage.
+[7:05] S1: And I really knew nothing about what they did.
+[7:07] S1: from the website. But that's okay. At least I looked at the website. So you want to look at the website and know enough.
+[7:13] S1: that you can have a reasonably intelligent conversation about the company.
+[7:16] S1: during the interview. Of course, it's also good to know if you want to work in the industry and that type of company, if you have a particular industry in mind or certain types of companies you don't want to work for, then this helps you solve that problem. But while you're investigating the companies, there's a few things you should definitely look at. Spend ten, fifteen minutes researching the company and
+[7:34] S1: Learn what their core business is.
+[7:36] S1: If possible, if if you can't, for whatever reason, because the website doesn't tell you, then that's fine.
+[7:40] S1: But learn their core business. Are they selling to businesses? Are they selling to consumers? Do they sell physical goods like
+[7:46] S1: Say amazon.
+[7:47] S1: Do they sell services? Do they sell software?
+[7:50] S1: How do they make money?
+[7:51] S1: Or are they a nonprofit? Learn the high level information about what is their business model. You don't need to know all the details, but generally speaking, what do they do? It's good to know if they're a publicly traded company or or a privately held company. Are is the is there a single owner or are there multiple stakehold shareholders? You know things like this are are good to know. They're not always essential, but they're good to know. So just learn a little bit about the company. How big is the company? Is it a few
+[8:13] S1: Is it five people? Is it a thousand people? Is it a worldwide company? And every country on the planet with thousands of of people. Learn the high level stuff.
+[8:21] S1: And while you're doing this.
+[8:22] S1: Have some questions in mind.
+[8:24] S1: Take notes if you want to.
+[8:25] S1: Questions that you can ask.
+[8:27] S1: during the interview. Every good interview will give you an opportunity to ask questions. It's really a two-way street, right? It's not just about you introducing yourself to the company.
+[8:36] S1: It's not an audition. It's a two-way conversation. You're getting to learn to know each other.
+[8:41] S1: Think of it more like a date than like an audition.
+[8:42] S1: So you need to be asking questions at the company too, and if they don't give you time for that.
+[8:46] S1: Ask for time for that. That could be one of the first things you say in the interview. Will I have time for questions?
+[8:51] S1: So have two or three good questions ready.
+[8:53] S1: I can tell you this honestly.
+[8:54] S1: As somebody who has done many interviews.
+[8:57] S1: As a hiring manager.
+[8:58] S1: It is it always makes a good impression.
+[9:00] S1: When the candidate asks.
+[9:02] S1: Me questions. When I
+[9:03] S1: When I turn the interview around at the end, you know, there's thirty minutes, twenty minutes left, and I say, what questions do you have?
+[9:09] S1: And the candidate looks at me and is like, oh no, nothing really.
+[9:12] S1: That really leaves a bad impression.
+[9:14] S1: And I honestly, I don't care what they ask, as long as they ask something and as long as it's a meaningful question. So have questions ready to ask. And while you're researching the company.
+[9:21] S1: is probably the best time to prepare some of those questions. I'll talk about some more of those types of questions later, but but
+[9:26] S1: Do it here. If you can't figure out who what their core business is.
+[9:29] S1: Definitely ask that during the interview.
+[9:32] S1: Say.
+[9:32] S1: I looked at your website for twenty minutes and I couldn't find an answer. Do you primarily sell to
+[9:37] S1: to end users or to businesses or or whatever the question is. So get questions, have two or three questions at least ready when you go into the interview. After researching the company, I like to have a list of certain standard questions ready.
+[9:48] S1: And these are questions that I could ask at any of any company. So if you forget to do
+[9:52] S1: The
+[9:53] S1: Uh, company research for some reason or maybe it's a company you were already familiar with, so you you skipp that step.
+[9:58] S1: You could still fall back to some of these questions. So when the interviewer says, what questions do you have, you can go straight to these. And these are just standard questions that that are usually appropriate at any company.
+[10:07] S1: Sometimes these questions do get answered.
+[10:09] S1: Naturally during the course of an interview, so you can skip the ones that have already been answered, but questions I like to ask.
+[10:14] S1: Things like what tech stack does the company use?
+[10:16] S1: Do you use Java or she's C sharp?
+[10:19] S1: Are you a Microsoft shop or a Mac Place, whatever.
+[10:22] S1: Use AWS or google,
+[10:24] S1: What project management or agile methodology do you use? Are you a scrum shop?
+[10:28] S1: Or do you use Kanbach or is it a mix your own and and do whatever you want sort of place?
+[10:34] S1: Do you do agile? Do you do devops?
+[10:36] S1: Ask them what devops means to them.
+[10:38] S1: Because.
+[10:39] S1: DevOps has so many meetings around the world. Every company kind of has their own concept. Ask them what they think DevOps means. Ask them, do they have DevOps engineers on each
+[10:48] S1: team or do they have a separate platform team? Ask them questions like this.
+[10:54] S1: What a question I like to ask.
+[10:55] S1: Is.
+[10:56] S1: What's the main reason I should not work here?
+[10:58] S1: And that's uh that's a good way to get a little bit of a an honest
+[11:02] S1: response from whoever's interviewing you, sometimes it's two or three people. If it is, ask each of them to answer individually, what's the number one reason I should not work here?
+[11:10] S1: And I ask this at every interview when I'm a candidate and I get good answers. So
+[11:14] S1: Consider that one. Closely related to the list of standard questions.
+[11:18] S1: I think it's really important to know.
+[11:20] S1: You're deal breakers. Before you go into an interview, it's good to be prepared.
+[11:24] S1: With a list of things that you absolutely
+[11:26] S1: want to have or need to have for your job.
+[11:28] S1: This list often gets longer.
+[11:30] S1: As you get older.
+[11:31] S1: And that's.
+[11:32] S1: That's appropriate. Uh, but there probably are some obvious things on your list no matter stage of your career.
+[11:38] S1: If you're fresh out of university or you've just taken a boot camp or something like that and this is your first tech job.
+[11:43] S1: You're still gonna have a list. It might be sure, but you'll have a list. An obvious thing would be something like.
+[11:48] S1: Uh, what city is it in or is it remote?
+[11:49] S1: You probably don't want a a sixteen hour commute.
+[11:52] S1: Every morning to your job. So geography is going to be an important thing on your list. Are you willing to commute?
+[11:57] S1: Are you willing to relocate?
+[11:58] S1: If the job is sixteen hours away, that would obviously mean actually you need to relocate. Are you willing to do that?
+[12:04] S1: Are you willing to pay for the relocation or do you need the company to give you a relocation?
+[12:08] S1: bonus if that's what you're going to be doing. Do you need a four day schedule or a five day schedule or something like that? Maybe you need to take care of your children. Maybe you
+[12:16] S1: Are still studying.
+[12:17] S1: Know your schedule requirements.
+[12:19] S1: Maybe you're willing to work forty hours a week, but it needs to be.
+[12:23] S1: On four days a week, you know, four ten hour days, something like that.
+[12:25] S1: Know that ahead of time and and be prepared.
+[12:28] S1: Uh, so it doesn't take you by surprise when they ask you and you're just like, yeah, okay, whatever.
+[12:32] S1: And then later you regret it, knowing your deal breakers beforehand.
+[12:35] S1: Putting them on paper or at least having them in your head.
+[12:39] S1: is really valuable when it comes time to to do negotiations and and make an offer. Do you want a conference budget or a learning budget? Is that important to you? Uh that usually becomes more important as your career advances.
+[12:50] S1: Many companies offer that. Some will if you ask. I've used that as a negotiation technique. Maybe they can't give you a pay raise, but they can offer you an extra thousand dollars.
+[12:58] S1: per year to go to conferences or something like that.
+[13:00] S1: And anything else you think of? Maybe you want a specific operating system on your laptop.
+[13:06] S1: Maybe you want a.
+[13:07] S1: Ah
+[13:08] S1: Monitor to maybe you're working from home and you want a big monitor from them.
+[13:11] S1: Whatever. Whatever's important to you.
+[13:13] S1: Just have your list ready and you can have a list of deal breakers and a list of nice to haves.
+[13:18] S1: But bring those things up and ask about them. If there's an important deal breaker, be prepared to ask during the interview if that's gonna be a problem for you.
+[13:25] S1: So so that's.
+[13:26] S1: Basically my interview preparation. It's it's those four things. It's not cramming.
+[13:29] S1: Research the company, have a list of standard questions and know my deal breakers. So that's kind of the it all I do.
+[13:34] S1: to prepare for an interview.
+[13:35] S1: Once I'm at the interview, at the first stage or so.
+[13:38] S1: That's when.
+[13:39] S1: My mindset.
+[13:40] S1: changes a little bit and I'm I'm working on different things mentally. One of the things I'm looking for at that stage is how they do technical evaluations.
+[13:48] S1: In my view.
+[13:50] S1: Automated.
+[13:51] S1: Coding challenges are a complete waste of time.
+[13:53] S1: whether it's Hacker Grank or Elitecode or anything like that.
+[13:56] S1: It simply does not test.
+[13:58] S1: The things that matter.
+[14:00] S1: On the job.
+[14:00] S1: It's high pressure.
+[14:02] S1: It makes people nervous.
+[14:03] S1: And it's completely artificial environment.
+[14:05] S1: Nobody is going to ask you to traverse a linked list.
+[14:09] S1: on the job in thirty minutes. Nobody's ever going to do that, I promise you. What they will ask you to do is
+[14:14] S1: is solve a performance problem in production and do it as quickly as you can. If that takes thirty minutes or six weeks, do it. So I avoid hacker rank style questions.
+[14:24] S1: Yes.
+[14:24] S1: You're early in your career and you
+[14:26] S1: Just need a job.
+[14:28] S1: Maybe go ahead and do it.
+[14:29] S1: Not everybody's good at those tests. Actually, I'm not very good at them.
+[14:32] S1: It's a lot more of a mental game than it is a a uh.
+[14:35] S1: Capabilities test really.
+[14:37] S1: So if you need to.
+[14:38] S1: And you're good at it, go ahead.
+[14:40] S1: Otherwise, I just skip those. I would tell the the interviewing.
+[14:44] S1: Manager, I'm sorry, I don't do tests like that. Well, actually there's two options. At this stage of my career.
+[14:49] S1: What is.
+[14:49] S1: Relatively easy for me to find.
+[14:51] S1: new offers, uh new new companies to interview that. I just
+[14:55] S1: pass on this company. So they asked me to do a hacker rank or lead code.
+[14:58] S1: I just like.
+[14:58] S1: withdraw my
+[14:59] S1: Candidacy immediately.
+[15:01] S1: For the one thing, I don't really want to be working for a company that uses that.
+[15:04] S1: as part of their screening because they're not doing a good job of screening.
+[15:08] S1: But if you're looking, if you really need a job, if you're either desperate or it's your first job, you can't be that picky, and that's fine.
+[15:13] S1: Ask if you could pass on it and if not, maybe you do it, maybe you don't, but you make that call.
+[15:18] S1: I don't like those types of tests.
+[15:19] S1: I'm also not a big fan of the take home long-term coding tests where they ask you to write a rest API or to build a a small test app that does something. If you
+[15:28] S1: are faced with that. I I do have some advice that uh
+[15:32] S1: that might help, although it takes a little while to get there. I've been coding for for many years and I have a couple of open source projects. One of them has something like three hundred stars on KitHub.
+[15:40] S1: So what I usually do is when somebody asks me to do whether it's Hacker Rank or a take home style.
+[15:46] S1: coding assignment. I say thank you for offering offering me to to do that, but I think it would be a better use of both our time.
+[15:52] S1: If you would review this code that I've already written.
+[15:54] S1: It's much more extensive than anything that I could do.
+[15:57] S1: And a half day project.
+[15:58] S1: And it gives you a real sense of the code I have.
+[16:00] S1: I have written. And I have had many companies take me up on that and and say thank you. We'll we'll review that instead. I've also had some say no, we really want you to do our coding challenge
+[16:08] S1: If if they say that, then then you decide whether you want to do the coding challenge or not. If you don't have
+[16:13] S1: an open source project like that, and I'm guessing most of you don't.
+[16:16] S1: That's fine. It doesn't need to be like that. If you can get some code.
+[16:19] S1: From a previous job that
+[16:21] S1: You're legally allowed to share. You don't have an N D A or something that keeps you from sharing it. You could use that. If you're in university, use one of your coding assignments from university. Put that on your GitHub and point potential employers to that next time you're asked to do a coding assignment, say.
+[16:37] S1: I think it'd be a better use of our time if you would review this quote I already wrote. Would you consider that if you don't have those options, you could easily
+[16:43] S1: Do a coating kata.
+[16:44] S1: Uh, codecutter dot com has a bunch of
+[16:46] S1: Cadas, which are basically just little.
+[16:48] S1: story problem, so to speak. They're kind of like a a hacker rank style challenge, but
+[16:52] S1: Usually a little bit broader.
+[16:54] S1: And you do it on your own. Pick one or two that you like,
+[16:56] S1: Turn them into some code and put them on GitHub and and point a recruiter or a hiring manager to that and ask if they would considered that.
+[17:02] S1: As the last resort.
+[17:03] S1: If you simply don't have the time to do that, maybe you have a family or you're too busy for whatever reason, the next time somebody asks you to do a coding challenge, go ahead and do it.
+[17:11] S1: But keep that code and put it up on GitHub and and then the second time somebody asks you.
+[17:17] S1: Ah to do a coding challenge
+[17:18] S1: Point them to that.
+[17:19] S1: And say, I've already written this code, would you consider that instead?
+[17:22] S1: That will save that that will potentially save you.
+[17:24] S1: Many hours of unnecessary coding.
+[17:27] S1: during your interview search.
+[17:29] S1: or during your job search while you're interviewing. So I I highly encourage you to do that.
+[17:33] S1: You have the option of deciding whether or not it's right for you.
+[17:37] S1: To just to.
+[17:38] S1: Refuse.
+[17:39] S1: to continue with the companies that
+[17:41] S1: Require.
+[17:42] S1: a coding challenge, but at least you give them the option and you might save yourself.
+[17:46] S1: four eight, ten, twelve hours of coding that isn't necessary.
+[17:49] S1: If they're willing to look at some previous written code.
+[17:52] S1: During the interview, I will ask about
+[17:54] S1: Whether or not or or what coding what what
+[17:56] S1: What sort of development environment they use? And what I mean by that is, do they let me choose my own IDE or do they have maybe they already have a a group license for
+[18:06] S1: For a particular.
+[18:07] S1: IDE brand and and that's that's what they have and that's all.
+[18:09] S1: Maybe you care about operating system. Do you want to, are you a Windows user?
+[18:13] S1: Maybe you're a Mac user. Do you mind switching? If you're a Windows user and they give you a MacBook, is that going to bother you?
+[18:18] S1: If it does, if you're if you feel less productive or you just don't like Mac for some reason, you can ask about that during the interview.
+[18:23] S1: And tell them that you really want Windows. Or if you're like me and you're a Linux user, then maybe it's even more of a contentious issue.
+[18:29] S1: But you know, I I really want to work in Linux. I've I've used Windows and Mac and Linux and I'm far more productive in Linux. So for me, that's the choice. But just just have that in mind. What's important to you and ask about it. This is another one of the questions you could you can make one of your standard questions. Do I get to choose my operating system? Can I choose my IDE? Can I choose the tools I use, et cetera, et cetera? Maybe maybe they let you choose but they won't pay for it. So ask about that, you know.
+[18:53] S1: If you want to use jet brains, that's fine, but you have to buy your own license or something. Ask those questions if that's important to you. And one one of the other things I I really
+[19:00] S1: I really it'S A red flag for me.
+[19:02] S1: During the interview.
+[19:03] S1: Is gotcha trivia type questions.
+[19:06] S1: I was actually in an interview.
+[19:07] S1: Just a year or two ago.
+[19:09] S1: For a site reliability engineer role.
+[19:11] S1: And the CEO of the company actually.
+[19:14] S1: Ask me, what is the R G B value?
+[19:17] S1: for yellow. And I my mind was blown. Like why why would you ask anybody this? Why would you even ask a web designer or a graphics designer this question? Maybe they know, but it's like the
+[19:26] S1: There's there's color pickers and there's Google, just look it up. Nobody needs to memorize this. There's no reason. And and aside from that, who's actually using pure yellow on our website anyway? You're gonna be using some shade. He also asked me the difference between X HTML and HTML five and and a whole slew of other ridiculous questions that just had nothing to do with the job at hand.
+[19:44] S1: I told him several times, I don't see how this relates and.
+[19:48] S1: At the end, I just I I withdrew my candidacy. I was like, I'm not gonna work for this company.
+[19:52] S1: They don't know how engineering works. They're asking ridiculous.
+[19:55] S1: Unrelated questions.
+[19:56] S1: So,
+[19:56] S1: I talked about what I do to prepare for an interview and
+[19:59] S1: How I like to do the interview.
+[20:01] S1: Make sure that you have a chance to ask your questions. If if they don't give it to you, ask for it.
+[20:06] S1: An easy way to do that.
+[20:08] S1: Is that the beginning of the interview during the introductions, they they're probably gonna ask you to
+[20:12] S1: Tell them about yourself, say.
+[20:13] S1: Here's my history.
+[20:14] S1: By the way, will I have time for questions at the end? If they don't give you time for questions at the end and and your time has run out and they're pushing you out of the room.
+[20:21] S1: maybe asked to follow up by email or or if they can stay an extra five to ten minutes to ask you questions, but
+[20:25] S1: Make sure you ask your questions. As a hiring manager.
+[20:28] S1: people who ask me questions are are impressive. The the ones who don't, I I don't have a good opinion of them. So I think I have said enough. My throat is getting dry. I don't know what else I can talk about when I'm
+[20:39] S1: By myself, so.
+[20:41] S1: I think we're gonna call this an episode.
+[20:42] S1: I guess it's time for picks.
+[20:46] S1: So I'll turn it over to myself to do picks.
+[20:49] S1: I'm gonna pick.
+[20:49] S1: I'm I'm gonna promote myself since since I'm
+[20:52] S1: drying my throat out talking today. I'm gonna promote my own material.
+[20:56] S1: And we're just gonna call it a day. I have a daily mailing list where I talk about
+[21:00] S1: All things related to devops and software development, and I do talk about these topics about
+[21:05] S1: how to get a a better job.
+[21:07] S1: how to interview things like that that comes up.
+[21:10] S1: fairly frequently, if you're interested, you can go to jhall dot io slash daily.
+[21:15] S1: You can sign up for the list. It's completely free.
+[21:17] S1: Occasionally I will.
+[21:19] S1: promote a paid product on there that that I I
+[21:22] S1: I do, but for the most part it's just free information I like to give back to the community. So you're welcome to do that. I would also like to pick a YouTube channel that I think is uh helpful. It's geared more for
+[21:33] S1: software development, but really it's it's not even about the technical aspect of it. So it's really appropriate for anybody in tech. It's called healthy software Developer.
+[21:40] S1: The guy who runs the channel's name is Jamie Edwards. Uh, he's an experienced software engineer.
+[21:45] S1: He lives uh I think he lives in lives in Texas.
+[21:48] S1: And he has a good YouTube channel with a lot of resources about
+[21:52] S1: approaching software development and IT culture.
+[21:55] S1: and product management and all these things, all the sort of challenges and struggles we deal with. He addresses these on his channel.
+[22:02] S1: So we'll have links to to both of those picks. Thank you for joining me this week. If you're looking for work, I wish you the best. I hope that this advice has been useful.
+[22:10] S1: And we will see you next time.

@@ -1,0 +1,15 @@
+TITLE: SmartKom System Presentation
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Grad E to show internal demo to interested parties [13:44]
+- Build parser, analyzer, and grammar in parallel [46:27]
+OPEN:
+- How to handle data from trial runs [29:12]
+- Whether to use a standard ontology API or a specific one [46:27]
+TOPICS:
+- Spatial reference frames [36:45]
+- Expanding formalism to cover all linguistic phenomena [49:08]
+- Image schemas [1:00:18]

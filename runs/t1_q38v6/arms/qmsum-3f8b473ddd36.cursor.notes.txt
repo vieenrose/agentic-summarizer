@@ -1,0 +1,22 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on component design and manufacturer limitations [2:05]
+- Marketing shared trends in remote control design [7:48]
+DECISIONS:
+- Use solar battery instead of lithium [6:08]
+- Enable visible light signaling feature [4:53]
+ACTIONS:
+- Marketing to research casing trends [7:29]
+- UI designer to develop interface concepts [11:35]
+- Marketing to research cheaper manufacturing options [19:45]
+- Prototype development [25:35]
+OPEN:
+- Cost of rubber casing vs. duck tape [11:22]
+- Justification for touch screen feature [17:55]
+- Cost of voice recognition vs touch screen [23:57]
+- Design of simple remote design [38:57]
+TOPICS:
+- UI design [11:35]
+- Voice recognition [20:31]
+- Power source [26:52]
+- Material design [30:26]

@@ -1,0 +1,6 @@
+EVIDENCE:
+{evidence lines, newline-joined, <= 6 lines, +/-90s around the bullet anchor}
+
+BULLET: {bullet}
+
+SUPPORTED, CONTRADICTED or UNSUPPORTED?

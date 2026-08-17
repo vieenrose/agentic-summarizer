@@ -1,0 +1,17 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussed target group and remote control functions [1:47]
+DECISIONS:
+- Keep remote control small and simple [12:51]
+- Exclude buttons not used by users [20:47]
+ACTIONS:
+- UI Designer to research voice recognition implementation [31:28]
+- Complete questionnaire and summary [39:57]
+OPEN:
+- Cost of components not available [7:51]
+- User interface implementation strategy [14:53]
+- Cost of voice recognition features [30:21]
+TOPICS:
+- Voice recognition features [31:28]
+- Remote control features [33:01]
+- User interface concept [41:15]

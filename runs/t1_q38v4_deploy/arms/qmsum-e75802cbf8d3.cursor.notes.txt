@@ -1,0 +1,22 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Marketing decided to keep the design classical and avoid reinventing the wheel [32:05]
+DECISIONS:
+- Use simple battery instead of solar cells [2:34]
+- Use push buttons instead of LCD displays to reduce cost [3:10]
+- Include LCD display for information output only, not touch-sensitive [6:01]
+- Remote control should be easy to use [21:27]
+- Keep the design classical and avoid reinventing the wheel [32:05]
+ACTIONS:
+- Define speech recognition requirements [7:06]
+- Integrate infrared light into remote control [16:21]
+- Rama to design user interface [26:47]
+- Create a prototype using modelling clay [26:47]
+- Explore two shape options [31:04]
+OPEN:
+- Color of LCD screen [10:47]
+- Confidence in creating trends [27:56]
+TOPICS:
+- Component concept [1:12]
+- User interface concept [1:37]
+- Remote control design [21:27]

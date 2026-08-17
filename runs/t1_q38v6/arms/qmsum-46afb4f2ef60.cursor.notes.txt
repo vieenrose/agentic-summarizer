@@ -1,0 +1,27 @@
+TITLE: Remote Design Review
+SUMMARY:
+- Review of the remote prototype and design features [6:48]
+- Discussion on remote design, materials, and cost [7:11]
+- Marketing to evaluate product against design criteria [18:08]
+- Evaluation of project process and creativity [21:54]
+- Celebration meeting to discuss internet ubiquity [42:58]
+DECISIONS:
+- Opt for large buttons and a slide-out panel [2:59]
+- Go with multiple colors for the visible light [3:48]
+- Edible television is a possible new product, not a risk [6:25]
+- Accept the loss of the solar panel as a set-back [20:15]
+- Celebrate the 18 years of internet availability [42:58]
+ACTIONS:
+- Finance to itemize parts list for cost analysis [11:51]
+- Project Manager to lead project evaluation [17:43]
+- Marketing to provide structured presentation materials [27:45]
+- Project Manager to finalize report with all evaluation data [39:59]
+OPEN:
+- Effectiveness of coach contact after 2-3 months [23:18]
+- Effectiveness of team collaboration vs. individual effort [29:17]
+- Comparison of design philosophy with other groups [37:56]
+TOPICS:
+- Remote design [2:36]
+- UI design [19:39]
+- Project management [27:45]
+- Internet history [42:21]

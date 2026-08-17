@@ -1,0 +1,22 @@
+TITLE: Functional Design Meeting
+SUMMARY:
+- Discussed target group and remote control functions [7:41]
+- Discussed technical functions and user interface requirements [10:20]
+- Marketing shared a graph showing essential vs. non-essential buttons [20:12]
+DECISIONS:
+- Exclude video, DVD, and other complex functionalities to keep the remote simple [12:16]
+- Exclude power, volume, and other non-essential buttons [20:47]
+ACTIONS:
+- Consider removing unnecessary buttons for a cleaner interface [14:47]
+- Marketing to send the graph to the team [19:42]
+- Target 25-35 year old audience [27:55]
+- Include voice recognition in target group [30:25]
+- UI to research components concept [41:03]
+- Prepare user interface concept presentation [41:15]
+OPEN:
+- Cost of components not provided by designer [7:51]
+- How to implement identified buttons without a fancy UI [14:53]
+- Cost of components not provided [28:42]
+- UI concept presentation timing [41:56]
+TOPICS:
+- Target audience [27:55]

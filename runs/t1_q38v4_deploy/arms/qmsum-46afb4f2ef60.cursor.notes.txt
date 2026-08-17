@@ -1,0 +1,22 @@
+TITLE: Remote Prototype Review
+SUMMARY:
+- Review of the remote prototype and its features [6:48]
+- Evaluation of remote prototype against design criteria [18:08]
+DECISIONS:
+- Opt for large buttons over touch screens [2:36]
+- Edible television is a possible new product [6:43]
+- Move forward with project without the solar cell [17:55]
+- Celebrate the milestone of internet availability [42:58]
+ACTIONS:
+- Marketing to take over project evaluation [17:43]
+- Project Manager to report on project process and satisfaction [20:53]
+- Project Manager to present project evaluation [34:01]
+- Project Manager to finalize report with all evaluation data [39:59]
+OPEN:
+- Effectiveness of coaching efforts [23:18]
+TOPICS:
+- Remote design features [2:36]
+- Cost and materials [7:11]
+- Team collaboration and communication [29:56]
+- Remote control concepts [33:01]
+- User interface design [35:53]

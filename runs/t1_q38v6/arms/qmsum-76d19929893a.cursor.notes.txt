@@ -1,0 +1,24 @@
+TITLE: Kick-off Meeting
+SUMMARY:
+- Kick-off meeting to discuss the new television remote control project and design stages [1:03]
+- Discussion on designing a rabbit, bird, and cat in a remote control project [6:46]
+DECISIONS:
+- Use a white rabbit [7:36]
+- Save all drawings and start a new blank document [7:16]
+- Do not name the specific species of the bird [8:35]
+ACTIONS:
+- Industrial Designer to save the rabbit drawing [6:54]
+- Project Manager to create a new blank document [7:15]
+- Project Manager to add notes about current remote controls [11:40]
+- UI Designer to ensure international recognizability of buttons and numbers [13:23]
+- Industrial Designer to suggest a new button layout [20:39]
+- Dispatch front designs around the world [25:37]
+OPEN:
+- Compatibility with D_V_D_ player and other devices [12:34]
+- Color scheme for buttons [21:28]
+- Color of front (grey, black, or pink) [26:01]
+TOPICS:
+- Remote control design [1:27]
+- Market aim [11:09]
+- User interface [13:21]
+- Front color [26:01]

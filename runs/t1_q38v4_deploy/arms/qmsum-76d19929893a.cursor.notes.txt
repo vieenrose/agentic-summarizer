@@ -1,0 +1,19 @@
+TITLE: Kick-off Meeting
+SUMMARY:
+- Kick-off meeting to discuss the new television remote control project and design stages. [0:38]
+- Discussed design stages and new remote control project. [10:16]
+DECISIONS:
+- Use a white rabbit for the first drawing. [7:36]
+- Next meeting in 30 minutes. [28:27]
+ACTIONS:
+- Industrial Designer to draw the most favorite animal on the Smartboard. [6:28]
+- User Interface to keep the remote consistent with other devices. [15:23]
+- Industrial Designer to add round forms to the remote shape. [19:28]
+- Next meeting to discuss materials and markets. [22:03]
+- Look into universal remote transmission. [25:59]
+OPEN:
+- Efficient use of Smartboard features. [3:33]
+TOPICS:
+- Remote control project design stages. [6:28]
+- Remote control function and design. [20:39]
+- User interface design. [27:10]

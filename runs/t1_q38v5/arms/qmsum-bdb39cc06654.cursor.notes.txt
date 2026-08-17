@@ -1,0 +1,18 @@
+TITLE: SmartKom System Demo
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Keith to examine the system and generate XML trees [6:47]
+- Grad E to show internal demo to interested parties [13:44]
+- Bhaskara to deliver a belief-net that supports the demo level nodes by first of June [21:30]
+- Build the parser, analyzer, and grammar system [46:27]
+- PhD A to visit German AI center in June or beginning of July [55:07]
+- Finish belief-net and decisions by Monday [58:33]
+OPEN:
+- Decision on ontology API and standard [46:27]
+TOPICS:
+- Java applet interface [24:45]
+- Spatial reference frames [36:45]
+- Formalization of image schemas [1:00:18]

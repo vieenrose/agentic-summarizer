@@ -1,0 +1,25 @@
+TITLE: Conceptual Design Meeting
+SUMMARY:
+- Discussed component concepts and user interface options [5:27]
+- Discussed trends in remote control design and the importance of being fancy, innovative, and useful [21:27]
+DECISIONS:
+- Use simple battery and titanium design [2:48]
+- Use push buttons instead of LCD display [5:24]
+- Remote control should be smart and aware of the user [17:39]
+ACTIONS:
+- Define speech recognition requirements [7:06]
+- Integrate infrared into remote control [16:25]
+- Rama to design user interface [26:47]
+- Sammy to evaluate the product [26:47]
+- Explore two shape options [29:14]
+- Decide on titanium or spongy material [30:20]
+OPEN:
+- Color of LCD screen [10:58]
+- Cost of additional features [16:25]
+- Whether to include speech recognition [27:16]
+TOPICS:
+- Component concept [1:12]
+- User interface concept [1:12]
+- Remote control design [21:27]
+- User interface design [27:26]
+- Material choice [29:36]

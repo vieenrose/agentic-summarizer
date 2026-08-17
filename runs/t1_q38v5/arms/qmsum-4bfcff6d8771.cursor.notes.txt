@@ -1,0 +1,28 @@
+TITLE: Final Design Review
+SUMMARY:
+- Presentation of the vegetable-themed remote control design and evaluation against criteria. [0:23]
+- Evaluation of remote control design against seven-point criteria. [8:29]
+- Discussion on adding a beeper and vibrational features to the remote control. [32:04]
+- Evaluation of remote control design and assessment of project outcomes. [38:59]
+DECISIONS:
+- Remote control must be within finance criteria. [0:29]
+- Put locator on T_V_ [15:51]
+- Give F_ a seven [20:50]
+- Include the beeper and vibrational features. [32:13]
+- Process wheel had no major problems. [39:04]
+ACTIONS:
+- Prepare the evaluation criteria list. [9:58]
+- Investigate left-handed usage [18:37]
+- Calculate production costs using the Excel spreadsheet. [22:32]
+- Remove scroll wheel and add mute button. [28:47]
+- Jen to research the cost of additional features. [33:18]
+OPEN:
+- Budget may be exceeded with current features. [25:00]
+- Budget will be exceeded without the sample sensor. [26:06]
+- Cost of additional features may exceed budget. [33:39]
+TOPICS:
+- Remote control design [1:33]
+- Fashion remote [20:45]
+- Budget and features [26:01]
+- Additional features [32:04]
+- Project outcomes [38:58]

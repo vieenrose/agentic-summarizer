@@ -1,0 +1,23 @@
+TITLE: Kick-off Meeting
+SUMMARY:
+- Kick-off meeting to discuss the new television remote control project and available tools. [0:27]
+DECISIONS:
+- Use a button to switch between different systems (e.g., D_V_D_ player). [20:37]
+ACTIONS:
+- Industrial Designer to draw a new animal design on the Smartboard. [4:07]
+- Industrial Designer to save the current drawing and start a new blank document. [10:20]
+- Project Manager to take notes on remote control requirements. [13:30]
+- Marketing to suggest a shape that fits the hand. [20:26]
+- Research universal remote transmission standards. [23:55]
+- Marketing to investigate Teletubby front design. [27:10]
+OPEN:
+- Design of the remote control. [1:03]
+- Color scheme for the remote control. [21:39]
+- Color of the remote control. [26:38]
+TOPICS:
+- Bird species [8:37]
+- Design goals [11:09]
+- Market strategy [11:24]
+- User interface [13:23]
+- Remote control design [21:58]
+- User interface design [27:15]

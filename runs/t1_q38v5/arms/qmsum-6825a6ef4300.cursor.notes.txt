@@ -1,0 +1,18 @@
+TITLE: TORRENT Chip Project
+SUMMARY:
+-
+DECISIONS:
+-
+ACTIONS:
+- Grad F to finish the rough draft of the proposal by Monday [1:39]
+- Measure RT in the room [11:57]
+- Compare Aurora front-end and HTK results on meeting digits [18:53]
+- Implement a VAD that uses energy thresholds and spectral features [35:55]
+- Try to smooth the SNR estimate using a Wiener filter [43:46]
+- Read digits L-2-15 to discuss pros and cons of different methods [55:03]
+OPEN:
+- Whether to wait for Sunil before his status report [0:55]
+TOPICS:
+- TORRENT chip project [0:08]
+- DC offset in data [21:21]
+- VTS in cepstral domain [50:40]

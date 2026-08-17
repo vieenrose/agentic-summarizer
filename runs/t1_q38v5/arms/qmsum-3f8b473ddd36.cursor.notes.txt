@@ -1,0 +1,24 @@
+TITLE: Remote Control Design Review
+SUMMARY:
+- Discussion on component design and energy sources [2:05]
+DECISIONS:
+- Use solar battery instead of lithium [6:01]
+- Enable visible light signaling feature [5:17]
+ACTIONS:
+- Present user interface concepts to the team [12:00]
+- Marketing to research cheaper manufacturing options [19:45]
+- Table touch screen feature for next model [23:15]
+- Explore design options for non-touch-screen remote [31:28]
+- Nathan to work on basic look and feel for non-remote design [38:57]
+OPEN:
+- Choose between touch screen or rubber casing [11:22]
+- Finalize touch screen feature and pricing [19:03]
+- Cost of new design vs. touch screen [32:12]
+- Finalize design and prototype plan [38:57]
+TOPICS:
+- Component design [1:48]
+- Energy sources [2:05]
+- Case material [3:02]
+- Case materials [25:40]
+- Design evolution [27:16]
+- Prototype design [38:57]

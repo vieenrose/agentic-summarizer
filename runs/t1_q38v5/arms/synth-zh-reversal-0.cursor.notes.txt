@@ -1,0 +1,12 @@
+TITLE: 廠商合約討論
+SUMMARY:
+-
+DECISIONS:
+- 通過廠商合約 [2:54:30]
+- 討論並通過廠商合約 [2:54:30]
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+- 廠商合約 [0:00]

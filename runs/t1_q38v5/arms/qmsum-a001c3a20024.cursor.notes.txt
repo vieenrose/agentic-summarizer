@@ -1,0 +1,20 @@
+TITLE: Remote Control Functional Design
+SUMMARY:
+- Discussion on remote control components and target group [7:41]
+DECISIONS:
+- Exclude teletext functionality as it is outdated [7:39]
+- Remote control must be compatible with most televisions [7:39]
+ACTIONS:
+- Define user interface requirements based on basic buttons [14:53]
+- Marketing to present graph on user importance [19:33]
+- Target young audience (18-35) for sleek design [26:48]
+- Target 18-35 age group for sleek design [28:57]
+- Include beeper button on TV for remote location [37:55]
+- Complete questionnaire and summary [42:07]
+OPEN:
+- Cost of voice recognition features vs. style [27:34]
+- Cost of voice recognition features vs. standard features [32:36]
+- Cost of beeper button vs. additional buttons [38:34]
+TOPICS:
+- Remote control components [7:04]
+- User interface concept [41:15]

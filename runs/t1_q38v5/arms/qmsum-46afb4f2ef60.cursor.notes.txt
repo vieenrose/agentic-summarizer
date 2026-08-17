@@ -1,0 +1,26 @@
+TITLE: Remote Prototype Review
+SUMMARY:
+- Review of the remote prototype and its features [6:48]
+- Discussion on finance and material options [11:21]
+DECISIONS:
+- Opt for large buttons over touch screens [2:59]
+- Use multiple colors for the visible light [3:45]
+- Edible television is a possible new product [6:43]
+- Voice recognition doubles as solar cell area [12:14]
+ACTIONS:
+- Finalize material specifications [9:38]
+- Marketing to take over project evaluation [17:53]
+- Discuss project process and satisfaction [20:35]
+- Continue building on the remote control and spaceship Legos [28:50]
+- Present final design files for review [31:33]
+- Include disfluency study in final report [40:47]
+OPEN:
+- Coach response expected in 2-3 months [23:18]
+- Collaboration on project goals [29:56]
+- Effectiveness of new design features [33:48]
+TOPICS:
+- Remote design features [2:36]
+- Material durability [5:25]
+- Cost vs. goal [7:11]
+- Project evaluation [18:08]
+- Internet ubiquity [42:56]

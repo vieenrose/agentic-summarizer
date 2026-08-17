@@ -1534,3 +1534,23 @@ deployment architecture converts the 6 raw inversions into 0 deployed — the de
 has been verifier-required since round 5 holds at the 2B tier too.
 
 **Best FT 2B: Qwen3.8-2B + clean mix (v4), thinking off @4k.**
+
+## v5 adaptation round — measured negative for the augmentation approach (2026-08-17)
+
+v5 = Qwen3.8-2B + clean mix + trap-reinforce + light rasr + 121 entity-swap twins
+(the inversion-reinforcement). Result vs v4:
+
+| | INVERT | FAITH | COVER | SYNTH |
+|---|---|---|---|---|
+| v4 (clean) | 6 | 4.00 | 3.30 | 3.00 |
+| v5 (+augmentations) | 5 | 3.66 | 3.30 | 2.70 |
+
+- The entity-twins moved INVERT only 6→5 (insufficient dose, sub-noise).
+- The rasr augmentation again cost FAITH/SYNTH — the blunt tradeoff it showed on the
+  Qwen3.5 base (v2/v3) reproduces on the Qwen3.8 base.
+- All gaps are within the judge-noise floor (±0.4-0.5): v5 is a statistical tie that is
+  strictly more complex.
+
+Verdict: **the clean-mix v4 remains the locked 2B.** The training-side inversion fix is
+not worth its quality cost; inversion is handled at the deployment layer (verifier +
+temporal guard → 0 deployed). Final locked checkpoint: qwen38-2b-cursor-v4.

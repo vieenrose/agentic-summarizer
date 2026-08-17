@@ -1,0 +1,21 @@
+TITLE: Remote Control Concept Discussion
+SUMMARY:
+- Discussion on remote control components and options [5:09]
+DECISIONS:
+-
+ACTIONS:
+- User interface design based on friendliness and appearance [11:21]
+- Integrate TV feedback into remote design [19:43]
+- Define which components are essential [33:25]
+- Include voice recognition and L_C_D_s [40:25]
+- User Interface Designer to work on user interface design [42:18]
+- Both designers to work together on prototype using modelling clay [42:18]
+OPEN:
+- Comparison of L_C_D_s and other options [7:25]
+- Whether to include voice recognition [19:16]
+- Decision on whether to include scrolling or spinning wheel [33:52]
+- Cost of advanced integrated circuits [40:23]
+TOPICS:
+- Remote control components [1:42]
+- Interface design [30:01]
+- Component selection [33:27]

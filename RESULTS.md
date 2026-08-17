@@ -1580,3 +1580,29 @@ small-models-move-backwards warning, reproduced.
 Decision: v6 is a plausible deployment upgrade (the tier is what the app sees) but the
 SYNTH dip makes it a genuine tradeoff, not a clean win. The 1B stays p15d. Pending the
 author's second batch / a controlled-dose validation before locking v6 as the 2B main.
+
+## Verifier real-zh collapse — directly measured and root-caused (2026-08-17)
+
+The top open item (author round-5.5 + dose-01 manifest), now measured head-on with the
+real noisy 6-snippet claim-mode evidence (`tools/probe_verifier_zh.py`):
+
+| evidence window | granite-404m-zh parseable verdicts |
+|---|---|
+| clean zh (T1 synthetic) | 8/9 (89%) — KEEP/DROP clean |
+| real noisy zh (this tier) | 0/11 (0%) — echoes the prompt verbatim, degenerate "CONGRATULATIONS"/"CONTRADICTION: <CONTRADICTION>" loops |
+
+Root cause confirmed: **the evidence-window distribution, not the model's zh ability** —
+the same model judges clean zh fine and cannot judge the harness's real ASR-noisy 6-line
+windows (long lines, garble, code-switch).
+
+**Consequence (corrected comfort):** the sweep's `unparsable -> KEEP` fallback (sweep.py)
+means the verifier is a complete NO-OP in production on real zh — it never vetoed
+anything. The earlier "0 deployed inversions on the tier" was the RAW model being 0 there
++ the verifier no-op'ing, not the verifier catching inversions. On the T1 clean tier the
+verifier DID work (6->1 inversions measured earlier) — because clean windows are its
+trained distribution.
+
+**Implication:** on real zh, only the deterministic guards (temporal, chain, language, #167
+detector) protect against inversion; the model-dependent verifier cannot be trusted there.
+The retraining path is established: `runs/verifier-zh-collapse.jsonl` = real-noisy-zh
+bullets + evidence + judge labels, the exact triples the verifier needs to be adapted on.

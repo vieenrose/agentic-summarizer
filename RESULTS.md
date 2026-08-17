@@ -1523,3 +1523,14 @@ valid-op (no base speaks the CURSOR grammar), so the test is the FT: **v4 = Qwen
 
 Verdict: Qwen3.8-2B is the better base on quality/agency; its inversion count is the
 one gap, targeted next by inversion-reinforcement (the same pattern as trap-reinforce).
+
+## Final delivery — v4 deployed (2026-08-17)
+
+v4 (Qwen3.8-2B + clean mix) through the full deployment stack (granite-zh verifier +
+VERIFY/ANCHOR sweep + promote-decisions + enforce-chain + enforce-lang) on the real-ASR
+tier: **0 inversions** (the #167 detector confirms 0 candidates on all three episodes),
+Chinese throughout, garble-free (離岸風電 correct via knowledge), anchored. The
+deployment architecture converts the 6 raw inversions into 0 deployed — the design that
+has been verifier-required since round 5 holds at the 2B tier too.
+
+**Best FT 2B: Qwen3.8-2B + clean mix (v4), thinking off @4k.**

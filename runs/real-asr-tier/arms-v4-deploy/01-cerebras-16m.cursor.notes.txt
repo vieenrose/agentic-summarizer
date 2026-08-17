@@ -1,0 +1,12 @@
+TITLE: Cerebrous: Business Model and Market Position
+SUMMARY:
+- 分析 Cerebrous 的技術優勢與成本結構 [14:52]
+- 說明 Cerebrous 透過提供極高速 AI 推論服務來切入高溢價市場 [12:24]
+DECISIONS:
+-
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+- 企業對快速 token 的支付意願 [15:14]

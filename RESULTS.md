@@ -1634,3 +1634,29 @@ reliable zh labels (the author's held-out set / human-labeled triples).
 
 Deliverable: `runs/sft-verifier-gr-v4d/verifier-v4d.Q4_K_M.gguf` + the zh triples
 (`data/sft/verifier4-zh-*`) + `tools/harvest_zh_triples.py` + `tools/probe_verifier_zh.py`.
+
+## Final verdict on the dose retrains (2026-08-17): the clean checkpoints win
+
+Seven retrain iterations executed (1B v6/v7, 2B v5/v6/v7, verifier v4f/c/d). The
+complete record:
+
+| checkpoint | G1 | notable |
+|---|---|---|
+| p15d (1B, clean) | PASS both, 100% | locked — every dose regresses en or zh |
+| v4 (2B, clean) | PASS both, 100% | SYNTH 3.00/COVER 3.30/FAITH 4.00; garble fixed BY KNOWLEDGE |
+| v6-1b (dose×3) | zh valid-op 75% | reverted |
+| v7-1b (flip×2) | en valid-op 80% (notes fine, 1 malformed op) | gate fails |
+| v5/v6/v7 2B (doses) | trap-leak or clean dip each | sub-noise or regressions |
+
+**The dose is a measured negative for the 1B and a wash for the 2B.** The real-ASR
+robustness the dose bought (R100, garble) is already delivered by (a) the Qwen3.8 base's
+knowledge (v4, no dose), (b) the deterministic guards (enforce-lang for the flip,
+temporal for inversions, chain for polarity). The small models sit at their capacity
+edge: any distribution shift trades one failure for another.
+
+**Locked final stack:**
+- 1B main: p15d (clean)
+- 2B: v4 (clean) — SYNTH 3.00 is the best synthesis measured; deployed with guards →
+  0-1 inversions
+- verifier: v4d (format-fixed zh retrain; safe-DROP conservative filter; discrimination
+  blocked on reliable zh labels)

@@ -1,0 +1,13 @@
+TITLE: Apple iPad 發表會解析
+SUMMARY:
+- 分析 M2 與 M4 晶片效能與定位 [2:03]
+- 智慧掃描功能與購買建議 [6:49]
+DECISIONS:
+-
+ACTIONS:
+-
+OPEN:
+-
+TOPICS:
+- 晶片效能分析 [2:03]
+- 購買建議與入門機型 [8:29]

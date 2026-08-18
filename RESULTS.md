@@ -1606,3 +1606,31 @@ trained distribution.
 detector) protect against inversion; the model-dependent verifier cannot be trusted there.
 The retraining path is established: `runs/verifier-zh-collapse.jsonl` = real-noisy-zh
 bullets + evidence + judge labels, the exact triples the verifier needs to be adapted on.
+
+## Verifier zh retrain (v4d) — format collapse fixed, discrimination is data-limited (2026-08-17)
+
+A retrain was run to fix the real-zh collapse (0/11 parseable: the old granite-zh, never
+trained on zh, echoed the prompt). Journey:
+
+| version | mix | real-zh verdicts | clean-zh verdicts |
+|---|---|---|---|
+| old granite-zh | en-only | 0/11 (echo) | 8/9 KEEP (correct) |
+| v4f (FAITH vocab) | en+zh x15/5 | 11/11 parseable but "Fix"/DROP | over-drop |
+| v4c (KEEP/DROP) | DROP-heavy | 11/11 DROP | 9/9 DROP |
+| **v4d (balanced)** | 50/50 KEEP/DROP | 2 KEEP / 9 DROP | 1 KEEP / 8 DROP |
+
+- **Format collapse FIXED**: the echo is gone; the KEEP/DROP vocabulary now matches the
+  serve-time prompt (clean single-word verdicts).
+- **Discrimination NOT restored**: even the balanced mix (1569/1569) over-drops on both
+  real-zh AND clean-zh (clean-zh regressed from the old verifier's 8/9 KEEP).
+- Root: reliable zh ground-truth labels don't exist — the zh triples are judged by
+  gpt-oss, which itself struggles with real-zh (the over-flagging). The verifier cannot
+  be trained to discriminate without them.
+
+The over-DROP is SAFE for the 0% inversion bar (it removes bullets) at the cost of
+coverage. For the product's real-zh inversion requirement, the deterministic guards +
+a DROP-leaning verifier is defensible; precise zh verifier discrimination is BLOCKED on
+reliable zh labels (the author's held-out set / human-labeled triples).
+
+Deliverable: `runs/sft-verifier-gr-v4d/verifier-v4d.Q4_K_M.gguf` + the zh triples
+(`data/sft/verifier4-zh-*`) + `tools/harvest_zh_triples.py` + `tools/probe_verifier_zh.py`.

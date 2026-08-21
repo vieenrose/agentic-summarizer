@@ -67,7 +67,9 @@ class BulletVerdict:
         return max(tied, key=lambda v: _SEVERITY.get(v, 0))
 
 
-_FAITH_SYS = (
+#: Public: shared across faith.py's own judge_meeting and judge.selftest's probes, so
+#: both exercise the identical system prompt.
+FAITH_SYS = (
     "你是一個事實查核助手。給定一段會議逐字稿的相關片段與一句摘要陳述，"
     "請判斷這句陳述是否受逐字稿內容支持。只回答以下三個詞之一："
     "SUPPORTED（有明確支持）、CONTRADICTED（與逐字稿矛盾）、"
@@ -113,7 +115,7 @@ def judge_meeting(
         evidence = index.search(claim, top_k=top_k)
         prompt = faith_prompt(claim, evidence)
         raw_votes = tuple(
-            parse_verdict(client(model, _FAITH_SYS, prompt)) or "UNSUPPORTED" for _ in range(votes)
+            parse_verdict(client(model, FAITH_SYS, prompt)) or "UNSUPPORTED" for _ in range(votes)
         )
         bullets.append(BulletVerdict(claim, raw_votes))
 

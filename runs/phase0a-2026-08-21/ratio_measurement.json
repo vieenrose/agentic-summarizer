@@ -1,0 +1,57 @@
+{
+  "rows": [
+    {
+      "idx": 2,
+      "uid": "DenverCityCouncil_02272017_17-0161",
+      "en_chars": 3423,
+      "en_tokens": 783,
+      "zh_chars": 1177,
+      "zh_tokens": 972,
+      "ratio": 1.2413793103448276,
+      "finish_reason": "stop"
+    },
+    {
+      "idx": 3,
+      "uid": "LongBeachCC_03072017_17-0161",
+      "en_chars": 5945,
+      "en_tokens": 1184,
+      "zh_chars": 1661,
+      "zh_tokens": 1323,
+      "ratio": 1.1173986486486487,
+      "finish_reason": "stop"
+    },
+    {
+      "idx": 7,
+      "uid": "SeattleCityCouncil_06282022_CF 314495",
+      "en_chars": 3012,
+      "en_tokens": 638,
+      "zh_chars": 889,
+      "zh_tokens": 776,
+      "ratio": 1.2163009404388714,
+      "finish_reason": "stop"
+    },
+    {
+      "idx": 9,
+      "uid": "SeattleCityCouncil_07052022_CF 314495",
+      "en_chars": 2351,
+      "en_tokens": 477,
+      "zh_chars": 787,
+      "zh_tokens": 595,
+      "ratio": 1.2473794549266248,
+      "finish_reason": "stop"
+    },
+    {
+      "idx": 13,
+      "uid": "DenverCityCouncil_01212020_19-0913",
+      "en_chars": 4012,
+      "en_tokens": 928,
+      "zh_chars": 1458,
+      "zh_tokens": 1208,
+      "ratio": 1.3017241379310345,
+      "finish_reason": "stop"
+    }
+  ],
+  "total_en": 4010,
+  "total_zh": 4874,
+  "overall_ratio": 1.2154613466334165
+}

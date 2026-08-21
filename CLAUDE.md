@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Repository state
 
 This is the **`next` branch**: a from-scratch redesign, started from an empty tree
-(`86e6c67`). Build-out is in progress against `SPEC.md` v0.8.
+(`86e6c67`). Build-out is in progress against `SPEC.md` v0.9.
 
 **Commands** (the `.venv` is Python 3.12, `uv`-managed; there is no `uv sync` lockfile
 yet, so call the venv's binaries directly):

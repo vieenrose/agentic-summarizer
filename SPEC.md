@@ -1,8 +1,19 @@
 # SPEC — Agentic meeting summarizer (MiniCPM5-1B + external memory, zh-TW)
 
-**Version:** 0.8 · **Status:** design + execution plan complete; Phase 0b measured on
-the actual reference device — §9 phases the remaining work cheapest-first with gates;
-§8 attaches each risk to the phase that tests it
+**Version:** 0.9 · **Status:** design + execution plan complete; Phase 0a fully closed,
+Phase 0b measured on the actual reference device — §9 phases the remaining work
+cheapest-first with gates; §8 attaches each risk to the phase that tests it
+
+**v0.9 changes** — Phase 0a item 2 (the en→zh-TW token ratio) is now measured, closing
+the last open Phase 0a question: **1.215** zh-TW tokens per en token under MiniCPM5's
+own tokenizer (5 real MeetingBank segments, 4,010 en → 4,874 zh-TW tokens, translated
+by a local Qwen3.8-27B instance per Phase 0a's "any available model, must not wait for
+TranslateGemma" rule; see §9 Phase 0a for methodology). This revises the step count
+from the English-derived ~11 reading steps to **~14** (§4.1, §7, §8 risk 6) — the
+Phase 0b wall-clock/RSS figures were measured per-step and so are NOT invalidated, but
+the **11-step reading-phase total (~12.9 min)** was a trapezoidal projection over the
+old step count and needs re-projection at ~14 steps; flagged as a new open item rather
+than silently rescaled (§9 Phase 0b).
 
 **v0.8 changes** — Phase 0b ran on the actual Reno 7 (device access via a proxy host,
 2026-08-21), not projected. Headline result: **the core-mask choice matters far more
@@ -255,8 +266,9 @@ with no segment annotations at all. Chunk boundaries therefore fall at token off
 (snapped to the nearest line boundary, since §2 lines are atomic), and item minutes
 are attached to whichever chunks overlap them during supervision (§4.2).
 
-Step count per meeting: ~28.4k ÷ 2.5k ≈ **11 reading steps + 1 synthesis ≈ 12 calls**,
-pending the zh-TW token measurement (§7).
+Step count per meeting: measured en→zh-TW token ratio **1.215** (§9 Phase 0a,
+2026-08-21) → ~28.4k en × 1.215 ≈ 34.5k zh-TW tokens ÷ 2.5k ≈ **14 reading steps + 1
+synthesis ≈ 15 calls** (up from the English-derived ~11 reading / ~12 calls estimate).
 
 **4k is a budget choice, not a model limit — and it is falsifiable.** The binding
 constraint is CPU-only KV cache and prefill latency on §6's hardware, not MiniCPM5's
@@ -266,7 +278,7 @@ comes from. But step count falls roughly linearly as context grows, and **fewer 
 means less error accumulation across the memory chain** — the dominant failure mode of
 this whole architecture. So 8k must be measured against 4k on the real device (§9
 Phase 0b) before 4k is treated as settled. If 8k fits the latency and RSS envelope, it
-is probably the better design: ~6 steps instead of ~12.
+is probably the better design: ~7 steps instead of ~15.
 
 ### 4.2 Training-data construction (normative)
 
@@ -279,13 +291,13 @@ whole-transcript foresight alone).
 
 Per meeting, walking chunks in order:
 
-1. **Reading steps, chunks overlapping a summarized segment (~5 of ~11).** Input is
+1. **Reading steps, chunks overlapping a summarized segment (~8 of ~14).** Input is
    (memory after step *i*−1, chunk *i*). Gold edit lines are derived by the teacher
    from the translated minute(s) of the overlapping segment — a narrow, grounded
    conversion task ("express this minute as ADD/ARC lines against the current memory"),
    not open-ended summarization. The teacher also sees later minutes, and that foresight
    is used *only* to emit `DROP` for points a later segment supersedes.
-2. **Reading steps with no overlapping item (~4 of ~11).** These are the **~43%** of the
+2. **Reading steps with no overlapping item (~6 of ~14).** These are the **~43%** of the
    transcript MeetingBank's annotators filtered out (measured, §2.2). **Do not
    blanket-`NOP` them.** The filter was `≥60 s` duration and `≥10 words` of summary —
    mechanical thresholds, so a 45-second exchange that settles something real was
@@ -315,14 +327,14 @@ Per meeting, walking chunks in order:
    whole-meeting summary (§2.2 stage 3–4).
 
 Both step types train the same model (§4). Supervision volume at full corpus: ~1,000
-train meetings × ~12 steps ≈ **~12k training steps**, of which ~1.0k are synthesis; the
-Phase-1 pilot yields ~1.9k steps from 160 train meetings. The edit/`NOP` split
-among the ~11k curation steps is not fixed by item coverage — it falls out of
+train meetings × ~15 steps ≈ **~15k training steps**, of which ~1.0k are synthesis; the
+Phase-1 pilot yields ~2.4k steps from 160 train meetings. The edit/`NOP` split
+among the ~14k curation steps is not fixed by item coverage — it falls out of
 step 2's classification — but it must be **reported and monitored**: if `NOP` exceeds
 ~35% of curation targets, downsample or loss-weight it (§8). The synthesis skill still
-sees only ~1/12th the data curation does (§8). **The ~12-step figure is itself a
-projection from English token counts** and moves with the measured zh-TW ratio (§7, §9
-Phase 0a); it is not a settled number.
+sees only ~1/14th the data curation does (§8). **The ~15-step figure rests on the
+measured en→zh-TW token ratio (§9 Phase 0a, 2026-08-21)**, not an English projection —
+it is a settled number pending the Phase 1 pilot corpus's own measured token counts.
 
 **Validation.** Every gold edit sequence is replayed through the real harness before
 use: ops must parse, `DROP` prefixes must match an existing point, and the resulting
@@ -446,20 +458,21 @@ way corpus averages are not — run it before any corpus-scale evaluation (§9).
 
 ## 7. Operational budget
 
-Derived from §4.1's protocol. **Step count and token figures are still English-derived
-projections** (the en→zh ratio measurement, Phase 0a item 2, was attempted but not
-completed — see §9 Phase 0b's deferred items); **wall-clock and peak RSS are now
-measured** on the actual Reno 7 (§9 Phase 0b, 2026-08-21), at the all-8-cores
-configuration the measurement itself selected.
+Derived from §4.1's protocol. **Step count and token figures now rest on the measured
+en→zh-TW token ratio** (1.215, §9 Phase 0a, 2026-08-21) rather than an English
+projection; **wall-clock and peak RSS are measured** on the actual Reno 7 (§9 Phase 0b,
+2026-08-21), at the all-8-cores configuration the measurement itself selected — but the
+reading-phase wall-clock TOTAL below was integrated over the old 11-step count and is
+now an open re-projection item (§9 Phase 0b), not yet recomputed at the corrected ~14.
 
 | quantity | value | basis |
 |---|---|---|
-| calls per meeting | ~12 (≈11 reading + 1 synthesis) | 28.4k transcript ÷ 2.5k chunk (§4.1) — still English-derived, unmeasured for zh-TW |
-| prefill per meeting | ~39k tokens | ~3.5k × 11 reading steps + ~0.9k synthesis — same caveat |
-| decode per meeting | ~2.7k tokens | ~150 × 11 edit-line steps + <1,000 prose — same caveat |
-| wall-clock, reading phase (all cores, `-C 0xFF`) | **~12.9 min, measured** | 11-step trapezoidal projection from measured per-step depth scaling (§9 Phase 0b); does not yet include the synthesis call or isolate thermal drift |
-| wall-clock, reading phase (big-cores-only, `-C 0xC0`) | **~22.5 min, measured — FAILS the gate** | same method; this was the prior project's serving convention and must not be reused here |
-| peak RSS, `--no-mmap`, 4k ctx | **829 MiB (Q4_0) – 1.34 GiB (Q8_0), measured** | one real 2,500-token completion, `VmHWM` + `smaps_rollup` `Pss` (§9 Phase 0b) |
+| calls per meeting | ~15 (≈14 reading + 1 synthesis) | 28.4k en × 1.215 measured ratio ≈ 34.5k zh-TW tokens ÷ 2.5k chunk (§4.1, §9 Phase 0a) |
+| prefill per meeting | ~50k tokens | ~3.5k × 14 reading steps + ~0.9k synthesis |
+| decode per meeting | ~3.1k tokens | ~150 × 14 edit-line steps + <1,000 prose |
+| wall-clock, reading phase (all cores, `-C 0xFF`) | **~12.9 min, measured at 11 steps — OPEN: needs re-projection at ~14** | 11-step trapezoidal projection from measured per-step depth scaling (§9 Phase 0b); computed before the token-ratio measurement above, so the total (not the per-step figures it is built from) is stale by ~+27% steps |
+| wall-clock, reading phase (big-cores-only, `-C 0xC0`) | **~22.5 min, measured at 11 steps — FAILS the gate, and only gets worse at ~14 steps** | same method and same re-projection caveat; this was the prior project's serving convention and must not be reused here regardless |
+| peak RSS, `--no-mmap`, 4k ctx | **829 MiB (Q4_0) – 1.34 GiB (Q8_0), measured** | one real 2,500-token completion, `VmHWM` + `smaps_rollup` `Pss` (§9 Phase 0b) — per-completion, not step-count-dependent |
 
 The design's efficiency argument is that memory is capped, so per-step context is
 **constant-size regardless of meeting length** — a 3-hour meeting costs more steps, not
@@ -492,7 +505,7 @@ Each is now attached to the phase that tests it (§9).
    item list rather than a human-drafted narrative. Only the in-domain eval slice (§9
    Phase 3) can detect the second mismatch.
 2. **Two skills, one 1B model, unequal data** (tested: Phase 2). §4 merges memory
-   curation and prose synthesis into one model, and §4.2 gives synthesis ~1/12th the
+   curation and prose synthesis into one model, and §4.2 gives synthesis ~1/14th the
    steps curation gets. This deliberately contradicts the prior project, which used a
    *separate* synthesizer and carried an explicit exclusion against folding synthesis
    into the note-taker. Merging is justified by the single-model, single-device
@@ -512,10 +525,14 @@ Each is now attached to the phase that tests it (§9).
    zh, 0/11 on real noisy zh). MeetingBank's audio is English, so **nothing in the
    corpus can measure it** — this is the specific gap the in-domain slice exists to
    close.
-6. **Projections, not measurements** (tested: Phase 0a/0b). Every figure in §7 and the
-   ~12-calls / ~2.5k-chunk assumptions in §4.1 rest on English token counts. The zh-TW
-   measurement under MiniCPM5's tokenizer moves the step count, the `NOP` ratio, and all
-   of §7 together.
+6. **Projections, not measurements** (tested: Phase 0a/0b; **item 2 now measured**).
+   The en→zh-TW token ratio (1.215, §9 Phase 0a, 2026-08-21) has replaced the
+   English-derived ~12-calls / ~2.5k-chunk assumptions in §4.1 with a measured ~15-call
+   figure; §7 and §4.2's volume/`NOP` arithmetic are updated accordingly. **Still open:**
+   the ratio was measured on 5 real MeetingBank segments (a "handful," per Phase 0a's own
+   scope), not a large sample, and Phase 0b's reading-phase wall-clock TOTAL (~12.9 min)
+   was integrated at the old 11-step count and needs re-projection at ~14 before the §7
+   gate figure is fully trustworthy.
 7. **The verifier was dropped without evidence** (probed: 2026-08-21, pre-Phase-1;
    **partial result, not a settlement — see caveats**). §4 replaces the prior project's
    3-model pipeline with a single on-device model, and that reversal is not merely
@@ -575,13 +592,27 @@ measure**. Two questions, both answerable from artifacts already on disk:
    prior project's 350M verifier; model plus §4.1's deterministic contradiction guard.
    If the guard suffices, §4's single-model design stands on evidence. If it does not,
    §7's call budget gains a second model *before* the latency gate is measured.
-2. **What is the en→zh token ratio?** Translate a handful of meetings with any available
-   model and measure both sides under MiniCPM5's tokenizer. This is a *units*
-   experiment, not a quality one, and must not wait for TranslateGemma. Every figure in
-   §7 and the step count in §4.1 scale with it.
+2. **What is the en→zh token ratio? MEASURED (2026-08-21): 1.215.** Translated 5 real
+   `huuuyeah/meetingbank` English segments (1,500–6,000 chars each, real MeetingBank
+   content — the stripped HF mirror is fine for this units-only measurement even though
+   §2.2 requires the authoritative Zenodo release for the actual corpus) with the
+   already-running local Qwen3.8-27B instance (`local:8082`, temperature 0, a completion
+   instruction forbidding summarization/omission, `max_tokens=6000` to clear its
+   reasoning budget — the first attempt's empty-content stall, noted below, was exactly
+   this token budget being too tight) and measured both sides under
+   `openbmb/MiniCPM5-1B`'s real tokenizer (`arcsum.tokens.hf_token_len`): **4,010 en
+   tokens → 4,874 zh-TW tokens**, all 5 calls finishing clean (`finish_reason=stop`, no
+   truncation), per-segment ratios tightly banded (1.12–1.30). zh-TW is **more**
+   tokens than the English source under MiniCPM5's tokenizer, not fewer — every figure
+   in §7 and the step count in §4.1 scale up accordingly (~11 → ~14 reading steps).
+   **Not yet done:** this is 5 segments, a "handful" as scoped, not a large sample, and
+   translation used Qwen (the eventual composition teacher) as a stand-in, never
+   TranslateGemma — re-measure once TranslateGemma-27B (or the Phase 1 pilot corpus
+   itself) is available, and treat 1.215 as a solid but non-final estimate until then.
 
-**Gate:** the shippable configuration is known, and the step count rests on a measured
-zh-TW token ratio rather than an English one.
+**Gate: CLEARED.** The shippable configuration is known (Phase 0b measured the
+guard-only single-model config); the step count now rests on a measured zh-TW token
+ratio (1.215) rather than an English one.
 
 ### Phase 0b — device reality check (measured 2026-08-21, on the actual Reno 7)
 
@@ -637,11 +668,19 @@ free at idle when first checked — the device was running its normal OS load; a
 dedicated-service deployment would need to budget against whatever headroom the target
 app actually gets, not against total RAM).
 
-**Gate verdict: PASS, all-cores config only.** ~12.9 min projected for the reading
-phase at all 8 cores clears the ~20 min ceiling with room for a synthesis call; the
-big-cores-only configuration **fails** the same gate (~22.5 min for reading alone).
-**Corollary for §9's later phases and for any on-device serving script: use `-C 0xFF`
-(or no mask restriction), never `0xC0`.**
+**Gate verdict: PASS, all-cores config only — margin now needs re-checking.** ~12.9 min
+projected for the reading phase at all 8 cores cleared the ~20 min ceiling with room
+for a synthesis call, but that total was integrated over the OLD 11-step,
+English-derived count; §9 Phase 0a's measured 1.215 en→zh ratio revises this to ~14
+steps. A naive linear rescale (12.9 × 14/11 ≈ 16.4 min) would still clear the ceiling,
+but this is an illustrative bound, not a re-measurement — the depth-scaling curve is
+not perfectly linear (§9 Phase 0b's own table shows cost-per-step growing with depth),
+so treat the gate as **provisionally still PASS, pending an actual re-projection**
+before spending Phase 1/2 compute on the assumption it definitely holds. The
+big-cores-only configuration **fails** the same gate regardless (~22.5 min for reading
+alone at 11 steps, and only gets worse at 14). **Corollary for §9's later phases and
+for any on-device serving script: use `-C 0xFF` (or no mask restriction), never
+`0xC0`.**
 
 **What this measurement does not yet settle** (explicitly deferred, not skipped):
 - **4k vs 8k** — the depth-scaling data above answers "does 8k fit" (yes: ~8k context
@@ -652,10 +691,16 @@ big-cores-only configuration **fails** the same gate (~22.5 min for reading alon
   load; whether decode throughput degrades further over a full ~13-minute meeting from
   thermal throttling was not isolated from the depth-scaling effect already measured.
   A dedicated back-to-back same-config timing series is the way to isolate it.
-- **The en→zh token ratio (Phase 0a item 2)** — attempted via a local third-family
-  translation model but stalled on an empty-content response (likely a reasoning-mode
-  budget issue) and was not completed this session. The ~11-step reading-phase estimate
-  above still rests on SPEC's existing English-token-derived step count.
+- **The en→zh token ratio (Phase 0a item 2) — MEASURED 2026-08-21, see §9 Phase 0a.**
+  The first attempt (this session) stalled on an empty-content response from the same
+  local translation model; root cause confirmed as a reasoning-mode token budget too
+  tight to leave room for an answer after the model's own reasoning trace, fixed by
+  raising `max_tokens` well above the reasoning budget. Result: **1.215** zh-TW tokens
+  per en token. **Consequence for the table above: the ~11-step reading-phase wall-clock
+  total (~12.9 min) was integrated at the OLD English-derived step count and is now a
+  stale total** — the per-step depth-scaling figures it is built from remain valid, but
+  re-projecting over ~14 steps instead of 11 has not yet been done and is a genuinely
+  open follow-up, not a rounding error to wave off before trusting the §7 gate figure.
 - **Decode-only throughput** (isolated from prefill) — only the combined `-pg 2500,150`
   figure was measured; a `-n`-only sweep would sharpen the per-token decode-cost estimate
   used in the RSS request and in any future latency budget refinement.

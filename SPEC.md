@@ -54,23 +54,34 @@ speaker diarization) run on real podcast audio — never hand-authored or synthe
 This system never consumes raw audio; §2's format v1 is exactly that pipeline's
 output, and the only input contract this spec needs.
 
-**Selection criteria**: real podcast episodes, 2–3h duration, zh-TW or en, ideally 2+
-speakers (not a single-host monologue — unlike the prior project's Gooaye/股癌
-corpus), official show notes preferred but not required (useful for eyeballing
-quality; not part of the formal eval, §5).
+**Selection criteria**: 2–3h duration, ideally 2+ speakers (not a single-host
+monologue — unlike the prior project's Gooaye/股癌 corpus), official summary
+preferred but not required (useful for eyeballing quality; not part of the formal
+eval, §5).
 
 **en — confirmed**: **Lex Fridman Podcast** (~3h avg, 2 speakers, strong official
-transcripts + timestamped outlines). Joe Rogan Experience dropped — fits
-duration/speakers but has no official summary.
+transcripts + timestamped outlines).
 
-**zh-TW — no single episode clears 2h** (mainstream Taiwanese episodes run 30–60 min;
-2–3h marathon interviews aren't a native zh-TW format). Leading candidate: **法客電台
-BY 法律白話文運動** (5 rotating hosts, award-winning legal-media outlet). Longest
-episodes run ~1–1.5h with genuine structured show notes on some installments:
-政治歸政治 #218, 法客話題 #216 (職場霸凌), YO智事務所 #135/#134/#133/#132 — pick
-episodes by checking notes individually, quality varies by installment. Plan:
-concatenate 2 same-series episodes to reach the 2–3h target (as the prior project did
-for its synthetic long-zh eval tier).
+**zh-TW — real 會議 (meeting) recordings, not podcasts** (mainstream Taiwanese
+podcasts run 30–60 min and don't clear 2h; real meetings do, and come with a legally
+mandated official record instead of show notes). Confirmed categories:
+- **立法院委員會** (Legislative Yuan committee sessions), official @legislativeyuan
+  YouTube channel — e.g. 經濟委員會 2h59m, 外交及國防委員會 3h19m, 教育及文化委員會
+  3h12m. Official verbatim record: 立法院公報 (ly.gov.tw / ppg.ly.gov.tw), indexed by
+  committee + date.
+- **市政總質詢** (city council mayor question time, e.g. 台北市議會) — 4–5h+ (longer
+  than target; may need trimming to an 80k-token-scale window).
+- **股東常會** (listed-company annual shareholder meetings) — continuous recording +
+  official 議事錄 (minutes, filed within 20 days on MOPS) are legally mandated for
+  every listed company. Confirmed example: TDCC FY2024, 2h23m.
+
+Plan: draw zh-TW corpus meetings from these three categories, verify duration/audio
+quality per recording before use, and pair each with its official record (公報/議事錄)
+as an independent quality reference alongside the teacher model's summary (§4).
+
+**Initial corpus size (normative)**: **10 en** recordings (Lex Fridman Podcast) + **10
+zh-TW** recordings (drawn across the 立法院委員會 / 市政總質詢 / 股東常會 categories
+above) = 20 meetings total.
 
 ---
 
@@ -78,7 +89,20 @@ for its synthetic long-zh eval tier).
 
 ---
 
-## 4. Architecture — TBD
+## 4. Architecture — mostly TBD; one piece confirmed
+
+- **Teacher model: Unsloth Qwen3.8-27B, Q8 or BF16 quant** (exact quant TBD) — a
+  strong, large model, offline only, never on the reference hardware (§6) — runs once
+  per meeting to turn the audio pipeline's transcript (§2) into a very-high-quality
+  reference summary. This is
+  training-distillation ground truth (and/or eval reference), not a deployed
+  component. The actual on-device model(s) that run at inference time are separate,
+  small, and CPU-only per §6; everything else about the architecture (how many
+  models, what each does, how the teacher's output is distilled down) is still open.
+- **Human validation (normative)**: every teacher-generated summary must be manually
+  reviewed by a human before it enters the training/eval corpus — no teacher output is
+  trusted unvalidated, matching the human-in-the-loop discipline the prior project
+  applied to its own judge/verifier stages.
 
 ---
 

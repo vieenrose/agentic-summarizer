@@ -1,0 +1,145 @@
+"""Traces -> SFT rows, with the discipline the prior project's `build_sft.py` carries
+(SPEC §4.2, §8 risk 3).
+
+Built on real `agent.Trace`/`agent.Step` objects rather than a parallel on-disk
+schema — a `Trace` produced by replaying a teacher through `agent.run_agent` (its raw
+edit-line output *is* the gold completion) already carries everything a sample needs:
+the exact prompt, the exact target, and `prompt_version`.
+
+**Raw text target, no function-call translation.** MiniCPM5 is not a function-call
+model — unlike the prior project's FunctionGemma path, `SftSample.completion` is the
+teacher's raw edit-line (or prose) text verbatim.
+"""
+
+from __future__ import annotations
+
+import random
+from collections.abc import Sequence
+from dataclasses import dataclass
+
+from arcsum.agent import Trace
+
+#: SPEC §8 risk 3.
+DEFAULT_MAX_NOP_FRAC = 0.35
+
+
+class MixedPromptVersionError(ValueError):
+    """Training across a prompt change makes the run incomparable to any earlier
+    trace or eval number — refuse loudly rather than silently mixing versions."""
+
+
+@dataclass(frozen=True, slots=True)
+class SftSample:
+    meeting: str
+    step: int
+    prompt_version: str
+    system: str
+    #: The exact rendered user turn — completion-only masking needs `prompt` and
+    #: `completion` kept separate, since training on the prompt "teaches the model to
+    #: reproduce transcripts... which is not the task."
+    prompt: str
+    completion: str
+    is_nop: bool
+
+
+def build_samples(meeting_id: str, trace: Trace) -> list[SftSample]:
+    """One `SftSample` per reading step, plus one more for the synthesis call if the
+    trace has one — `is_nop=False` always for synthesis, since it is never a curation
+    step subject to the NOP-share cap."""
+    samples = [
+        SftSample(
+            meeting=meeting_id,
+            step=step.index,
+            prompt_version=trace.prompt_version,
+            system=step.system,
+            prompt=step.user,
+            completion=step.raw,
+            is_nop=step.is_nop,
+        )
+        for step in trace.steps
+    ]
+    if trace.synthesis is not None:
+        samples.append(
+            SftSample(
+                meeting=meeting_id,
+                step=len(trace.steps),
+                prompt_version=trace.prompt_version,
+                system=trace.synthesis.system,
+                prompt=trace.synthesis.user,
+                completion=trace.synthesis.raw,
+                is_nop=False,
+            )
+        )
+    return samples
+
+
+def check_single_prompt_version(samples: Sequence[SftSample]) -> str:
+    """Refuse (exit-2-style, via exception) rather than silently building across a
+    mixed-prompt-version pool. Returns the single shared version on success."""
+    versions = {s.prompt_version for s in samples}
+    if not versions:
+        raise MixedPromptVersionError("no samples to build from")
+    if len(versions) > 1:
+        raise MixedPromptVersionError(f"mixed prompt versions in one build: {sorted(versions)}")
+    return next(iter(versions))
+
+
+def downsample_nop(
+    samples: Sequence[SftSample], *, max_nop_frac: float = DEFAULT_MAX_NOP_FRAC, seed: int = 0
+) -> list[SftSample]:
+    """Cap the NOP share of the pool at `max_nop_frac` by randomly dropping excess
+    NOP samples — SPEC §8 risk 3's ~35% threshold, applied as a knob rather than an
+    assumption. A pool already under the cap is returned unchanged.
+    """
+    if max_nop_frac >= 1.0:
+        return list(samples)
+
+    nops = [s for s in samples if s.is_nop]
+    non_nops = [s for s in samples if not s.is_nop]
+    if not non_nops or not nops:
+        return list(samples)
+
+    # Solve max_nops/(max_nops+len(non_nops)) <= max_nop_frac for max_nops.
+    max_nops = int(max_nop_frac * len(non_nops) / (1 - max_nop_frac))
+    if len(nops) <= max_nops:
+        return list(samples)
+
+    kept_nops = set(random.Random(seed).sample(nops, max_nops))
+    return [s for s in samples if not s.is_nop or s in kept_nops]
+
+
+def nop_share(samples: Sequence[SftSample]) -> float | None:
+    """The share this module is capping — reported alongside the build, not just
+    enforced silently."""
+    if not samples:
+        return None
+    return sum(1 for s in samples if s.is_nop) / len(samples)
+
+
+def split_by_meeting(
+    samples: Sequence[SftSample], *, valid_frac: float, seed: int = 0
+) -> tuple[list[SftSample], list[SftSample]]:
+    """Train/valid split assigned by MEETING, never by step — "sibling steps share
+    STATE, so a step-level split leaks the answer for a held-out step into training."
+    Returns `(train, valid)`.
+    """
+    meeting_ids = sorted({s.meeting for s in samples})
+    if not meeting_ids:
+        return [], []
+    shuffled = list(meeting_ids)
+    random.Random(seed).shuffle(shuffled)
+    n_valid = max(1, round(valid_frac * len(meeting_ids)))
+    valid_ids = set(shuffled[:n_valid])
+    train = [s for s in samples if s.meeting not in valid_ids]
+    valid = [s for s in samples if s.meeting in valid_ids]
+    return train, valid
+
+
+def drop_share(samples: Sequence[SftSample]) -> float | None:
+    """Share of non-NOP completions containing at least one `DROP` line — a coarse
+    revision-share proxy at the SFT-sample level (text-based, since a sample's
+    completion is raw text, not parsed `Op` objects)."""
+    non_nop = [s for s in samples if not s.is_nop]
+    if not non_nop:
+        return None
+    return sum(1 for s in non_nop if "DROP" in s.completion) / len(non_nop)

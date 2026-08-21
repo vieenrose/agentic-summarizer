@@ -85,7 +85,11 @@ above) = 20 meetings total.
 
 ---
 
-## 3. Output — TBD
+## 3. Output (normative)
+
+A single flowing **prose** summary — no bullets, no sections, no anchors. **< 500
+tokens.** Everything else (structure/style within that prose, language matching input,
+etc.) is still open.
 
 ---
 

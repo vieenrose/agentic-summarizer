@@ -6,7 +6,15 @@
 
 ## 1. Goal
 
-TBD.
+**Fine-tune MiniCPM5-1B (Q8, 4k context) to drive a lightweight ("smol") agent
+framework — built in this repo — that produces the final meeting summary (§3) from a
+transcript (§2) too long to fit in one 4k-token pass.** The whole-meeting transcripts
+in the training corpus (§2.3) run 14k–28k+ tokens, far beyond a single 4k context
+window, so the student cannot summarize in one shot: it has to learn to work
+incrementally, reading the transcript through some number of bounded steps and
+carrying what matters forward via **external memory** across those steps, converging
+on one final <1,000-token prose summary. Learning to use that external memory well —
+not raw context size — is the core capability being trained.
 
 ---
 
@@ -93,16 +101,20 @@ within that prose, language matching input, etc.) is still open.
 
 ---
 
-## 4. Architecture — mostly TBD; one piece confirmed
+## 4. Architecture
 
+- **Student / deployed model: MiniCPM5-1B, Q8, 4k context.** Single on-device model
+  (not the prior project's 3-model pipeline) — CPU-only per §6. It drives a
+  lightweight agent framework, developed in this repo, that steps through a long
+  transcript (§2) in bounded chunks, maintaining an **external memory** (state)
+  across steps, and eventually emits the final prose summary (§3). Concrete design
+  still open: chunk size, exact memory representation, step/tool grammar, how many
+  steps per meeting, termination condition.
 - **Teacher model: Unsloth Qwen3.8-27B, Q8 or BF16 quant** (exact quant TBD) — a
-  strong, large model, offline only, never on the reference hardware (§6) — runs once
-  per meeting to turn the audio pipeline's transcript (§2) into a very-high-quality
-  reference summary. This is
-  training-distillation ground truth (and/or eval reference), not a deployed
-  component. The actual on-device model(s) that run at inference time are separate,
-  small, and CPU-only per §6; everything else about the architecture (how many
-  models, what each does, how the teacher's output is distilled down) is still open.
+  strong, large model, offline only, never on the reference hardware (§6). Produces
+  training-distillation ground truth (and/or eval reference) from the transcript —
+  including synthesizing MeetingBank's whole-meeting summary from its segment minutes
+  (§2.3) — never deployed on-device.
 - **Human validation (normative)**: every teacher-generated summary must be manually
   reviewed by a human before it enters the training/eval corpus — no teacher output is
   trusted unvalidated, matching the human-in-the-loop discipline the prior project

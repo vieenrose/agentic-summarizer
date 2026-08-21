@@ -1,0 +1,51 @@
+{
+  "tokenize_version": "chartok-v1",
+  "_comment": "HAND-COMPUTED, never generated -- a generated expectation would pin whatever the implementation happens to do, bugs included. Tiny cases are computed by hand in the case's 'why' field; the larger zh-TW pair's numbers were derived independently by tokenizing with arcsum.tokens.char_tokens and counting overlaps by hand-written script, never by calling rouge_n/rouge_l themselves, to keep the fixture independent of the implementation it pins.",
+  "cases": [
+    {
+      "name": "identical_zh_tw",
+      "why": "candidate == reference: every metric is a perfect match",
+      "candidate": "會議決議通過搬遷案",
+      "reference": "會議決議通過搬遷案",
+      "rouge1": {"precision": 1.0, "recall": 1.0, "f1": 1.0},
+      "rouge2": {"precision": 1.0, "recall": 1.0, "f1": 1.0},
+      "rougeL": {"precision": 1.0, "recall": 1.0, "f1": 1.0}
+    },
+    {
+      "name": "empty_candidate",
+      "why": "an empty candidate shares nothing with the reference -- all zero, not a divide-by-zero crash",
+      "candidate": "",
+      "reference": "會議決議通過搬遷案",
+      "rouge1": {"precision": 0.0, "recall": 0.0, "f1": 0.0},
+      "rouge2": {"precision": 0.0, "recall": 0.0, "f1": 0.0},
+      "rougeL": {"precision": 0.0, "recall": 0.0, "f1": 0.0}
+    },
+    {
+      "name": "partial_overlap_toy",
+      "why": "candidate tokens [a,b,c], reference tokens [a,b,d]. ROUGE-1: unigram overlap {a,b}=2, cand_total=3, ref_total=3 -> P=R=F=2/3. ROUGE-2: cand bigrams {(a,b),(b,c)}, ref bigrams {(a,b),(b,d)}, overlap=1 -> P=R=F=1/2. ROUGE-L: LCS([a,b,c],[a,b,d])=[a,b] len 2 -> P=R=F=2/3.",
+      "candidate": "a b c",
+      "reference": "a b d",
+      "rouge1": {"precision": 0.6666666666666666, "recall": 0.6666666666666666, "f1": 0.6666666666666666},
+      "rouge2": {"precision": 0.5, "recall": 0.5, "f1": 0.5},
+      "rougeL": {"precision": 0.6666666666666666, "recall": 0.6666666666666666, "f1": 0.6666666666666666}
+    },
+    {
+      "name": "repeated_ngram_multiset_clipping",
+      "why": "candidate 'a a a' (tokens [a,a,a]), reference 'a a' (tokens [a,a]). ROUGE-1 multiset overlap = min(3,2) = 2 (NOT 1, which a naive set-intersection would wrongly give): P=2/3, R=2/2=1.0, F=0.8. ROUGE-2: cand bigrams Counter({(a,a):2}), ref bigrams Counter({(a,a):1}), overlap=min(2,1)=1: P=1/2, R=1/1=1.0, F=2/3. ROUGE-L: LCS([a,a,a],[a,a])=2: P=2/3, R=1.0, F=0.8.",
+      "candidate": "a a a",
+      "reference": "a a",
+      "rouge1": {"precision": 0.6666666666666666, "recall": 1.0, "f1": 0.8},
+      "rouge2": {"precision": 0.5, "recall": 1.0, "f1": 0.6666666666666666},
+      "rougeL": {"precision": 0.6666666666666666, "recall": 1.0, "f1": 0.8}
+    },
+    {
+      "name": "zh_tw_realistic_pair",
+      "why": "a realistic zh-TW candidate/reference pair. Values derived independently: tokenized with the real char_tokens(), then overlaps counted by a separate hand-written script -- never by calling rouge_n/rouge_l themselves.",
+      "candidate": "會議討論辦公室搬遷案，最終決議遷至B棟大樓，預算已於會中核准。",
+      "reference": "會議討論辦公室搬遷案，決議通過遷至B棟大樓，並核准相關預算。",
+      "rouge1": {"precision": 0.7857142857142857, "recall": 0.8148148148148148, "f1": 0.7999999999999999},
+      "rouge2": {"precision": 0.6296296296296297, "recall": 0.6538461538461539, "f1": 0.6415094339622641},
+      "rougeL": {"precision": 0.7142857142857143, "recall": 0.7407407407407407, "f1": 0.7272727272727273}
+    }
+  ]
+}

@@ -27,20 +27,20 @@ harness iterable. Keep it: the model is always a plain `(system, user) -> str` c
 `memory.py`, `render.py`, `ops.py`, `lang.py`, `guards.py`, `prompts.py`, `prose.py`,
 `agent.py` including `SYNTHESIZE`, `backends/llama_server.py`, `baseline.py`,
 `probe.py`), the corpus/eval layer (`corpus/`, `metrics/`, `judge/`, `supervision/`),
-and 8 of 10 `cli/` entry points: `score`, `report`, `import_corpus`, `probe`, `judge`,
-`gen_traces`, `build_sft`, `run_arms` — all wired to their `[project.scripts]` names and
-covered by tests that stub `urllib.request.urlopen` rather than needing a live model.
+and 9 of 10 `cli/` entry points: `score`, `report`, `import_corpus`, `probe`, `judge`,
+`gen_traces`, `build_sft`, `run_arms`, `device_bench` — all wired to their
+`[project.scripts]` names and covered by tests that stub `urllib.request.urlopen`
+(or, for `device_bench`, parse the real artifacts committed under `runs/`) rather than
+needing a live model or device.
 
-**Not yet written**: `cli/device_bench.py` (needs the real Reno 7 over adb — not
-unit-testable in this environment by construction) and `cli/trace_report.py`
-(deliberately deferred: `supervision/report.py`'s own docstring insists its rates stay
-welded to live `Trace`/`Step`/`Outcome` objects rather than a parallel on-disk schema,
-since a numerator/denominator split across a serialization boundary was a real,
-twice-repeated bug in the prior project — `cli/gen_traces.py` computes and writes the
-supervision report from the live traces it just generated instead, and there is
-currently no companion tool that reconstructs a `Trace` from disk later). Installing
-the package will give 8 working commands; the other 2 `[project.scripts]` entries will
-`ImportError` until built.
+**Not yet written**: `cli/trace_report.py` (deliberately deferred:
+`supervision/report.py`'s own docstring insists its rates stay welded to live
+`Trace`/`Step`/`Outcome` objects rather than a parallel on-disk schema, since a
+numerator/denominator split across a serialization boundary was a real, twice-repeated
+bug in the prior project — `cli/gen_traces.py` computes and writes the supervision
+report from the live traces it just generated instead, and there is currently no
+companion tool that reconstructs a `Trace` from disk later). Installing the package
+will give 9 working commands; `arcsum-trace-report` will `ImportError` until built.
 
 **`SPEC.md` is the normative contract.** Where any code disagrees with it, the spec
 wins. Read it in full before implementing anything — this file only orients you; it

@@ -28,8 +28,15 @@ from arcsum.corpus.meetingbank import import_meeting, safe_id
 
 
 def import_transcript_file(path: Path) -> tuple[str, str]:
-    """One `*.transcript.json` file -> `(meeting_id, v2_text)`."""
-    meeting_id = safe_id(path.stem)
+    """One `*.transcript.json` file -> `(meeting_id, v2_text)`.
+
+    Strips the full `.transcript.json` suffix, not just `.json` — real Zenodo
+    filenames are compound (`<slug>.mp3.transcript.json`), and `Path.stem` only
+    removes the last suffix, which would otherwise leave a stray `.transcript` (or
+    `.mp3.transcript`) baked into every meeting id and break any later lookup against
+    `Metadata/MeetingBank.json`'s clean meeting-id keys.
+    """
+    meeting_id = safe_id(path.name.removesuffix(".transcript.json"))
     transcript = json.loads(path.read_text(encoding="utf-8"))
     utterances = import_meeting(transcript)
     v2_text = "\n".join(u.render() for u in utterances)

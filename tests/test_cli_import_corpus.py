@@ -10,7 +10,6 @@ import json
 import pytest
 
 from arcsum.cli.import_corpus import build_parser, import_directory, import_transcript_file, main
-from arcsum.corpus.meetingbank import safe_id
 
 
 def _transcript(*turns: tuple[object, str]) -> dict:
@@ -27,7 +26,7 @@ def test_import_transcript_file_merges_consecutive_turns_and_relabels_speakers(t
 
     meeting_id, v2_text = import_transcript_file(path)
 
-    assert meeting_id == safe_id(path.stem)
+    assert meeting_id == "SeattleCityCouncil_03142016_CB_118618"
     assert v2_text == "S1: Good morning. Let's begin.\nS2: Thank you."
 
 
@@ -39,6 +38,32 @@ def test_import_transcript_file_sanitises_unsafe_filename_characters(tmp_path) -
 
     assert " " not in meeting_id
     assert meeting_id != ""
+
+
+def test_import_transcript_file_strips_the_full_transcript_json_suffix(tmp_path) -> None:
+    """Real Zenodo filenames are compound (`<slug>.mp3.transcript.json`); `Path.stem`
+    only strips the LAST suffix, which would otherwise leave a stray `.transcript` (or
+    `.mp3.transcript`) baked into the meeting id -- breaking any later lookup against
+    Metadata/MeetingBank.json's clean meeting-id keys. Caught by running this CLI
+    against the real Zenodo release (SPEC §9 Phase 1 pilot staging)."""
+    path = tmp_path / "longbeach_a6470ca4-93aa-4ae0-a9ae-32003669a8af.mp3.transcript.json"
+    path.write_text(json.dumps(_transcript((1, "hello"))))
+
+    meeting_id, _ = import_transcript_file(path)
+
+    assert meeting_id == "longbeach_a6470ca4-93aa-4ae0-a9ae-32003669a8af.mp3"
+    assert not meeting_id.endswith(".transcript")
+
+
+def test_import_transcript_file_strips_suffix_for_a_meeting_id_style_filename(tmp_path) -> None:
+    """The staging convention this project actually uses for the pilot corpus:
+    `<meeting_id>.transcript.json`, where meeting_id itself contains no further dots."""
+    path = tmp_path / "AlamedaCC_01072020.transcript.json"
+    path.write_text(json.dumps(_transcript((1, "hello"))))
+
+    meeting_id, _ = import_transcript_file(path)
+
+    assert meeting_id == "AlamedaCC_01072020"
 
 
 def test_import_transcript_file_falls_back_to_unk_with_no_speaker(tmp_path) -> None:

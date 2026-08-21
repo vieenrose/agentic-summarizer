@@ -1,7 +1,17 @@
 # SPEC — Agentic meeting summarizer (MiniCPM5-1B + external memory, zh-TW)
 
-**Version:** 0.6 · **Status:** design + execution plan complete — §9 phases it
+**Version:** 0.7 · **Status:** design + execution plan complete — §9 phases it
 cheapest-first with gates; §8 attaches each risk to the phase that tests it
+
+**v0.7 changes** — the corpus claims in §2.2 were audited against the actual Zenodo
+release rather than the paper, and two of them were wrong. Word-level diarization and
+whole-meeting transcripts are **present** (v0.6 was right, and the Hugging Face mirror
+that lacks them is a stripped derivative — now named as non-normative). The **full
+minutes document is absent**, so §2.2 stage 3 and §4.2 step 3 lose their intended
+grounding; the ARC slot is demoted to a Phase-2 ablation (risk 8). Counts corrected to
+**1,250 annotated meetings / 6,894 items**, and coverage measured at **56.8%** rather
+than the assumed ~51%. Risk 7 records that dropping the verifier contradicts a prior
+measured result.
 
 ---
 
@@ -63,28 +73,45 @@ app** (ASR + speaker diarization), emitting format v2 directly. This system neve
 consumes raw audio — §2 is the whole input contract.
 
 **For training and evaluation** the corpus is **MeetingBank, translated to zh-TW** —
-no other corpus. MeetingBank supplies 1,366 real US city-council meetings (~28k tokens
-per transcript, 2.6 h average, 2–19 speakers) with word-level speaker diarization. All
-1,366 are in scope, but they are built in two tranches: a 200-meeting pilot, then the
-remainder only if the pilot clears its gates (§9). One exception to "no other corpus":
-a small held-out zh-TW audio slice used for evaluation only, never training (§9 Phase 3).
+no other corpus. MeetingBank supplies **1,366 transcribed** real US city-council meetings
+(~28k tokens per transcript, 2.6 h average, 2–19 speakers) with word-level speaker
+diarization, of which **1,250 carry aligned summaries** and are therefore the usable
+corpus. All 1,250 are in scope, but they are built in two tranches: a 200-meeting pilot,
+then the remainder only if the pilot clears its gates (§9). One exception to "no other
+corpus": a small held-out zh-TW audio slice used for evaluation only, never training
+(§9 Phase 3).
+
+**Which release (normative).** The authoritative distribution is **Zenodo record
+7989108** (`MeetingBank.zip`), which carries the word-level diarized transcripts and
+`Metadata/MeetingBank.json`. The Hugging Face `huuuyeah/meetingbank` dataset is a
+**stripped derivative** — a flat, speakerless, segment-level text blob — and must not be
+used for corpus construction; it satisfies none of stage 1 below. (`lytang/MeetingBank-
+transcript` is an intermediate form: speaker-labelled, but segment-level and already
+turn-grouped.)
 
 **What MeetingBank does and does not provide as summaries** — this determines
-everything about supervision (§4.2), so it is worth stating exactly:
+everything about supervision (§4.2), so it is worth stating exactly. All figures below
+were measured directly from the Zenodo release, not taken from the paper:
 - **It does provide human-authored summaries**, and they are good ones: professional
   city-clerk meeting minutes, split by the dataset's authors into passages and aligned
-  to specific transcript segments. 6,892 released instances over 1,366 meetings =
-  **~5.05 summarized segments per meeting**, averaging 87 en tokens each (~439 tokens
-  of human-authored summary text per meeting).
-- **The full minutes document per meeting is also distributed** (PDF). This is the only
-  *whole-meeting*, human-authored artifact in the pipeline, and it is used as such
-  (stage 3 below) rather than left unread — composing from it beats composing from
-  disconnected segment fragments, and it is the sole grounding available for
-  meeting-level structure.
-- **Coverage is partial.** ~5.05 segments × 2,892 tokens ≈ 14.6k of a 28.4k-token
-  transcript — roughly **half the meeting has no gold minute** at all. Segments were
-  filtered (≥60 s, summary ≥10 words), so procedural stretches — roll call, motions to
-  adjourn — are simply absent from the summarized set.
+  to specific transcript spans. **6,894 items over 1,250 annotated meetings = ~5.5
+  summarized items per meeting**, every one with a non-empty summary, averaging 87 en
+  tokens each (~439 tokens of human-authored summary text per meeting). There is no
+  reservoir of additional unreleased minutes.
+- **Each item carries its own `startTime`/`endTime`** against the whole-meeting timeline,
+  which is what makes the covered/uncovered split of §4.2 computable rather than assumed.
+- **The full minutes document is NOT distributed.** The paper's description mentions PDF
+  minutes, but no PDF appears anywhere in the Zenodo release — the per-item `Summary`
+  fields are the only human-authored summary text available. Anything in this spec that
+  previously rested on a whole-meeting minutes document has been re-grounded on the
+  concatenated per-item summaries plus their type and ordering (stage 3, §4.2 step 3).
+  Obtaining the real PDFs would mean scraping each meeting's `URLs.MeetingDetail`
+  Legistar page for 1,250 meetings; cost that before assuming it.
+- **Coverage is partial — measured.** Item spans cover **56.8% of meeting duration on
+  average (59.4% median)**, and 51% of meetings are under 60% covered. So roughly
+  **two-fifths of the meeting has no gold minute** at all. Items were filtered (≥60 s,
+  summary ≥10 words), so procedural stretches — roll call, motions to adjourn — are
+  simply absent from the summarized set.
 - **What is missing is the format, not the humans.** There is no whole-meeting prose
   summary matching §3: the minutes are a procedural record (motion numbers, votes,
   ordinance IDs) at segment granularity, not a connected <1,000-token narrative.
@@ -97,30 +124,34 @@ source.
 
 Corpus construction, in order — each stage's output is the next stage's only input:
 
-1. **Import to format v2.** MeetingBank ships word-level JSON dicts
-   (`text`/`offset`/`duration`/`confidence`) with diarization → group consecutive
-   words by speaker into one line per turn, discard all timing. Speaker labels are
+1. **Import to format v2.** The Zenodo transcripts ship as
+   `segments[].nbest[0].words[]`, each word a dict of
+   (`text`/`offset`/`duration`/`confidence`), with `segments[].speaker` as an integer
+   diarization label → group consecutive words by speaker into one line per turn,
+   discard all timing **from the emitted line** while retaining each line's source
+   offset out-of-band, since §4.2 needs it to align items to chunks. Speaker labels are
    renamed to `S1…Sn` in first-appearance order unless a real name/role is supplied;
    `UNK` only where no label exists (§2).
 2. **Translate en → zh-TW** with **TranslateGemma-27B** (`google/translategemma-27b-it`;
    Traditional Chinese is an explicitly supported target in its tech report). The
-   transcript, the segment minutes, *and* the full minutes document are all translated,
-   so everything downstream is zh-TW. Speaker labels are not translated. Scale: ~28k
-   source tokens per meeting — ~5.7M for the Phase-1 pilot, ~40M for the full corpus.
+   transcript *and* the per-item summaries are translated, so everything downstream is
+   zh-TW. Speaker labels are not translated. Scale: ~28k source tokens per meeting —
+   ~5.7M for the Phase-1 pilot, ~35M for the full 1,250-meeting corpus.
 3. **Compose the whole-meeting summary** with the teacher (§4), generating **in zh-TW**,
-   from **the translated full minutes document plus the segment minutes**. The task is
-   composition, not summarization from scratch: human-authored whole-meeting content
-   becomes one connected <1,000-token narrative in §3's form. Using the full minutes
-   document — not just the ~439 tokens of segment fragments — is what gives the target
-   any meeting-level structure that a human actually chose; the segment minutes remain
-   useful because they carry the transcript alignment the document lacks. Generating in
-   the target language (rather than composing in en and translating the result) keeps the
+   from **the translated per-item summaries, in meeting order, with their `type` labels**.
+   The task is composition, not summarization from scratch: human-authored content
+   becomes one connected <1,000-token narrative in §3's form. Since no whole-meeting
+   minutes document exists (see above), the meeting-level *structure* is the item
+   sequence and item types — which is a genuine human-chosen ordering, but a far weaker
+   signal than a drafted narrative would be. **Record this as the weakest link in the
+   reference chain** and treat §8 risk 1 as correspondingly worse. Generating in the
+   target language (rather than composing in en and translating the result) keeps the
    target's register that of a generative model working in zh-TW; see §4.3 for the
    alternative ordering.
 4. **Human validation** of every composed summary (§4) before it enters the corpus.
 
 **Granularity (normative): segment minutes are intermediate, not the training
-target.** The ~5 per-segment minutes per meeting are input material for stage 3, not
+target.** The ~5.5 per-item minutes per meeting are input material for stage 3, not
 the artifact. The training target is the **whole-meeting** summary only, per §3.
 
 **Provenance, stated precisely**: the reference summary is
@@ -149,12 +180,12 @@ A single flowing **zh-TW prose** summary — no bullets, no sections, no anchors
   final prose synthesis.
 - **Teacher model: Unsloth Qwen3.8-27B, Q8 or BF16 quant** (exact quant TBD) — offline
   only, never on the reference hardware (§6). Synthesizes the zh-TW whole-meeting
-  summary from translated segment minutes (§2.2 stage 3) and produces the per-step
+  summary from the translated per-item minutes (§2.2 stage 3) and produces the per-step
   distillation targets (§4.2).
 - **Translation model: TranslateGemma-27B** (`google/translategemma-27b-it`) — offline
   only, corpus construction stage 2 (§2.2). A dedicated translation model rather than
   the teacher, on the assumption it produces better zh-TW; gated on a sample (§4.3)
-  before committing the full ~40M-token run.
+  before committing the full ~35M-token run.
 - **Human validation (normative)**: every teacher-generated summary must be manually
   reviewed by a human before it enters the training/eval corpus. Given the
   translation-then-synthesis provenance (§2.2), this is the only human-authored signal
@@ -212,7 +243,7 @@ token-based over the whole transcript, not segment-aligned.** MeetingBank's summ
 segments cover only ~51% of a meeting (§2.2), so aligning chunks to them would leave
 the other half of the transcript unread — and at deploy time the agent sees everything,
 with no segment annotations at all. Chunk boundaries therefore fall at token offsets
-(snapped to the nearest line boundary, since §2 lines are atomic), and segment minutes
+(snapped to the nearest line boundary, since §2 lines are atomic), and item minutes
 are attached to whichever chunks overlap them during supervision (§4.2).
 
 Step count per meeting: ~28.4k ÷ 2.5k ≈ **11 reading steps + 1 synthesis ≈ 12 calls**,
@@ -225,13 +256,13 @@ model: 1.6 GB at ctx=2048 → 4.3 GB at ctx=65536), which is where the conservat
 comes from. But step count falls roughly linearly as context grows, and **fewer steps
 means less error accumulation across the memory chain** — the dominant failure mode of
 this whole architecture. So 8k must be measured against 4k on the real device (§9
-Phase 0) before 4k is treated as settled. If 8k fits the latency and RSS envelope, it
+Phase 0b) before 4k is treated as settled. If 8k fits the latency and RSS envelope, it
 is probably the better design: ~6 steps instead of ~12.
 
 ### 4.2 Training-data construction (normative)
 
 Per-step supervision has to be constructed, since the corpus has no per-step targets.
-The key asset is that **MeetingBank's segment minutes are professionally authored and
+The key asset is that **MeetingBank's item minutes are professionally authored and
 already aligned to transcript spans** — the mapping from "this stretch of transcript"
 to "what mattered in it" is human-made, not model-invented, which is a stronger
 starting point than the prior project had (its teacher invented gold edits from
@@ -245,33 +276,44 @@ Per meeting, walking chunks in order:
    conversion task ("express this minute as ADD/ARC lines against the current memory"),
    not open-ended summarization. The teacher also sees later minutes, and that foresight
    is used *only* to emit `DROP` for points a later segment supersedes.
-2. **Reading steps with no overlapping segment (~6 of ~11).** These are the ~49% of the
-   transcript MeetingBank's annotators filtered out. **Do not blanket-`NOP` them.** The
-   filter was `≥60 s` duration and `≥10 words` of summary — mechanical thresholds, so a
-   45-second exchange that settles something real was excluded for being short, not for
-   being unimportant. Blanket-`NOP` would actively train the model to ignore substantive
-   content. Instead the teacher classifies each uncovered span against the full minutes
-   document (§2.2): if the span's content appears there, emit the corresponding edit
-   lines; if it does not, `NOP`. Filler (roll call, motions to adjourn, procedural
-   boilerplate) genuinely resolves to `NOP` and *should* — "recognize filler and record
-   nothing" is a skill the agent needs — but that verdict is now derived rather than
-   assumed, and the expected `NOP` share drops well below 49%.
-3. **`ARC` supervision.** The arc slot is the design's differentiator (§4.1) and cannot
-   be supervised from segment fragments, which have no through-line by construction.
-   Its target is derived from the **full minutes document**: the teacher produces the
-   arc state as it should stand after each step, given the document's account of the
-   meeting up to that point. Without this the arc would be model-invented at every step
-   and the slot would carry no grounded signal.
+2. **Reading steps with no overlapping item (~4 of ~11).** These are the **~43%** of the
+   transcript MeetingBank's annotators filtered out (measured, §2.2). **Do not
+   blanket-`NOP` them.** The filter was `≥60 s` duration and `≥10 words` of summary —
+   mechanical thresholds, so a 45-second exchange that settles something real was
+   excluded for being short, not for being unimportant. Blanket-`NOP` would actively
+   train the model to ignore substantive content. Since no whole-meeting minutes document
+   exists to classify against (§2.2), the teacher instead judges each uncovered span
+   against **the neighbouring items' summaries and the meeting's item list**: if the span
+   is continuous with an adjacent item's business, emit the corresponding edit lines; if
+   it is self-contained procedure, `NOP`. Filler (roll call, motions to adjourn,
+   procedural boilerplate) genuinely resolves to `NOP` and *should* — "recognize filler
+   and record nothing" is a skill the agent needs — but that verdict is derived rather
+   than assumed. **This classification is weaker than the original design intended and
+   its error rate is unmeasured**; sample and hand-check it during the Phase-1 gate.
+3. **`ARC` supervision — degraded, and flagged as such.** The arc slot is the design's
+   differentiator (§4.1) and cannot be supervised from item fragments, which have no
+   through-line by construction. The intended grounding was the full minutes document,
+   which **is not distributed** (§2.2). The available substitute is the ordered list of
+   item summaries with their `type` labels: the teacher produces the arc state as it
+   should stand after each step, given the items concluded up to that point. That is a
+   real human-chosen ordering, but it is a list, not a narrative, so the arc's *prose
+   through-line* is model-invented even though its *content* is grounded.
+   **Consequence (normative): the ARC slot must be treated as an experiment, not an
+   assumption.** Phase 2 must run the ablation — agent with `ARC` versus agent with
+   `POINTS` only — and if `ARC` does not earn its context budget against that arm, drop
+   the slot rather than shipping an ungrounded one. Record the result either way.
 4. **Synthesis step.** Input is the final memory; target is the human-validated
    whole-meeting summary (§2.2 stage 3–4).
 
-Both step types train the same model (§4). Supervision volume at full corpus: ~1,092
-train meetings × ~12 steps ≈ **~13k training steps**, of which ~1.1k are synthesis; the
+Both step types train the same model (§4). Supervision volume at full corpus: ~1,000
+train meetings × ~12 steps ≈ **~12k training steps**, of which ~1.0k are synthesis; the
 Phase-1 pilot yields ~1.9k steps from 160 train meetings. The edit/`NOP` split
-among the ~12k curation steps is no longer fixed by segment coverage — it falls out of
+among the ~11k curation steps is not fixed by item coverage — it falls out of
 step 2's classification — but it must be **reported and monitored**: if `NOP` exceeds
 ~35% of curation targets, downsample or loss-weight it (§8). The synthesis skill still
-sees only ~1/12th the data curation does (§8).
+sees only ~1/12th the data curation does (§8). **The ~12-step figure is itself a
+projection from English token counts** and moves with the measured zh-TW ratio (§7, §9
+Phase 0a); it is not a settled number.
 
 **Validation.** Every gold edit sequence is replayed through the real harness before
 use: ops must parse, `DROP` prefixes must match an existing point, and the resulting
@@ -416,7 +458,7 @@ bigger steps, and never exceeds the context window.
 **Kill criterion.** If measured wall-clock per meeting exceeds ~20 minutes on §6's
 hardware, the design is not shippable as specified and must change shape (larger
 context and fewer steps, a smaller quant, or moving synthesis off-device) before any
-corpus is built. This is Phase 0 in §9 precisely because it needs no corpus at all.
+corpus is built. This is Phase 0b in §9 precisely because it needs no corpus at all.
 
 ---
 
@@ -432,9 +474,12 @@ Each is now attached to the phase that tests it (§9).
    verbatim rather than performing abstraction"). Two mismatches stack: **discourse
    form** (procedural record ≠ narrative) and **meeting structure** (roll-call /
    readings / public-comment / votes is not what a Taiwanese work meeting looks like).
-   A model trained on 1,366 council meetings may hallucinate motions and votes into a
-   project review. Using the full minutes document (§2.2 stage 3) mitigates the first;
-   only the in-domain eval slice (§9 Phase 3) can detect the second.
+   A model trained on 1,250 council meetings may hallucinate motions and votes into a
+   project review. The mitigation originally credited here — composing from a full
+   minutes document — **is no longer available** (§2.2: no PDF is distributed), so this
+   risk is *worse* than v0.6 assessed: the reference's meeting-level structure is now an
+   item list rather than a human-drafted narrative. Only the in-domain eval slice (§9
+   Phase 3) can detect the second mismatch.
 2. **Two skills, one 1B model, unequal data** (tested: Phase 2). §4 merges memory
    curation and prose synthesis into one model, and §4.2 gives synthesis ~1/12th the
    steps curation gets. This deliberately contradicts the prior project, which used a
@@ -456,25 +501,63 @@ Each is now attached to the phase that tests it (§9).
    zh, 0/11 on real noisy zh). MeetingBank's audio is English, so **nothing in the
    corpus can measure it** — this is the specific gap the in-domain slice exists to
    close.
-6. **Projections, not measurements** (tested: Phase 0). Every figure in §7 and the
+6. **Projections, not measurements** (tested: Phase 0a/0b). Every figure in §7 and the
    ~12-calls / ~2.5k-chunk assumptions in §4.1 rest on English token counts. The zh-TW
    measurement under MiniCPM5's tokenizer moves the step count, the `NOP` ratio, and all
    of §7 together.
+7. **The verifier was dropped without evidence** (tested: before Phase 1 — it needs no
+   corpus). §4 replaces the prior project's 3-model pipeline with a single on-device
+   model, and that reversal is not merely untested: the prior project **measured the
+   single-model configuration on this exact base model and this exact device and
+   rejected it** — *"the model alone measures 4/20 inversions; the verifier gate is what
+   the device needs to reach ~0."* §5.2's G2 gate demands `inversions ≤ baseline`, which
+   is precisely the bar that needed the verifier. If a deterministic guard (§4.1's
+   harness-side contradiction check) cannot replace it, §7's budget must carry a second
+   model and **the Phase-0 latency measurement is measuring the wrong system.** Settle
+   this with the G1 revision probe against the existing fine-tuned checkpoint before
+   booking device time.
+8. **`ARC` supervision is degraded** (tested: Phase 2 ablation, §4.2 step 3). The full
+   minutes document that was to ground the arc slot is not distributed (§2.2). The slot
+   is the design's stated differentiator and now carries a weaker signal than intended,
+   so it must earn its context budget against a `POINTS`-only arm or be dropped.
 
 ---
 
 ## 9. Execution plan (normative)
 
 Ordered cheapest-first, each phase gated. **No phase starts until the previous one
-passes** — the point is to spend the ~40M-token translation run and the fine-tune only
+passes** — the point is to spend the ~35M-token translation run and the fine-tune only
 after the assumptions they rest on have survived contact with the device.
 
-### Phase 0 — device reality check (no corpus required)
+### Phase 0a — configuration check (no corpus, no device, no training)
 
-Stock MiniCPM5-1B Q8 on the actual Reno 7 (§6). Measure prefill and decode throughput,
+Runs *before* device time is booked, because it decides **what system Phase 0b should
+measure**. Two questions, both answerable from artifacts already on disk:
+
+1. **Is the verifier necessary (risk 7)?** Run §5.2's G1 revision probe against the
+   existing fine-tuned MiniCPM5-1B checkpoint in three arms: model alone; model plus the
+   prior project's 350M verifier; model plus §4.1's deterministic contradiction guard.
+   If the guard suffices, §4's single-model design stands on evidence. If it does not,
+   §7's call budget gains a second model *before* the latency gate is measured.
+2. **What is the en→zh token ratio?** Translate a handful of meetings with any available
+   model and measure both sides under MiniCPM5's tokenizer. This is a *units*
+   experiment, not a quality one, and must not wait for TranslateGemma. Every figure in
+   §7 and the step count in §4.1 scale with it.
+
+**Gate:** the shippable configuration is known, and the step count rests on a measured
+zh-TW token ratio rather than an English one.
+
+### Phase 0b — device reality check (no corpus required)
+
+Stock MiniCPM5-1B on the actual Reno 7 (§6), in the configuration Phase 0a settled.
+Measure prefill and decode throughput **at realistic KV depth, not just at depth 0**,
 peak RSS, and per-meeting wall-clock for the §7 projection; measure **4k vs 8k context**
-to settle §4.1's chunk size on evidence. Also tokenize a zh-TW sample to fix the token
-counts every other number depends on.
+to settle §4.1's chunk size on evidence.
+
+**Quant is a variable here, not a constant.** §4 names Q8 by fiat, but the Reno 7's
+Cortex-A78 is Armv8.2-A — it has `dotprod` and **no `i8mm`** — so the fastest int8 GEMM
+path is unavailable and Q4 variants may win on the metric that actually gates. Sweep
+Q8_0 / Q4_K_M / Q4_0 and let the measurement choose.
 
 **Gate:** per-meeting wall-clock ≤ ~20 min at the chosen context, within RSS budget.
 Fail → change shape (larger context/fewer steps, smaller quant, synthesis off-device)
@@ -482,8 +565,8 @@ before proceeding.
 
 ### Phase 1 — 200-meeting pilot corpus
 
-Run §2.2's construction on **200 meetings, not 1,366**: import, translate (~5.7M tokens
-rather than ~40M), compose, human-validate. Apply §4.3's gates. Build per-step
+Run §2.2's construction on **200 meetings, not 1,250**: import, translate (~5.7M tokens
+rather than ~35M), compose, human-validate. Apply §4.3's gates. Build per-step
 supervision (§4.2) and report the edit/`NOP` split.
 
 **Gate:** translation gates pass (line-count integrity is hard pass/fail); human
@@ -514,5 +597,5 @@ of additional MeetingBank data fixes that.
 
 ### Phase 4 — full corpus
 
-Only now translate the remaining ~1,166 meetings, retrain, re-run G1–G4 and Phase 3's
+Only now translate the remaining ~1,050 meetings, retrain, re-run G1–G4 and Phase 3's
 slice. Full spend is justified only by a Phase-2 result that was gated on volume.

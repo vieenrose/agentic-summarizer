@@ -5,32 +5,64 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Repository state
 
 This is the **`next` branch**: a from-scratch redesign, started from an empty tree
-(`86e6c67`). It currently contains **only `SPEC.md`** — no source, tests, or build
-config exist yet. There are therefore no build/lint/test commands to run. Add them to
-this section as soon as the first tooling lands (`pyproject.toml`, the harness package,
-how to run it on one transcript, how to run a single eval meeting, how to run the G1
-revision probe).
+(`86e6c67`). Build-out is in progress against `SPEC.md` v0.7.
 
-A `.venv` (Python 3.12, `uv`-managed) is already provisioned with the training/serving
-stack: `torch` 2.11 (cu128), `transformers` 5.5, `trl`, `unsloth`, `peft`, `accelerate`,
-`datasets`, `llama_cpp_python`, `gradio`, plus `pytest` and `ruff` for whenever tests and
-lint config land. There is no `pyproject.toml` yet, so `uv run` has nothing to key off —
-create one before relying on it.
+**Commands** (the `.venv` is Python 3.12, `uv`-managed; there is no `uv sync` lockfile
+yet, so call the venv's binaries directly):
+
+```bash
+.venv/bin/python -m pytest -q                 # whole suite
+.venv/bin/python -m pytest tests/test_ops.py -q          # one file
+.venv/bin/python -m pytest -k spread -q                  # one test by name
+.venv/bin/ruff check .                        # lint
+.venv/bin/ruff format src tests               # format
+```
+
+The suite must run with **no GPU, no weights, no network, and no optional extra
+installed** — that property is load-bearing, not incidental, and is what makes the
+harness iterable. Keep it: the model is always a plain `(system, user) -> str` callable,
+`token_len` is always injected, and network calls are stubbed at `urllib.request.urlopen`.
+
+**Landed so far**: `pyproject.toml` (package `arcsum`, src-layout, **zero core runtime
+dependencies**; heavy stacks are extras), `src/arcsum/tokens.py` (the normative
+tokenizer), `src/arcsum/transcript.py` (format v2), `src/arcsum/chunker.py`.
+
+**Not yet written**: `memory.py`, `render.py`, `ops.py`, `lang.py`, `guards.py`,
+`prompts.py`, `prose.py`, `agent.py` (including the net-new `SYNTHESIZE` call),
+`backends/`, `baseline.py`, `probe.py`, `corpus/`, `metrics/`, `judge/`, `supervision/`,
+`cli/`. The `[project.scripts]` entries in `pyproject.toml` point at `cli/` modules that
+do not exist yet, so installing the package will not give working commands until they do.
 
 **`SPEC.md` is the normative contract.** Where any code disagrees with it, the spec
 wins. Read it in full before implementing anything — this file only orients you; it
 does not restate the spec's normative detail (formats, caps, gate criteria).
 
-### The prior project (`master` branch) is a different, superseded system
+### Two version constants govern what must not drift
 
-`master` holds a completed prior implementation of a similarly-named but materially
-different design (`src/`, `train/`, `eval/`, `tools/`, its own `CLAUDE.md`/`PLAN.md`/
-`RESULTS.md`/`README.md`). It is retained for reference — inspect it with
-`git show master:<path>` or `git log master` — but **do not copy its code or its spec
-assumptions without checking against `SPEC.md` first.** Key things that changed between
-the two:
+| constant | home | changing it means |
+|---|---|---|
+| `TOKENIZE_VERSION` | `arcsum/tokens.py` | every previously reported metric is incomparable; the golden fixtures assert equality with it, so goldens must be regenerated and re-reviewed |
+| `PROMPT_VERSION` | `arcsum/prompts.py` (not yet written) | every prior trace and eval number is incomparable — bump it rather than silently editing a prompt |
 
-| | `master` (prior, superseded) | `next` (this branch, current) |
+`tokens.py` is the single source of truth for "is this character CJK". The prior project
+had **three** drifted answers to that question; do not add a fourth. It also keeps three
+roles deliberately separate — `char_tokens` (normative, metrics only),
+`heuristic_token_len` (non-normative budget estimate, must never produce a reported
+number), and `hf_token_len` (the real instrument).
+
+### The prior project is a different, superseded system — and it lives on `pi-agent`
+
+**The mature prior implementation is on `pi-agent`** (tip `3086075`), not `master`.
+`master` (`012bd9a`) is an earlier snapshot of the same lineage — it is the merge-base,
+with the harness complete but the student never fine-tuned. Anything involving the
+fine-tune, GGUF export, the zh campaign, the verifier, on-device integration notes, or
+`tools/measure_faithfulness.py` exists **only** on `pi-agent`.
+
+Both are read-only reference: `git show pi-agent:<path>`, `git log pi-agent`. **Do not
+copy their code or spec assumptions without checking against `SPEC.md` first.** Key
+things that changed between the two designs:
+
+| | `pi-agent`/`master` (prior, superseded) | `next` (this branch, current) |
 |---|---|---|
 | architecture | 3-model pipeline (student + verifier + judge panel) | single on-device model (MiniCPM5-1B) does both memory curation and synthesis |
 | student | `google/functiongemma-270m-it` | MiniCPM5-1B, Q8, 4k context |
@@ -68,8 +100,26 @@ binding.
   human review. Aggregate scores are gated against a fair map-reduce baseline (same
   model, same chunk size); ship only if gates G1–G4 (§5.2) clear, otherwise ship the
   baseline and record the negative result.
-- **Execution plan (§9)** is phased and gated cheapest-first: Phase 0 (on-device
-  latency/RSS/context measurement, no corpus needed) → Phase 1 (200-meeting pilot
+- **Execution plan (§9)** is phased and gated cheapest-first: Phase 0a (configuration
+  check — verifier necessity + en→zh token ratio; no corpus, no device, no training) →
+  Phase 0b (on-device latency/RSS/context measurement) → Phase 1 (200-meeting pilot
   corpus) → Phase 2 (pilot fine-tune + baseline + revision probe) → Phase 3 (in-domain
-  zh-TW eval slice) → Phase 4 (full 1,366-meeting corpus). Do not skip ahead to a later
+  zh-TW eval slice) → Phase 4 (full 1,250-meeting corpus). Do not skip ahead to a later
   phase's spend before its predecessor's gate has passed.
+
+## Corpus access (audited, SPEC §2.2)
+
+Use the **Zenodo** release, record `7989108` (`MeetingBank.zip`, 606 MB). It has the
+word-level diarized transcripts (1,366 files, `segments[].nbest[0].words[]` with
+`text`/`offset`/`duration`/`confidence`, plus `segments[].speaker`) and
+`Metadata/MeetingBank.json` (1,250 annotated meetings, `itemInfo` with
+`startTime`/`endTime`/`Summary`/`type`).
+
+**Do not build the corpus from `huuuyeah/meetingbank` on Hugging Face** — it is a
+stripped derivative with no speakers and no timing, and satisfies none of §2.2 stage 1,
+even though it is what is currently in the local HF cache.
+
+Two audited facts worth not re-deriving: item spans cover **56.8%** of meeting duration
+on average, and **no minutes PDF is distributed** despite the paper describing one —
+which is why §4.2 step 3's `ARC` supervision is degraded and the slot is now a Phase-2
+ablation (§8 risk 8).

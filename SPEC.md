@@ -49,62 +49,28 @@ One utterance per line. **One utterance = one line is a hard rule** (no embedded
 
 ### 2.3 Content source (normative)
 
-The transcript is never hand-authored or synthetic for training/eval corpora — it is
-the direct output of the **VoxSum Android audio pipeline** (on-device ASR + speaker
-diarization) run against a real recorded audio source. This spec's system never
-consumes raw audio itself; §2's format v1 is exactly what that pipeline emits, and is
-the only contract this system's input side needs to honor.
+Transcripts come only from the **VoxSum Android audio pipeline** (on-device ASR +
+speaker diarization) run on real podcast audio — never hand-authored or synthetic.
+This system never consumes raw audio; §2's format v1 is exactly that pipeline's
+output, and the only input contract this spec needs.
 
-**Source material selection criteria** (for building training/eval corpora):
-- **Format**: podcast episodes (real recordings, not scripted/synthetic).
-- **Duration**: 2–3 hours per episode — long enough to stress the ≥80k-token target
-  this system is meant to handle without concatenating multiple episodes.
-- **Language**: zh-TW or en.
-- **Speakers**: ideally **2 or more** (dialogue/interview format), not a single-host
-  monologue — this is a deliberate change from the prior project's Gooaye/股癌 corpus,
-  which was monologue-heavy and is no longer considered an ideal source for this
-  reason.
-- **Preferred but not required**: episodes with an official, high-quality summary
-  published by the show itself (show notes, timestamped outline, or full transcript)
-  — useful as an independent quality reference when eyeballing this system's output,
-  even though the formal evaluation protocol (§5) does not compare against reference
-  summaries.
+**Selection criteria**: real podcast episodes, 2–3h duration, zh-TW or en, ideally 2+
+speakers (not a single-host monologue — unlike the prior project's Gooaye/股癌
+corpus), official show notes preferred but not required (useful for eyeballing
+quality; not part of the formal eval, §5).
 
-**Candidate channels researched so far**:
+**en — confirmed**: **Lex Fridman Podcast** (~3h avg, 2 speakers, strong official
+transcripts + timestamped outlines). Joe Rogan Experience fits duration/speakers but
+has no official summary.
 
-| channel | language | typical episode length | speakers | official summary quality |
-|---|---|---|---|---|
-| **Lex Fridman Podcast** | en | ~3h average (range ~1–6h) | 2 (host + one guest) | **Strong** — official timestamped outline and full transcript published per episode on lexfridman.com |
-| **The Joe Rogan Experience** | en | ~2h39m average | 2 (host + one guest) | Weak — episode pages carry only a short description, no official transcript/outline |
-
-**zh-TW: no single-episode match on duration; leading candidate identified for the
-other two criteria.** Popular Taiwanese talk podcasts (台灣通勤第一品牌 ~45–55 min,
-百靈果 News, 大人的Small Talk) are multi-speaker but run well under 2 hours per
-episode — this appears to be a market-wide norm (Taiwanese podcasts mainstream around
-30–60 min/episode; 2–3h marathon interviews are not a native zh-TW podcast format the
-way they are in the US market). 館長陳之漢's live streams fit the duration/speaker
-count but are YouTube livestream recordings, not a conventional podcast feed, with no
-official written summary.
-
-**Leading zh-TW candidate: 法客電台 BY 法律白話文運動 (Plain Law Movement)**
-- Multi-host legal/political-commentary show, 5 rotating hosts (貴智, 珞亦, Yoyo/鎬佑,
-  廷奕, 子鈺) — clears the "2+ speakers" bar comfortably.
-- Produced by an award-winning independent legal-media outlet (19th 卓越新聞獎
-  winner, 20th nominee) that also publishes written legal explainers — the org has
-  real editorial capacity behind it.
-- Its longest episodes (checked directly against Apple Podcasts): 法客話題 #216
-  (職場霸凌), 1h33m; 政治歸政治 #218, 1h18m; YO智事務所 #135, 1h27m; 政治歸政治 #219,
-  1h16m; YO智事務所 #134, 1h12m — still short of the 2h floor on any single episode.
-- **Show-notes quality is inconsistent, checked per-episode, not assumed show-wide**:
-  政治歸政治 #218 and 法客話題 #216 (職場霸凌) carry genuine structured topic
-  outlines / discussion-question lists (high quality); 政治歸政治 #219 and both
-  YO智事務所 episodes checked have only a sponsor blurb or bare timestamp labels
-  (low quality). Pick specific episodes by checking their show notes individually —
-  do not assume the whole show meets the summary-quality bar.
-- **Practical use**: since no single episode clears 2h, reach the 2–3h target by
-  concatenating 2 same-series episodes with good show notes (e.g. two 政治歸政治 or
-  法客話題 installments) — the same concatenation approach the prior project used for
-  its synthetic long-zh eval tier (§9 of the old spec).
+**zh-TW — no single episode clears 2h** (mainstream Taiwanese episodes run 30–60 min;
+2–3h marathon interviews aren't a native zh-TW format). Leading candidate: **法客電台
+BY 法律白話文運動** (5 rotating hosts, award-winning legal-media outlet). Longest
+episodes run ~1–1.5h with genuine structured show notes on some installments:
+政治歸政治 #218, 法客話題 #216 (職場霸凌), YO智事務所 #135/#134/#133/#132 — pick
+episodes by checking notes individually, quality varies by installment. Plan:
+concatenate 2 same-series episodes to reach the 2–3h target (as the prior project did
+for its synthetic long-zh eval tier).
 
 ---
 

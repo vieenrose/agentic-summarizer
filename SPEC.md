@@ -60,8 +60,8 @@ corpus), official show notes preferred but not required (useful for eyeballing
 quality; not part of the formal eval, §5).
 
 **en — confirmed**: **Lex Fridman Podcast** (~3h avg, 2 speakers, strong official
-transcripts + timestamped outlines). Joe Rogan Experience fits duration/speakers but
-has no official summary.
+transcripts + timestamped outlines). Joe Rogan Experience dropped — fits
+duration/speakers but has no official summary.
 
 **zh-TW — no single episode clears 2h** (mainstream Taiwanese episodes run 30–60 min;
 2–3h marathon interviews aren't a native zh-TW format). Leading candidate: **法客電台

@@ -88,7 +88,10 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 # rule everywhere. Kept narrow: only the files whose job is to reason about scripts.
 "src/arcsum/lang.py" = ["RUF001", "RUF002", "RUF003"]
 "src/arcsum/tokens.py" = ["RUF001", "RUF002", "RUF003"]
+"src/arcsum/memory.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_tokens.py" = ["RUF001", "RUF002", "RUF003"]
+"tests/test_memory.py" = ["RUF001", "RUF002", "RUF003"]
+"tests/test_render.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_lang.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_transcript.py" = ["RUF001", "RUF002", "RUF003"]
 # Model-facing zh-TW prompt text is byte-stable by contract; do not reflow it.

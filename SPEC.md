@@ -10,78 +10,60 @@ TBD.
 
 ---
 
-## 2. Input — transcript format v1 (normative, carried over unchanged from the prior design)
+## 2. Input — transcript format v2 (normative, timestamp-free)
 
 One utterance per line. **One utterance = one line is a hard rule** (no embedded newlines).
 
 ```
-[<start>] <speaker>: <text>     diarized, name unknown  → S1, S2, …  (first-appearance order)
-[<start>] <name>: <text>        diarized, name known    → real name / role verbatim
-[<start>] <text>                no diarization          → no speaker field
+<speaker>: <text>     diarized, name unknown  → S1, S2, …  (first-appearance order)
+<name>: <text>        diarized, name known    → real name / role verbatim
+<text>                no diarization          → no speaker field
 ```
 
-- **Timestamp** = utterance start only. `M:SS` under 1 hour, `H:MM:SS` from 1 hour.
-  Seconds and minutes-in-hour are zero-padded; the leading unit is unpadded.
-  Examples: `[0:00]`, `[3:35]`, `[59:58]`, `[1:02:07]`.
+- **No timestamp** — dropped from v1 specifically so timestamp-free public datasets
+  (VCSum, §2.3) are valid input without forced alignment. §3's output is prose with no
+  anchors, so nothing downstream depends on a `[m:ss]` being present.
 - **Speaker field**: `S1…Sn` (order of first appearance), a real name/role, or absent.
-  A speaker field never contains `] ` or `: ` and is ≤ 40 chars.
+  A speaker field never contains `: ` and is ≤ 40 chars.
 - **No** header, footer, markdown, or escaping. Text is emitted as-is.
-- **Parsing (normative)**: split on the FIRST `] `, then the FIRST `: ` after it.
-  `parse_line(line) → (timestamp, speaker|None, text)`.
+- **Parsing (normative)**: split on the FIRST `: `. `parse_line(line) → (speaker|None, text)`.
 - Long monologue lines can occur (up to ~2.6k chars/line in real zh-TW source material
   seen previously) — readers must not assume a max line length.
 
 ### 2.1 Example (en)
 
 ```
-[0:00] S1: Let us discuss the office move.
-[2:30] S2: I propose we move to Building B.
-[5:10] S1: Agreed, Building B it is.
+S1: Let us discuss the office move.
+S2: I propose we move to Building B.
+S1: Agreed, Building B it is.
 ```
 
 ### 2.2 Example (zh-TW)
 
 ```
-[0:00] S1: 我們來討論辦公室搬遷。
-[2:30] S2: 我建議搬到 B 棟大樓。
-[5:10] S1: 好，就搬到 B 棟。
+S1: 我們來討論辦公室搬遷。
+S2: 我建議搬到 B 棟大樓。
+S1: 好，就搬到 B 棟。
 ```
 
 ### 2.3 Content source (normative)
 
-Transcripts come only from the **VoxSum Android audio pipeline** (on-device ASR +
-speaker diarization) run on real podcast audio — never hand-authored or synthetic.
-This system never consumes raw audio; §2's format v1 is exactly that pipeline's
-output, and the only input contract this spec needs.
+**Content is drawn only from two existing public datasets — no manual sourcing of raw
+podcast/meeting audio:**
+- **en: MeetingBank** — 1,366 real US city-council meetings, transcripts with
+  word-level speaker diarization + timestamps, paired with professionally-written
+  official meeting minutes (segment-aligned).
+- **zh: VCSum** — 239 real Chinese meetings, transcripts with per-utterance speaker
+  labels, paired with human-written overall + per-segment summaries. No native
+  timestamps, which is fine — §2 is timestamp-free specifically to fit this dataset.
 
-**Selection criteria**: 2–3h duration, ideally 2+ speakers (not a single-host
-monologue — unlike the prior project's Gooaye/股癌 corpus), official summary
-preferred but not required (useful for eyeballing quality; not part of the formal
-eval, §5).
+**Open caveat, still unresolved**: VCSum is Simplified Chinese (zh-CN), not
+Traditional Chinese (zh-TW) as §2 otherwise scopes this system to — using it means
+either accepting zh-CN content for this dataset-driven phase, or converting/
+re-sourcing for zh-TW later. Not decided; flagged here so it isn't silently assumed.
 
-**en — confirmed**: **Lex Fridman Podcast** (~3h avg, 2 speakers, strong official
-transcripts + timestamped outlines).
-
-**zh-TW — real 會議 (meeting) recordings, not podcasts** (mainstream Taiwanese
-podcasts run 30–60 min and don't clear 2h; real meetings do, and come with a legally
-mandated official record instead of show notes). Confirmed categories:
-- **立法院委員會** (Legislative Yuan committee sessions), official @legislativeyuan
-  YouTube channel — e.g. 經濟委員會 2h59m, 外交及國防委員會 3h19m, 教育及文化委員會
-  3h12m. Official verbatim record: 立法院公報 (ly.gov.tw / ppg.ly.gov.tw), indexed by
-  committee + date.
-- **市政總質詢** (city council mayor question time, e.g. 台北市議會) — 4–5h+ (longer
-  than target; may need trimming to an 80k-token-scale window).
-- **股東常會** (listed-company annual shareholder meetings) — continuous recording +
-  official 議事錄 (minutes, filed within 20 days on MOPS) are legally mandated for
-  every listed company. Confirmed example: TDCC FY2024, 2h23m.
-
-Plan: draw zh-TW corpus meetings from these three categories, verify duration/audio
-quality per recording before use, and pair each with its official record (公報/議事錄)
-as an independent quality reference alongside the teacher model's summary (§4).
-
-**Initial corpus size (normative)**: **10 en** recordings (Lex Fridman Podcast) + **10
-zh-TW** recordings (drawn across the 立法院委員會 / 市政總質詢 / 股東常會 categories
-above) = 20 meetings total.
+**Initial corpus size (normative)**: **10 en** meetings (MeetingBank) + **10 zh**
+meetings (VCSum) = 20 total.
 
 ---
 

@@ -1,0 +1,3 @@
+minicpm5-1b-q8_0 VmHWM: 1373368 kB Pss: 1309649 kB
+minicpm5-1b-q4_0 VmHWM: 849200 kB Pss: 832604 kB
+minicpm5-1b-cursor-p20.Q4_K_M VmHWM: 871156 kB Pss: 854785 kB

@@ -1,7 +1,16 @@
 # SPEC — Agentic meeting summarizer (MiniCPM5-1B + external memory, zh-TW)
 
-**Version:** 0.7 · **Status:** design + execution plan complete — §9 phases it
-cheapest-first with gates; §8 attaches each risk to the phase that tests it
+**Version:** 0.8 · **Status:** design + execution plan complete; Phase 0b measured on
+the actual reference device — §9 phases the remaining work cheapest-first with gates;
+§8 attaches each risk to the phase that tests it
+
+**v0.8 changes** — Phase 0b ran on the actual Reno 7 (device access via a proxy host,
+2026-08-21), not projected. Headline result: **the core-mask choice matters far more
+than the quant choice**, and the prior project's big-cores-only (`0xC0`) serving
+convention **fails** the ~20-minute gate (~22.5 min projected for the reading phase
+alone) while an all-8-cores config (`0xFF`) **passes** it comfortably (~12.9 min) — see
+§9 Phase 0b for the full measured table. Peak RSS measured at 829 MiB–1.34 GiB across
+quants, well within budget. §7's "must measure" rows are updated with these figures.
 
 **v0.7 changes** — the corpus claims in §2.2 were audited against the actual Zenodo
 release rather than the paper, and two of them were wrong. Word-level diarization and
@@ -437,28 +446,30 @@ way corpus averages are not — run it before any corpus-scale evaluation (§9).
 
 ## 7. Operational budget
 
-Derived from §4.1's protocol; **all figures are projections pending measurement on §6's
-hardware**, and every one of them scales with the zh-TW token count, which is the
-prerequisite measurement (the ~28k transcript figure is English — Chinese tokenizes
-differently under MiniCPM5's vocabulary, and the direction is not obvious enough to
-assume).
+Derived from §4.1's protocol. **Step count and token figures are still English-derived
+projections** (the en→zh ratio measurement, Phase 0a item 2, was attempted but not
+completed — see §9 Phase 0b's deferred items); **wall-clock and peak RSS are now
+measured** on the actual Reno 7 (§9 Phase 0b, 2026-08-21), at the all-8-cores
+configuration the measurement itself selected.
 
-| quantity | projection | basis |
+| quantity | value | basis |
 |---|---|---|
-| calls per meeting | ~12 (≈11 reading + 1 synthesis) | 28.4k transcript ÷ 2.5k chunk (§4.1) |
-| prefill per meeting | ~39k tokens | ~3.5k × 11 reading steps + ~0.9k synthesis |
-| decode per meeting | ~2.7k tokens | ~150 × 11 edit-line steps + <1,000 prose |
-| wall-clock per meeting | **must measure** | the user-facing number on a Dimensity 900 CPU; dominated by prefill |
-| peak RSS | **must measure** | 8 GB device shared with OS and app; single ~1B Q8 model resident |
+| calls per meeting | ~12 (≈11 reading + 1 synthesis) | 28.4k transcript ÷ 2.5k chunk (§4.1) — still English-derived, unmeasured for zh-TW |
+| prefill per meeting | ~39k tokens | ~3.5k × 11 reading steps + ~0.9k synthesis — same caveat |
+| decode per meeting | ~2.7k tokens | ~150 × 11 edit-line steps + <1,000 prose — same caveat |
+| wall-clock, reading phase (all cores, `-C 0xFF`) | **~12.9 min, measured** | 11-step trapezoidal projection from measured per-step depth scaling (§9 Phase 0b); does not yet include the synthesis call or isolate thermal drift |
+| wall-clock, reading phase (big-cores-only, `-C 0xC0`) | **~22.5 min, measured — FAILS the gate** | same method; this was the prior project's serving convention and must not be reused here |
+| peak RSS, `--no-mmap`, 4k ctx | **829 MiB (Q4_0) – 1.34 GiB (Q8_0), measured** | one real 2,500-token completion, `VmHWM` + `smaps_rollup` `Pss` (§9 Phase 0b) |
 
 The design's efficiency argument is that memory is capped, so per-step context is
 **constant-size regardless of meeting length** — a 3-hour meeting costs more steps, not
 bigger steps, and never exceeds the context window.
 
-**Kill criterion.** If measured wall-clock per meeting exceeds ~20 minutes on §6's
-hardware, the design is not shippable as specified and must change shape (larger
-context and fewer steps, a smaller quant, or moving synthesis off-device) before any
-corpus is built. This is Phase 0b in §9 precisely because it needs no corpus at all.
+**Kill criterion — cleared, conditionally.** Measured wall-clock per meeting is ~12.9 min
+at the all-cores configuration, under the ~20-minute ceiling; the design is shippable as
+specified **only if the on-device serving path is built to use all 8 cores**, not the
+big-cores-only convention the prior project used, which independently measured **over**
+the ceiling on this same hardware. This is Phase 0b in §9, completed without a corpus.
 
 ---
 
@@ -572,21 +583,82 @@ measure**. Two questions, both answerable from artifacts already on disk:
 **Gate:** the shippable configuration is known, and the step count rests on a measured
 zh-TW token ratio rather than an English one.
 
-### Phase 0b — device reality check (no corpus required)
+### Phase 0b — device reality check (measured 2026-08-21, on the actual Reno 7)
 
-Stock MiniCPM5-1B on the actual Reno 7 (§6), in the configuration Phase 0a settled.
-Measure prefill and decode throughput **at realistic KV depth, not just at depth 0**,
-peak RSS, and per-meeting wall-clock for the §7 projection; measure **4k vs 8k context**
-to settle §4.1's chunk size on evidence.
+**Measured, not projected.** Stock MiniCPM5-1B (Q8_0, Q4_0, and the prior project's
+Q4_K_M fine-tune as a realistic-decode-length stand-in) ran directly on an OPPO CPH2371
+(confirmed `ro.product.model=CPH2371`, SoC `mt6877`/Dimensity 900, `asimddp` present,
+no `i8mm` — matching §6 exactly) via a cross-compiled arm64-v8a `llama-bench`/
+`llama-server` (NDK r27c, `-march=armv8.2-a+dotprod`, no SVE/i8mm). cpu0–5 confirmed
+2.0 GHz (LITTLE, A55), cpu6–7 confirmed 2.4 GHz (big, A78), matching the device's known
+core layout.
 
-**Quant is a variable here, not a constant.** §4 names Q8 by fiat, but the Reno 7's
-Cortex-A78 is Armv8.2-A — it has `dotprod` and **no `i8mm`** — so the fastest int8 GEMM
-path is unavailable and Q4 variants may win on the metric that actually gates. Sweep
-Q8_0 / Q4_K_M / Q4_0 and let the measurement choose.
+**Headline finding: core-mask choice matters far more than quant choice, and the
+`0xC0` big-cores-only convention the prior project's `serve_student.sh` used is the
+WRONG choice here.** At depth 0, combined prefill+decode wall-clock for one step
+(2,500 prefill + 150 decode) on **all 8 cores** beat **big-cores-only** by close to 2×:
 
-**Gate:** per-meeting wall-clock ≤ ~20 min at the chosen context, within RSS budget.
-Fail → change shape (larger context/fewer steps, smaller quant, synthesis off-device)
-before proceeding.
+| quant | big-only (2 threads, `0xC0`) | LITTLE-only (6 threads, `0x3F`) | all cores (8 threads, `0xFF`) |
+|---|---|---|---|
+| Q8_0 | 112.7 s | 89.6 s | **67.3 s** |
+| Q4_0 | 102.6 s | 81.7 s | **58.3 s** |
+| Q4_K_M (fine-tuned) | 116.7 s | 91.3 s | **66.4 s** |
+
+Without `i8mm`, the fastest available int8 path gains nothing from the A78's higher
+clock alone; a 2,500-token prefill is throughput-bound and the six A55s add real
+parallel capacity even at a lower clock. **Quant choice barely matters by comparison**
+— Q4_0 beats Q8_0 by only ~13–15%, far less than the ~40–68% swing from core-mask
+choice alone. This falsifies §4's "Q8 by fiat" only weakly (Q4_0 is faster but not
+dramatically), but it strongly falsifies the prior project's big-cores-only serving
+convention for this specific device and workload.
+
+**KV-depth scaling** (big-only, Q4_0, the stable reference curve): depth 0 → 101.6 s,
+depth ≈1,446 (≈4k total ctx) → 143.8 s (**1.42×**), depth ≈5,542 (≈8k total ctx) →
+270.9 s (**2.67×**). Applying the same relative scaling to the all-cores baseline and
+taking a trapezoidal average over SPEC §4.1's ~11-step reading phase (depth ramping
+~linearly from 0 toward ~4k):
+
+| core mask | avg step (ramping to ~4k) | 11-step reading phase |
+|---|---|---|
+| big-only (`0xC0`) | ~122.7 s | **~22.5 min** — already over the ~20 min gate, before synthesis |
+| all cores (`0xFF`) | ~70.4 s | **~12.9 min** — comfortably under, with headroom for synthesis |
+
+**Peak RSS at 4k context, `--no-mmap` (the honest private-storage number, not
+page-cache-backed)**, one real 2,500-token completion:
+
+| quant | `VmHWM` | `smaps_rollup` `Pss` |
+|---|---|---|
+| Q8_0 | 1,341 MiB | 1,279 MiB |
+| Q4_0 | 829 MiB | 813 MiB |
+| Q4_K_M | 851 MiB | 835 MiB |
+
+All three comfortably clear the device's 7.3 GB total RAM (though only ~200 MB was
+free at idle when first checked — the device was running its normal OS load; a
+dedicated-service deployment would need to budget against whatever headroom the target
+app actually gets, not against total RAM).
+
+**Gate verdict: PASS, all-cores config only.** ~12.9 min projected for the reading
+phase at all 8 cores clears the ~20 min ceiling with room for a synthesis call; the
+big-cores-only configuration **fails** the same gate (~22.5 min for reading alone).
+**Corollary for §9's later phases and for any on-device serving script: use `-C 0xFF`
+(or no mask restriction), never `0xC0`.**
+
+**What this measurement does not yet settle** (explicitly deferred, not skipped):
+- **4k vs 8k** — the depth-scaling data above answers "does 8k fit" (yes: ~8k context
+  costs roughly 2.7× a single step's depth-0 time, well within a per-step budget), but
+  not "is 8k the right choice" — that trades off against fewer steps and less error
+  accumulation, a Phase-2 question per §4.1.
+- **Sustained-run thermal drift** — this sweep ran for several minutes of near-continuous
+  load; whether decode throughput degrades further over a full ~13-minute meeting from
+  thermal throttling was not isolated from the depth-scaling effect already measured.
+  A dedicated back-to-back same-config timing series is the way to isolate it.
+- **The en→zh token ratio (Phase 0a item 2)** — attempted via a local third-family
+  translation model but stalled on an empty-content response (likely a reasoning-mode
+  budget issue) and was not completed this session. The ~11-step reading-phase estimate
+  above still rests on SPEC's existing English-token-derived step count.
+- **Decode-only throughput** (isolated from prefill) — only the combined `-pg 2500,150`
+  figure was measured; a `-n`-only sweep would sharpen the per-token decode-cost estimate
+  used in the RSS request and in any future latency budget refinement.
 
 ### Phase 1 — 200-meeting pilot corpus
 

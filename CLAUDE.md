@@ -5,7 +5,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Repository state
 
 This is the **`next` branch**: a from-scratch redesign, started from an empty tree
-(`86e6c67`). Build-out is in progress against `SPEC.md` v0.7.
+(`86e6c67`). Build-out is in progress against `SPEC.md` v0.8.
 
 **Commands** (the `.venv` is Python 3.12, `uv`-managed; there is no `uv sync` lockfile
 yet, so call the venv's binaries directly):
@@ -123,3 +123,28 @@ Two audited facts worth not re-deriving: item spans cover **56.8%** of meeting d
 on average, and **no minutes PDF is distributed** despite the paper describing one —
 which is why §4.2 step 3's `ARC` supervision is degraded and the slot is now a Phase-2
 ablation (§8 risk 8).
+
+## Device access (SPEC §6, §9 Phase 0b)
+
+The reference device (Oppo Reno 7 5G, CPH2371) is not attached to this workstation's
+adb directly. It has been reached via `ssh <user>@training-machine` (a tailnet host
+with the phone already connected over USB adb) — confirmed working 2026-08-21. From
+there, `adb shell`/`adb push`/`adb forward` all work normally against the real device.
+Cross-compiling for it: NDK r27c at `~/android-ndk/android-ndk-r27c` (the zip's symlinks
+extract as literal text files if unzipped with Python's `zipfile` — rebuild them from
+`ZipInfo.external_attr` before relying on the toolchain). Target flags:
+`-DANDROID_ABI=arm64-v8a -DGGML_NATIVE=OFF -DGGML_CPU_ARM_ARCH=armv8.2-a+dotprod` (the
+Reno 7's Cortex-A78 has `dotprod` but no `i8mm`/SVE — do not build for a newer arch
+target, it will `SIGILL`).
+
+**Measured headline result, worth not re-deriving**: use `-C 0xFF` (all 8 cores) when
+serving on this device, never the prior project's `-C 0xC0` (big-cores-only) —
+big-cores-only measured **over** the ~20-minute wall-clock gate (~22.5 min for the
+11-step reading phase) while all-cores measured comfortably under it (~12.9 min). Full
+numbers in `SPEC.md` §7 and §9 Phase 0b.
+
+A separate ARM proxy host (`nano`, alias in `~/.ssh/config`) was tried first when the
+real device wasn't yet known to be reachable; it lacks `dotprod`/`i8mm` (a different,
+weaker ARMv8.0 core) and its GCC 8 toolchain has a NEON codegen bug requiring a source
+patch to `ggml-cpu-impl.h` to build at all. It is not a reliable Reno-7 stand-in —
+prefer the real device via `training-machine` for any future measurement.

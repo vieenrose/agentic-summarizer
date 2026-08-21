@@ -505,17 +505,42 @@ Each is now attached to the phase that tests it (§9).
    ~12-calls / ~2.5k-chunk assumptions in §4.1 rest on English token counts. The zh-TW
    measurement under MiniCPM5's tokenizer moves the step count, the `NOP` ratio, and all
    of §7 together.
-7. **The verifier was dropped without evidence** (tested: before Phase 1 — it needs no
-   corpus). §4 replaces the prior project's 3-model pipeline with a single on-device
-   model, and that reversal is not merely untested: the prior project **measured the
-   single-model configuration on this exact base model and this exact device and
-   rejected it** — *"the model alone measures 4/20 inversions; the verifier gate is what
-   the device needs to reach ~0."* §5.2's G2 gate demands `inversions ≤ baseline`, which
-   is precisely the bar that needed the verifier. If a deterministic guard (§4.1's
-   harness-side contradiction check) cannot replace it, §7's budget must carry a second
-   model and **the Phase-0 latency measurement is measuring the wrong system.** Settle
-   this with the G1 revision probe against the existing fine-tuned checkpoint before
-   booking device time.
+7. **The verifier was dropped without evidence** (probed: 2026-08-21, pre-Phase-1;
+   **partial result, not a settlement — see caveats**). §4 replaces the prior project's
+   3-model pipeline with a single on-device model, and that reversal is not merely
+   untested: the prior project **measured the single-model configuration on this exact
+   base model and this exact device and rejected it** — *"the model alone measures 4/20
+   inversions; the verifier gate is what the device needs to reach ~0."*
+   - **What was run.** The prior checkpoint (`Luigi/minicpm5-1b-cursor`, its own v1
+     protocol — no v2-trained checkpoint exists yet) was served on-GPU and run three
+     ways: alone, with the prior project's own `enforce_decision_chain` (a deterministic
+     guard structurally analogous to this spec's `contradiction()` guard), and with the
+     `Luigi/granite-4.0-350m-verifier` in-stream. On the synthetic G1 screen, all three
+     passed 1/1 — the single hand-built planted-reversal case is not discriminating. On
+     3 real zh-TW ASR meetings (`asr-transcripts-2026-08-16`) scored with the prior
+     project's deterministic inversion detector, **model alone measured 0/3 inversions**,
+     unchanged by `enforce_decision_chain`.
+   - **A finding that narrows the question, not one that closes it.** Even the prior
+     project's own *verifier-enabled* historical run on one of these meetings logged
+     `INVERSION polarity-bearing bullets=0: inverted=0` — the verifier's catch there was
+     an unsupported-claim drop, not a polarity flip. So `detect_inversions()` (and this
+     spec's `contradiction()` guard, built on the same subject+polarity mechanism) target
+     a narrower failure mode than the verifier's full scope. The 0/3 result is real
+     evidence against needing a verifier specifically for §5.2's **G2 inversions gate**;
+     it says nothing about the broader unsupported-claim faithfulness question, which is
+     §5.1's LLM-judge gate's job, not G2's.
+   - **Caveats, explicit.** n=3 real meetings, not the historical T1 tier's n=20;
+     `send_thinking_kwarg` had to be set `True` for this checkpoint's chat template to
+     avoid a reasoning-then-empty-content failure — a serving-configuration difference
+     from whatever produced the historical 4/20 figure, so the two numbers are not a
+     clean apples-to-apples comparison; and the checkpoint is v1-protocol, not v2, so
+     this is evidence about the base model's underlying capability, not a validation of
+     the actual `guards.contradiction()` code in this repo.
+   - **Consequently:** proceed on the assumption that a deterministic guard suffices for
+     G2 specifically, but do **not** close this risk — re-run once a v2-trained
+     checkpoint exists (Phase 2) at the full T1-scale n, and keep §5.1's judge as the
+     independent check on the broader faithfulness question the inversion detector
+     cannot see.
 8. **`ARC` supervision is degraded** (tested: Phase 2 ablation, §4.2 step 3). The full
    minutes document that was to ground the arc slot is not distributed (§2.2). The slot
    is the design's stated differentiator and now carries a weaker signal than intended,

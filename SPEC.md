@@ -58,3 +58,17 @@ One utterance per line. **One utterance = one line is a hard rule** (no embedded
 ---
 
 ## 5. Evaluation & measurement — TBD
+
+---
+
+## 6. Reference hardware (normative)
+
+- **Target/reference inference device: Oppo Reno 7 smartphone, CPU-only inference.**
+  No GPU/NPU acceleration path is assumed — all on-device inference (any model in the
+  eventual architecture, §4) must run acceptably on this device's CPU alone.
+- **Open — needs confirming before it can drive numeric budgets (RAM/context/latency
+  caps in §5)**: "Reno 7" spans several regional variants with different chipsets
+  (e.g. Reno7 4G: MediaTek Helio G35; Reno7 5G / Reno7 Z: Snapdragon 695 or Dimensity
+  900, depending on market) and RAM configs (6/8 GB, some with virtual-RAM extension).
+  Confirm the exact variant/chipset/RAM in use so the peak-RSS and latency budgets in
+  this spec are grounded in the real device, not a guess.

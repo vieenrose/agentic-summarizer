@@ -1,6 +1,6 @@
 # SPEC — Agentic meeting summarizer (MiniCPM5-1B + external memory, zh-TW)
 
-**Version:** 0.4 · **Status:** design complete — corpus, agent protocol, training-data
+**Version:** 0.5 · **Status:** design complete — corpus, agent protocol, training-data
 construction, evaluation and budget all specified; see §8 for risks to measure
 
 ---
@@ -65,8 +65,23 @@ consumes raw audio — §2 is the whole input contract.
 **For training and evaluation** the corpus is **MeetingBank, translated to zh-TW** —
 all 1,366 meetings, no subsetting, no other corpus. MeetingBank supplies 1,366 real US
 city-council meetings (~28k tokens per transcript, 2.6 h average, 2–19 speakers) with
-word-level speaker diarization and professionally-written official minutes aligned to
-~9.8 segments per meeting.
+word-level speaker diarization.
+
+**What MeetingBank does and does not provide as summaries** — this determines
+everything about supervision (§4.2), so it is worth stating exactly:
+- **It does provide human-authored summaries**, and they are good ones: professional
+  city-clerk meeting minutes, split by the dataset's authors into passages and aligned
+  to specific transcript segments. 6,892 released instances over 1,366 meetings =
+  **~5.05 summarized segments per meeting**, averaging 87 en tokens each (~439 tokens
+  of human-authored summary text per meeting). The full minutes documents are also
+  distributed as PDFs.
+- **Coverage is partial.** ~5.05 segments × 2,892 tokens ≈ 14.6k of a 28.4k-token
+  transcript — roughly **half the meeting has no gold minute** at all. Segments were
+  filtered (≥60 s, summary ≥10 words), so procedural stretches — roll call, motions to
+  adjourn — are simply absent from the summarized set.
+- **What is missing is the format, not the humans.** There is no whole-meeting prose
+  summary matching §3: the minutes are a procedural record (motion numbers, votes,
+  ordinance IDs) at segment granularity, not a connected <1,000-token narrative.
 
 **The English original is source material, not training or eval data** — nothing in
 the shipped corpus is English, and no en metric is reported. VCSum was considered and
@@ -86,25 +101,26 @@ Corpus construction, in order — each stage's output is the next stage's only i
    transcript *and* the segment minutes are translated, so everything downstream is
    zh-TW. Speaker labels are not translated. Scale: ~38.7M source tokens of transcript
    plus ~1.2M of minutes.
-3. **Synthesize the whole-meeting summary** from the translated segment minutes with
-   the teacher (§4), generating **in zh-TW**. MeetingBank publishes no whole-meeting
-   summary, so this is where the training target comes from. Generating in the target
-   language (rather than synthesizing in en and translating the result) keeps the
-   target's register that of a generative model working in zh-TW; see §4.3 for the
-   alternative ordering.
-4. **Human validation** of every synthesized summary (§4) before it enters the corpus.
+3. **Compose the whole-meeting summary** from the translated segment minutes with the
+   teacher (§4), generating **in zh-TW**. The task is composition, not summarization
+   from scratch: ~439 tokens of human-selected content per meeting (§2.2 above) becomes
+   one connected <1,000-token narrative. Generating in the target language (rather than
+   composing in en and translating the result) keeps the target's register that of a
+   generative model working in zh-TW; see §4.3 for the alternative ordering.
+4. **Human validation** of every composed summary (§4) before it enters the corpus.
 
 **Granularity (normative): segment minutes are intermediate, not the training
-target.** The ~9.8 per-segment minutes per meeting are input material for stage 3, not
+target.** The ~5 per-segment minutes per meeting are input material for stage 3, not
 the artifact. The training target is the **whole-meeting** summary only, per §3.
 
-**Provenance consequence, stated plainly**: the reference summary is
-translation-then-synthesis — TranslateGemma output fed to Qwen — with no
-human-authored zh-TW text anywhere in the chain. The human-validation stage is
-therefore the only thing preventing full circularity, which is why §4 marks it
+**Provenance, stated precisely**: the reference summary is
+human-selected → machine-translated → machine-composed. *What* is worth recording
+comes from professional city clerks, which is the hard part and is human; the *language*
+is TranslateGemma's and the *composition* is Qwen's. So this is not a fully synthetic
+reference — but no human has ever read the zh-TW text that ends up as the training
+target, which is what §4's human-validation stage exists to fix, and why it is
 non-optional. Token counts also shift under translation; the ~28k figure is English,
-and the zh-TW token count under MiniCPM5's tokenizer must be measured, not assumed
-(§7, §8).
+and the zh-TW count under MiniCPM5's tokenizer must be measured, not assumed (§7, §8).
 
 ---
 
@@ -181,37 +197,47 @@ never by asking the model to rewrite the list.
 | output | ~150 (edit lines) | <1,000 (prose) |
 | **total** | **~3,500** | **~1,850** |
 
-Chunk size ~2,500 tokens follows from the budget, not preference. Note the fit with
-MeetingBank's own structure: its segments average 2,892 en tokens, so **one segment ≈
-one chunk**, and chunk boundaries can follow the dataset's human-defined segment
-boundaries rather than arbitrary token offsets (long segments split, short ones stay
-whole). Step count per meeting is then ~9.8 reading steps + 1 synthesis ≈ **11 calls**,
+Chunk size ~2,500 tokens follows from the budget, not preference. **Chunking is
+token-based over the whole transcript, not segment-aligned.** MeetingBank's summarized
+segments cover only ~51% of a meeting (§2.2), so aligning chunks to them would leave
+the other half of the transcript unread — and at deploy time the agent sees everything,
+with no segment annotations at all. Chunk boundaries therefore fall at token offsets
+(snapped to the nearest line boundary, since §2 lines are atomic), and segment minutes
+are attached to whichever chunks overlap them during supervision (§4.2).
+
+Step count per meeting: ~28.4k ÷ 2.5k ≈ **11 reading steps + 1 synthesis ≈ 12 calls**,
 pending the zh-TW token measurement (§7).
 
 ### 4.2 Training-data construction (normative)
 
-The corpus supplies only final summaries, so per-step supervision has to be
-constructed. The key asset is that **MeetingBank's segment minutes are already aligned
-to transcript segments and professionally authored** — the mapping from "this stretch
-of transcript" to "what mattered in it" is human-made, not model-invented, which is a
-stronger starting point than the prior project had (its teacher had to invent gold
-edits from whole-transcript foresight alone).
+Per-step supervision has to be constructed, since the corpus has no per-step targets.
+The key asset is that **MeetingBank's segment minutes are professionally authored and
+already aligned to transcript spans** — the mapping from "this stretch of transcript"
+to "what mattered in it" is human-made, not model-invented, which is a stronger
+starting point than the prior project had (its teacher invented gold edits from
+whole-transcript foresight alone).
 
-Per meeting, walking segments in order:
+Per meeting, walking chunks in order:
 
-1. **Reading steps.** For step *i*, the input is (memory after step *i*−1, chunk *i*).
-   The gold edit lines are derived by the teacher from **segment *i*'s translated
-   minute** — a narrow, grounded conversion task ("express this minute as ADD/ARC lines
-   against the current memory"), not open-ended summarization. The teacher additionally
-   sees later segments' minutes, and only that foresight is used to emit `DROP` for
-   points a later segment supersedes.
-2. **Synthesis step.** Input is the final memory; target is the human-validated
+1. **Reading steps, chunks overlapping a summarized segment (~5 of ~11).** Input is
+   (memory after step *i*−1, chunk *i*). Gold edit lines are derived by the teacher
+   from the translated minute(s) of the overlapping segment — a narrow, grounded
+   conversion task ("express this minute as ADD/ARC lines against the current memory"),
+   not open-ended summarization. The teacher also sees later minutes, and that foresight
+   is used *only* to emit `DROP` for points a later segment supersedes.
+2. **Reading steps with no overlapping segment (~6 of ~11).** These are the ~49% of the
+   transcript MeetingBank's annotators filtered out — roll call, procedural motions,
+   adjournment. Gold target is `NOP`. This is real signal, not a gap: "recognize filler
+   and record nothing" is a skill the agent needs, and the human filtering decision is
+   what defines it.
+3. **Synthesis step.** Input is the final memory; target is the human-validated
    whole-meeting summary (§2.2 stage 3–4).
 
 Both step types train the same model (§4). Supervision volume: ~1,092 train meetings ×
-~11 steps ≈ **~12k training steps**, of which ~1.1k are synthesis steps — the synthesis
-skill therefore sees roughly a tenth of the data the curation skill does, which is a
-risk to watch (§8).
+~12 steps ≈ **~13k training steps** — of which ~5.5k substantive edits, ~6.5k `NOP`,
+and ~1.1k synthesis. Two consequences worth naming: the synthesis skill sees ~1/12th of
+the data the curation skill does, and **over half of all curation targets are `NOP`**
+(§8).
 
 **Validation.** Every gold edit sequence is replayed through the real harness before
 use: ops must parse, `DROP` prefixes must match an existing point, and the resulting
@@ -297,9 +323,9 @@ assume).
 
 | quantity | projection | basis |
 |---|---|---|
-| calls per meeting | ~11 (≈9.8 reading + 1 synthesis) | one chunk ≈ one MeetingBank segment (§4.1) |
-| prefill per meeting | ~38k tokens | ~3.5k × 10 reading steps + ~0.9k synthesis |
-| decode per meeting | ~2.5k tokens | ~150 × 10 edit-line steps + <1,000 prose |
+| calls per meeting | ~12 (≈11 reading + 1 synthesis) | 28.4k transcript ÷ 2.5k chunk (§4.1) |
+| prefill per meeting | ~39k tokens | ~3.5k × 11 reading steps + ~0.9k synthesis |
+| decode per meeting | ~2.7k tokens | ~150 × 11 edit-line steps + <1,000 prose |
 | wall-clock per meeting | **must measure** | the user-facing number on a Dimensity 900 CPU; dominated by prefill |
 | peak RSS | **must measure** | 8 GB device shared with OS and app; single ~1B Q8 model resident |
 
@@ -313,15 +339,22 @@ bigger steps, and never exceeds 4k.
 
 Design is specified end to end; what remains are risks to measure, not gaps to fill.
 
-1. **Two skills, one 1B model, unequal data.** §4 merges memory curation and prose
-   synthesis into one model, and §4.2's supervision gives synthesis only ~1/10th the
+1. **Over half of all curation targets are `NOP` (~6.5k of ~12k).** A direct
+   consequence of MeetingBank's segment filtering covering only ~51% of each transcript
+   (§2.2, §4.2). The prior project shipped an explicit NOP-collapse guard because
+   over-NOPing was a *measured* failure mode there — and its training mix never
+   approached 50% NOP. Options if it bites: downsample NOP steps, weight the loss, or
+   have the teacher extract points from unsummarized spans (which forfeits the
+   human-authored grounding that makes §4.2 attractive in the first place).
+2. **Two skills, one 1B model, unequal data.** §4 merges memory curation and prose
+   synthesis into one model, and §4.2's supervision gives synthesis only ~1/12th the
    steps curation gets. This deliberately contradicts the prior project, which used a
    *separate* synthesizer and carried an explicit exclusion against folding synthesis
    into the note-taker (the stated reason: coupling synthesis capability to the
    note-taker's retrain cycle). Merging is justified here by the single-model,
    single-device constraint (§6) — but it is an untested reversal of a prior decision,
    and the first thing to check if prose quality disappoints.
-2. **Train/deploy distribution gap — currently unmeasurable.** Training transcripts are
+3. **Train/deploy distribution gap — currently unmeasurable.** Training transcripts are
    translated, professionally-transcribed text; deployment transcripts come from the
    VoxSum app's on-device ASR + diarization, with recognition and speaker-attribution
    errors the training data has none of. The prior project hit exactly this failure
@@ -331,14 +364,15 @@ Design is specified end to end; what remains are risks to measure, not gaps to f
    either simulated ASR-noise injection, or a small held-out zh-TW audio eval slice
    (e.g. ~10 立法院 committee recordings through the VoxSum pipeline) — eval only, not
    training. Undecided.
-3. **Translationese in every training target.** Gated at 20 meetings (§4.3), but the
+4. **Translationese in every training target.** Gated at 20 meetings (§4.3), but the
    gate can only reject an obviously-bad translation; a subtly foreign register would
    pass review and propagate into all 1,366 targets. There is no native zh-TW reference
    anywhere in the corpus to catch it.
-4. **Faithfulness is unmeasured.** QAEval is dropped with no zh substitute, and the
+5. **Faithfulness is unmeasured.** QAEval is dropped with no zh substitute, and the
    contamination rule (§5) blocks the obvious LLM-judge replacement. Nothing in the
    metric set detects a fluent summary that states the opposite of the transcript —
    which was a first-class product requirement in the prior project (0% inversions).
-5. **Projections, not measurements.** Every figure in §7, and the ~11-calls and
-   one-segment-per-chunk assumptions in §4.1, rest on English token counts. The zh-TW
-   measurement under MiniCPM5's tokenizer is the first thing to run.
+6. **Projections, not measurements.** Every figure in §7, and the ~12-calls and
+   ~2.5k-chunk assumptions in §4.1, rest on English token counts. The zh-TW measurement
+   under MiniCPM5's tokenizer is the first thing to run, and it moves the step count,
+   the NOP ratio in risk 1, and the whole of §7 together.

@@ -23,15 +23,24 @@ installed** — that property is load-bearing, not incidental, and is what makes
 harness iterable. Keep it: the model is always a plain `(system, user) -> str` callable,
 `token_len` is always injected, and network calls are stubbed at `urllib.request.urlopen`.
 
-**Landed so far**: `pyproject.toml` (package `arcsum`, src-layout, **zero core runtime
-dependencies**; heavy stacks are extras), `src/arcsum/tokens.py` (the normative
-tokenizer), `src/arcsum/transcript.py` (format v2), `src/arcsum/chunker.py`.
+**Landed**: the whole harness core (`tokens.py`, `transcript.py`, `chunker.py`,
+`memory.py`, `render.py`, `ops.py`, `lang.py`, `guards.py`, `prompts.py`, `prose.py`,
+`agent.py` including `SYNTHESIZE`, `backends/llama_server.py`, `baseline.py`,
+`probe.py`), the corpus/eval layer (`corpus/`, `metrics/`, `judge/`, `supervision/`),
+and 8 of 10 `cli/` entry points: `score`, `report`, `import_corpus`, `probe`, `judge`,
+`gen_traces`, `build_sft`, `run_arms` — all wired to their `[project.scripts]` names and
+covered by tests that stub `urllib.request.urlopen` rather than needing a live model.
 
-**Not yet written**: `memory.py`, `render.py`, `ops.py`, `lang.py`, `guards.py`,
-`prompts.py`, `prose.py`, `agent.py` (including the net-new `SYNTHESIZE` call),
-`backends/`, `baseline.py`, `probe.py`, `corpus/`, `metrics/`, `judge/`, `supervision/`,
-`cli/`. The `[project.scripts]` entries in `pyproject.toml` point at `cli/` modules that
-do not exist yet, so installing the package will not give working commands until they do.
+**Not yet written**: `cli/device_bench.py` (needs the real Reno 7 over adb — not
+unit-testable in this environment by construction) and `cli/trace_report.py`
+(deliberately deferred: `supervision/report.py`'s own docstring insists its rates stay
+welded to live `Trace`/`Step`/`Outcome` objects rather than a parallel on-disk schema,
+since a numerator/denominator split across a serialization boundary was a real,
+twice-repeated bug in the prior project — `cli/gen_traces.py` computes and writes the
+supervision report from the live traces it just generated instead, and there is
+currently no companion tool that reconstructs a `Trace` from disk later). Installing
+the package will give 8 working commands; the other 2 `[project.scripts]` entries will
+`ImportError` until built.
 
 **`SPEC.md` is the normative contract.** Where any code disagrees with it, the spec
 wins. Read it in full before implementing anything — this file only orients you; it
@@ -42,7 +51,7 @@ does not restate the spec's normative detail (formats, caps, gate criteria).
 | constant | home | changing it means |
 |---|---|---|
 | `TOKENIZE_VERSION` | `arcsum/tokens.py` | every previously reported metric is incomparable; the golden fixtures assert equality with it, so goldens must be regenerated and re-reviewed |
-| `PROMPT_VERSION` | `arcsum/prompts.py` (not yet written) | every prior trace and eval number is incomparable — bump it rather than silently editing a prompt |
+| `PROMPT_VERSION` | `arcsum/prompts.py` | every prior trace and eval number is incomparable — bump it rather than silently editing a prompt |
 
 `tokens.py` is the single source of truth for "is this character CJK". The prior project
 had **three** drifted answers to that question; do not add a fourth. It also keeps three

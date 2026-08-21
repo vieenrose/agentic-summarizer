@@ -48,8 +48,8 @@ S1: 好，就搬到 B 棟。
 
 ### 2.3 Content source (normative)
 
-**Content is drawn only from two existing public datasets — no manual sourcing of raw
-podcast/meeting audio:**
+**This is the training data.** Content is drawn **entirely** from two existing public
+datasets — no manual sourcing of raw podcast/meeting audio, no other corpus:
 - **en: MeetingBank** — 1,366 real US city-council meetings, transcripts with
   word-level speaker diarization + timestamps, paired with professionally-written
   official meeting minutes (segment-aligned).
@@ -70,16 +70,26 @@ is measurably better, don't assume**:
 Either way this is a one-time offline preprocessing stage — the corpus stored/used
 downstream is already zh-TW.
 
-**Initial corpus size (normative)**: **10 en** meetings (MeetingBank) + **10 zh**
-meetings (VCSum) = 20 total.
+**Initial corpus (normative)**: the **full union** of both datasets — all 1,366
+MeetingBank meetings (en) + all 239 VCSum meetings (zh) — no fixed sample size, no
+subsetting.
+
+**Granularity (normative): segment-level summaries are intermediate, not the training
+target.** Both datasets' per-segment summaries (MeetingBank's segment minutes, VCSum's
+segmentation summaries) are inputs to producing the final artifact, not the artifact
+itself. The training target is the **whole-meeting** summary only, per §3. VCSum
+already has one natively (231.9 tokens avg, per its own published dataset statistics).
+MeetingBank does not publish
+a whole-meeting summary directly — its segment minutes are the intermediate material
+the teacher model (§4) synthesizes into one final whole-meeting summary.
 
 ---
 
 ## 3. Output (normative)
 
-A single flowing **prose** summary — no bullets, no sections, no anchors. **< 500
-tokens.** Everything else (structure/style within that prose, language matching input,
-etc.) is still open.
+A single flowing **prose** summary — no bullets, no sections, no anchors. **< 1,000
+tokens** (relaxed from the earlier 500-token cap). Everything else (structure/style
+within that prose, language matching input, etc.) is still open.
 
 ---
 

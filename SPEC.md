@@ -110,7 +110,19 @@ within that prose, language matching input, etc.) is still open.
 
 ---
 
-## 5. Evaluation & measurement — TBD
+## 5. Evaluation & measurement (normative)
+
+**Follow each dataset's own published standard for its whole-meeting summarization
+task** — don't invent a separate metric set:
+
+- **en (MeetingBank)**: ROUGE-1/2/L (+ ROUGE-WE), BLEU, METEOR, BERTScore, MoverScore,
+  QAEval, and summary length — the exact suite the MeetingBank paper reports in its
+  own Table 2, via the same toolkits it used (SummEval toolkit, SacreBLEU, QAEval,
+  SummerTime). Coverage/Density (Grusky et al., 2018) are also reported there as
+  extractiveness diagnostics, not quality scores — carry those too.
+- **zh (VCSum)**: **ROUGE-1/2/L F1** — VCSum's own reported metric for its
+  "Abstractive Meeting Summarization" task (§5.3 of the VCSum paper), which is the
+  same whole-meeting granularity as our target (§3), not the segment/headline tasks.
 
 ---
 

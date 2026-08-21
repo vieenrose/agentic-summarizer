@@ -105,3 +105,4 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 # Model-facing zh-TW prompt text is byte-stable by contract; do not reflow it.
 "src/arcsum/prompts.py" = ["E501", "RUF001", "RUF002", "RUF003"]
 "src/arcsum/agent.py" = ["RUF001", "RUF002", "RUF003"]
+"src/arcsum/backends/llama_server.py" = ["RUF001", "RUF002", "RUF003"]

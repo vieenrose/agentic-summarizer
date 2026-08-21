@@ -57,10 +57,18 @@ podcast/meeting audio:**
   labels, paired with human-written overall + per-segment summaries. No native
   timestamps, which is fine — §2 is timestamp-free specifically to fit this dataset.
 
-**Open caveat, still unresolved**: VCSum is Simplified Chinese (zh-CN), not
-Traditional Chinese (zh-TW) as §2 otherwise scopes this system to — using it means
-either accepting zh-CN content for this dataset-driven phase, or converting/
-re-sourcing for zh-TW later. Not decided; flagged here so it isn't silently assumed.
+**Resolved: VCSum zh-CN → zh-TW conversion (normative preprocessing stage).** VCSum
+ships in Simplified Chinese; before any other use, both its transcripts and its
+reference summaries are converted to zh-TW. Two candidate methods, **pick whichever
+is measurably better, don't assume**:
+- **OpenCC, `s2tw` config** — mechanical, cheap, deterministic (character conversion +
+  Taiwan-standard lexicon substitution, not bare character mapping).
+- **The teacher model (Unsloth Qwen3.8-27B, §4)** — if it produces measurably better
+  zh-TW (more natural register/idiom, not just correct characters) than OpenCC on a
+  sample, use it instead for this conversion step.
+
+Either way this is a one-time offline preprocessing stage — the corpus stored/used
+downstream is already zh-TW.
 
 **Initial corpus size (normative)**: **10 en** meetings (MeetingBank) + **10 zh**
 meetings (VCSum) = 20 total.

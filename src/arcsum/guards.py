@@ -30,7 +30,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 
-from arcsum.chunker import Chunk
+from arcsum.chunker import CHUNK_TOKENS, Chunk
 from arcsum.lang import MIN_CJK_RATIO_POINT, MIN_CJK_RATIO_PROSE, check_zh_tw
 from arcsum.memory import Memory
 from arcsum.ops import Add, Arc, Drop, Malformed, Nop, Op, render_op
@@ -156,13 +156,18 @@ def apply_ops(
     *,
     consecutive_nops: int = 0,
     lang_check: bool = True,
+    budget: int = CHUNK_TOKENS,
 ) -> Outcome:
     """Validate and apply a step's ops IN PLACE, in emission order. Returns per-op
     verdicts.
 
     `consecutive_nops` is the running count BEFORE this step; the caller keeps the
     tally and passes it in, so this function stays stateless. `lang_check=False` exists
-    only for testing the other guards in isolation from `arcsum.lang`.
+    only for testing the other guards in isolation from `arcsum.lang`. `budget` MUST be
+    the actual chunking budget the caller used (not left at the default) — it feeds
+    `chunk.is_content_rich()`'s threshold, and a caller running at a non-default budget
+    that forgets to pass it here would silently measure richness against the wrong
+    denominator, which is exactly the class of divergence this design exists to avoid.
     """
     outcome = Outcome()
     substantive = False
@@ -210,7 +215,7 @@ def apply_ops(
     # control arm's summariser inside the treatment arm, contaminating the very
     # comparison SPEC §5.2's gates exist to make. Only a genuinely content-rich chunk
     # counts — a chunk that really has nothing in it deserves a NOP.
-    if not substantive and chunk.is_content_rich():
+    if not substantive and chunk.is_content_rich(budget=budget):
         outcome.nop_collapse = consecutive_nops + 1 >= NOP_COLLAPSE_K
 
     return outcome

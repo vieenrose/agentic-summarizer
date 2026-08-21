@@ -337,6 +337,24 @@ def test_a_step_with_only_refused_ops_still_counts_as_not_substantive() -> None:
     assert outcome.nop_collapse is True
 
 
+def test_apply_ops_uses_the_actual_chunking_budget_for_richness() -> None:
+    """A real bug this test caught: `Chunk.is_content_rich()` defaults its `budget`
+    param to CHUNK_TOKENS (2500), so a caller running `iter_chunks` at a smaller custom
+    budget (e.g. 500) must pass that SAME budget into `apply_ops`, or the richness
+    threshold silently compares against the wrong denominator and NOP-collapse can
+    never fire even on a chunk that is fully packed for its actual budget."""
+    small_budget = 500
+    # Packed to ~90% of the SMALL budget -- content-rich there, but far below 25% of
+    # the default CHUNK_TOKENS=2500 (625), so the bug this guards against would make
+    # this chunk register as NOT rich unless `budget` is threaded through correctly.
+    chunk = Chunk(0, (Utterance("S1", "x"),), tokens=int(0.9 * small_budget))
+    memory = Memory()
+    outcome = apply_ops(
+        memory, [Nop()], chunk, consecutive_nops=NOP_COLLAPSE_K - 1, budget=small_budget
+    )
+    assert outcome.nop_collapse is True
+
+
 def test_apply_ops_accepts_no_model_callable() -> None:
     """The guard REPORTS a coverage gap; it must never repair it by calling another
     model (e.g. the map-reduce baseline) from inside the harness. Structurally enforced:

@@ -1,0 +1,27 @@
+.venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+*.egg-info/
+build/
+dist/
+
+# Corpus and intermediate artifacts are reproducible from the importer; `runs/` is not
+# ignored, because committed numbers are the audit trail.
+data/
+
+# Model weights live on Hugging Face only — never in this repo.
+*.gguf
+*.safetensors
+*.pt
+*.bin
+*.onnx
+runs/*/final/
+runs/*/checkpoint-*/
+runs/sft-*/
+runs/*/gguf*
+unsloth_compiled_cache/
+
+.env
+*.key

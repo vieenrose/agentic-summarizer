@@ -1,0 +1,95 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "arcsum-agentic"
+version = "0.1.0"
+description = "Agentic zh-TW meeting summarizer (ARC+POINTS external memory) for a 1B on-device student"
+requires-python = ">=3.12"
+
+# ZERO CORE DEPENDENCIES — load-bearing, not incidental.
+# The harness (transcript, chunker, memory, ops, guards, prompts, agent, baseline,
+# char-level metrics, the judge HTTP client) is stdlib-only, so it is importable and
+# fully testable with no GPU, no weights, and no network. Anything heavier goes in an
+# extra below. Do not add to this list.
+dependencies = []
+
+[project.optional-dependencies]
+# Real MiniCPM5 token counting — normative for every reported budget number (SPEC §7).
+tokenizer = ["transformers>=5.5"]
+
+# SPEC §5 reference metrics. Char-level ROUGE / coverage / density are implemented
+# in-repo (arcsum/metrics/reference.py) rather than taken from `rouge-score`, whose
+# tokenizer is Latin-hardcoded and would contradict §5's normative char-level
+# tokenization. Kept light so it can run in CI.
+metrics = ["sacrebleu>=2.4"]
+metrics-neural = ["bert-score>=0.3.13", "torch>=2.6", "transformers>=5.5"]
+# Isolated on purpose: moverscore is effectively unmaintained and pins old pyemd/BERT.
+metrics-mover = ["moverscore>=1.0.3", "pyemd>=1.0.0"]
+
+# Phase 3's held-out zh-TW audio slice (eval only, never training).
+asr = ["torch>=2.6", "transformers>=5.5", "librosa", "soundfile", "accelerate"]
+
+# Offline teacher / fine-tune. Never installed on the reference device (SPEC §6).
+train = [
+  "unsloth",
+  "trl>=0.24",
+  "datasets>=4.3",
+  "peft>=0.20",
+  "accelerate",
+  "transformers>=5.5",
+  "bitsandbytes",  # required by optim="adamw_8bit"
+]
+
+# Optional in-process student, as an alternative to HTTP to llama-server.
+serve = ["llama-cpp-python>=0.3.35"]
+
+[dependency-groups]
+dev = ["pytest>=8", "ruff>=0.6"]
+
+[project.scripts]
+arcsum-bench        = "arcsum.cli.device_bench:main"
+arcsum-import       = "arcsum.cli.import_corpus:main"
+arcsum-gen-traces   = "arcsum.cli.gen_traces:main"
+arcsum-build-sft    = "arcsum.cli.build_sft:main"
+arcsum-run-arms     = "arcsum.cli.run_arms:main"
+arcsum-probe        = "arcsum.cli.probe:main"
+arcsum-judge        = "arcsum.cli.judge:main"
+arcsum-score        = "arcsum.cli.score:main"
+arcsum-report       = "arcsum.cli.report:main"
+arcsum-trace-report = "arcsum.cli.trace_report:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+addopts = "-q --strict-markers"
+markers = [
+  "metrics: needs the [metrics]/[metrics-neural] extra",
+  "tokenizer: needs the [tokenizer] extra and a local MiniCPM5 tokenizer",
+  "device: runs only on the reference hardware (SPEC §6)",
+  "slow: excluded from the default suite",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
+
+[tool.ruff.lint.per-file-ignores]
+# Ambiguous / fullwidth / CJK characters are the SUBJECT MATTER in these modules and
+# their tests — flagging them as confusables is noise that would train us to ignore the
+# rule everywhere. Kept narrow: only the files whose job is to reason about scripts.
+"src/arcsum/lang.py" = ["RUF001", "RUF002", "RUF003"]
+"src/arcsum/tokens.py" = ["RUF001", "RUF002", "RUF003"]
+"tests/test_tokens.py" = ["RUF001", "RUF002", "RUF003"]
+"tests/test_lang.py" = ["RUF001", "RUF002", "RUF003"]
+"tests/test_transcript.py" = ["RUF001", "RUF002", "RUF003"]
+# Model-facing zh-TW prompt text is byte-stable by contract; do not reflow it.
+"src/arcsum/prompts.py" = ["E501", "RUF001", "RUF002", "RUF003"]

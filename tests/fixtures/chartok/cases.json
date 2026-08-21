@@ -1,0 +1,66 @@
+{
+  "tokenize_version": "chartok-v1",
+  "_comment": "HAND-WRITTEN, never generated. A generated expectation pins whatever the implementation happens to do, including its bugs. Each case states the reasoning that produced its expected tokens. SPEC 5 makes this tokenization normative: changing it requires bumping TOKENIZE_VERSION and re-labelling every previously reported metric.",
+  "cases": [
+    {
+      "name": "pure_zh_tw",
+      "why": "one token per ideograph; the embedded latin 'B' is its own run",
+      "text": "我們搬到 B 棟",
+      "tokens": ["我", "們", "搬", "到", "b", "棟"]
+    },
+    {
+      "name": "ordinance_id",
+      "why": "latin and digit runs split on whitespace; both survive as single tokens",
+      "text": "CB 118618 通過",
+      "tokens": ["cb", "118618", "通", "過"]
+    },
+    {
+      "name": "fullwidth_folds_to_halfwidth",
+      "why": "NFKC folds fullwidth latin/digits, so this must tokenise identically to ordinance_id's first two tokens",
+      "text": "ＣＢ　１１８６１８",
+      "tokens": ["cb", "118618"]
+    },
+    {
+      "name": "punctuation_is_dropped_not_tokenised",
+      "why": "fullwidth comma folds to ',' and is dropped; the ideographic full stop is dropped as-is; neither becomes a token",
+      "text": "好，就搬到Ｂ棟。",
+      "tokens": ["好", "就", "搬", "到", "b", "棟"]
+    },
+    {
+      "name": "ext_a_ideograph",
+      "why": "CJK Extension A is inside IDEOGRAPH_RANGES",
+      "text": "㐀㐁",
+      "tokens": ["㐀", "㐁"]
+    },
+    {
+      "name": "compat_ideograph_normalises_to_uro",
+      "why": "U+F900 is a compatibility ideograph; NFKC maps it to its unified form U+8C48, so the token is the URO character",
+      "text": "豈",
+      "tokens": ["豈"]
+    },
+    {
+      "name": "kana",
+      "why": "kana are per-character like ideographs; not expected in a zh-TW corpus, but must not be silently dropped",
+      "text": "かなカナ",
+      "tokens": ["か", "な", "カ", "ナ"]
+    },
+    {
+      "name": "mixed_script_sentence",
+      "why": "realistic zh-TW with an embedded acronym and a number; casefolded latin, per-char zh",
+      "text": "議會以 7 票對 2 票通過 Ordinance 第 123 號。",
+      "tokens": ["議", "會", "以", "7", "票", "對", "2", "票", "通", "過", "ordinance", "第", "123", "號"]
+    },
+    {
+      "name": "whitespace_collapse",
+      "why": "normalise collapses runs of whitespace, so spacing cannot change the token stream",
+      "text": "  我們   搬到\n\tB  棟  ",
+      "tokens": ["我", "們", "搬", "到", "b", "棟"]
+    },
+    {
+      "name": "empty",
+      "why": "the tokenizer is total: empty input is an empty token list, never an error",
+      "text": "",
+      "tokens": []
+    }
+  ]
+}

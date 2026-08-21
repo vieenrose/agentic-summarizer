@@ -64,8 +64,12 @@ S1: 好，就搬到 B 棟。
 
 ### 2.3 Content source (normative)
 
-**This is the training data.** Content is drawn **entirely** from two existing public
-datasets — no manual sourcing of raw podcast/meeting audio, no other corpus:
+**At deployment time** the transcript is produced on-device by the **VoxSum Android
+app** (ASR + speaker diarization), emitting format v2 directly. This system never
+consumes raw audio — §2 is the whole input contract.
+
+**For training and evaluation**, content is drawn **entirely** from two existing
+public datasets — no manual sourcing of raw podcast/meeting audio, no other corpus:
 - **en: MeetingBank** — 1,366 real US city-council meetings, transcripts with
   word-level speaker diarization + timestamps, paired with professionally-written
   official meeting minutes (segment-aligned). Timestamps are discarded on import (§2).
@@ -77,7 +81,17 @@ datasets — no manual sourcing of raw podcast/meeting audio, no other corpus:
 MeetingBank meetings (en) + all 239 VCSum meetings (zh) — no fixed sample size, no
 subsetting.
 
-**VCSum zh-CN → zh-TW conversion (normative preprocessing stage).** VCSum ships in
+**Import to format v2 (normative first preprocessing stage).** Neither dataset ships
+in §2's format, so both are converted before any other use — this is the first stage
+of the pipeline, and everything downstream sees only format v2:
+- **MeetingBank**: word-level JSON dicts (`text`/`offset`/`duration`/`confidence`)
+  with diarization → group consecutive words by speaker into one line per turn,
+  discard all timing.
+- **VCSum**: `speaker` + `context` JSON → one line per utterance, `<speaker>: <text>`.
+- Speaker labels are renamed to `S1…Sn` in first-appearance order unless the dataset
+  supplies a real name/role; `UNK` only where a dataset has no label at all (§2).
+
+**VCSum zh-CN → zh-TW conversion (normative, after import).** VCSum ships in
 Simplified Chinese; before any other use, both its transcripts and its reference
 summaries are converted to zh-TW. Two candidate methods, **pick whichever is
 measurably better, don't assume**:
@@ -196,13 +210,10 @@ hardware:
    native) while en targets land near ~856 tokens (teacher synthesis over ~9.8 segment
    minutes). Both fit §3's cap, but training on them as-is teaches "zh ⇒ short, en ⇒
    long". Normalize target length, or accept and document.
-3. **Dataset → §2 format bridge** — MeetingBank ships word-level JSON dicts, VCSum
-   ships `speaker`/`context` JSON; neither is §2's line format. The import/normalize
-   step is unwritten.
-4. **Deployment-time transcript source** — training input comes from public datasets,
-   but nothing specifies where a real user's transcript comes from on-device
-   (presumably ASR + diarization; the prior project's Android audio pipeline is no
-   longer referenced anywhere in this spec).
-5. **Agent design specifics** — chunk size, memory representation, step/tool grammar,
+3. **Agent design specifics** — chunk size, memory representation, step/tool grammar,
    termination condition (§4).
-6. **zh ROUGE tokenization** — must be declared to match VCSum (§5).
+4. **zh ROUGE tokenization** — must be declared to match VCSum (§5).
+5. **Train/deploy distribution gap** — training transcripts come from dataset text
+   (clean, human-corrected or professionally transcribed); deployment transcripts come
+   from on-device ASR + diarization (§2.3), which carries recognition and
+   speaker-attribution errors the training data does not. Unmeasured for now.

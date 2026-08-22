@@ -192,6 +192,23 @@ def test_generate_step_retries_once_on_a_failed_replay() -> None:
     assert len(memory_after.points) == 1
 
 
+def test_generate_step_nudges_the_retry_prompt_so_it_differs_from_the_first_attempt() -> None:
+    """The teacher is called at temperature 0 in practice: a bare repeat of the
+    identical prompt would only ever reproduce the identical (already-failed) output.
+    The retry attempt's user turn must differ from the first's."""
+    memory = Memory()
+    chunk = _chunk()
+    teacher = Scripted(default="DROP «不存在的重點前綴內容測試»")
+
+    generate_step(memory, chunk, teacher, max_attempts=2)
+
+    assert len(teacher.calls) == 2
+    first_user = teacher.calls[0][1]
+    second_user = teacher.calls[1][1]
+    assert second_user != first_user
+    assert second_user.startswith(first_user)
+
+
 def test_generate_step_drops_the_step_when_every_attempt_fails_replay() -> None:
     """A persistently-bad teacher (same invalid DROP every time) exhausts retries;
     the caller's memory must come back UNCHANGED -- SPEC §4.2: never half-applied."""

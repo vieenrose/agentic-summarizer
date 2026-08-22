@@ -51,6 +51,14 @@ _TEACHER_SYS = (
 該重點，再 ADD 新的重點。"""
 )
 
+#: Appended to a retry attempt's user turn, never the first attempt's -- the model is
+#: called at temperature 0, so a bare repeat of the identical prompt would only ever
+#: reproduce the identical (already-failed) output.
+_RETRY_NUDGE = (
+    "\n\n（提醒：上一次輸出的格式或語言有誤，請重新輸出。務必只使用繁體中文，"
+    "不要夾雜英文字詞，也不要輸出不完整的句子。）"
+)
+
 _UNCOVERED_SUFFIX = """
 
 這段 CHUNK 沒有對應的正式議程摘要。以下提供鄰近議程項目作為參考：如果這段內容與鄰近議程項目
@@ -134,6 +142,13 @@ def generate_step(
     compound on. If every attempt still fails to replay cleanly, the returned
     `memory_after` is `memory` UNCHANGED (a "dropped" step's ops touch nothing) and
     `step.retried` is `True` so the caller can exclude it from the training pool.
+
+    **The retry prompt is nudged, not just repeated.** `teacher` is called with
+    `temperature=0` in practice (SPEC §5.1's forced-greedy doctrine, mirrored here for
+    reproducibility) -- an identical retry prompt against a deterministic model
+    reproduces the identical (still-bad) output. `_RETRY_NUDGE` is appended on every
+    attempt after the first so the input genuinely differs, the same fix
+    `agent._NOP_RETRY_NUDGE` already applies to the live inference loop's own retry.
     """
     teacher_sys = teacher_step_system_prompt(covered=bool(grounding_items))
     teacher_user = build_teacher_step_prompt(
@@ -151,8 +166,9 @@ def generate_step(
     step: Step | None = None
     for attempt in range(max_attempts):
         candidate = memory.clone()
+        attempt_user = teacher_user + _RETRY_NUDGE if attempt > 0 else teacher_user
         started = time.monotonic()
-        raw = teacher(teacher_sys, teacher_user)
+        raw = teacher(teacher_sys, attempt_user)
         elapsed = time.monotonic() - started
 
         ops = parse_ops(raw)

@@ -138,7 +138,7 @@ def test_generate_step_stores_the_plain_deployed_prompt_not_the_grounded_one() -
     chunk = _chunk()
     teacher = Scripted(default="ADD - 市議會核准搬遷案，預算編列兩百萬元。")
 
-    step = generate_step(memory, chunk, teacher, grounding_items=[ITEM_A])
+    step, _memory_after = generate_step(memory, chunk, teacher, grounding_items=[ITEM_A])
 
     assert step.system == step_system_prompt()
     assert step.user == build_step_prompt(Memory(), chunk)
@@ -147,23 +147,64 @@ def test_generate_step_stores_the_plain_deployed_prompt_not_the_grounded_one() -
     assert "對應議程摘要" not in step.user
 
 
-def test_generate_step_applies_ops_to_the_memory_in_place() -> None:
+def test_generate_step_never_mutates_the_input_memory() -> None:
+    """`generate_step` must apply ops against a CLONE, never the caller's object --
+    the caller commits the returned memory explicitly, which is what makes a failed
+    retry's partial mutation impossible to leak into the next attempt."""
     memory = Memory()
     chunk = _chunk()
     teacher = Scripted(default="ADD - 市議會核准搬遷案，預算編列兩百萬元。")
 
-    generate_step(memory, chunk, teacher, grounding_items=[ITEM_A])
+    _step, memory_after = generate_step(memory, chunk, teacher, grounding_items=[ITEM_A])
 
-    assert len(memory.points) == 1
+    assert len(memory.points) == 0
+    assert len(memory_after.points) == 1
 
 
 def test_generate_step_records_the_raw_teacher_completion() -> None:
     memory = Memory()
     chunk = _chunk()
     teacher = Scripted(default="NOP")
-    step = generate_step(memory, chunk, teacher)
+    step, _memory_after = generate_step(memory, chunk, teacher)
     assert step.raw == "NOP"
     assert step.is_nop
+
+
+# --- generate_step retry-on-failed-replay ---------------------------------------------
+
+
+def test_generate_step_retries_once_on_a_failed_replay() -> None:
+    """The first attempt is garbled (a stray unmatched DROP mixed with a real ADD);
+    the second attempt is clean. The retried step must be the CLEAN one, and
+    memory_after must reflect only the successful attempt's ops."""
+    memory = Memory()
+    chunk = _chunk()
+    teacher = Scripted(
+        responses=("DROP «不存在的重點»\nADD - 市議會核准搬遷案，預算編列兩百萬元。",),
+        default="ADD - 市議會核准搬遷案，預算編列兩百萬元。",
+    )
+
+    step, memory_after = generate_step(memory, chunk, teacher)
+
+    assert len(teacher.calls) == 2
+    assert step.retried is True
+    assert replay_step_cleanly(step) is True
+    assert len(memory_after.points) == 1
+
+
+def test_generate_step_drops_the_step_when_every_attempt_fails_replay() -> None:
+    """A persistently-bad teacher (same invalid DROP every time) exhausts retries;
+    the caller's memory must come back UNCHANGED -- SPEC §4.2: never half-applied."""
+    memory = Memory()
+    chunk = _chunk()
+    teacher = Scripted(default="DROP «不存在的重點前綴內容測試»")
+
+    step, memory_after = generate_step(memory, chunk, teacher, max_attempts=2)
+
+    assert len(teacher.calls) == 2
+    assert replay_step_cleanly(step) is False
+    assert memory_after is memory
+    assert len(memory_after.points) == 0
 
 
 # --- replay_step_cleanly --------------------------------------------------------------
@@ -173,7 +214,7 @@ def test_replay_step_cleanly_true_when_all_ops_applied() -> None:
     memory = Memory()
     chunk = _chunk()
     teacher = Scripted(default="ADD - 市議會核准搬遷案，預算編列兩百萬元。")
-    step = generate_step(memory, chunk, teacher)
+    step, _memory_after = generate_step(memory, chunk, teacher)
     assert replay_step_cleanly(step) is True
 
 
@@ -181,7 +222,7 @@ def test_replay_step_cleanly_true_for_a_pure_nop_step() -> None:
     memory = Memory()
     chunk = _chunk()
     teacher = Scripted(default="NOP")
-    step = generate_step(memory, chunk, teacher)
+    step, _memory_after = generate_step(memory, chunk, teacher)
     assert replay_step_cleanly(step) is True
 
 
@@ -189,7 +230,7 @@ def test_replay_step_cleanly_false_when_a_drop_prefix_does_not_match() -> None:
     memory = Memory()  # empty -- no point can match any DROP prefix
     chunk = _chunk()
     teacher = Scripted(default="DROP «不存在的重點前綴內容測試»")
-    step = generate_step(memory, chunk, teacher)
+    step, _memory_after = generate_step(memory, chunk, teacher)
     assert replay_step_cleanly(step) is False
 
 

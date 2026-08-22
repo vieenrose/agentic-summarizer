@@ -114,8 +114,10 @@ def generate_step(
     consecutive_nops: int = 0,
     budget: int = CHUNK_TOKENS,
     token_len: Callable[[str], int] = heuristic_token_len,
-) -> Step:
-    """One step's worth of gold supervision.
+    max_attempts: int = 2,
+) -> tuple[Step, Memory]:
+    """One step's worth of gold supervision. Returns `(step, memory_after)` --
+    `memory` itself is never mutated; the caller commits `memory_after` explicitly.
 
     **The teacher is called with the grounded prompt; the `Step` records the PLAIN
     deployed-shape prompt.** Grounding exists only to help the teacher produce a good
@@ -124,6 +126,14 @@ def generate_step(
     provides. `system`/`user`/`prompt_tokens` below are exactly what
     `prompts.step_system_prompt`/`build_step_prompt` would build for a live inference
     call; only the argument to `teacher(...)` differs.
+
+    **Retries on a failed replay (SPEC §4.2: "a sequence that fails replay is
+    regenerated or dropped -- never half-applied into the corpus").** Each attempt
+    applies against a FRESH `memory.clone()`, never the caller's real object, so a
+    partially-bad first attempt can never leave stray mutations behind for a retry to
+    compound on. If every attempt still fails to replay cleanly, the returned
+    `memory_after` is `memory` UNCHANGED (a "dropped" step's ops touch nothing) and
+    `step.retried` is `True` so the caller can exclude it from the training pool.
     """
     teacher_sys = teacher_step_system_prompt(covered=bool(grounding_items))
     teacher_user = build_teacher_step_prompt(
@@ -133,30 +143,39 @@ def generate_step(
         concluded_items=concluded_items,
         next_item=next_item,
     )
-
     student_sys = step_system_prompt()
     student_user = build_step_prompt(memory, chunk)
     memory_before = render_memory(memory)
+    prompt_tokens = token_len(student_sys) + token_len(student_user)
 
-    started = time.monotonic()
-    raw = teacher(teacher_sys, teacher_user)
-    elapsed = time.monotonic() - started
+    step: Step | None = None
+    for attempt in range(max_attempts):
+        candidate = memory.clone()
+        started = time.monotonic()
+        raw = teacher(teacher_sys, teacher_user)
+        elapsed = time.monotonic() - started
 
-    ops = parse_ops(raw)
-    outcome = apply_ops(memory, ops, chunk, consecutive_nops=consecutive_nops, budget=budget)
+        ops = parse_ops(raw)
+        outcome = apply_ops(candidate, ops, chunk, consecutive_nops=consecutive_nops, budget=budget)
 
-    return Step(
-        index=chunk.index,
-        system=student_sys,
-        user=student_user,
-        raw=raw,
-        ops=tuple(ops),
-        outcome=outcome,
-        prompt_tokens=token_len(student_sys) + token_len(student_user),
-        memory_before=memory_before,
-        chunk=chunk,
-        seconds=elapsed,
-    )
+        step = Step(
+            index=chunk.index,
+            system=student_sys,
+            user=student_user,
+            raw=raw,
+            ops=tuple(ops),
+            outcome=outcome,
+            prompt_tokens=prompt_tokens,
+            memory_before=memory_before,
+            chunk=chunk,
+            seconds=elapsed,
+            retried=attempt > 0,
+        )
+        if replay_step_cleanly(step):
+            return step, candidate
+
+    assert step is not None  # max_attempts >= 1, loop runs at least once
+    return step, memory
 
 
 def generate_meeting_supervision(
@@ -197,7 +216,7 @@ def generate_meeting_supervision(
         upcoming = [it for it in items if it.start_sec >= span[1]]
         next_item = upcoming[0] if upcoming else None
 
-        step = generate_step(
+        step, trace.memory = generate_step(
             trace.memory,
             chunk,
             teacher,

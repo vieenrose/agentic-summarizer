@@ -17,9 +17,13 @@ from arcsum.corpus.manifest import (
     carve_splits,
 )
 from arcsum.corpus.meetingbank import (
+    TICKS_PER_SECOND,
     extract_turns,
+    extract_turns_with_offsets,
     import_meeting,
+    import_meeting_with_offsets,
     merge_consecutive_turns,
+    merge_consecutive_turns_with_offsets,
     safe_id,
 )
 from arcsum.transcript import UNK
@@ -53,8 +57,13 @@ def test_safe_id_strips_leading_and_trailing_underscores_from_sanitisation() -> 
 # --- extract_turns / merge_consecutive_turns / import_meeting -----------------------
 
 
-def seg(speaker: object, text: str) -> dict:
-    return {"offset": 0, "duration": 0, "speaker": speaker, "nbest": [{"text": text}]}
+def seg(speaker: object, text: str, *, offset: int = 0, duration: int = 0) -> dict:
+    return {
+        "offset": offset,
+        "duration": duration,
+        "speaker": speaker,
+        "nbest": [{"text": text}],
+    }
 
 
 def test_extract_turns_pulls_speaker_and_text() -> None:
@@ -155,6 +164,71 @@ def test_meeting_record_manifest_shape() -> None:
         "composed_by": None,
         "human_validated": False,
     }
+
+
+# --- offset tracking (SPEC §2.2 stage 1's out-of-band offset, for §4.2 alignment) ------
+
+
+def test_ticks_per_second_matches_the_dotnet_timespan_convention() -> None:
+    """Confirmed empirically against a real meeting: transcript top-level `duration`
+    (ticks) / TICKS_PER_SECOND == Metadata's `VideoDuration` (whole seconds)."""
+    assert TICKS_PER_SECOND == 10_000_000
+
+
+def test_extract_turns_with_offsets_converts_ticks_to_seconds() -> None:
+    segments = [seg(0, "hello", offset=10_000_000, duration=5_000_000)]
+    turns = extract_turns_with_offsets(segments)
+    assert turns == [(0, "hello", 1.0, 1.5)]
+
+
+def test_extract_turns_with_offsets_drops_empty_candidates_like_extract_turns() -> None:
+    segments = [seg(0, "hello", offset=0, duration=0), seg(0, "   ", offset=10, duration=1)]
+    turns = extract_turns_with_offsets(segments)
+    assert len(turns) == 1
+
+
+def test_merge_consecutive_turns_with_offsets_spans_the_whole_merged_run() -> None:
+    turns = [
+        (0, "first", 0.0, 1.0),
+        (0, "second", 1.0, 2.5),
+        (1, "third", 2.5, 3.0),
+    ]
+    merged = merge_consecutive_turns_with_offsets(turns)
+    assert len(merged) == 2
+    (u0, start0, end0) = merged[0]
+    assert u0.text == "first second"
+    assert (start0, end0) == (0.0, 2.5)
+    (u1, start1, end1) = merged[1]
+    assert u1.text == "third"
+    assert (start1, end1) == (2.5, 3.0)
+
+
+def test_merge_consecutive_turns_with_offsets_takes_the_max_end_not_the_last() -> None:
+    """A merged run's end must be the LATEST end among its segments, not simply the
+    last one processed -- ASR segments are not guaranteed non-overlapping."""
+    turns = [(0, "a", 0.0, 5.0), (0, "b", 1.0, 2.0)]
+    merged = merge_consecutive_turns_with_offsets(turns)
+    (_u0, start0, end0) = merged[0]
+    assert (start0, end0) == (0.0, 5.0)
+
+
+def test_import_meeting_with_offsets_produces_the_same_utterances_as_import_meeting() -> None:
+    """The offset-tracking variant must never diverge from the plain importer's
+    utterance sequence -- offsets are additive metadata, not a different pipeline."""
+    transcript = {
+        "segments": [
+            seg(0, "Please come to order.", offset=0, duration=20_000_000),
+            seg(0, "We will now begin.", offset=20_000_000, duration=10_000_000),
+            seg(1, "Thank you, Mr. Chair.", offset=30_000_000, duration=15_000_000),
+        ]
+    }
+    plain = import_meeting(transcript)
+    with_offsets = import_meeting_with_offsets(transcript)
+    assert plain == [u for u, _start, _end in with_offsets]
+
+
+def test_import_meeting_with_offsets_handles_missing_segments_key() -> None:
+    assert import_meeting_with_offsets({}) == []
 
 
 def test_meeting_record_ready_for_corpus_requires_all_three_stages() -> None:

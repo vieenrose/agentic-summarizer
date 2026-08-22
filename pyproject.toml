@@ -28,6 +28,14 @@ metrics-neural = ["bert-score>=0.3.13", "torch>=2.6", "transformers>=5.5"]
 # Isolated on purpose: moverscore is effectively unmaintained and pins old pyemd/BERT.
 metrics-mover = ["moverscore>=1.0.3", "pyemd>=1.0.0"]
 
+# SPEC §4.2 teacher supervision: measured, not assumed, on the real Qwen3.8-27B
+# teacher -- it drifts into simplified characters under retry pressure even when
+# explicitly instructed to write zh-TW only (Phase 1 pilot, 2026-08-22). `s2twp`
+# (Taiwan MOE standard, phrase-aware) is used deliberately over the plainer `s2t`,
+# which converts some already-correct modern Taiwan usage into obscure classical
+# variants (e.g. 核准 -> 覈准) that read as wrong to a native reader.
+supervision = ["opencc>=1.1"]
+
 # Phase 3's held-out zh-TW audio slice (eval only, never training).
 asr = ["torch>=2.6", "transformers>=5.5", "librosa", "soundfile", "accelerate"]
 

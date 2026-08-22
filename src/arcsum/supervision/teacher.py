@@ -23,6 +23,7 @@ from __future__ import annotations
 
 import time
 from collections.abc import Callable, Sequence
+from functools import lru_cache
 
 from arcsum.agent import ModelFn, Step, Trace
 from arcsum.chunker import CHUNK_TOKENS, Chunk, iter_chunks
@@ -58,6 +59,45 @@ _RETRY_NUDGE = (
     "\n\n（提醒：上一次輸出的格式或語言有誤，請重新輸出。務必只使用繁體中文，"
     "不要夾雜英文字詞，也不要輸出不完整的句子。）"
 )
+
+
+class MissingExtraError(ImportError):
+    """Raised in place of a bare `ModuleNotFoundError`, naming the extra to install.
+    Subclasses `ImportError` so an `except ImportError` caller still catches it."""
+
+
+@lru_cache(maxsize=1)
+def _converter():
+    try:
+        import opencc
+    except ImportError as exc:
+        raise MissingExtraError(
+            "supervision.teacher.to_traditional needs the 'supervision' extra "
+            "(pip install 'arcsum-agentic[supervision]')"
+        ) from exc
+    return opencc.OpenCC("s2twp")
+
+
+def to_traditional(text: str) -> str:
+    """Deterministically convert any simplified characters in `text` to Taiwan-
+    standard traditional (opencc `s2twp`: MOE standard, phrase-aware).
+
+    Measured necessary, not assumed: the real Qwen3.8-27B teacher drifts into
+    simplified characters under retry pressure even when its prompt explicitly says
+    "全部使用繁體中文書寫" (Phase 1 pilot, 2026-08-22). Applied unconditionally to every
+    teacher completion (not just retries) because it is a safe no-op on text that is
+    already correct traditional Chinese -- character-for-character conversion of a
+    character that has no simplified-only form leaves it untouched.
+
+    `s2twp` over the plainer `s2t` deliberately: `s2t` maps some already-correct
+    modern Taiwan usage to obscure classical variants a native reader would flag as
+    wrong (e.g. 核准 -> 覈准), which `s2twp`'s Taiwan-vocabulary awareness avoids.
+
+    The `OpenCC` instance is cached (`lru_cache`) rather than rebuilt per call -- this
+    runs once per teacher completion, across thousands of calls in a real corpus run.
+    """
+    return _converter().convert(text)
+
 
 _UNCOVERED_SUFFIX = """
 

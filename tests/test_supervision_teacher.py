@@ -6,6 +6,9 @@ harness (`ops.parse_ops`, `guards.apply_ops`).
 
 from __future__ import annotations
 
+import importlib.util
+
+import pytest
 from tests.conftest import Scripted
 
 from arcsum.memory import Memory
@@ -13,13 +16,17 @@ from arcsum.prompts import build_step_prompt, step_system_prompt
 from arcsum.supervision.align import Item
 from arcsum.supervision.teacher import (
     TEACHER_PROMPT_VERSION,
+    MissingExtraError,
     build_teacher_step_prompt,
     generate_meeting_supervision,
     generate_step,
     replay_step_cleanly,
     teacher_step_system_prompt,
+    to_traditional,
 )
 from arcsum.transcript import Utterance
+
+_HAS_OPENCC = importlib.util.find_spec("opencc") is not None
 
 ITEM_A = Item(
     item_id="2020-001",
@@ -320,3 +327,42 @@ def test_generate_meeting_supervision_tracks_coverage_gaps_on_nop_collapse() -> 
     trace = generate_meeting_supervision(utterances, offsets, [], teacher, budget=20)
 
     assert len(trace.coverage_gaps) >= 1
+
+
+# --- to_traditional (SPEC §4.2: the real teacher measurably drifts into simplified) ----
+
+
+def test_missing_extra_error_is_an_import_error() -> None:
+    assert issubclass(MissingExtraError, ImportError)
+
+
+@pytest.mark.skipif(_HAS_OPENCC, reason="opencc is installed; this is the missing-extra path")
+def test_to_traditional_raises_a_clear_missing_extra_error() -> None:
+    with pytest.raises(MissingExtraError, match=r"\[supervision\]"):
+        to_traditional("测试")
+
+
+@pytest.mark.skipif(not _HAS_OPENCC, reason="needs the 'supervision' extra")
+def test_to_traditional_converts_the_real_observed_failure() -> None:
+    """The exact regression this was written for: Qwen3.8-27B's real completion,
+    Phase 1 pilot, 2026-08-22."""
+    simplified = "ARC: 市議會審議撥款给艺术与文化局的条例，修正一二五七二四号条例。"
+    converted = to_traditional(simplified)
+    assert converted == "ARC: 市議會審議撥款給藝術與文化局的條例，修正一二五七二四號條例。"
+
+
+@pytest.mark.skipif(not _HAS_OPENCC, reason="needs the 'supervision' extra")
+def test_to_traditional_is_a_no_op_on_already_correct_text() -> None:
+    already_correct = "ADD - 市議會核准搬遷案，預算編列兩百萬元。"
+    assert to_traditional(already_correct) == already_correct
+
+
+@pytest.mark.skipif(not _HAS_OPENCC, reason="needs the 'supervision' extra")
+def test_to_traditional_preserves_op_syntax_markers() -> None:
+    """`s2twp`'s phrase-level conversion must not rewrite the DROP guillemets or the
+    op keywords themselves -- only the natural-language content between them."""
+    text = "DROP «某個前綴»\nARC: 測試\nNOP"
+    converted = to_traditional(text)
+    assert "DROP «" in converted
+    assert "ARC:" in converted
+    assert converted.endswith("NOP")

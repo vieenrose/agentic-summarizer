@@ -28,6 +28,22 @@ def test_probe_meetings_each_have_early_and_late_decisions() -> None:
         assert m.distractor_terms
 
 
+def test_stale_summary_fails_even_with_subject_variants() -> None:
+    """`subject_terms` accepts alternative surface forms per concept (a real Phase-2
+    false-negative fix). That widening must never make a STALE summary passable: the
+    failure G1 exists to catch is the early decision standing alone as current, which
+    `states_earlier_as_current` decides independently of any subject wording.
+    """
+    stale = {
+        "office_move_reversal": "本次會議審議搬遷案，決議搬遷至 B 棟大樓的預算案已經通過。",
+        "budget_approval_reversal": "本次會議審議下一季行銷預算案，兩百萬元經表決後核准通過。",
+    }
+    for m in probe_meetings():
+        result = score_probe(stale[m.name], m)
+        assert result.states_earlier_as_current is True
+        assert result.passed is False
+
+
 def test_probe_meetings_transcripts_are_nonempty() -> None:
     for m in probe_meetings():
         assert len(m.utterances) > 0
@@ -43,9 +59,7 @@ def test_probe_transcripts_span_multiple_chunks() -> None:
     measuring the wrong mechanism entirely. Pinned here so it cannot return silently.
     """
     for m in probe_meetings():
-        chunks = list(
-            iter_chunks(m.utterances, budget=CHUNK_TOKENS, token_len=heuristic_token_len)
-        )
+        chunks = list(iter_chunks(m.utterances, budget=CHUNK_TOKENS, token_len=heuristic_token_len))
         assert len(chunks) > 1, (
             f"{m.name} fits in {len(chunks)} chunk(s) at budget={CHUNK_TOKENS}: the probe "
             "would not exercise cross-chunk revision at all"
@@ -56,9 +70,8 @@ def test_probe_reversal_lands_in_a_later_chunk_than_the_decision() -> None:
     """Multi-chunk alone is not enough -- the planted decision and its reversal must fall
     in DIFFERENT chunks, or the revision still happens inside one step."""
     for m in probe_meetings():
-        chunks = list(
-            iter_chunks(m.utterances, budget=CHUNK_TOKENS, token_len=heuristic_token_len)
-        )
+        chunks = list(iter_chunks(m.utterances, budget=CHUNK_TOKENS, token_len=heuristic_token_len))
+
         # Chunk windows may overlap, so take the FIRST chunk containing each marker.
         def first_chunk_containing(word: str, chunks=chunks) -> int | None:
             for i, c in enumerate(chunks):

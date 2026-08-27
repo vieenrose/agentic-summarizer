@@ -16,7 +16,10 @@ MEETINGS = probe_meetings()
 #: A hand-written prose that correctly states the LATER decision for every probe
 #: meeting -- built from each meeting's own fields, so it stays in sync if the probe
 #: meetings ever change.
-_PASSING_RESULTS = {m.name: f"{' '.join(m.subject_terms)} {m.late_decision}。" for m in MEETINGS}
+_PASSING_RESULTS = {
+    m.name: f"{' '.join(forms[0] for forms in m.subject_terms)} {m.late_decision}。"
+    for m in MEETINGS
+}
 
 
 def test_dump_transcripts_writes_one_file_per_probe_meeting(tmp_path) -> None:
@@ -47,7 +50,9 @@ def test_score_results_all_pass_gives_g1_passed_true() -> None:
 def test_score_results_one_failure_gives_g1_passed_false() -> None:
     broken = dict(_PASSING_RESULTS)
     first = MEETINGS[0]
-    broken[first.name] = f"{' '.join(first.subject_terms)} {first.early_decision}。"  # stale
+    broken[first.name] = (
+        f"{' '.join(forms[0] for forms in first.subject_terms)} {first.early_decision}。"  # stale
+    )
 
     scored, g1_passed = score_results(broken)
 
@@ -102,7 +107,9 @@ def test_main_score_returns_zero_when_g1_passes(tmp_path) -> None:
 def test_main_score_returns_nonzero_when_g1_fails(tmp_path) -> None:
     broken = dict(_PASSING_RESULTS)
     first = MEETINGS[0]
-    broken[first.name] = f"{' '.join(first.subject_terms)} {first.early_decision}。"
+    broken[first.name] = (
+        f"{' '.join(forms[0] for forms in first.subject_terms)} {first.early_decision}。"
+    )
     results_path = tmp_path / "results.json"
     results_path.write_text(json.dumps(broken), encoding="utf-8")
 

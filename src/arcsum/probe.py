@@ -32,7 +32,16 @@ class ProbeMeeting:
     #: The polarity word for the decision as it stands AFTER the reversal — the one
     #: state a correct summary must report as current.
     late_decision: str
-    subject_terms: tuple[str, ...]
+    #: One entry per subject concept the summary must identify. Each entry is a tuple
+    #: of ACCEPTABLE SURFACE FORMS for that one concept — satisfied when ANY form
+    #: appears. Measured 2026-08-27: real Phase-2 outputs referred to the planted
+    #: "B 棟" as "B 樓" and "行銷預算" as "預算案", scoring false FAILs while stating
+    #: the reversal itself perfectly correctly. This is the false-negative case
+    #: `score_probe`'s docstring anticipated. Widening surface forms cannot weaken the
+    #: probe: a stale summary still fails on `states_earlier_as_current`, which is
+    #: independent of this field (pinned by
+    #: `tests/test_probe.py::test_stale_summary_fails_even_with_subject_variants`).
+    subject_terms: tuple[tuple[str, ...], ...]
     #: Terms belonging to an unrelated topic planted in the transcript. A correct
     #: summary, prioritising the meeting's actual reversal within SPEC §3's <1,000-token
     #: budget, omits these entirely.
@@ -91,7 +100,7 @@ def score_probe(prose: str, meeting: ProbeMeeting) -> ProbeResult:
     """
     squashed_prose = _squash(prose)
     states_later = _squash(meeting.late_decision) in squashed_prose and all(
-        _squash(t) in squashed_prose for t in meeting.subject_terms
+        any(_squash(form) in squashed_prose for form in forms) for forms in meeting.subject_terms
     )
     states_earlier_as_current = (
         _squash(meeting.early_decision) in squashed_prose
@@ -126,7 +135,7 @@ def probe_meetings() -> tuple[ProbeMeeting, ...]:
             utterances=OFFICE_MOVE,
             early_decision="通過",
             late_decision="撤回",
-            subject_terms=("搬遷", "B 棟"),
+            subject_terms=(("搬遷",), ("B 棟", "B 樓")),
             distractor_terms=("休息", "十分鐘"),
         ),
         ProbeMeeting(
@@ -134,7 +143,7 @@ def probe_meetings() -> tuple[ProbeMeeting, ...]:
             utterances=BUDGET_APPROVAL,
             early_decision="核准",
             late_decision="駁回",
-            subject_terms=("行銷預算",),
+            subject_terms=(("行銷預算", "預算案"),),
             distractor_terms=("麥克風", "音量"),
         ),
     )

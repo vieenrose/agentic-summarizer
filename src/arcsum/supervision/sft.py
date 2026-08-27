@@ -141,6 +141,21 @@ def oversample_drop(
     **Ordering matters: run this AFTER `downsample_nop`.** DROP-bearing samples are
     never NOPs, so oversampling them first would inflate the non-NOP denominator and
     make the NOP cap admit more NOPs than SPEC §8 risk 3 intends.
+
+    **The two knobs COMPOUND against NOP — check the resulting share, don't assume it.**
+    `downsample_nop` solves its cap against the pool as it stands, then every row this
+    function appends dilutes NOP further, so the final NOP share lands BELOW
+    `max_nop_frac`, not at it. Measured 2026-08-27 on the `sft-dropv1` build: a raw pool
+    of 38.2% NOP / 26.4% DROP-bearing became 25.7% NOP / 40.1% DROP-bearing under
+    `--max-nop-frac 0.35 --target-drop-frac 0.40` -- NOP fell by a third below its
+    natural rate. The resulting checkpoint learned to avoid emitting `NOP` at all and
+    instead churned: on low-information chunks it would `DROP` a point and re-`ADD` a
+    near-identical rewording, burning up to 45 of a 53-step meeting's steps on one topic
+    while later chunks' real content never entered memory. Since the teacher's own NOP
+    rate is a genuine signal (long procedural spans SHOULD be NOP), prefer a
+    `max_nop_frac` at or above the raw rate when oversampling: `--max-nop-frac 0.40
+    --target-drop-frac 0.32` held NOP at 35.3% and measured +0.049/+0.050/+0.060 mean
+    ROUGE-1/2/L against the same baseline, versus +0.007/+0.024/+0.039 for `dropv1`.
     """
     if target_drop_frac <= 0.0:
         return list(samples)

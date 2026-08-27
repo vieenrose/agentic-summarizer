@@ -74,6 +74,18 @@ class LlamaServer:
     #: `None` for reading steps' screen (naturalness is the measurement); set for
     #: constrained volume generation.
     grammar: str | None = None
+    #: Sent only when set. **For PROSE calls only — never for reading steps.**
+    #: Greedy decoding on a 1B model degenerates into repetition on long free-form
+    #: output: measured 2026-08-27 on DenverCityCouncil_08062018, the synthesis call
+    #: emitted the same 修改資助協議 sentence eight times near-verbatim, producing this
+    #: eval's worst result (rouge1 -0.235 against the baseline) and burning decode time
+    #: that G4's wall-clock budget cannot spare. `repeat_penalty=1.1` on a saturated
+    #: 16/16 memory cut the same call from 2,053 to 432 characters -- the latter almost
+    #: exactly the reference mean (432) -- with no loss of content.
+    #: Reading steps must NOT set this: their output is a fixed op vocabulary, so a
+    #: repetition penalty would penalise the literal ADD/DROP/ARC tokens the format
+    #: requires the model to repeat. Deterministic, so greedy reproducibility survives.
+    repeat_penalty: float | None = None
     #: Model-specific stop sequences. Empty by default — verify against MiniCPM5's own
     #: chat template before relying on it (SPEC §9 Phase 0).
     stop: tuple[str, ...] = ()
@@ -112,6 +124,8 @@ class LlamaServer:
             body["seed"] = self.seed
         if self.grammar is not None:
             body["grammar"] = self.grammar
+        if self.repeat_penalty is not None:
+            body["repeat_penalty"] = self.repeat_penalty
         if self.stop:
             body["stop"] = list(self.stop)
         body.update(self.extra)

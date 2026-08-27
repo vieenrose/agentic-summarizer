@@ -285,6 +285,55 @@ def test_main_passes_extra_json_through_to_every_llama_server_body(
         assert body["chat_template_kwargs"] == {"enable_thinking": False}
 
 
+def test_repeat_penalty_goes_to_prose_calls_but_never_reading_steps(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """Two invariants at once. A reading step must NOT carry a repetition penalty --
+    its output is a fixed op vocabulary, so penalising repetition penalises the literal
+    ADD/DROP/ARC tokens the format requires. And BOTH arms' prose calls must carry the
+    SAME one: giving it to only the agent would be precisely the unfair-baseline
+    comparison SPEC §5.2 forbids.
+    """
+    step_bodies: list[dict] = []
+    prose_bodies: list[dict] = []
+
+    def wrapped_urlopen(req, timeout=None):
+        body = json.loads(req.data.decode("utf-8"))
+        is_step = body["messages"][0]["content"] == step_system_prompt()
+        (step_bodies if is_step else prose_bodies).append(body)
+        return _FakeResponse(
+            {"choices": [{"message": {"content": "NOP" if is_step else _SYNTH_PROSE}}]}
+        )
+
+    monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", wrapped_urlopen)
+    corpus = tmp_path / "corpus"
+    corpus.mkdir()
+    (corpus / "m1.txt").write_text(TRANSCRIPT, encoding="utf-8")
+    refs_path = tmp_path / "refs.json"
+    refs_path.write_text(json.dumps({"m1": "reference text"}), encoding="utf-8")
+
+    rc = main(
+        [
+            str(corpus),
+            "--references",
+            str(refs_path),
+            "--out-agent",
+            str(tmp_path / "agent_pairs.json"),
+            "--out-baseline",
+            str(tmp_path / "baseline_pairs.json"),
+            "--repeat-penalty",
+            "1.1",
+        ]
+    )
+
+    assert rc == 0
+    assert step_bodies and prose_bodies  # sanity: both kinds of call happened
+    for body in step_bodies:
+        assert "repeat_penalty" not in body
+    for body in prose_bodies:
+        assert body["repeat_penalty"] == 1.1
+
+
 def test_main_writes_score_ready_pairs_files(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:
     _stub_both_arms(monkeypatch)
     corpus = tmp_path / "corpus"

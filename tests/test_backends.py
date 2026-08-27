@@ -96,6 +96,21 @@ def test_grammar_omitted_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
     assert "grammar" not in body
 
 
+def test_repeat_penalty_omitted_by_default(monkeypatch: pytest.MonkeyPatch) -> None:
+    """Off by default because READING STEPS must never carry it: their output is a fixed
+    op vocabulary, so penalising repetition would penalise the literal ADD/DROP/ARC
+    tokens the format requires. Only the prose calls opt in."""
+    captured = _capture_payload(monkeypatch, OK_RESPONSE)
+    LlamaServer()("s", "u")
+    assert "repeat_penalty" not in json.loads(captured[0].data)
+
+
+def test_repeat_penalty_included_when_set(monkeypatch: pytest.MonkeyPatch) -> None:
+    captured = _capture_payload(monkeypatch, OK_RESPONSE)
+    LlamaServer(repeat_penalty=1.1)("s", "u")
+    assert json.loads(captured[0].data)["repeat_penalty"] == 1.1
+
+
 def test_grammar_included_when_set(monkeypatch: pytest.MonkeyPatch) -> None:
     captured = _capture_payload(monkeypatch, OK_RESPONSE)
     LlamaServer(grammar='root ::= "NOP"')("s", "u")

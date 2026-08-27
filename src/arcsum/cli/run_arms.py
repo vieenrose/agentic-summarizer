@@ -52,6 +52,7 @@ def run_both_arms(
     step_model: LlamaServer,
     synth_model: LlamaServer,
     reduce_model: LlamaServer,
+    map_model: LlamaServer | None = None,
     budget: int = CHUNK_TOKENS,
     reduce_context_tokens: int | None = None,
 ) -> tuple[list[dict], list[dict], list[str], dict[str, dict[str, str]]]:
@@ -89,7 +90,7 @@ def run_both_arms(
         try:
             baseline = run_map_reduce(
                 utterances,
-                step_model,
+                map_model if map_model is not None else step_model,
                 reduce_model=reduce_model,
                 budget=budget,
                 reduce_context_tokens=reduce_context_tokens,
@@ -131,6 +132,15 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--max-tokens-step", type=int, default=512)
     p.add_argument("--max-tokens-synth", type=int, default=1200)
     p.add_argument(
+        "--repeat-penalty",
+        type=float,
+        default=1.1,
+        help="repetition penalty for BOTH arms' prose calls (never the reading steps). "
+        "Greedy decoding on a 1B model degenerates into repetition on long free-form "
+        "output; measured 2026-08-27, this cut a looping synthesis from 2,053 to 432 "
+        "characters. Pass 1.0 to disable.",
+    )
+    p.add_argument(
         "--extra",
         type=str,
         default=None,
@@ -162,11 +172,29 @@ def main(argv: list[str] | None = None) -> int:
     extra = json.loads(args.extra) if args.extra else {}
 
     step_model = LlamaServer(base_url=args.url, max_tokens=args.max_tokens_step, extra=extra)
+    # Both arms' PROSE calls get the same repetition penalty, and the reading steps get
+    # none — see `LlamaServer.repeat_penalty`. Applying it to only one arm would be
+    # exactly the unfair-baseline comparison SPEC §5.2 forbids.
     synth_model = LlamaServer(
-        base_url=args.synth_url or args.url, max_tokens=args.max_tokens_synth, extra=extra
+        base_url=args.synth_url or args.url,
+        max_tokens=args.max_tokens_synth,
+        repeat_penalty=args.repeat_penalty,
+        extra=extra,
     )
     reduce_model = LlamaServer(
-        base_url=args.reduce_url or args.url, max_tokens=args.max_tokens_synth, extra=extra
+        base_url=args.reduce_url or args.url,
+        max_tokens=args.max_tokens_synth,
+        repeat_penalty=args.repeat_penalty,
+        extra=extra,
+    )
+    # The baseline's MAP call emits free-form window prose, not ops, so it belongs with
+    # the prose calls even though it runs at the reading step's token budget — sharing
+    # `step_model` would silently deny the baseline a penalty the agent's prose gets.
+    map_model = LlamaServer(
+        base_url=args.url,
+        max_tokens=args.max_tokens_step,
+        repeat_penalty=args.repeat_penalty,
+        extra=extra,
     )
 
     agent_pairs, baseline_pairs, skipped, failures = run_both_arms(
@@ -175,6 +203,7 @@ def main(argv: list[str] | None = None) -> int:
         step_model=step_model,
         synth_model=synth_model,
         reduce_model=reduce_model,
+        map_model=map_model,
         budget=args.budget,
         reduce_context_tokens=args.reduce_context_tokens,
     )

@@ -441,6 +441,27 @@ must not appear. Pass = final summary states the *later* decision, does not stat
 earlier one as current, and omits the distractor. Cheap, synthetic, and diagnostic in a
 way corpus averages are not — run it before any corpus-scale evaluation (§9).
 
+**The planted reversal must land in a LATER CHUNK than the decision** (normative), not
+merely later in the transcript. The mechanism under test is precisely that external
+memory carries a conclusion across a step boundary so a later step can overturn it; a
+transcript short enough to fit in one chunk exercises none of that — no memory crosses
+a step, `DROP` is never used, and the agent arm degenerates into a one-shot summariser
+scored as if it were the agent. **This shipped as a real defect**: the original probe
+transcripts were ~120 tokens against §4.1's 2,500-token budget, so every G1 result
+reported before 2026-08-27 measured the wrong mechanism. Probe transcripts must
+therefore be long enough to chunk, and the planted topic must be the meeting's dominant
+business — an arc buried as a fraction of a percent of a long transcript loses its
+memory slots on salience and measures salience, not revision (also measured, same date).
+
+**The distractor must be genuinely non-decision-bearing** (§4.2's "self-contained
+procedure" bucket — a recess announcement, not a second real decision on an unrelated
+topic). §4.2 normatively trains the teacher to emit edit lines for *every* official
+item overlapping a chunk with no relevance filter, so a distractor phrased as a closed
+decision tests a bar no model trained per §4.2 could clear without contradicting that
+same training — confirmed directly (2026-08) by running an early, decision-shaped-
+distractor probe against the unfine-tuned teacher itself, which reproduced the same
+"failure" as the fine-tuned student.
+
 ---
 
 ## 6. Reference hardware (normative)

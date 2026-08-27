@@ -339,3 +339,57 @@ def test_ship_decision_defaults_to_the_baseline_on_a_withheld_gate() -> None:
 def test_ship_decision_ships_the_agent_only_when_everything_clears() -> None:
     gates = [gate_g2_faithfulness(2, 3), gate_g4_budget(12.9)]
     assert ship_decision(gates, g1_passed=True) == "ship the agent"
+
+
+# --- gates must not pass on absent or noisy evidence -----------------------------------
+
+
+def test_g2_withholds_when_no_judge_records_exist() -> None:
+    """The bug this pins: with no judge run, both inversion sums are 0 and `0 <= 0`
+    reported a clean PASS for a gate nothing had measured -- observed in a real ship
+    report 2026-08-27. A gate that passes on absent evidence manufactures confidence.
+    """
+    gate = gate_g2_faithfulness(0, 0, judged_records=0)
+    assert gate.passed is None
+    assert "withheld" in gate.detail
+
+
+def test_g2_still_passes_when_records_exist_and_inversions_are_fewer() -> None:
+    assert gate_g2_faithfulness(1, 3, judged_records=20).passed is True
+
+
+def test_g2_fails_when_treatment_has_more_inversions() -> None:
+    assert gate_g2_faithfulness(5, 3, judged_records=20).passed is False
+
+
+def test_g2_without_a_record_count_keeps_the_old_behaviour() -> None:
+    """`judged_records=None` is the documented opt-out for callers that know their
+    denominator is non-empty."""
+    assert gate_g2_faithfulness(0, 0).passed is True
+
+
+def test_g3_fails_when_effect_size_clears_but_sign_test_does_not() -> None:
+    """Measured 2026-08-27: rouge1 posted a positive lower bound on a 12/8 split with
+    p=0.50 -- a coin flip that the SE bound alone marked PASS. Tight, consistent
+    deltas keep SE small (lower bound clears) while wins/losses stay near even.
+    """
+    c = Comparison("rouge1", wins=12, losses=8, ties=0, deltas=(0.039,) * 20)
+    (gate,) = gate_g3_quality([c], min_n=20)
+    assert c.p_value > 0.05, "fixture must be sign-test-insignificant"
+    assert c.mean_delta - c.stderr > 0, "fixture must clear the SE bound"
+    assert gate.passed is False
+    assert "sign test" in gate.detail
+
+
+def test_g3_passes_when_both_conditions_clear() -> None:
+    c = Comparison("rougeL", wins=18, losses=2, ties=0, deltas=(0.05,) * 20)
+    (gate,) = gate_g3_quality([c], min_n=20)
+    assert c.p_value <= 0.05
+    assert gate.passed is True
+
+
+def test_g3_fails_when_sign_test_clears_but_effect_size_does_not() -> None:
+    """The mirror case: significant sign test, but the mean delta is negative."""
+    c = Comparison("coverage", wins=15, losses=5, ties=0, deltas=(-0.004,) * 20)
+    (gate,) = gate_g3_quality([c], min_n=20)
+    assert gate.passed is False

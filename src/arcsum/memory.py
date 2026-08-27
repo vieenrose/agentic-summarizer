@@ -116,6 +116,17 @@ class Memory:
     #: because it is an instrument, not part of the memory's logical state.
     token_len: Callable[[str], int] = field(default=heuristic_token_len, compare=False, repr=False)
 
+    def is_empty(self) -> bool:
+        """No arc AND no points — the memory carries no information at all.
+
+        Lives here rather than being re-derived at call sites so "empty" has exactly
+        one definition. Deliberately STRICT (both slots empty), not a "thin memory"
+        heuristic: `agent.synthesize_memory` keys a hard behavioural guarantee off
+        this, and a fuzzy threshold there would be a quality judgement rather than the
+        correctness invariant it is meant to express.
+        """
+        return not self.arc and not self.points
+
     def set_arc(self, text: str) -> str | None:
         """Replace the arc note. Refuses on empty or over-length text."""
         cleaned = " ".join(text.split())

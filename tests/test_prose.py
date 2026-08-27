@@ -6,7 +6,7 @@ reduce step share, so they cannot disagree about what a valid output is.
 
 from __future__ import annotations
 
-from arcsum.prose import PROSE_MAX_TOKENS, finalize
+from arcsum.prose import PROSE_MAX_TOKENS, finalize, ungrounded_numbers
 from arcsum.tokens import heuristic_token_len
 
 
@@ -129,3 +129,33 @@ def test_tokens_uses_the_injected_counter() -> None:
 
     finalize("會議討論搬遷案", token_len=counting)
     assert calls, "the injected counter was never called"
+
+
+# --- ungrounded_numbers -----------------------------------------------------------
+
+
+def test_number_present_in_grounding_is_not_flagged() -> None:
+    grounding = "核准十萬美元預算，決議編號 2019 號"
+    text = "本次會議核准了編號 2019 號決議"
+    assert ungrounded_numbers(text, grounding) == ()
+
+
+def test_number_absent_from_grounding_is_flagged() -> None:
+    grounding = "核准辦公室搬遷至 B 棟"
+    text = "會議決議已於 2019 年 11 月 1 日完成搬遷"
+    flagged = ungrounded_numbers(text, grounding)
+    assert "2019" in flagged
+    assert "11" in flagged
+    assert "1" in flagged
+
+
+def test_no_numbers_in_text_returns_empty() -> None:
+    assert ungrounded_numbers("會議討論搬遷案", "會議討論搬遷案") == ()
+
+
+def test_returned_spans_are_deduplicated_and_sorted() -> None:
+    grounding = ""
+    text = "金額為 500 元，另一筆也是 500 元，還有 100 元"
+    flagged = ungrounded_numbers(text, grounding)
+    assert flagged == tuple(sorted(set(flagged)))
+    assert flagged.count("500") == 1

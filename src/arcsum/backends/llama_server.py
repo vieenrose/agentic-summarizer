@@ -22,6 +22,18 @@ chat-template kwarg; MiniCPM5 is a different model family, and these need verifi
 against its real chat template before being assumed (SPEC §9 Phase 0). `stop` and
 `extra` are both caller-configurable for exactly this reason — do not hardcode a
 Gemma-ism here on the assumption it will transfer.
+
+**Verified (Phase 2 pilot eval, 2026-08-26): MiniCPM5 needs `enable_thinking`
+disabled.** Served via `llama-server --jinja` with no override, a MiniCPM5 chat
+completion defaults to emitting `<think>...</think>` reasoning content that can
+consume the entire `max_tokens` budget before any answer — `__call__` then raises
+("empty content ... reasoning_content present"), not silently degrades, so this
+surfaces immediately rather than being mistaken for a model-quality problem. Fix:
+construct the server with
+`extra={"chat_template_kwargs": {"enable_thinking": False}}`, or start `llama-server`
+itself with `--reasoning off`. Left as caller-configurable (not hardcoded here) for
+the same reason `stop` is — a future model family may not need it, and one that does
+may need a different toggle.
 """
 
 from __future__ import annotations

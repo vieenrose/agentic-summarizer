@@ -11,7 +11,10 @@ dist/
 # ignored, because committed numbers are the audit trail.
 data/
 
-# Model weights live on Hugging Face only — never in this repo.
+# Model weights live on Hugging Face only — never in this repo. Scoped to the
+# weight-bearing subdirectories specifically (not `runs/sft-*/` itself, which used to
+# exclude the whole run — including the small eval JSON results the comment above
+# says should be the audit trail).
 *.gguf
 *.safetensors
 *.pt
@@ -19,9 +22,19 @@ data/
 *.onnx
 runs/*/final/
 runs/*/checkpoint-*/
-runs/sft-*/
 runs/*/gguf*
 unsloth_compiled_cache/
+
+# `*_pairs.json` embeds the FULL source transcript per meeting (~100 KB each, ~1.6 MB
+# per file) — i.e. a copy of the `data/` corpus this file deliberately does not track,
+# and regenerable by re-running `arcsum-run-arms`. The audit trail worth committing is
+# the SCORES (`*_scored.jsonl`, `report.json`), which are small and are the numbers any
+# claim actually rests on.
+runs/*/eval*/*_pairs.json
+# Copies of `data/pilot_zh` transcripts and of `arcsum-probe dump` output — both
+# reproducible, both duplicating ignored or generated content.
+runs/*/eval*/corpus/
+runs/*/eval*/probe_transcripts/
 
 .env
 *.key

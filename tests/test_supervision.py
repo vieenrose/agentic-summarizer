@@ -18,8 +18,10 @@ from arcsum.supervision.sft import (
     build_samples,
     check_single_prompt_version,
     downsample_nop,
+    drop_bearing_share,
     drop_share,
     nop_share,
+    oversample_drop,
     split_by_meeting,
 )
 from arcsum.supervision.traces import all_replayed_cleanly, replay_sequence, replay_step
@@ -138,13 +140,30 @@ def test_build_samples_one_per_reading_step() -> None:
 
 
 def test_build_samples_includes_a_synthesis_sample_when_present() -> None:
-    model = Scripted(("NOP", "會議討論搬遷案，最終決議遷至 B 棟。"))
+    # ADD (not NOP) so memory is non-empty: an all-NOP run leaves memory empty, which
+    # `synthesize_memory` short-circuits without calling the model -- covered below.
+    model = Scripted(("ADD - 同意搬到 B 棟", "會議討論搬遷案，最終決議遷至 B 棟。"))
     trace = run_agent(meeting_utts(5), model)
     samples = build_samples("m1", trace)
     assert len(samples) == len(trace.steps) + 1
     synth_sample = samples[-1]
     assert synth_sample.is_nop is False
     assert synth_sample.completion == "會議討論搬遷案，最終決議遷至 B 棟。"
+
+
+def test_build_samples_omits_a_guarded_empty_memory_synthesis() -> None:
+    """An all-NOP run's synthesis was never generated -- `raw` is "" and `prose.text`
+    is a fixed constant -- so it must not enter the training pool at all. Emitting it
+    would either inject an empty-completion row or teach the model to reproduce a
+    hardcoded string the deterministic guard already handles."""
+    model = Scripted(default="NOP")
+    trace = run_agent(meeting_utts(5), model)
+    assert trace.synthesis is not None
+    assert trace.synthesis.skipped_empty_memory is True
+
+    samples = build_samples("m1", trace)
+    assert len(samples) == len(trace.steps)  # reading steps only, no synthesis row
+    assert all(s.completion != "" for s in samples)
 
 
 def test_build_samples_completion_is_the_raw_target_not_the_prompt() -> None:
@@ -241,6 +260,66 @@ def test_downsample_nop_is_deterministic_given_a_seed() -> None:
 
 def test_default_max_nop_frac_matches_spec_risk_3() -> None:
     assert DEFAULT_MAX_NOP_FRAC == 0.35
+
+
+# --- oversample_drop -----------------------------------------------------------------
+
+
+def make_drop_pool(n_drop: int, n_plain: int) -> list[SftSample]:
+    samples = [
+        SftSample(f"d{i}", 0, "sys-v1", "sys", "prompt", "DROP «x»\nADD - y", is_nop=False)
+        for i in range(n_drop)
+    ]
+    samples += [
+        SftSample(f"p{i}", 0, "sys-v1", "sys", "prompt", "ADD - x", is_nop=False)
+        for i in range(n_plain)
+    ]
+    return samples
+
+
+def test_drop_bearing_share_reports_the_actual_fraction() -> None:
+    pool = make_drop_pool(n_drop=10, n_plain=90)
+    assert drop_bearing_share(pool) == pytest.approx(0.10)
+
+
+def test_drop_bearing_share_of_empty_pool_is_none() -> None:
+    assert drop_bearing_share([]) is None
+
+
+def test_oversample_drop_default_is_a_noop() -> None:
+    pool = make_drop_pool(n_drop=10, n_plain=90)
+    assert oversample_drop(pool) == pool
+
+
+def test_oversample_drop_raises_the_share_toward_the_target() -> None:
+    pool = make_drop_pool(n_drop=10, n_plain=90)  # 10% DROP-bearing
+    result = oversample_drop(pool, target_drop_frac=0.4, seed=0)
+    assert drop_bearing_share(result) == pytest.approx(0.4, abs=0.01)
+
+
+def test_oversample_drop_never_removes_or_alters_original_samples() -> None:
+    pool = make_drop_pool(n_drop=10, n_plain=90)
+    result = oversample_drop(pool, target_drop_frac=0.4, seed=0)
+    for s in pool:
+        assert result.count(s) >= 1
+
+
+def test_oversample_drop_leaves_a_pool_already_at_or_above_target_unchanged() -> None:
+    pool = make_drop_pool(n_drop=50, n_plain=50)  # 50% DROP-bearing
+    result = oversample_drop(pool, target_drop_frac=0.4, seed=0)
+    assert result == pool
+
+
+def test_oversample_drop_is_deterministic_given_a_seed() -> None:
+    pool = make_drop_pool(n_drop=10, n_plain=90)
+    a = oversample_drop(pool, target_drop_frac=0.4, seed=3)
+    b = oversample_drop(pool, target_drop_frac=0.4, seed=3)
+    assert a == b
+
+
+def test_oversample_drop_of_a_pool_with_no_drop_rows_is_a_noop() -> None:
+    pool = make_pool(n_nop=10, n_non_nop=90)  # no DROP anywhere
+    assert oversample_drop(pool, target_drop_frac=0.4) == pool
 
 
 # --- split_by_meeting ---------------------------------------------------------------------

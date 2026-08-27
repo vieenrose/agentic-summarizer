@@ -47,7 +47,9 @@ def _stub_both_arms(monkeypatch: pytest.MonkeyPatch) -> list:
         body = json.loads(req.data.decode("utf-8"))
         system = body["messages"][0]["content"]
         if system == step_system_prompt():
-            content = "NOP"
+            # ADD (not NOP) so memory is non-empty: an all-NOP run leaves memory
+            # empty, which synthesize_memory short-circuits without a model call.
+            content = "ADD - 同意搬到 B 棟"
         elif system == synth_system_prompt():
             content = _SYNTH_PROSE
         elif system == map_system_prompt():
@@ -68,7 +70,7 @@ def test_run_both_arms_produces_paired_meetings(tmp_path, monkeypatch: pytest.Mo
     corpus.mkdir()
     (corpus / "m1.txt").write_text(TRANSCRIPT, encoding="utf-8")
 
-    agent_pairs, baseline_pairs, skipped = run_both_arms(
+    agent_pairs, baseline_pairs, skipped, failures = run_both_arms(
         corpus,
         {"m1": "reference text"},
         step_model=LlamaServer(),
@@ -77,6 +79,7 @@ def test_run_both_arms_produces_paired_meetings(tmp_path, monkeypatch: pytest.Mo
     )
 
     assert skipped == []
+    assert failures == {"agent": {}, "baseline": {}}
     assert len(agent_pairs) == 1
     assert len(baseline_pairs) == 1
     assert agent_pairs[0]["meeting_id"] == "m1"
@@ -96,7 +99,7 @@ def test_run_both_arms_uses_structurally_different_candidates(
     corpus.mkdir()
     (corpus / "m1.txt").write_text(TRANSCRIPT, encoding="utf-8")
 
-    agent_pairs, baseline_pairs, _ = run_both_arms(
+    agent_pairs, baseline_pairs, _, _ = run_both_arms(
         corpus,
         {"m1": "reference text"},
         step_model=LlamaServer(),
@@ -117,7 +120,7 @@ def test_run_both_arms_skips_meetings_with_no_reference(
     (corpus / "m1.txt").write_text(TRANSCRIPT, encoding="utf-8")
     (corpus / "m2.txt").write_text(TRANSCRIPT, encoding="utf-8")
 
-    agent_pairs, baseline_pairs, skipped = run_both_arms(
+    agent_pairs, baseline_pairs, skipped, _ = run_both_arms(
         corpus,
         {"m1": "reference text"},
         step_model=LlamaServer(),
@@ -130,6 +133,94 @@ def test_run_both_arms_skips_meetings_with_no_reference(
     assert len(baseline_pairs) == 1
 
 
+# --- failure isolation ----------------------------------------------------------------------
+
+
+def test_one_meetings_baseline_failure_does_not_lose_other_meetings(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """The reduce call overflowing on one meeting (measured to happen on 7/20 real
+    held-out meetings at a real 4096-token context) must not take the whole pass down
+    with it -- confirmed here via a `reduce_context_tokens` too small for ANY reduce
+    prompt to fit, so every multi-window meeting's baseline arm hits it."""
+    _stub_both_arms(monkeypatch)
+    corpus = tmp_path / "corpus"
+    corpus.mkdir()
+    # m1: single line -> single window -> no reduce call, unaffected by the guard.
+    (corpus / "m1.txt").write_text(TRANSCRIPT, encoding="utf-8")
+    # m2: enough lines to force >1 window at the default chunk budget.
+    many_lines = "\n".join(f"S1: 第{i}項議程討論。" for i in range(400))
+    (corpus / "m2.txt").write_text(many_lines, encoding="utf-8")
+
+    agent_pairs, baseline_pairs, skipped, failures = run_both_arms(
+        corpus,
+        {"m1": "ref1", "m2": "ref2"},
+        step_model=LlamaServer(),
+        synth_model=LlamaServer(),
+        reduce_model=LlamaServer(),
+        reduce_context_tokens=1,
+    )
+
+    assert skipped == []
+    # m2's baseline arm does NOT raise (the overflow guard in baseline.py converts it
+    # to a deterministic fallback, not an exception) -- so it is not a "failure" here,
+    # it is a successful (if degraded) baseline result. Both meetings pair normally.
+    assert failures == {"agent": {}, "baseline": {}}
+    assert {p["meeting_id"] for p in agent_pairs} == {"m1", "m2"}
+    assert {p["meeting_id"] for p in baseline_pairs} == {"m1", "m2"}
+
+
+def test_a_meetings_arm_exception_excludes_it_from_both_pairs_files(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """A genuine per-meeting exception (network error, malformed response, anything
+    `run_agent`/`run_map_reduce` themselves raise) on EITHER arm must exclude that
+    meeting from BOTH pairs files -- an unpaired candidate cannot enter SPEC §5.2's
+    paired comparison -- while leaving every other meeting intact. Triggered on
+    content unique to one meeting's transcript, not call order/count, so this cannot
+    become order-dependent and flaky."""
+    corpus = tmp_path / "corpus"
+    corpus.mkdir()
+    (corpus / "m1.txt").write_text(TRANSCRIPT, encoding="utf-8")
+    (corpus / "m2.txt").write_text("S1: 這場會議只在第二場才會出現的內容。\n", encoding="utf-8")
+
+    def flaky_urlopen(req, timeout=None):
+        body = json.loads(req.data.decode("utf-8"))
+        system = body["messages"][0]["content"]
+        user = body["messages"][1]["content"]
+        if system == map_system_prompt() and "第二場才會出現" in user:
+            raise OSError("simulated network failure")
+        if system == step_system_prompt():
+            # ADD (not NOP) so memory is non-empty: an all-NOP run leaves memory
+            # empty, which synthesize_memory short-circuits without a model call.
+            content = "ADD - 同意搬到 B 棟"
+        elif system == synth_system_prompt():
+            content = _SYNTH_PROSE
+        elif system == map_system_prompt():
+            content = _MAP_PROSE
+        elif system == reduce_system_prompt():
+            content = _REDUCE_PROSE
+        else:
+            raise AssertionError(f"unexpected system prompt: {system!r}")
+        return _FakeResponse({"choices": [{"message": {"content": content}}]})
+
+    monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", flaky_urlopen)
+
+    agent_pairs, baseline_pairs, skipped, failures = run_both_arms(
+        corpus,
+        {"m1": "ref1", "m2": "ref2"},
+        step_model=LlamaServer(),
+        synth_model=LlamaServer(),
+        reduce_model=LlamaServer(),
+    )
+
+    assert skipped == []
+    assert "m2" in failures["baseline"]
+    assert "m2" not in failures["agent"]  # m2's agent arm never calls MAP at all
+    assert {p["meeting_id"] for p in agent_pairs} == {"m1"}
+    assert {p["meeting_id"] for p in baseline_pairs} == {"m1"}
+
+
 # --- CLI plumbing --------------------------------------------------------------------------
 
 
@@ -137,6 +228,61 @@ def test_build_parser_requires_references_and_out_paths() -> None:
     parser = build_parser()
     with pytest.raises(SystemExit):
         parser.parse_args(["corpus/"])
+
+
+def test_main_passes_extra_json_through_to_every_llama_server_body(
+    tmp_path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    """`--extra` exists specifically because MiniCPM5 needs `enable_thinking` disabled
+    or it can burn its whole `max_tokens` budget on reasoning before answering (found
+    live during the Phase 2 pilot eval) -- must land in every request body, on all
+    three constructed servers (step/synth/reduce), not just one."""
+    captured_bodies: list[dict] = []
+
+    def wrapped_urlopen(req, timeout=None):
+        captured_bodies.append(json.loads(req.data.decode("utf-8")))
+        return _FakeResponse(
+            {
+                "choices": [
+                    {
+                        "message": {
+                            "content": (
+                                "NOP"
+                                if json.loads(req.data.decode("utf-8"))["messages"][0]["content"]
+                                == step_system_prompt()
+                                else _SYNTH_PROSE
+                            )
+                        }
+                    }
+                ]
+            }
+        )
+
+    monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", wrapped_urlopen)
+    corpus = tmp_path / "corpus"
+    corpus.mkdir()
+    (corpus / "m1.txt").write_text(TRANSCRIPT, encoding="utf-8")
+    refs_path = tmp_path / "refs.json"
+    refs_path.write_text(json.dumps({"m1": "reference text"}), encoding="utf-8")
+
+    rc = main(
+        [
+            str(corpus),
+            "--references",
+            str(refs_path),
+            "--out-agent",
+            str(tmp_path / "agent_pairs.json"),
+            "--out-baseline",
+            str(tmp_path / "baseline_pairs.json"),
+            "--extra",
+            '{"chat_template_kwargs": {"enable_thinking": false}}',
+        ]
+    )
+
+    assert rc == 0
+    assert captured_bodies  # sanity: requests were actually made
+    for body in captured_bodies:
+        assert body["chat_template_kwargs"] == {"enable_thinking": False}
 
 
 def test_main_writes_score_ready_pairs_files(tmp_path, monkeypatch: pytest.MonkeyPatch) -> None:

@@ -67,6 +67,35 @@ def test_normalize_folds_cjk_punctuation() -> None:
     assert normalize("通過議案，並公告。") == normalize("通過議案並公告")
 
 
+# --- Memory.is_empty -----------------------------------------------------------------
+
+
+def test_is_empty_true_on_a_fresh_memory() -> None:
+    assert Memory().is_empty() is True
+
+
+def test_is_empty_false_with_only_an_arc() -> None:
+    """STRICT emptiness (both slots), not a 'thin memory' heuristic -- an arc alone is
+    real information. `agent.synthesize_memory` keys a hard behavioural guarantee off
+    this, so the boundary must be unambiguous."""
+    m = Memory()
+    m.set_arc("會議討論辦公室搬遷案。")
+    assert m.is_empty() is False
+
+
+def test_is_empty_false_with_only_a_point() -> None:
+    m = Memory()
+    m.add_point("同意搬到 B 棟", chunk=0)
+    assert m.is_empty() is False
+
+
+def test_is_empty_true_again_after_the_only_point_is_dropped() -> None:
+    m = Memory()
+    m.add_point("同意搬到 B 棟", chunk=0)
+    m.drop_point("同意搬到")
+    assert m.is_empty() is True
+
+
 # --- Memory.set_arc ------------------------------------------------------------------
 
 

@@ -6,7 +6,9 @@ from __future__ import annotations
 
 import pytest
 
+from arcsum.chunker import CHUNK_TOKENS, iter_chunks
 from arcsum.probe import ProbeResult, probe_meetings, score_probe
+from arcsum.tokens import heuristic_token_len
 
 
 def test_probe_meetings_returns_at_least_two_independent_scenarios() -> None:
@@ -31,9 +33,62 @@ def test_probe_meetings_transcripts_are_nonempty() -> None:
         assert len(m.utterances) > 0
 
 
+def test_probe_transcripts_span_multiple_chunks() -> None:
+    """SPEC §5.2's G1 asks whether a LATER CHUNK can overturn an earlier conclusion. A
+    single-chunk transcript cannot test that at all -- no memory crosses a step, `DROP`
+    is never exercised, and the agent arm degenerates into a one-shot summariser.
+
+    This is a real defect that shipped: the original probe transcripts were ~120 tokens
+    against a 2500-token budget, so every G1 number measured up to 2026-08-27 was
+    measuring the wrong mechanism entirely. Pinned here so it cannot return silently.
+    """
+    for m in probe_meetings():
+        chunks = list(
+            iter_chunks(m.utterances, budget=CHUNK_TOKENS, token_len=heuristic_token_len)
+        )
+        assert len(chunks) > 1, (
+            f"{m.name} fits in {len(chunks)} chunk(s) at budget={CHUNK_TOKENS}: the probe "
+            "would not exercise cross-chunk revision at all"
+        )
+
+
+def test_probe_reversal_lands_in_a_later_chunk_than_the_decision() -> None:
+    """Multi-chunk alone is not enough -- the planted decision and its reversal must fall
+    in DIFFERENT chunks, or the revision still happens inside one step."""
+    for m in probe_meetings():
+        chunks = list(
+            iter_chunks(m.utterances, budget=CHUNK_TOKENS, token_len=heuristic_token_len)
+        )
+        # Chunk windows may overlap, so take the FIRST chunk containing each marker.
+        def first_chunk_containing(word: str, chunks=chunks) -> int | None:
+            for i, c in enumerate(chunks):
+                if any(word in u.text for u in c.utterances):
+                    return i
+            return None
+
+        dec = first_chunk_containing(m.early_decision)
+        rev = first_chunk_containing(m.late_decision)
+        assert dec is not None, f"{m.name}: early decision word never appears"
+        assert rev is not None, f"{m.name}: late decision word never appears"
+        assert rev > dec, (
+            f"{m.name}: reversal first appears in chunk {rev}, decision in chunk {dec} -- "
+            "the reversal must land in a LATER chunk for G1 to test revision"
+        )
+
+
 @pytest.fixture
 def office_move():
     return next(m for m in probe_meetings() if m.name == "office_move_reversal")
+
+
+def test_missing_space_around_a_latin_cjk_subject_term_still_passes(office_move) -> None:
+    """Measured 2026-08-27: a correct, faithful summary scored a false FAIL because it
+    rendered "B 棟" without the space ("B棟") -- spacing noise around a Latin-letter
+    term, not a faithfulness difference."""
+    prose_no_space = "本次會議討論辦公室搬遷案，市府建議撤回搬遷至B棟，維持原辦公室。"
+    result = score_probe(prose_no_space, office_move)
+    assert result.states_later is True
+    assert result.passed is True
 
 
 # --- score_probe: the correct summary passes ------------------------------------------
@@ -70,7 +125,7 @@ def test_summary_that_omits_the_outcome_fails_states_later(office_move) -> None:
 
 def test_summary_with_the_distractor_fails(office_move) -> None:
     prose_with_distractor = (
-        "會議討論辦公室搬遷案，已撤回搬遷 B 棟的決議，另外也討論了員工餐廳供應商的變更。"
+        "會議討論辦公室搬遷案，已撤回搬遷 B 棟的決議，另外會議中間也安排了十分鐘的休息時間。"
     )
     result = score_probe(prose_with_distractor, office_move)
     assert result.states_later is True

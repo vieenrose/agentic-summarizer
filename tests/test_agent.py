@@ -10,6 +10,7 @@ from __future__ import annotations
 import pytest
 
 from arcsum.agent import (
+    EMPTY_MEMORY_PROSE,
     STEP_BUDGET,
     StepBudgetExceeded,
     Usage,
@@ -362,8 +363,12 @@ def test_nop_retry_records_both_calls_in_usage() -> None:
 
 def test_one_synthesis_call_after_the_last_chunk() -> None:
     """A dedicated synth_model decouples this from the reading model's canned-response
-    queue length, which is otherwise coupled to the (here, unpredictable) chunk count."""
-    step_model = Scripted(default="NOP")
+    queue length, which is otherwise coupled to the (here, unpredictable) chunk count.
+
+    The reading step ADDs (rather than NOPing) so the memory is non-empty: an all-NOP
+    run leaves memory empty, which `synthesize_memory` now deliberately short-circuits
+    without calling the model at all -- covered separately below."""
+    step_model = Scripted(default="ADD - 同意搬到 B 棟")
     synth_model = Scripted(("會議討論搬遷案，最終決議遷至 B 棟。",))
     trace = run_agent(
         meeting(60, words_per_line=200), step_model, synth_model=synth_model, budget=500
@@ -401,6 +406,7 @@ def test_synthesize_memory_retries_on_over_budget() -> None:
     ok = "會議討論搬遷案，最終決議遷至 B 棟。"
     model = Scripted((too_long, ok))
     memory = Memory()
+    memory.add_point("同意搬到 B 棟", chunk=0)
     synthesis = synthesize_memory(memory, model, token_len=heuristic_token_len, retries=1)
     assert synthesis.attempts == 2
     assert synthesis.prose.text == ok
@@ -411,6 +417,7 @@ def test_synthesize_memory_retries_on_bad_language() -> None:
     ok = "會議討論搬遷案，最終決議遷至 B 棟。"
     model = Scripted((english, ok))
     memory = Memory()
+    memory.add_point("同意搬到 B 棟", chunk=0)
     synthesis = synthesize_memory(memory, model, token_len=heuristic_token_len, retries=1)
     assert synthesis.attempts == 2
     assert synthesis.prose.lang_flags == ()
@@ -419,6 +426,7 @@ def test_synthesize_memory_retries_on_bad_language() -> None:
 def test_synthesize_memory_gives_up_after_retries_exhausted() -> None:
     model = Scripted(("The council approved.", "Still English."))
     memory = Memory()
+    memory.add_point("同意搬到 B 棟", chunk=0)
     synthesis = synthesize_memory(memory, model, token_len=heuristic_token_len, retries=1)
     assert synthesis.attempts == 2
     assert synthesis.prose.lang_flags != ()
@@ -427,22 +435,151 @@ def test_synthesize_memory_gives_up_after_retries_exhausted() -> None:
 def test_synthesize_memory_zero_retries_makes_exactly_one_attempt() -> None:
     model = Scripted(("The council approved.",))
     memory = Memory()
+    memory.add_point("同意搬到 B 棟", chunk=0)
     synthesis = synthesize_memory(memory, model, token_len=heuristic_token_len, retries=0)
     assert synthesis.attempts == 1
     assert len(model.calls) == 1
 
 
+def test_synthesize_memory_retries_on_ungrounded_number() -> None:
+    fabricated = "會議決議已於 2019 年 11 月 1 日完成搬遷。"
+    ok = "會議討論搬遷案，最終決議遷至 B 棟。"
+    model = Scripted((fabricated, ok))
+    memory = Memory()
+    memory.add_point("同意搬到 B 棟", chunk=0)
+    synthesis = synthesize_memory(memory, model, token_len=heuristic_token_len, retries=1)
+    assert synthesis.attempts == 2
+    assert synthesis.prose.text == ok
+    assert synthesis.ungrounded_numbers == ()
+
+
+def test_synthesize_memory_nudges_the_retry_prompt_on_ungrounded_number() -> None:
+    fabricated = "會議決議已於 2019 年 11 月 1 日完成搬遷。"
+    ok = "會議討論搬遷案，最終決議遷至 B 棟。"
+    model = Scripted((fabricated, ok))
+    memory = Memory()
+    memory.add_point("同意搬到 B 棟", chunk=0)
+    synthesize_memory(memory, model, token_len=heuristic_token_len, retries=1)
+    assert len(model.calls) == 2
+    first_user, second_user = model.calls[0][1], model.calls[1][1]
+    assert first_user == second_user.split("\n\n（提醒")[0]
+    assert second_user != first_user
+
+
+def test_synthesize_memory_a_number_present_in_memory_is_not_flagged() -> None:
+    ok = "會議核准了兩百萬美元的預算，編號 2019 案。"
+    model = Scripted((ok,))
+    memory = Memory()
+    memory.add_point("核准兩百萬美元預算，編號 2019 案", chunk=0)
+    synthesis = synthesize_memory(memory, model, token_len=heuristic_token_len)
+    assert synthesis.attempts == 1
+    assert synthesis.ungrounded_numbers == ()
+
+
+def test_synthesize_memory_records_ungrounded_numbers_after_retries_exhausted() -> None:
+    fabricated = "會議決議已於 2019 年 11 月 1 日完成搬遷。"
+    still_fabricated = "會議決議已於 2020 年 3 月 5 日完成搬遷。"
+    model = Scripted((fabricated, still_fabricated))
+    memory = Memory()
+    memory.add_point("同意搬到 B 棟", chunk=0)
+    synthesis = synthesize_memory(memory, model, token_len=heuristic_token_len, retries=1)
+    assert synthesis.attempts == 2
+    assert synthesis.ungrounded_numbers != ()
+
+
 def test_synthesize_memory_records_usage() -> None:
     model = Scripted(("會議討論搬遷案，最終決議遷至 B 棟。",))
     memory = Memory()
+    memory.add_point("同意搬到 B 棟", chunk=0)
     usage = Usage()
     synthesize_memory(memory, model, token_len=heuristic_token_len, usage=usage)
     assert usage.calls == 1
     assert usage.prefill_tokens > 0
 
 
+# --- SYNTHESIZE: the empty-memory guard -------------------------------------------------
+
+
+def test_empty_memory_never_calls_the_model_at_all() -> None:
+    """The whole point: with no arc and no points there is nothing to summarise, so ANY
+    generated prose is unfaithful by construction. Measured motivation -- the G1 probe
+    fed the fine-tuned student two short meetings, both were NOP'd to an empty memory,
+    and SYNTHESIZE invented fluent, specific, entirely fictional land-use-zoning
+    summaries (the training corpus's most common topic, i.e. the model's own prior
+    filling a vacuum)."""
+    model = Scripted(("這是一段不該被產生的幻覺摘要。",))
+    synthesis = synthesize_memory(Memory(), model, token_len=heuristic_token_len)
+    assert model.calls == []  # not merely unused output -- never invoked
+    assert synthesis.skipped_empty_memory is True
+    assert synthesis.attempts == 0
+    assert synthesis.raw == ""
+    assert "這是一段不該被產生的幻覺摘要。" not in synthesis.prose.text
+
+
+def test_empty_memory_returns_the_fixed_honest_statement() -> None:
+    synthesis = synthesize_memory(Memory(), Scripted(), token_len=heuristic_token_len)
+    assert synthesis.prose.text == EMPTY_MEMORY_PROSE
+    # Still a valid Prose under the §3 contract -- zh-TW, in budget, no markup.
+    assert synthesis.prose.lang_flags == ()
+    assert synthesis.prose.over_budget is False
+
+
+def test_empty_memory_guard_records_no_usage() -> None:
+    """No call was made, so nothing may be billed to the usage tally -- a phantom call
+    would corrupt SPEC §7's per-meeting call/latency accounting."""
+    usage = Usage()
+    synthesize_memory(Memory(), Scripted(), token_len=heuristic_token_len, usage=usage)
+    assert usage.calls == 0
+    assert usage.prefill_tokens == 0
+    assert usage.decode_tokens == 0
+
+
+def test_arc_only_memory_is_not_empty_and_still_calls_the_model() -> None:
+    """The guard is STRICT (both slots empty), not a 'thin memory' heuristic: an arc
+    with no points is real information and must still be summarised normally."""
+    memory = Memory()
+    memory.set_arc("會議討論搬遷案")
+    model = Scripted(("會議討論搬遷案，最終決議遷至 B 棟。",))
+    synthesis = synthesize_memory(memory, model, token_len=heuristic_token_len)
+    assert len(model.calls) == 1
+    assert synthesis.skipped_empty_memory is False
+    assert synthesis.attempts == 1
+
+
+def test_points_only_memory_is_not_empty_and_still_calls_the_model() -> None:
+    memory = Memory()
+    memory.add_point("同意搬到 B 棟", chunk=0)
+    model = Scripted(("會議討論搬遷案，最終決議遷至 B 棟。",))
+    synthesis = synthesize_memory(memory, model, token_len=heuristic_token_len)
+    assert len(model.calls) == 1
+    assert synthesis.skipped_empty_memory is False
+
+
+def test_normal_synthesis_is_not_flagged_as_skipped() -> None:
+    memory = Memory()
+    memory.add_point("同意搬到 B 棟", chunk=0)
+    synthesis = synthesize_memory(
+        memory, Scripted(("會議摘要文字內容。",)), token_len=heuristic_token_len
+    )
+    assert synthesis.skipped_empty_memory is False
+
+
+def test_run_agent_end_to_end_all_nop_yields_the_honest_statement_not_a_hallucination() -> None:
+    """End-to-end reproduction of the exact G1 probe failure mode: every reading step
+    NOPs, memory stays empty, and the run must now decline to invent content rather
+    than emit a confident fabrication."""
+    model = Scripted(default="NOP")
+    trace = run_agent(meeting(5), model)
+    assert trace.memory.is_empty()
+    assert trace.synthesis.skipped_empty_memory is True
+    assert trace.synthesis.prose.text == EMPTY_MEMORY_PROSE
+    # Only the reading steps hit the model; no synthesis call was made.
+    assert len(model.calls) == len(trace.steps)
+
+
 def test_run_agent_uses_synth_model_when_given() -> None:
-    step_model = Scripted(("NOP",))
+    # ADD (not NOP) so memory is non-empty and the synthesis call actually happens.
+    step_model = Scripted(("ADD - 同意搬到 B 棟",))
     synth_model = Scripted(("會議討論搬遷案，最終決議遷至 B 棟。",))
     trace = run_agent(meeting(5), step_model, synth_model=synth_model)
     assert len(step_model.calls) == 1  # only reading steps
@@ -451,7 +588,7 @@ def test_run_agent_uses_synth_model_when_given() -> None:
 
 
 def test_run_agent_uses_the_same_model_for_synthesis_by_default() -> None:
-    model = Scripted(("NOP", "會議討論搬遷案，最終決議遷至 B 棟。"))
+    model = Scripted(("ADD - 同意搬到 B 棟", "會議討論搬遷案，最終決議遷至 B 棟。"))
     trace = run_agent(meeting(5), model)
     assert len(model.calls) == 2
     assert trace.synthesis is not None

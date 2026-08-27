@@ -34,7 +34,7 @@ from arcsum.prompts import (
     step_system_prompt,
     synth_system_prompt,
 )
-from arcsum.prose import Prose, finalize
+from arcsum.prose import Prose, finalize, ungrounded_numbers
 from arcsum.tokens import TOKENIZE_VERSION, heuristic_token_len, token_len_name
 from arcsum.transcript import Utterance
 
@@ -49,6 +49,13 @@ STEP_BUDGET = 3800
 _NOP_RETRY_NUDGE = (
     "\n\n（提醒：請再次檢視這段內容是否包含值得記錄的重點。"
     "若有，請輸出至少一項 ADD 或 ARC 指令，而非 NOP。）"
+)
+
+#: A one-line nudge appended to the synthesis user turn when `ungrounded_numbers`
+#: flags the previous attempt. Same minimal-pressure principle as `_NOP_RETRY_NUDGE`:
+#: name the failure, don't change the task.
+_GROUNDING_RETRY_NUDGE = (
+    "\n\n（提醒：摘要中只能使用上述記憶中出現的數字、日期與金額，不要新增記憶中沒有的具體細節。）"
 )
 
 ModelFn = Callable[[str, str], str]
@@ -103,6 +110,11 @@ class Step:
         return all(isinstance(op, Nop) for op in self.ops)
 
 
+#: Returned verbatim by `synthesize_memory` when the memory is empty, INSTEAD of
+#: calling the model. Deliberately states only what is actually known.
+EMPTY_MEMORY_PROSE = "本次會議沒有記錄到具體的決議或討論重點。"
+
+
 @dataclass(frozen=True, slots=True)
 class Synthesis:
     system: str
@@ -110,6 +122,19 @@ class Synthesis:
     raw: str
     prose: Prose
     attempts: int
+    #: True when the model was NEVER CALLED because the memory was empty, and
+    #: `prose.text` is the fixed `EMPTY_MEMORY_PROSE` string rather than generated
+    #: output. Distinct from `attempts == 0` being merely incidental: downstream
+    #: scoring must be able to tell "the system declined to invent content" apart
+    #: from "the system produced a summary", since the two mean opposite things
+    #: about a run.
+    skipped_empty_memory: bool = False
+    #: Arabic-digit spans `prose.ungrounded_numbers` flagged as absent from the memory
+    #: on the FINAL attempt — non-empty means the guard fired and retries did not clear
+    #: it (or `retries=0`). Recorded rather than silently swallowed, same "detect and
+    #: record" discipline as `guards.py`'s outcomes: a partial guard that fails open
+    #: must still leave a visible trace of what it caught.
+    ungrounded_numbers: tuple[str, ...] = ()
 
 
 @dataclass
@@ -300,15 +325,48 @@ def synthesize_memory(
     transcript, and so tests can drive it with no transcript at all.
 
     Retries (up to `retries` extra attempts) ONLY on a hard contract failure — over the
-    token budget or a language-guard flag — never on stylistic dissatisfaction, since
-    there is no deterministic way to judge "good enough" prose here.
+    token budget, a language-guard flag, or `prose.ungrounded_numbers` flagging a
+    fabricated digit span (see that function's docstring for what it does and does not
+    catch) — never on stylistic dissatisfaction, since there is no deterministic way to
+    judge "good enough" prose here.
+
+    **An empty memory short-circuits: the model is not called at all.** With no arc and
+    no points there is, by construction, nothing to summarise — so ANY generated prose
+    is unfaithful, not merely low-quality, and no amount of retrying or better sampling
+    can make it faithful. Measured, not hypothetical: the G1 revision probe (2026-08-26,
+    `runs/sft-pilot-v1`) fed the fine-tuned student two short meetings, the reading
+    steps NOP'd both, and `SYNTHESIZE` then produced fluent, specific, entirely
+    fictional summaries about land-use zoning — the most common agenda topic in the
+    training corpus, i.e. the model's own prior filling a vacuum. This guard is
+    therefore a correctness invariant of the same family as `guards.apply_ops` refusing
+    an op rather than repairing it, not a quality heuristic.
+
+    Note what this does and does not fix: it makes an empty memory produce an HONEST
+    output instead of a fabricated one. It does not make the memory correct — a memory
+    that is empty when it should not be is an upstream curation failure, and this guard
+    deliberately does not paper over it (`skipped_empty_memory` is set precisely so it
+    stays visible).
     """
     sys = synth_system_prompt()
     user = build_synth_prompt(memory)
 
+    if memory.is_empty():
+        return Synthesis(
+            system=sys,
+            user=user,
+            raw="",
+            prose=finalize(EMPTY_MEMORY_PROSE, token_len=token_len),
+            attempts=0,
+            skipped_empty_memory=True,
+        )
+
+    grounding = memory.arc + " " + " ".join(p.text for p in memory.points)
+
     raw = ""
     prose: Prose | None = None
+    flagged: tuple[str, ...] = ()
     attempts = 0
+    nudged = False
     for _ in range(retries + 1):
         attempts += 1
         started = time.monotonic()
@@ -317,8 +375,14 @@ def synthesize_memory(
         if usage is not None:
             usage.record(token_len(sys) + token_len(user), token_len(raw), elapsed)
         prose = finalize(raw, token_len=token_len)
-        if not prose.over_budget and not prose.lang_flags:
+        flagged = ungrounded_numbers(prose.text, grounding)
+        if not prose.over_budget and not prose.lang_flags and not flagged:
             break
+        if flagged and not nudged:
+            user = user + _GROUNDING_RETRY_NUDGE
+            nudged = True
 
     assert prose is not None  # loop runs at least once (retries + 1 >= 1)
-    return Synthesis(system=sys, user=user, raw=raw, prose=prose, attempts=attempts)
+    return Synthesis(
+        system=sys, user=user, raw=raw, prose=prose, attempts=attempts, ungrounded_numbers=flagged
+    )

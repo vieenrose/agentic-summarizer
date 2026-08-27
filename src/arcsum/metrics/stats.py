@@ -181,6 +181,20 @@ def count_inversions(
     return total
 
 
+def count_judged(
+    scores: Mapping[str, Mapping[str, Mapping]], system: str, *, field_name: str = "inversions"
+) -> int:
+    """How many of `system`'s records actually CARRY `field_name` — the denominator
+    `gate_g2_faithfulness` needs to tell "judged, found nothing" apart from "never
+    judged". `count_inversions` sums to 0 in both cases, which is what let a
+    never-measured G2 report a clean PASS."""
+    return sum(
+        1
+        for systems in scores.values()
+        if (record := systems.get(system)) is not None and record.get(field_name) is not None
+    )
+
+
 @dataclass(frozen=True, slots=True)
 class GateResult:
     gate: str
@@ -189,17 +203,51 @@ class GateResult:
     detail: str
 
 
-def gate_g2_faithfulness(treatment_inversions: int, control_inversions: int) -> GateResult:
-    """SPEC §5.2 G2: `inversions <= baseline`."""
+def gate_g2_faithfulness(
+    treatment_inversions: int,
+    control_inversions: int,
+    *,
+    judged_records: int | None = None,
+) -> GateResult:
+    """SPEC §5.2 G2: `inversions <= baseline`.
+
+    **`judged_records=0` WITHHOLDS rather than passes.** With no judge records at all,
+    both counts are trivially 0 and `0 <= 0` reported a clean PASS for a gate nothing
+    had measured — observed 2026-08-27 on a real report, where `G2_faithfulness: PASS
+    (treatment=0 baseline=0)` sat in a ship decision despite no judge ever having run
+    (G2 needs a third-family model, per §5.1). A gate that passes on absent evidence is
+    worse than no gate: it manufactures confidence. This mirrors `gate_g4_budget`'s
+    existing treatment of a missing device measurement, and `ship_decision` already
+    refuses to clear on a withheld gate.
+
+    `judged_records=None` keeps the old unconditional behaviour for callers that have
+    genuinely counted inversions and know the denominator is non-empty.
+    """
+    if judged_records == 0:
+        return GateResult("G2_faithfulness", None, "withheld: no judge records")
     passed = treatment_inversions <= control_inversions
     detail = f"treatment={treatment_inversions} baseline={control_inversions}"
     return GateResult("G2_faithfulness", passed, detail)
 
 
-def gate_g3_quality(comparisons: Sequence[Comparison], *, min_n: int = 20) -> list[GateResult]:
+#: A G3 metric must also clear the paired sign test at this level, not just the SE
+#: bound. See `gate_g3_quality`.
+G3_MAX_P = 0.05
+
+
+def gate_g3_quality(
+    comparisons: Sequence[Comparison], *, min_n: int = 20, max_p: float = G3_MAX_P
+) -> list[GateResult]:
     """SPEC §5.2 G3: beats baseline "by more than run-to-run noise" — operationalised
-    as the mean delta's lower 1-SE bound still being positive, per the architecture
-    doctrine above. One result per metric in `comparisons`.
+    as BOTH the mean delta's lower 1-SE bound being positive AND the paired sign test
+    clearing `max_p`. One result per metric in `comparisons`.
+
+    **Both conditions are required because either alone passes on noise.** Measured
+    2026-08-27: `rouge1` posted a positive lower bound (+0.023) on a 12/8 win-loss split
+    with p=0.50 — a coin flip that the SE bound alone marked PASS. The sign test is the
+    distribution-free check the report already computes and, before this, only printed;
+    gating on the effect size while ignoring whether the effect is real is exactly the
+    trap the prior project's protocol (sign test, not t-test) was written to avoid.
     """
     results = []
     for c in comparisons:
@@ -207,13 +255,13 @@ def gate_g3_quality(comparisons: Sequence[Comparison], *, min_n: int = 20) -> li
             results.append(GateResult(f"G3_{c.metric}", None, f"withheld: n={c.n} < min_n={min_n}"))
             continue
         lower_bound = c.mean_delta - c.stderr
-        results.append(
-            GateResult(
-                f"G3_{c.metric}",
-                lower_bound > 0,
-                f"mean_delta={c.mean_delta:+.3f} SE={c.stderr:.3f} lower_bound={lower_bound:+.3f}",
-            )
+        detail = (
+            f"mean_delta={c.mean_delta:+.3f} SE={c.stderr:.3f} "
+            f"lower_bound={lower_bound:+.3f} p={c.p_value:.3f}"
         )
+        if lower_bound > 0 and c.p_value > max_p:
+            detail += f" (effect size clears but sign test does not, p>{max_p})"
+        results.append(GateResult(f"G3_{c.metric}", lower_bound > 0 and c.p_value <= max_p, detail))
     return results
 
 

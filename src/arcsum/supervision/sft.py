@@ -45,7 +45,17 @@ class SftSample:
 def build_samples(meeting_id: str, trace: Trace) -> list[SftSample]:
     """One `SftSample` per reading step, plus one more for the synthesis call if the
     trace has one — `is_nop=False` always for synthesis, since it is never a curation
-    step subject to the NOP-share cap."""
+    step subject to the NOP-share cap.
+
+    **A guarded (empty-memory) synthesis yields NO sample.** When every reading step
+    NOPs, `agent.synthesize_memory` short-circuits without calling the model and its
+    `raw` is `""` — emitting that would put an empty-completion row into the training
+    pool. Nor is `prose.text` a valid substitute: it is the fixed
+    `agent.EMPTY_MEMORY_PROSE` constant, so training on it would teach the model to
+    reproduce a hardcoded string that the deterministic guard already handles at
+    inference, and risk biasing it toward "no content" on thin-but-nonempty memories.
+    There is simply no model behaviour to learn from this case.
+    """
     samples = [
         SftSample(
             meeting=meeting_id,
@@ -58,7 +68,7 @@ def build_samples(meeting_id: str, trace: Trace) -> list[SftSample]:
         )
         for step in trace.steps
     ]
-    if trace.synthesis is not None:
+    if trace.synthesis is not None and not trace.synthesis.skipped_empty_memory:
         samples.append(
             SftSample(
                 meeting=meeting_id,
@@ -106,6 +116,56 @@ def downsample_nop(
 
     kept_nops = set(random.Random(seed).sample(nops, max_nops))
     return [s for s in samples if not s.is_nop or s in kept_nops]
+
+
+def oversample_drop(
+    samples: Sequence[SftSample], *, target_drop_frac: float = 0.0, seed: int = 0
+) -> list[SftSample]:
+    """Raise the share of DROP-bearing samples to `target_drop_frac` by duplicating
+    them, mirroring `downsample_nop` as a knob rather than an assumption.
+    `0.0` (the default) is a no-op, so existing builds are unchanged.
+
+    **Motivation, measured 2026-08-27** against `runs/sft-synth-v1` on 40 pool rows
+    whose gold completion contains a DROP: the student reproduced one in only 52% of
+    them, but the misses were overwhelmingly BEHAVIOURAL rather than comprehension
+    failures -- 30% recorded the superseding state via `ADD` and 10% rewrote the `ARC`,
+    both of which prove the supersession WAS detected, while only 8% recorded nothing
+    at all. The model reliably does the hard part (noticing) and skips the easy part
+    (removing), which is the profile that responds to emphasis. Stale points then
+    coexist with their own contradictions in memory, which is exactly the G1 symptom.
+
+    Duplication, not loss-weighting, because the trainer takes a flat sample list and
+    `build_sft`'s split/caps all operate on counts -- a weight column would have to be
+    threaded through three layers that currently have no concept of one.
+
+    **Ordering matters: run this AFTER `downsample_nop`.** DROP-bearing samples are
+    never NOPs, so oversampling them first would inflate the non-NOP denominator and
+    make the NOP cap admit more NOPs than SPEC §8 risk 3 intends.
+    """
+    if target_drop_frac <= 0.0:
+        return list(samples)
+
+    drops = [s for s in samples if "DROP" in s.completion]
+    if not drops or len(drops) == len(samples):
+        return list(samples)
+
+    # Solve (len(drops)+extra)/(len(samples)+extra) = target for extra.
+    total = len(samples)
+    extra = int((target_drop_frac * total - len(drops)) / (1 - target_drop_frac))
+    if extra <= 0:
+        return list(samples)
+
+    rng = random.Random(seed)
+    return [*samples, *(rng.choice(drops) for _ in range(extra))]
+
+
+def drop_bearing_share(samples: Sequence[SftSample]) -> float | None:
+    """Share of ALL samples whose completion contains a `DROP` — the quantity
+    `oversample_drop` targets. Distinct from `drop_share`, which is the share of
+    NON-NOP samples and is a revision-density proxy rather than a pool-balance knob."""
+    if not samples:
+        return None
+    return sum(1 for s in samples if "DROP" in s.completion) / len(samples)
 
 
 def nop_share(samples: Sequence[SftSample]) -> float | None:

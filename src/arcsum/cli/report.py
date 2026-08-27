@@ -23,6 +23,7 @@ from pathlib import Path
 from arcsum.metrics.stats import (
     compare,
     count_inversions,
+    count_judged,
     gate_g2_faithfulness,
     gate_g3_quality,
     gate_g4_budget,
@@ -58,7 +59,11 @@ def build_report(
 
     treatment_inversions = count_inversions(scores, treatment)
     control_inversions = count_inversions(scores, control)
-    g2 = gate_g2_faithfulness(treatment_inversions, control_inversions)
+    # Judged-record count, not just the inversion sum: with no judge run at all both
+    # sums are 0 and the gate used to report a clean PASS on evidence that did not
+    # exist (see gate_g2_faithfulness).
+    judged = count_judged(scores, treatment) + count_judged(scores, control)
+    g2 = gate_g2_faithfulness(treatment_inversions, control_inversions, judged_records=judged)
     g3 = gate_g3_quality(comparisons)
     g4 = gate_g4_budget(wall_clock_minutes)
 

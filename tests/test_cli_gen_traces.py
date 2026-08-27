@@ -39,7 +39,9 @@ def _stub_agent_and_synth(monkeypatch: pytest.MonkeyPatch) -> list:
         captured.append(req)
         body = json.loads(req.data.decode("utf-8"))
         user = body["messages"][1]["content"]
-        content = "NOP" if "CHUNK:" in user else _SYNTH_PROSE
+        # ADD (not NOP) so memory is non-empty: an all-NOP run leaves memory
+        # empty, which synthesize_memory short-circuits without a model call.
+        content = "ADD - 同意搬到 B 棟" if "CHUNK:" in user else _SYNTH_PROSE
         return _FakeResponse({"choices": [{"message": {"content": content}}]})
 
     monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", fake_urlopen)
@@ -134,7 +136,9 @@ def test_main_uses_separate_synth_url_when_given(tmp_path, monkeypatch: pytest.M
         captured_urls.append(req.full_url)
         body = json.loads(req.data.decode("utf-8"))
         user = body["messages"][1]["content"]
-        content = "NOP" if "CHUNK:" in user else _SYNTH_PROSE
+        # ADD (not NOP) so memory is non-empty: an all-NOP run leaves memory
+        # empty, which synthesize_memory short-circuits without a model call.
+        content = "ADD - 同意搬到 B 棟" if "CHUNK:" in user else _SYNTH_PROSE
         return _FakeResponse({"choices": [{"message": {"content": content}}]})
 
     monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", fake_urlopen)

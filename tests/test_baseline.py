@@ -158,6 +158,74 @@ def test_failed_reduce_falls_back_to_concatenated_window_summaries() -> None:
     assert "第二段重要決議" in result.prose.text
 
 
+def test_reduce_context_tokens_none_preserves_old_unbounded_behaviour() -> None:
+    """Default (`reduce_context_tokens=None`) must not change any existing caller's
+    behaviour -- the guard is opt-in."""
+    map_model = Scripted(tuple(f"第{i}段摘要" for i in range(30)))
+    reduce_model = Scripted(("整合後的完整會議摘要內容。",))
+    result = run_map_reduce(
+        meeting(90, words_per_line=200), map_model, reduce_model=reduce_model, budget=500
+    )
+    assert result.reduce_skipped_overflow is False
+    assert result.reduce_calls == 1
+
+
+def test_reduce_skipped_when_its_own_prompt_would_overflow_the_real_context() -> None:
+    """`build_reduce_prompt` concatenates EVERY window summary with no cap -- measured
+    to overflow a real 4096-token deploy context on 7/20 real meetings (up to 43
+    windows). With a small `reduce_context_tokens`, many short window summaries must
+    still trip the guard: the reduce call is skipped BEFORE any request is made
+    (never attempted, so `reduce_model.calls` stays empty), never attempted-then-
+    failed."""
+    map_model = Scripted(tuple(f"第{i}段摘要內容較長一些" for i in range(30)))
+    reduce_model = Scripted(("不應該被呼叫",))
+    result = run_map_reduce(
+        meeting(90, words_per_line=200),
+        map_model,
+        reduce_model=reduce_model,
+        budget=500,
+        reduce_context_tokens=10,  # far below what 30 window summaries render to
+    )
+    assert len(reduce_model.calls) == 0
+    assert result.reduce_calls == 0
+    assert result.reduce_skipped_overflow is True
+    # Same "never delete decisions" fallback as a doubly-failed reduce: every window
+    # summary survives in the concatenated output.
+    assert "第0段摘要內容較長一些" in result.prose.text
+    assert "第29段摘要內容較長一些" in result.prose.text
+
+
+def test_reduce_runs_normally_when_it_fits_within_reduce_context_tokens() -> None:
+    """A generous `reduce_context_tokens` must not spuriously trip the guard -- the
+    reduce call still happens exactly as it would with no guard at all."""
+    map_model = Scripted(tuple(f"第{i}段摘要" for i in range(30)))
+    reduce_model = Scripted(("整合後的完整會議摘要內容。",))
+    result = run_map_reduce(
+        meeting(90, words_per_line=200),
+        map_model,
+        reduce_model=reduce_model,
+        budget=500,
+        reduce_context_tokens=100_000,
+    )
+    assert len(reduce_model.calls) == 1
+    assert result.reduce_calls == 1
+    assert result.reduce_skipped_overflow is False
+    assert result.prose.text == "整合後的完整會議摘要內容。"
+
+
+def test_single_window_never_trips_the_overflow_guard() -> None:
+    """At <=1 window there is no reduce prompt to overflow at all -- `reduce_calls=0`
+    here must stay distinguishable from an overflow skip (`reduce_skipped_overflow`
+    stays False) since they mean structurally different things."""
+    model = Scripted(("唯一一段摘要",))
+    result = run_map_reduce(
+        meeting(5, words_per_line=20), model, budget=5000, reduce_context_tokens=1
+    )
+    assert result.windows <= 1
+    assert result.reduce_calls == 0
+    assert result.reduce_skipped_overflow is False
+
+
 def test_reduce_calls_ranges_over_zero_one_or_two_across_scenarios() -> None:
     """reduce_calls in {0,1,2} across scenarios, mirroring agent.synthesize_memory's
     own default retry budget -- never pinned to a fixed count. Exercised together
@@ -236,3 +304,117 @@ def test_empty_transcript_yields_an_empty_prose_without_crashing() -> None:
     assert result.windows == 0
     assert result.reduce_calls == 0
     assert result.prose.text == ""
+
+
+# --- hierarchical reduce (SPEC §5.2's "fair opponent") ---------------------------------
+
+
+def test_hierarchical_reduce_folds_instead_of_concatenating_on_overflow() -> None:
+    """The regression this exists to prevent: with a tight context the reduce call used
+    to be SKIPPED and the window summaries merely concatenated, so the control arm
+    silently stopped being map-REDUCE. Measured 2026-08-27: 11 of 20 held-out meetings
+    emitted concatenations averaging 3,695 tokens against SPEC §3's <1,000 cap, which
+    made G3 meaningless in both directions.
+    """
+    model = Scripted(default="這是一段摘要文字。")
+    result = run_map_reduce(
+        meeting(40), model, budget=60, token_len=heuristic_token_len, reduce_context_tokens=200
+    )
+    assert result.windows > 1
+    assert result.reduce_passes > 0, "should have folded in batches"
+    assert result.reduce_calls > 0, "a real reduce must have happened"
+    assert result.reduce_skipped_overflow is False
+
+
+def test_small_meeting_still_uses_a_single_direct_reduce() -> None:
+    """Folding must not kick in when the summaries already fit — 0 passes, 1 call."""
+    model = Scripted(default="摘要")
+    result = run_map_reduce(
+        meeting(6), model, budget=200, token_len=heuristic_token_len, reduce_context_tokens=4096
+    )
+    assert result.reduce_passes == 0
+    assert result.reduce_calls == 1
+
+
+def test_unbounded_context_preserves_the_original_single_reduce_path() -> None:
+    """`reduce_context_tokens=None` is the documented opt-out; it must not fold."""
+    model = Scripted(default="摘要")
+    result = run_map_reduce(meeting(30), model, budget=60, token_len=heuristic_token_len)
+    assert result.reduce_passes == 0
+    assert result.reduce_calls == 1
+
+
+def test_partition_to_fit_groups_are_each_within_context() -> None:
+    from arcsum.baseline import _partition_to_fit
+    from arcsum.prompts import build_reduce_prompt, reduce_system_prompt
+
+    summaries = tuple(f"第{i}段摘要內容。" * 3 for i in range(25))
+    context = 300
+    groups = _partition_to_fit(summaries, token_len=heuristic_token_len, context=context)
+
+    assert sum(len(g) for g in groups) == len(summaries), "no summary may be lost"
+    assert [s for g in groups for s in g] == list(summaries), "order must be preserved"
+    for g in groups:
+        if len(g) == 1:
+            continue  # a lone oversized summary is emitted as-is by contract
+        rendered = heuristic_token_len(reduce_system_prompt()) + heuristic_token_len(
+            build_reduce_prompt(g)
+        )
+        assert rendered <= context
+
+
+class _ReduceScripted:
+    """Map calls always succeed; REDUCE calls replay `reduce_responses` in order.
+    Dispatching on the system prompt rather than call index keeps the fixture robust to
+    how many windows the packer happens to produce."""
+
+    def __init__(self, *reduce_responses: str, map_response: str = "摘要") -> None:
+        self.reduce_responses = list(reduce_responses)
+        self.map_response = map_response
+        self.reduce_calls = 0
+
+    def __call__(self, system: str, user: str) -> str:
+        from arcsum.prompts import reduce_system_prompt
+
+        if system != reduce_system_prompt():
+            return self.map_response
+        idx = self.reduce_calls
+        self.reduce_calls += 1
+        if idx < len(self.reduce_responses):
+            return self.reduce_responses[idx]
+        return self.reduce_responses[-1] if self.reduce_responses else self.map_response
+
+
+def test_over_budget_reduce_output_is_compressed_not_shipped() -> None:
+    """Folding bounds the reduce INPUT; this bounds its OUTPUT. Measured 2026-08-27:
+    even after hierarchical folding fixed the concatenation bug, 5 of 20 held-out
+    meetings still shipped summaries over SPEC §3's <1,000-token cap (max 2,181).
+    """
+    long_summary = "很好 " * 1500  # comfortably over PROSE_MAX_TOKENS
+    short_summary = "這是一段簡短的會議摘要。"
+    # Both reduce attempts overflow, so the deterministic concatenation fallback runs --
+    # and with long MAP summaries that concatenation is ITSELF over the cap, which is
+    # exactly the real-world shape that shipped 2,181-token "summaries".
+    model = _ReduceScripted(
+        long_summary, long_summary, short_summary, map_response="很好 " * 400
+    )
+    result = run_map_reduce(meeting(12), model, budget=200, token_len=heuristic_token_len)
+    assert result.windows > 1, "fixture needs a real reduce"
+    assert result.compress_passes >= 1
+    assert result.prose.over_budget is False
+    assert result.prose.text == short_summary
+
+
+def test_compress_stops_rather_than_looping_on_a_stubborn_model() -> None:
+    """A model that will not shorten must not spin: bounded by MAX_COMPRESS_PASSES."""
+    from arcsum.baseline import MAX_COMPRESS_PASSES
+
+    model = _ReduceScripted("很好 " * 1500, map_response="很好 " * 400)
+    result = run_map_reduce(meeting(12), model, budget=200, token_len=heuristic_token_len)
+    assert result.compress_passes <= MAX_COMPRESS_PASSES
+
+
+def test_in_budget_reduce_output_is_not_compressed() -> None:
+    model = _ReduceScripted("這是一段簡短的會議摘要。")
+    result = run_map_reduce(meeting(12), model, budget=200, token_len=heuristic_token_len)
+    assert result.compress_passes == 0

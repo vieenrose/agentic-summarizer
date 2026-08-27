@@ -22,8 +22,10 @@ from arcsum.supervision.sft import (
     SftSample,
     check_single_prompt_version,
     downsample_nop,
+    drop_bearing_share,
     drop_share,
     nop_share,
+    oversample_drop,
     split_by_meeting,
 )
 
@@ -78,6 +80,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--out-dir", type=Path, required=True, help="write train.jsonl/valid.jsonl here")
     p.add_argument("--valid-frac", type=float, default=0.1, help="fraction of MEETINGS held out")
     p.add_argument("--max-nop-frac", type=float, default=DEFAULT_MAX_NOP_FRAC)
+    p.add_argument(
+        "--target-drop-frac",
+        type=float,
+        default=0.0,
+        help="duplicate DROP-bearing samples up to this share of the pool (0.0 = off). "
+        "Motivation measured 2026-08-27: see supervision.sft.oversample_drop's docstring.",
+    )
     p.add_argument("--seed", type=int, default=0)
     return p
 
@@ -97,6 +106,11 @@ def main(argv: list[str] | None = None) -> int:
 
     before_nop_share = nop_share(samples)
     samples = downsample_nop(samples, max_nop_frac=args.max_nop_frac, seed=args.seed)
+    # AFTER downsample_nop: DROP-bearing samples are never NOPs, so oversampling them
+    # first would inflate the non-NOP denominator the NOP cap solves against (see
+    # oversample_drop's docstring).
+    before_drop_frac = drop_bearing_share(samples)
+    samples = oversample_drop(samples, target_drop_frac=args.target_drop_frac, seed=args.seed)
     train, valid = split_by_meeting(samples, valid_frac=args.valid_frac, seed=args.seed)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
@@ -107,7 +121,8 @@ def main(argv: list[str] | None = None) -> int:
         f"[build-sft] prompt_version={prompt_version} "
         f"total={len(samples)} train={len(train)} valid={len(valid)} "
         f"nop_share before={before_nop_share:.3f} after={nop_share(samples):.3f} "
-        f"drop_share={drop_share(samples)}",
+        f"drop_share={drop_share(samples)} "
+        f"drop_bearing_frac before={before_drop_frac:.3f} after={drop_bearing_share(samples):.3f}",
         file=sys.stderr,
     )
     return 0

@@ -4,7 +4,9 @@ corpus-scale evaluation runs.
 Aggregate scores cannot show the one thing external memory buys that map-reduce
 structurally cannot do: letting a later chunk overturn an earlier conclusion. Each
 `ProbeMeeting` is a hand-built transcript with a planted decision that reverses late in
-the meeting (approved -> rescinded), plus a distractor topic that must not appear.
+the meeting (approved -> rescinded), plus a distractor topic that must not appear — see
+`ProbeMeeting.distractor_terms`'s docstring for why the distractor must be genuinely
+non-decision-bearing filler, not a closed decision on an unrelated topic.
 
 **Pass = the final summary states the LATER decision, does not state the earlier one as
 current, and omits the distractor.** `score_probe` operates on the finished prose text
@@ -17,6 +19,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
+from arcsum.probe_data import BUDGET_APPROVAL, OFFICE_MOVE
 from arcsum.transcript import Utterance
 
 
@@ -33,6 +36,18 @@ class ProbeMeeting:
     #: Terms belonging to an unrelated topic planted in the transcript. A correct
     #: summary, prioritising the meeting's actual reversal within SPEC §3's <1,000-token
     #: budget, omits these entirely.
+    #:
+    #: **Must be genuinely non-decision-bearing (SPEC §4.2's "self-contained procedure"
+    #: bucket), never a closed decision on an unrelated topic.** §4.2 normatively
+    #: instructs the teacher to emit edit lines for EVERY official item overlapping a
+    #: chunk, with no relevance filter — only procedural filler (roll call, motions,
+    #: recess announcements) is trained to `NOP`. An earlier version of this probe used
+    #: a closed decision ("...合約已經簽署") as the distractor, which no model trained
+    #: per §4.2 could ever omit without contradicting that same training — measured
+    #: directly: the (unfine-tuned) teacher model reproduced the exact same "failure"
+    #: as the fine-tuned student, which is what exposed this as a probe-content bug
+    #: rather than a model deficiency. Swapping to procedural filler (this version) was
+    #: verified to be correctly dropped by the trained model in 3/3 trials.
     distractor_terms: tuple[str, ...]
 
 
@@ -66,51 +81,60 @@ def score_probe(prose: str, meeting: ProbeMeeting) -> ProbeResult:
     a false failure. Acceptable for a cheap, synthetic, hand-graded probe (SPEC §5.2
     calls it exactly that); revisit if Phase 2's real model outputs show this producing
     false negatives in practice.
+
+    **Matching is internal-whitespace-insensitive.** Measured 2026-08-27: a correct,
+    semantically faithful summary scored a false FAIL because it rendered a planted
+    subject term ("B 棟") without the space ("B棟") — inconsistent spacing around a
+    Latin-letter-plus-CJK term is generation noise, not a faithfulness difference, and
+    penalising it would have masked a real G1 pass. All matching strips internal
+    whitespace from both the prose and the terms before comparing.
     """
-    states_later = meeting.late_decision in prose and all(t in prose for t in meeting.subject_terms)
-    states_earlier_as_current = (
-        meeting.early_decision in prose and meeting.late_decision not in prose
+    squashed_prose = _squash(prose)
+    states_later = _squash(meeting.late_decision) in squashed_prose and all(
+        _squash(t) in squashed_prose for t in meeting.subject_terms
     )
-    distractor_absent = not any(t in prose for t in meeting.distractor_terms)
+    states_earlier_as_current = (
+        _squash(meeting.early_decision) in squashed_prose
+        and _squash(meeting.late_decision) not in squashed_prose
+    )
+    distractor_absent = not any(_squash(t) in squashed_prose for t in meeting.distractor_terms)
     return ProbeResult(meeting.name, states_later, states_earlier_as_current, distractor_absent)
+
+
+def _squash(text: str) -> str:
+    """Remove ALL whitespace, not just collapse it — matching must be blind to whether
+    a Latin-letter-plus-CJK boundary picked up a space, since that is a rendering
+    choice, not a faithfulness signal (see `score_probe`'s docstring)."""
+    return "".join(text.split())
 
 
 def probe_meetings() -> tuple[ProbeMeeting, ...]:
     """Hand-built, not generated — a generated transcript would let the generator's own
     assumptions leak into what "passing" means. Two independent scenarios (different
     subject, different polarity vocabulary, different distractor) so a pass is not an
-    artifact of one particular pair of words."""
+    artifact of one particular pair of words.
+
+    **The transcripts MUST span more than one chunk at the production budget**, or the
+    probe silently stops testing anything: with a single chunk no memory crosses a step,
+    `DROP` is never exercised, and the agent arm becomes a one-shot summariser. See
+    `probe_data`'s module docstring for the measured history, and
+    `tests/test_probe.py::test_probe_transcripts_span_multiple_chunks` for the pin.
+    """
     return (
         ProbeMeeting(
             name="office_move_reversal",
-            utterances=(
-                Utterance("S1", "我們來討論辦公室搬遷案。"),
-                Utterance("S2", "建議搬到 B 棟大樓，預算已經核准。"),
-                Utterance("S1", "議案通過，確定搬遷至 B 棟。"),
-                Utterance("S3", "順便提一下，員工餐廳菜單下個月會更換供應商。"),
-                Utterance("S4", "新供應商報價比較便宜，員工餐廳合約已經簽署。"),
-                Utterance("S1", "回到搬遷案，因為 B 棟消防檢查未通過，我們必須撤回搬遷決議。"),
-                Utterance("S2", "同意撤回，搬遷案不通過，維持原辦公室。"),
-            ),
+            utterances=OFFICE_MOVE,
             early_decision="通過",
             late_decision="撤回",
             subject_terms=("搬遷", "B 棟"),
-            distractor_terms=("員工餐廳", "供應商"),
+            distractor_terms=("休息", "十分鐘"),
         ),
         ProbeMeeting(
             name="budget_approval_reversal",
-            utterances=(
-                Utterance("S1", "討論下一季行銷預算案。"),
-                Utterance("S2", "建議編列兩百萬預算，用於新產品宣傳。"),
-                Utterance("S1", "預算案核准，兩百萬行銷預算通過。"),
-                Utterance("S3", "另外，公司園遊會的攤位租借合約已經確認。"),
-                Utterance("S4", "園遊會攤位租借費用比去年略高，但已經簽約完成。"),
-                Utterance("S1", "回到行銷預算，財務部發現數字有誤，決議駁回原預算案。"),
-                Utterance("S2", "同意駁回，兩百萬預算不通過，需要重新提案。"),
-            ),
+            utterances=BUDGET_APPROVAL,
             early_decision="核准",
             late_decision="駁回",
             subject_terms=("行銷預算",),
-            distractor_terms=("園遊會", "攤位"),
+            distractor_terms=("麥克風", "音量"),
         ),
     )

@@ -148,6 +148,55 @@ def test_main_is_deterministic_with_a_fixed_seed(tmp_path) -> None:
     assert (out1 / "valid.jsonl").read_text() == (out2 / "valid.jsonl").read_text()
 
 
+# --- --target-drop-frac ---------------------------------------------------------------
+
+
+def _drop_row(meeting: str, step: int) -> dict:
+    return {
+        "meeting": meeting,
+        "step": step,
+        "prompt_version": "sys-v1",
+        "system": "SYS",
+        "prompt": f"prompt {meeting}-{step}",
+        "completion": "DROP «x»\nADD - y",
+        "is_nop": False,
+    }
+
+
+def test_target_drop_frac_default_is_a_noop(tmp_path) -> None:
+    path = tmp_path / "traces.jsonl"
+    rows = [_drop_row(f"d{i}", 0) for i in range(5)] + [
+        _row(f"m{i}", 0, is_nop=False) for i in range(45)
+    ]
+    _write_jsonl(path, rows)
+    out_dir = tmp_path / "sft"
+
+    rc = main([str(path), "--out-dir", str(out_dir), "--valid-frac", "0.0"])
+
+    assert rc == 0
+    total = (out_dir / "train.jsonl").read_text().count("\n") + 1
+    assert total == 50
+
+
+def test_target_drop_frac_duplicates_drop_bearing_rows(tmp_path) -> None:
+    path = tmp_path / "traces.jsonl"
+    rows = [_drop_row(f"d{i}", 0) for i in range(5)] + [
+        _row(f"m{i}", 0, is_nop=False) for i in range(45)
+    ]
+    _write_jsonl(path, rows)
+    out_dir = tmp_path / "sft"
+
+    rc = main(
+        [str(path), "--out-dir", str(out_dir), "--valid-frac", "0.0", "--target-drop-frac", "0.4"]
+    )
+
+    assert rc == 0
+    train = (out_dir / "train.jsonl").read_text().splitlines()
+    total = len(train)
+    n_drop = sum(1 for line in train if "DROP" in line)
+    assert n_drop / total == pytest.approx(0.4, abs=0.02)
+
+
 # --- CLI plumbing --------------------------------------------------------------------------
 
 

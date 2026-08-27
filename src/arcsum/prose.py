@@ -36,6 +36,8 @@ _LABEL_LINE = re.compile(
 _JUNK_ANCHOR = re.compile(r"\s*[\[［]\s*\d+\s*[:：]\s*\d{2}(?:[:：]\d{2})?\s*[\]］]\s*")
 #: Markdown emphasis/code markers, stripped rather than preserved — the product is prose.
 _MD_EMPHASIS = re.compile(r"[*_`]{1,3}")
+#: Arabic-digit spans (dates, dollar figures, street numbers, ...).
+_NUMBER = re.compile(r"\d[\d,]*(?:\.\d+)?")
 
 
 @dataclass(frozen=True, slots=True)
@@ -87,3 +89,31 @@ def finalize(raw: str, *, token_len: Callable[[str], int]) -> Prose:
         lang_flags=tuple(flags),
         had_markup=had_markup,
     )
+
+
+def ungrounded_numbers(text: str, grounding: str) -> tuple[str, ...]:
+    """Arabic-digit spans present in `text` (a finalized `Prose.text`) but absent from
+    `grounding` (the memory it was synthesized from) — a cheap, deterministic
+    fabrication signal.
+
+    Measured directly (2026-08): synthesizing from a hand-built, unambiguous memory
+    repeatedly produced dates, street numbers, and contract terms with no support
+    anywhere in the input — e.g. a fabricated "2019年11月1日" completion date and a
+    fabricated "美國大道 8 號" street address, neither present in any point or the arc.
+    This function catches the ARABIC-digit subset of that pattern before it ships.
+
+    **Known scope limitation, stated rather than hidden**: only digit-spelled details
+    are caught. The same investigation also found fabricated Chinese-numeral figures
+    (二零一六年六月三十日, 十五萬美元) and whole invented clauses with no numbers at
+    all ("並授權在該路段設立停車場") — this function is blind to both. It is a
+    partial, cheap safety net around the model's actual deficiency, not a fix for it;
+    the real fix is giving `SYNTHESIZE` more training data (SPEC §8: it currently sees
+    ~1/14th what curation does).
+
+    Also a source of false positives, accepted for a cheap heuristic: a number that
+    is legitimately present in the memory but reformatted in the prose (memory says
+    "兩百萬", prose renders "2000000") reads as ungrounded even though it is not a
+    lie — `grounding` is checked as a literal substring, not parsed as a value.
+    """
+    found = _NUMBER.findall(text)
+    return tuple(sorted({n for n in found if n not in grounding}))

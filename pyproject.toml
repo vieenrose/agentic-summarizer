@@ -66,6 +66,7 @@ arcsum-probe        = "arcsum.cli.probe:main"
 arcsum-judge        = "arcsum.cli.judge:main"
 arcsum-score        = "arcsum.cli.score:main"
 arcsum-report       = "arcsum.cli.report:main"
+arcsum-train-sft    = "arcsum.cli.train_sft:main"
 arcsum-trace-report = "arcsum.cli.trace_report:main"
 
 [tool.setuptools.packages.find]
@@ -116,6 +117,10 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 "src/arcsum/backends/llama_server.py" = ["RUF001", "RUF002", "RUF003"]
 "src/arcsum/probe.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_probe.py" = ["RUF001", "RUF002", "RUF003"]
+# Hand-written zh-TW probe transcripts: fullwidth punctuation is correct Traditional
+# Chinese, and reflowing an utterance would change the transcript under test (§2's
+# "one utterance = one line" is a hard rule, so these lines cannot be wrapped).
+"src/arcsum/probe_data.py" = ["E501", "RUF001", "RUF002", "RUF003"]
 "src/arcsum/judge/faith.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_judge.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_corpus.py" = ["RUF001", "RUF002", "RUF003"]

@@ -1,0 +1,13 @@
+{
+  "skipped_no_ref": [],
+  "agent_failed": {},
+  "baseline_failed": {
+    "AlamedaCC_04022019": "RuntimeError('llama-server 400: {\"error\":{\"code\":400,\"message\":\"request (10122 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":10122,\"n_ctx\":4096}}')",
+    "AlamedaCC_10062020": "RuntimeError('llama-server 400: {\"error\":{\"code\":400,\"message\":\"request (4708 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":4708,\"n_ctx\":4096}}')",
+    "AlamedaCC_12212021": "RuntimeError('llama-server 400: {\"error\":{\"code\":400,\"message\":\"request (7080 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":7080,\"n_ctx\":4096}}')",
+    "DenverCityCouncil_05312016": "RuntimeError('llama-server 400: {\"error\":{\"code\":400,\"message\":\"request (10819 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":10819,\"n_ctx\":4096}}')",
+    "DenverCityCouncil_11162020": "RuntimeError('llama-server 400: {\"error\":{\"code\":400,\"message\":\"request (8195 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":8195,\"n_ctx\":4096}}')",
+    "KingCountyCC_06152022": "RuntimeError('llama-server 400: {\"error\":{\"code\":400,\"message\":\"request (5996 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":5996,\"n_ctx\":4096}}')",
+    "LongBeachCC_06212022": "RuntimeError('llama-server 400: {\"error\":{\"code\":400,\"message\":\"request (5317 tokens) exceeds the available context size (4096 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":5317,\"n_ctx\":4096}}')"
+  }
+}

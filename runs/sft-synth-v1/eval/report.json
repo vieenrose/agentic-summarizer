@@ -1,0 +1,96 @@
+{
+  "treatment": "agent",
+  "control": "baseline",
+  "paired_count": 20,
+  "g1_passed": false,
+  "comparisons": [
+    {
+      "metric": "rouge1",
+      "n": 20,
+      "wins": 19,
+      "losses": 1,
+      "ties": 0,
+      "mean_delta": 0.13879399148364385,
+      "stderr": 0.020557977673491306,
+      "p_value": 4.00543212890625e-05
+    },
+    {
+      "metric": "rouge2",
+      "n": 20,
+      "wins": 18,
+      "losses": 2,
+      "ties": 0,
+      "mean_delta": 0.056438426428705286,
+      "stderr": 0.010675072554688896,
+      "p_value": 0.0004024505615234375
+    },
+    {
+      "metric": "rougeL",
+      "n": 20,
+      "wins": 19,
+      "losses": 1,
+      "ties": 0,
+      "mean_delta": 0.07459502299106077,
+      "stderr": 0.009787758988291258,
+      "p_value": 4.00543212890625e-05
+    },
+    {
+      "metric": "coverage",
+      "n": 20,
+      "wins": 4,
+      "losses": 16,
+      "ties": 0,
+      "mean_delta": -0.006080508672088192,
+      "stderr": 0.0019583871468804243,
+      "p_value": 0.01181793212890625
+    },
+    {
+      "metric": "density",
+      "n": 20,
+      "wins": 4,
+      "losses": 16,
+      "ties": 0,
+      "mean_delta": -0.5364596295985741,
+      "stderr": 0.1561221641127946,
+      "p_value": 0.01181793212890625
+    }
+  ],
+  "gates": [
+    {
+      "gate": "G2_faithfulness",
+      "passed": true,
+      "detail": "treatment=0 baseline=0"
+    },
+    {
+      "gate": "G3_rouge1",
+      "passed": true,
+      "detail": "mean_delta=+0.139 SE=0.021 lower_bound=+0.118"
+    },
+    {
+      "gate": "G3_rouge2",
+      "passed": true,
+      "detail": "mean_delta=+0.056 SE=0.011 lower_bound=+0.046"
+    },
+    {
+      "gate": "G3_rougeL",
+      "passed": true,
+      "detail": "mean_delta=+0.075 SE=0.010 lower_bound=+0.065"
+    },
+    {
+      "gate": "G3_coverage",
+      "passed": false,
+      "detail": "mean_delta=-0.006 SE=0.002 lower_bound=-0.008"
+    },
+    {
+      "gate": "G3_density",
+      "passed": false,
+      "detail": "mean_delta=-0.536 SE=0.156 lower_bound=-0.693"
+    },
+    {
+      "gate": "G4_budget",
+      "passed": null,
+      "detail": "withheld: no device measurement provided"
+    }
+  ],
+  "decision": "ship the baseline"
+}

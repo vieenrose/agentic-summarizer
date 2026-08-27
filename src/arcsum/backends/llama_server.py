@@ -98,23 +98,27 @@ class LlamaServer:
     #: not a signal about the request. Measured 2026-08-27: two of twenty eval meetings
     #: died on `"The model produced output that does not match the expected peg-native
     #: format"`, the server log showing a replacement char mid-token
-    #: (`表彰�明`) — a multibyte character split across a token boundary. It is
-    #: **The real fix is server-side: serve with `--skip-chat-parsing`.** That forces a
-    #: pure content parser, so the corrupt byte comes back inside the content (one bad
-    #: character in ~300, harmless) instead of taking the whole response down with a
-    #: 500. `--jinja` alone does NOT avoid it — measured, the peg-native parser still
-    #: runs. Retrying only rescues the cache-dependent variant below; with
-    #: `cache_prompt: false` generation is fully deterministic at temperature 0, so
-    #: every retry reproduces the identical bad output and the two mitigations actively
-    #: work against each other. Keep the retry for transient faults, but do not rely on
-    #: it for this: fix the serving flags.
-    #: cache-state dependent, not deterministic per meeting: the same meeting that
+    #: (`民�們`) — MiniCPM5 emitting an invalid UTF-8 byte, which llama.cpp's chat
+    #: parser answers by discarding the ENTIRE response rather than returning one bad
+    #: character in ~300.
+    #:
+    #: It is cache-state dependent, not deterministic per meeting: the same meeting that
     #: failed inside a full run succeeded when run alone, and re-failed on a rerun whose
     #: earlier meetings had warmed the slot cache differently. Retrying re-runs the
-    #: request against different cache state, which is exactly what clears it.
+    #: request against different cache state, which is what clears it.
     #: Losing meetings to this is not acceptable — SPEC §5.2's comparison is paired, so
     #: each loss costs BOTH arms a meeting and can drop the pool under `min_n` and
     #: withhold a gate outright, which is how a server bug turns into a missing result.
+    #:
+    #: **No known serving flag fixes it.** `--jinja` does not, and neither does
+    #: `--skip-chat-parsing` despite its help text ("force a pure content parser") —
+    #: measured directly, a server started with that flag still logged four
+    #: `unparsed peg-native output` warnings and still returned 500s. An earlier version
+    #: of this comment asserted that flag as the fix on the strength of the help text
+    #: alone, before it had been tested; it is not. The retry is currently the only
+    #: mitigation that works, and it works only because of the cache-state dependence
+    #: above — which also means it CANNOT rescue a run pinned with `cache_prompt: false`,
+    #: where every attempt reproduces byte-identical output.
     #: Set to 0 to restore fail-fast.
     server_error_retries: int = 2
 

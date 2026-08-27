@@ -46,7 +46,7 @@ will give 9 working commands; `arcsum-trace-report` will `ImportError` until bui
 wins. Read it in full before implementing anything — this file only orients you; it
 does not restate the spec's normative detail (formats, caps, gate criteria).
 
-### Four measured traps, all found on 2026-08-27 — do not re-derive
+### Five measured traps, all found on 2026-08-27 — do not re-derive
 
 Each cost real debugging time and is now pinned by a test. The docstrings carry the
 numbers; this is the index.
@@ -65,18 +65,27 @@ numbers; this is the index.
    penalty there would punish the literal `ADD`/`DROP`/`ARC` tokens the format needs.
    The baseline's *map* call is prose too, and gets its own client for exactly this
    reason: penalising only the agent's prose would be the unfair baseline §5.2 forbids.
-3. **Serve with `--skip-chat-parsing`, or llama.cpp 500s on its own model's output.**
-   MiniCPM5 occasionally emits an invalid UTF-8 byte (`民�們`); llama.cpp's peg-native
-   chat parser then rejects the ENTIRE response with a 500 rather than returning one
-   bad character in ~300. Fail-fast lost 2 of 20 meetings, and since §5.2's comparison
-   is paired that cost *both* arms a meeting and **withheld every G3 gate** for
-   `n < min_n`. `--jinja` alone does **not** avoid it (measured — the peg parser still
-   runs); `--skip-chat-parsing` does, by forcing a pure content parser.
-   `backends/llama_server.py`'s `server_error_retries` covers transient faults but
-   cannot fix this one: at `temperature=0` with `cache_prompt: false` the generation is
-   deterministic, so every retry reproduces the identical bad output — the two
-   mitigations work against each other. **Fix the serving flags, don't lean on retries.**
-4. **G1's probe matched subject terms literally** (`probe.py`). Real output stated both
+3. **llama.cpp 500s on its own model's output, and no serving flag is known to fix it.**
+   MiniCPM5 occasionally emits an invalid UTF-8 byte (`民�們`); llama.cpp's chat parser
+   answers by rejecting the ENTIRE response with a 500 rather than returning one bad
+   character in ~300. Fail-fast lost 2 of 20 meetings, and since §5.2's comparison is
+   paired that cost *both* arms a meeting and **withheld every G3 gate** for
+   `n < min_n`. Neither `--jinja` nor `--skip-chat-parsing` avoids it — both were tried,
+   and a server started with `--skip-chat-parsing` still logged four
+   `unparsed peg-native output` warnings and still 500'd. `server_error_retries` in
+   `backends/llama_server.py` is the only mitigation that currently works, and only
+   because of trap 4 below; it cannot rescue a `cache_prompt: false` run.
+
+4. **llama.cpp's prompt cache changes generation — pin `cache_prompt: false` for any
+   number you intend to report.** Same model, same seed, same prompt, `temperature=0`:
+   cache-on returned 700 characters and cache-off 167, and each setting was internally
+   deterministic across three repeats (3/3 byte-identical). So results are reproducible
+   *given a cache state* but not across runs, because the cache depends on which
+   meetings ran before. This is the mechanism behind trap 3's "same meeting fails in one
+   run and succeeds alone", and behind degenerate reading steps that appear and vanish
+   between runs. **Weigh this against trap 3 deliberately**: `cache_prompt: false` buys
+   reproducibility but disables the retry's only escape route.
+5. **G1's probe matched subject terms literally** (`probe.py`). Real output stated both
    reversals perfectly but wrote "B 樓" for "B 棟" and "預算案" for "行銷預算", scoring a
    false FAIL. `subject_terms` is now one tuple of acceptable surface forms per concept.
    This cannot weaken the gate — a stale summary still fails on

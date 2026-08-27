@@ -158,6 +158,14 @@ def build_parser() -> argparse.ArgumentParser:
         "when its own rendered prompt would exceed this many tokens -- pass the "
         "deployed model's real context size. Default: unbounded (old behaviour).",
     )
+    p.add_argument(
+        "--no-raw-completion",
+        action="store_true",
+        help="use /v1/chat/completions instead of /apply-template + /completion. The "
+        "default (raw) routes around llama.cpp's chat parser, which otherwise discards "
+        "a whole response over one invalid UTF-8 byte -- measured, that cost 2 of 20 "
+        "meetings and withheld every G3 gate. Verified byte-identical output.",
+    )
     p.add_argument("--out-agent", type=Path, required=True)
     p.add_argument("--out-baseline", type=Path, required=True)
     p.add_argument(
@@ -171,17 +179,25 @@ def main(argv: list[str] | None = None) -> int:
     references = json.loads(args.references.read_text(encoding="utf-8"))
     extra = json.loads(args.extra) if args.extra else {}
 
-    step_model = LlamaServer(base_url=args.url, max_tokens=args.max_tokens_step, extra=extra)
+    raw = not args.no_raw_completion
+    step_model = LlamaServer(
+        base_url=args.url,
+        max_tokens=args.max_tokens_step,
+        raw_completion=raw,
+        extra=extra,
+    )
     # Both arms' PROSE calls get the same repetition penalty, and the reading steps get
     # none — see `LlamaServer.repeat_penalty`. Applying it to only one arm would be
     # exactly the unfair-baseline comparison SPEC §5.2 forbids.
     synth_model = LlamaServer(
+        raw_completion=raw,
         base_url=args.synth_url or args.url,
         max_tokens=args.max_tokens_synth,
         repeat_penalty=args.repeat_penalty,
         extra=extra,
     )
     reduce_model = LlamaServer(
+        raw_completion=raw,
         base_url=args.reduce_url or args.url,
         max_tokens=args.max_tokens_synth,
         repeat_penalty=args.repeat_penalty,
@@ -191,6 +207,7 @@ def main(argv: list[str] | None = None) -> int:
     # the prose calls even though it runs at the reading step's token budget — sharing
     # `step_model` would silently deny the baseline a penalty the agent's prose gets.
     map_model = LlamaServer(
+        raw_completion=raw,
         base_url=args.url,
         max_tokens=args.max_tokens_step,
         repeat_penalty=args.repeat_penalty,

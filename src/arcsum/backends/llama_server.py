@@ -121,8 +121,65 @@ class LlamaServer:
     #: where every attempt reproduces byte-identical output.
     #: Set to 0 to restore fail-fast.
     server_error_retries: int = 2
+    #: Route around the chat parser: render the prompt with `/apply-template`, then
+    #: generate with the legacy `/completion` endpoint, which returns raw text and does
+    #: no structured parsing at all. This makes the 500s above STRUCTURALLY impossible
+    #: rather than merely retried — the corrupt byte comes back inside the content
+    #: (one bad character in ~300) instead of destroying the response.
+    #:
+    #: Safe because the server renders the prompt, not us: `/apply-template` applies the
+    #: model's own chat template, so there is no second, hand-written copy of it to drift
+    #: from training. Verified byte-identical to `/v1/chat/completions` on the same
+    #: messages, seed and sampling params before being adopted.
+    #:
+    #: This is what makes `cache_prompt: false` usable. Pinning the cache is required for
+    #: reproducible numbers, but it also removes the retry's only escape route, so
+    #: without this the two requirements are in direct conflict.
+    raw_completion: bool = False
+
+    def _sampling_body(self) -> dict:
+        body: dict = {
+            "temperature": self.temperature,
+            "top_k": self.top_k,
+            "top_p": self.top_p,
+        }
+        if self.seed is not None:
+            body["seed"] = self.seed
+        if self.grammar is not None:
+            body["grammar"] = self.grammar
+        if self.repeat_penalty is not None:
+            body["repeat_penalty"] = self.repeat_penalty
+        if self.stop:
+            body["stop"] = list(self.stop)
+        return body
+
+    def _call_raw(self, system: str, user: str) -> str:
+        """`/apply-template` -> `/completion`. See `raw_completion`."""
+        messages = [
+            {"role": "system", "content": system},
+            {"role": "user", "content": user},
+        ]
+        render: dict = {"messages": messages}
+        # chat_template_kwargs belongs to the RENDER step (it selects e.g. the
+        # thinking-mode branch inside the template); everything else is a sampling knob
+        # and belongs to the generate step.
+        if "chat_template_kwargs" in self.extra:
+            render["chat_template_kwargs"] = self.extra["chat_template_kwargs"]
+        prompt = self._post("/apply-template", render)["prompt"]
+
+        body = self._sampling_body()
+        body["prompt"] = prompt
+        body["n_predict"] = self.max_tokens
+        body.update({k: v for k, v in self.extra.items() if k != "chat_template_kwargs"})
+        return self._post("/completion", body).get("content") or ""
 
     def __call__(self, system: str, user: str) -> str:
+        if self.raw_completion:
+            content = self._call_raw(system, user)
+            if not content:
+                raise RuntimeError("empty content from llama-server (/completion)")
+            return content
+
         body: dict = {
             "messages": [
                 {"role": "system", "content": system},

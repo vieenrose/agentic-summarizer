@@ -105,6 +105,59 @@ def test_repeat_penalty_omitted_by_default(monkeypatch: pytest.MonkeyPatch) -> N
     assert "repeat_penalty" not in json.loads(captured[0].data)
 
 
+def test_raw_completion_renders_then_generates(monkeypatch: pytest.MonkeyPatch) -> None:
+    """`raw_completion` routes around llama.cpp's chat parser, which otherwise discards
+    a whole response over one invalid UTF-8 byte. Two calls: `/apply-template` renders
+    with the MODEL'S OWN template (so no hand-written copy can drift from training),
+    then `/completion` generates raw text with no structured parsing."""
+    seen: list = []
+
+    def fake_urlopen(req, timeout=None):
+        seen.append((req.full_url, json.loads(req.data.decode("utf-8"))))
+        if req.full_url.endswith("/apply-template"):
+            return _FakeResponse({"prompt": "RENDERED"})
+        return _FakeResponse({"content": "生成的內容"})
+
+    monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", fake_urlopen)
+    assert LlamaServer(raw_completion=True, max_tokens=321, repeat_penalty=1.1)("s", "u")
+
+    (render_url, render_body), (gen_url, gen_body) = seen
+    assert render_url.endswith("/apply-template")
+    assert render_body["messages"][0]["content"] == "s"
+    assert gen_url.endswith("/completion")
+    assert gen_body["prompt"] == "RENDERED"
+    assert gen_body["n_predict"] == 321  # /completion spells max_tokens this way
+    assert gen_body["repeat_penalty"] == 1.1
+    assert "messages" not in gen_body
+
+
+def test_raw_completion_splits_render_and_sampling_options(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """`chat_template_kwargs` selects a branch INSIDE the template, so it belongs to the
+    render call; everything else in `extra` is a sampling knob for the generate call.
+    Sending either to the wrong endpoint silently drops it."""
+    seen: list = []
+
+    def fake_urlopen(req, timeout=None):
+        seen.append((req.full_url, json.loads(req.data.decode("utf-8"))))
+        if req.full_url.endswith("/apply-template"):
+            return _FakeResponse({"prompt": "RENDERED"})
+        return _FakeResponse({"content": "ok"})
+
+    monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", fake_urlopen)
+    LlamaServer(
+        raw_completion=True,
+        extra={"chat_template_kwargs": {"enable_thinking": False}, "cache_prompt": False},
+    )("s", "u")
+
+    (_, render_body), (_, gen_body) = seen
+    assert render_body["chat_template_kwargs"] == {"enable_thinking": False}
+    assert "cache_prompt" not in render_body
+    assert gen_body["cache_prompt"] is False
+    assert "chat_template_kwargs" not in gen_body
+
+
 def test_repeat_penalty_included_when_set(monkeypatch: pytest.MonkeyPatch) -> None:
     captured = _capture_payload(monkeypatch, OK_RESPONSE)
     LlamaServer(repeat_penalty=1.1)("s", "u")

@@ -39,13 +39,32 @@ class _FakeResponse:
         return False
 
 
+#: Marker the fake `/apply-template` wraps the system prompt in, so the fake
+#: `/completion` can recover which call it is being asked to serve. The real server
+#: renders with the model's own chat template; the shape does not matter here, only
+#: that the round trip preserves enough to route on.
+_RENDER_PREFIX = "<<SYS>>"
+
+
+def _system_of(body: dict) -> str:
+    """The system prompt for either wire shape — chat (`messages`) or raw (`prompt`),
+    since `run_arms` now defaults to the raw `/apply-template` + `/completion` route."""
+    if "messages" in body:
+        return body["messages"][0]["content"]
+    prompt = body["prompt"]
+    return prompt.split(_RENDER_PREFIX, 1)[1].split("<<END>>", 1)[0]
+
+
 def _stub_both_arms(monkeypatch: pytest.MonkeyPatch) -> list:
     captured: list = []
 
     def fake_urlopen(req, timeout=None):
         captured.append(req)
         body = json.loads(req.data.decode("utf-8"))
-        system = body["messages"][0]["content"]
+        if req.full_url.endswith("/apply-template"):
+            sysmsg = body["messages"][0]["content"]
+            return _FakeResponse({"prompt": f"{_RENDER_PREFIX}{sysmsg}<<END>>"})
+        system = _system_of(body)
         if system == step_system_prompt():
             # ADD (not NOP) so memory is non-empty: an all-NOP run leaves memory
             # empty, which synthesize_memory short-circuits without a model call.
@@ -58,6 +77,8 @@ def _stub_both_arms(monkeypatch: pytest.MonkeyPatch) -> list:
             content = _REDUCE_PROSE
         else:
             raise AssertionError(f"unexpected system prompt: {system!r}")
+        if req.full_url.endswith("/completion"):
+            return _FakeResponse({"content": content})
         return _FakeResponse({"choices": [{"message": {"content": content}}]})
 
     monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", fake_urlopen)
@@ -299,11 +320,16 @@ def test_repeat_penalty_goes_to_prose_calls_but_never_reading_steps(
 
     def wrapped_urlopen(req, timeout=None):
         body = json.loads(req.data.decode("utf-8"))
-        is_step = body["messages"][0]["content"] == step_system_prompt()
+        if req.full_url.endswith("/apply-template"):
+            # The render step carries no sampling knobs; only the generate step does.
+            sysmsg = body["messages"][0]["content"]
+            return _FakeResponse({"prompt": f"{_RENDER_PREFIX}{sysmsg}<<END>>"})
+        is_step = _system_of(body) == step_system_prompt()
         (step_bodies if is_step else prose_bodies).append(body)
-        return _FakeResponse(
-            {"choices": [{"message": {"content": "NOP" if is_step else _SYNTH_PROSE}}]}
-        )
+        content = "NOP" if is_step else _SYNTH_PROSE
+        if req.full_url.endswith("/completion"):
+            return _FakeResponse({"content": content})
+        return _FakeResponse({"choices": [{"message": {"content": content}}]})
 
     monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", wrapped_urlopen)
     corpus = tmp_path / "corpus"

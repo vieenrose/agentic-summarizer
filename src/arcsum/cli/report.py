@@ -23,7 +23,6 @@ from pathlib import Path
 from arcsum.metrics.stats import (
     compare,
     count_inversions,
-    count_judged,
     gate_g2_faithfulness,
     gate_g3_quality,
     gate_g4_budget,
@@ -57,13 +56,22 @@ def build_report(
         scores, treatment, control, tie_thresholds=tie_thresholds or {}
     )
 
-    treatment_inversions = count_inversions(scores, treatment)
-    control_inversions = count_inversions(scores, control)
-    # Judged-record count, not just the inversion sum: with no judge run at all both
-    # sums are 0 and the gate used to report a clean PASS on evidence that did not
-    # exist (see gate_g2_faithfulness).
-    judged = count_judged(scores, treatment) + count_judged(scores, control)
-    g2 = gate_g2_faithfulness(treatment_inversions, control_inversions, judged_records=judged)
+    # Paired, like `compare`: summing the two arms over different denominators
+    # silently favours whichever has fewer judged records (see count_inversions).
+    treatment_inversions = count_inversions(scores, treatment, paired_with=control)
+    control_inversions = count_inversions(scores, control, paired_with=treatment)
+    # PAIRED judged count, matching the paired inversion sums above: a meeting judged
+    # for only one arm contributes to neither, so the gate withholds when the two arms
+    # share no judged meetings rather than comparing across disjoint sets.
+    judged_paired = sum(
+        1
+        for systems in scores.values()
+        if (systems.get(treatment) or {}).get("inversions") is not None
+        and (systems.get(control) or {}).get("inversions") is not None
+    )
+    g2 = gate_g2_faithfulness(
+        treatment_inversions, control_inversions, judged_records=judged_paired
+    )
     g3 = gate_g3_quality(comparisons)
     g4 = gate_g4_budget(wall_clock_minutes)
 

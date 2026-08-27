@@ -1,0 +1,96 @@
+{
+  "treatment": "agent",
+  "control": "baseline",
+  "paired_count": 20,
+  "g1_passed": true,
+  "comparisons": [
+    {
+      "metric": "rouge1",
+      "n": 0,
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "mean_delta": 0.0,
+      "stderr": 0.0,
+      "p_value": 1.0
+    },
+    {
+      "metric": "rouge2",
+      "n": 0,
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "mean_delta": 0.0,
+      "stderr": 0.0,
+      "p_value": 1.0
+    },
+    {
+      "metric": "rougeL",
+      "n": 0,
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "mean_delta": 0.0,
+      "stderr": 0.0,
+      "p_value": 1.0
+    },
+    {
+      "metric": "coverage",
+      "n": 0,
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "mean_delta": 0.0,
+      "stderr": 0.0,
+      "p_value": 1.0
+    },
+    {
+      "metric": "density",
+      "n": 0,
+      "wins": 0,
+      "losses": 0,
+      "ties": 0,
+      "mean_delta": 0.0,
+      "stderr": 0.0,
+      "p_value": 1.0
+    }
+  ],
+  "gates": [
+    {
+      "gate": "G2_faithfulness",
+      "passed": true,
+      "detail": "treatment=8 baseline=11"
+    },
+    {
+      "gate": "G3_rouge1",
+      "passed": null,
+      "detail": "withheld: n=0 < min_n=20"
+    },
+    {
+      "gate": "G3_rouge2",
+      "passed": null,
+      "detail": "withheld: n=0 < min_n=20"
+    },
+    {
+      "gate": "G3_rougeL",
+      "passed": null,
+      "detail": "withheld: n=0 < min_n=20"
+    },
+    {
+      "gate": "G3_coverage",
+      "passed": null,
+      "detail": "withheld: n=0 < min_n=20"
+    },
+    {
+      "gate": "G3_density",
+      "passed": null,
+      "detail": "withheld: n=0 < min_n=20"
+    },
+    {
+      "gate": "G4_budget",
+      "passed": null,
+      "detail": "withheld: no device measurement provided"
+    }
+  ],
+  "decision": "ship the baseline"
+}

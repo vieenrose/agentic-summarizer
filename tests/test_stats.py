@@ -393,3 +393,64 @@ def test_g3_fails_when_sign_test_clears_but_effect_size_does_not() -> None:
     c = Comparison("coverage", wins=15, losses=5, ties=0, deltas=(-0.004,) * 20)
     (gate,) = gate_g3_quality([c], min_n=20)
     assert gate.passed is False
+
+
+def test_count_inversions_paired_ignores_meetings_the_other_arm_lacks() -> None:
+    """Measured 2026-08-27: a judge run completed 20/20 agent cases but only 16/20
+    baseline cases (baseline summaries are ~3x longer -> more claims -> more chances to
+    exhaust the judge budget). An UNPAIRED sum read "8 vs 8, PASS" while the baseline
+    was simply missing four meetings. `compare` has always been paired-only; this
+    brings G2's input in line with G3's.
+    """
+    scores = {
+        "m1": {"agent": {"inversions": 1}, "baseline": {"inversions": 5}},
+        "m2": {"agent": {"inversions": 2}, "baseline": {"inversions": 6}},
+        # judged for the agent only -- must contribute to NEITHER sum
+        "m3": {"agent": {"inversions": 3}},
+    }
+    assert count_inversions(scores, "agent") == 6  # unpaired, unchanged default
+    assert count_inversions(scores, "agent", paired_with="baseline") == 3
+    assert count_inversions(scores, "baseline", paired_with="agent") == 11
+
+
+def test_count_inversions_paired_is_symmetric_on_full_coverage() -> None:
+    scores = {
+        "m1": {"agent": {"inversions": 1}, "baseline": {"inversions": 2}},
+        "m2": {"agent": {"inversions": 3}, "baseline": {"inversions": 4}},
+    }
+    assert count_inversions(scores, "agent", paired_with="baseline") == count_inversions(
+        scores, "agent"
+    )
+
+
+def test_score_and_judge_records_for_one_pair_are_merged_not_overwritten() -> None:
+    """Measured 2026-08-27: passing score files and judge files in one `arcsum-report`
+    invocation -- the tool's own documented usage -- made the judge records replace the
+    score records wholesale, so G2 printed PASS while every G3 metric silently went to
+    n=0/WITHHELD. They are complementary views of one measurement.
+    """
+    records = [
+        {"meeting_id": "m1", "system": "agent", "rouge1": 0.5, "rougeL": 0.4},
+        {"meeting_id": "m1", "system": "agent", "inversions": 2, "claims": 7},
+    ]
+    scores = load_scores(records)
+
+    merged = scores["m1"]["agent"]
+    assert merged["rouge1"] == 0.5, "score fields must survive the judge record"
+    assert merged["inversions"] == 2, "judge fields must be present too"
+    assert merged["claims"] == 7
+
+
+def test_later_record_still_wins_on_a_genuine_key_conflict() -> None:
+    records = [
+        {"meeting_id": "m1", "system": "agent", "rouge1": 0.1},
+        {"meeting_id": "m1", "system": "agent", "rouge1": 0.9},
+    ]
+    assert load_scores(records)["m1"]["agent"]["rouge1"] == 0.9
+
+
+def test_merging_does_not_mutate_the_caller_s_records() -> None:
+    original = {"meeting_id": "m1", "system": "agent", "rouge1": 0.5}
+    records = [original, {"meeting_id": "m1", "system": "agent", "inversions": 3}]
+    load_scores(records)
+    assert "inversions" not in original, "input records must not be mutated in place"

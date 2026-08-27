@@ -109,11 +109,31 @@ def filter_scoreable_records(records: Sequence[object]) -> list[dict]:
 
 
 def index_by_meeting_and_system(records: Sequence[dict]) -> dict[str, dict[str, dict]]:
-    """`{meeting_id: {system: record}}`, built from already-filtered records. A later
-    record for the same `(meeting_id, system)` pair overwrites an earlier one."""
+    """`{meeting_id: {system: record}}`, built from already-filtered records.
+
+    Records for the same `(meeting_id, system)` pair are **merged field-wise**, later
+    values winning on genuine key conflicts. They are two partial views of one
+    measurement, not competing copies of the same one: `cli.score` emits
+    ROUGE/coverage/density, `cli.judge` emits inversions/faith_claim/unsupported, and
+    `cli.report` documents its own input as "JSONL score/judge record files" — i.e.
+    combining them is the intended usage.
+
+    **This used to overwrite, which silently destroyed data on that intended usage.**
+    Measured 2026-08-27: passing `agent_scored.jsonl baseline_scored.jsonl
+    judged_all.jsonl` in one invocation produced `G2_faithfulness: PASS` alongside
+    `n=0` and WITHHELD for every single G3 metric — the judge records had replaced the
+    score records wholesale, deleting every ROUGE value. A report that loses four
+    fifths of its evidence while still printing a decision line is exactly the failure
+    mode this module's gates are meant to prevent.
+    """
     scores: dict[str, dict[str, dict]] = {}
     for record in records:
-        scores.setdefault(record["meeting_id"], {})[record["system"]] = record
+        by_system = scores.setdefault(record["meeting_id"], {})
+        existing = by_system.get(record["system"])
+        if existing is None:
+            by_system[record["system"]] = dict(record)
+        else:
+            existing.update(record)
     return scores
 
 
@@ -168,14 +188,33 @@ def compare(
 
 
 def count_inversions(
-    scores: Mapping[str, Mapping[str, Mapping]], system: str, *, field_name: str = "inversions"
+    scores: Mapping[str, Mapping[str, Mapping]],
+    system: str,
+    *,
+    field_name: str = "inversions",
+    paired_with: str | None = None,
 ) -> int:
-    """Total inversion count for `system` across every meeting that has one. Kept as a
-    plain sum — SPEC §5.1: inversions are counted, never folded into an average."""
+    """Total inversion count for `system`. Kept as a plain sum — SPEC §5.1: inversions
+    are counted, never folded into an average.
+
+    **Pass `paired_with` to restrict the sum to meetings BOTH systems have**, which is
+    what G2 needs. Without it the two arms can be summed over different denominators
+    and the comparison silently favours whichever arm has fewer records. Measured
+    2026-08-27: a judge run completed 20/20 agent cases but only 16/20 baseline cases
+    (the baseline's summaries are ~3x longer, so more claims, so more chances to
+    exhaust the judge's budget) — an unpaired sum read "8 vs 8, PASS" while the
+    baseline was simply missing four meetings averaging ~14 claims each.
+
+    `compare` has always been paired-only ("a meeting missing either system is dropped
+    from THAT metric's comparison — never imputed"); this brings G2's input in line
+    with G3's rather than leaving one gate paired and the other not.
+    """
     total = 0
     for systems in scores.values():
         record = systems.get(system)
         if record is None:
+            continue
+        if paired_with is not None and paired_with not in systems:
             continue
         total += record.get(field_name, 0) or 0
     return total

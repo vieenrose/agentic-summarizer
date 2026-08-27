@@ -1,0 +1,6 @@
+{
+  "baseline/DenverCityCouncil_10172016": "RuntimeError: empty content from judge after retry",
+  "baseline/SeattleCityCouncil_04262022": "RuntimeError: empty content from judge after retry",
+  "baseline/SeattleCityCouncil_06072021": "RuntimeError: empty content from judge after retry",
+  "baseline/SeattleCityCouncil_12132021": "RuntimeError: empty content from judge after retry"
+}

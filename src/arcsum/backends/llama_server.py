@@ -99,6 +99,15 @@ class LlamaServer:
     #: died on `"The model produced output that does not match the expected peg-native
     #: format"`, the server log showing a replacement char mid-token
     #: (`表彰�明`) — a multibyte character split across a token boundary. It is
+    #: **The real fix is server-side: serve with `--skip-chat-parsing`.** That forces a
+    #: pure content parser, so the corrupt byte comes back inside the content (one bad
+    #: character in ~300, harmless) instead of taking the whole response down with a
+    #: 500. `--jinja` alone does NOT avoid it — measured, the peg-native parser still
+    #: runs. Retrying only rescues the cache-dependent variant below; with
+    #: `cache_prompt: false` generation is fully deterministic at temperature 0, so
+    #: every retry reproduces the identical bad output and the two mitigations actively
+    #: work against each other. Keep the retry for transient faults, but do not rely on
+    #: it for this: fix the serving flags.
     #: cache-state dependent, not deterministic per meeting: the same meeting that
     #: failed inside a full run succeeded when run alone, and re-failed on a rerun whose
     #: earlier meetings had warmed the slot cache differently. Retrying re-runs the

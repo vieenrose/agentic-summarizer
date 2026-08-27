@@ -128,13 +128,32 @@ class Memory:
         return not self.arc and not self.points
 
     def set_arc(self, text: str) -> str | None:
-        """Replace the arc note. Refuses on empty or over-length text."""
+        """Replace the arc note. Refuses on empty, over-length, or unchanged text.
+
+        **Unchanged is a refusal, mirroring `add_point`'s "duplicate point".** Rewriting
+        the arc to what it already says changes nothing, so reporting it as a successful
+        substantive edit makes the step-level metrics dishonest: `guards.apply_ops` marks
+        the step `substantive`, which suppresses the NOP-collapse detector for a step
+        that did no work. Measured 2026-08-27 on `LongBeachCC_05232017` (53 chunks, the
+        longest meeting in the eval set): steps 26-40 each re-emitted a byte-identical
+        arc while the transcript had already moved on to an unrelated agenda item, and
+        every one of them counted as real work. Comparing on the same normal form
+        `add_point` uses, so the two ops agree on what "the same text" means.
+
+        **Gold traces still replay cleanly (SPEC §4.2).** Checked against the
+        `sft-dropv2` pool's 3,345 unique gold steps: 29 pair a redundant arc line with a
+        real ADD/DROP, so the step stays substantive and only the arc op is refused, and
+        just 3 consist of nothing but a no-op arc — those become non-substantive, which
+        is the honest reading of a step that changed nothing.
+        """
         cleaned = " ".join(text.split())
         if not cleaned:
             return "empty arc"
         n = self.token_len(cleaned)
         if n > ARC_TOKENS:
             return f"arc too long ({n} > {ARC_TOKENS} tokens)"
+        if self.arc and normalize(cleaned) == normalize(self.arc):
+            return "arc unchanged"
         self.arc = cleaned
         return None
 

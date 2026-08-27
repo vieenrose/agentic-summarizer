@@ -120,6 +120,32 @@ def test_overlong_arc_is_refused_not_truncated() -> None:
     assert m.arc == "原始摘要"  # refusal leaves the previous arc standing, not a truncation
 
 
+def test_set_arc_refuses_unchanged_text() -> None:
+    """Rewriting the arc to what it already says does no work, and reporting it as a
+    successful substantive edit hides a stalled step from the NOP-collapse detector --
+    the mechanism behind the measured LongBeachCC_05232017 fixation. Mirrors
+    `add_point`'s "duplicate point" refusal.
+    """
+    m = Memory()
+    assert m.set_arc("會議討論辦公室搬遷案。") is None
+    assert m.set_arc("會議討論辦公室搬遷案。") == "arc unchanged"
+    assert m.arc == "會議討論辦公室搬遷案。"
+
+
+def test_set_arc_unchanged_check_ignores_whitespace_differences() -> None:
+    """The same normal form `add_point` uses, so the two ops agree on "the same text"."""
+    m = Memory()
+    m.set_arc("會議 討論 搬遷")
+    assert m.set_arc("會議  討論\n搬遷") == "arc unchanged"
+
+
+def test_set_arc_still_accepts_a_genuine_revision() -> None:
+    m = Memory()
+    m.set_arc("會議討論辦公室搬遷案。")
+    assert m.set_arc("會議已撤回辦公室搬遷案。") is None
+    assert m.arc == "會議已撤回辦公室搬遷案。"
+
+
 def test_set_arc_collapses_internal_whitespace() -> None:
     m = Memory()
     m.set_arc("會議  討論\n搬遷")

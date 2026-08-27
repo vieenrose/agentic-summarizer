@@ -390,9 +390,41 @@ def test_g3_passes_when_both_conditions_clear() -> None:
 
 def test_g3_fails_when_sign_test_clears_but_effect_size_does_not() -> None:
     """The mirror case: significant sign test, but the mean delta is negative."""
-    c = Comparison("coverage", wins=15, losses=5, ties=0, deltas=(-0.004,) * 20)
+    c = Comparison("rouge1", wins=15, losses=5, ties=0, deltas=(-0.004,) * 20)
     (gate,) = gate_g3_quality([c], min_n=20)
     assert gate.passed is False
+
+
+def test_g3_does_not_gate_on_coverage_or_density() -> None:
+    """SPEC §5.2 defines G3 as "beats baseline on ROUGE/BERTScore"; SPEC §5's metric
+    table classes Coverage/Density as token-overlap DIAGNOSTICS. The code gated them
+    anyway, and the consequence was not cosmetic: both measure EXTRACTIVENESS, so
+    requiring agent > baseline demanded the agent copy MORE verbatim than map-reduce --
+    the opposite of SPEC §3's abstractive prose, and unreachable by construction.
+    """
+    comparisons = [
+        Comparison("rouge1", wins=18, losses=2, ties=0, deltas=(0.05,) * 20),
+        Comparison("coverage", wins=2, losses=18, ties=0, deltas=(-0.011,) * 20),
+        Comparison("density", wins=3, losses=17, ties=0, deltas=(-0.79,) * 20),
+    ]
+    gates = gate_g3_quality(comparisons, min_n=20)
+    assert [g.gate for g in gates] == ["G3_rouge1"]
+
+
+def test_a_failing_diagnostic_cannot_block_the_ship_decision() -> None:
+    """The whole point of the demotion: coverage/density are still computed, reported
+    and compared, but a bad one must not be able to withhold or fail the ship decision.
+    """
+    comparisons = [
+        Comparison("rouge1", wins=18, losses=2, ties=0, deltas=(0.05,) * 20),
+        Comparison("rouge2", wins=19, losses=1, ties=0, deltas=(0.05,) * 20),
+        Comparison("rougeL", wins=19, losses=1, ties=0, deltas=(0.06,) * 20),
+        Comparison("coverage", wins=0, losses=20, ties=0, deltas=(-0.9,) * 20),
+        Comparison("density", wins=0, losses=20, ties=0, deltas=(-9.0,) * 20),
+    ]
+    gates = gate_g3_quality(comparisons, min_n=20)
+    assert all(g.passed is True for g in gates)
+    assert ship_decision(gates, g1_passed=True) == "ship the agent"
 
 
 def test_count_inversions_paired_ignores_meetings_the_other_arm_lacks() -> None:

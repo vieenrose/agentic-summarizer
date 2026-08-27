@@ -426,12 +426,30 @@ size, same output contract — because a strawman baseline makes the gates meani
 |---|---|
 | G1 revision | passes the revision probe below |
 | G2 faithfulness | inversions ≤ baseline, and not worse than baseline on §5.1's judge |
-| G3 quality | beats baseline on ROUGE/BERTScore by more than run-to-run noise |
+| G3 quality | beats baseline on ROUGE/BERTScore by more than run-to-run noise. **Coverage/Density are NOT gated** — see below |
 | G4 budget | fits §7's measured envelope on §6's hardware |
 
 **Ship the agent only if G1–G4 clear. Otherwise ship the map-reduce baseline** and
 record agentic-memory-at-1B as a measured negative result — that is a legitimate
 outcome, not a failure to report.
+
+**Coverage and Density are diagnostics, never gates** (normative, clarified
+2026-08-27). §5's metric table already classes them as "token-overlap diagnostics" and
+G3 above is already defined over ROUGE/BERTScore, but the implementation gated them
+anyway and the consequence was not cosmetic. Coverage is the fraction of the summary
+copied verbatim from the source; Density is mean *squared* verbatim-fragment length.
+Both measure **extractiveness**. Requiring `agent > baseline` on them demands the agent
+copy more verbatim than map-reduce — the direct opposite of §3's flowing abstractive
+zh-TW prose, and unreachable by construction rather than through any deficiency of the
+model. Map-reduce is structurally extractive: it summarises windows and reduces, staying
+close to source wording. Measured at n=20 on 2026-08-27: coverage 0.982 agent vs 0.993
+baseline (a gap at a near-saturated ceiling), density 3.26 vs 4.05. With those two
+gated, "ship the agent" was unreachable no matter how good the agent became.
+
+They remain computed, reported and compared per meeting. Read them as *shape*
+descriptors — a large Density gap says the two systems copy differently, which is
+expected and is the point of the design — not as quality scores with a preferred
+direction. Pinned by `metrics.stats.G3_GATED_METRICS`.
 
 **Revision probe (G1).** Aggregate scores cannot show the one thing external memory
 buys that map-reduce structurally cannot do: letting a later chunk overturn an earlier

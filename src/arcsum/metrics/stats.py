@@ -274,8 +274,32 @@ def gate_g2_faithfulness(
 G3_MAX_P = 0.05
 
 
+#: The metrics G3 actually gates on. SPEC §5.2 defines G3 as "beats baseline on
+#: ROUGE/BERTScore by more than run-to-run noise", and SPEC §5's metric table classes
+#: Coverage/Density as "token-overlap DIAGNOSTICS" — they were never gates.
+#:
+#: This constant exists because the code gated them anyway, and the consequence was not
+#: cosmetic. `coverage` is the fraction of the summary copied verbatim from the source
+#: and `density` is mean SQUARED verbatim-fragment length: both measure EXTRACTIVENESS.
+#: Gating "agent > baseline" on them demands the agent copy MORE verbatim than
+#: map-reduce — the exact opposite of SPEC §3's flowing abstractive zh-TW prose, and
+#: unreachable by construction rather than by any deficiency in the model. Measured
+#: 2026-08-27 at n=20: coverage 0.982 agent vs 0.993 baseline (a gap at a saturated
+#: ceiling), density 3.26 vs 4.05. Map-reduce is structurally extractive, so the agent
+#: was being penalised precisely for doing what the spec asks of it.
+#:
+#: Both are still computed, reported and compared — as diagnostics, which is what they
+#: are. Dropping them from the gate set does not weaken G3: it restores it to SPEC's
+#: definition.
+G3_GATED_METRICS: tuple[str, ...] = ("rouge1", "rouge2", "rougeL", "bertscore")
+
+
 def gate_g3_quality(
-    comparisons: Sequence[Comparison], *, min_n: int = 20, max_p: float = G3_MAX_P
+    comparisons: Sequence[Comparison],
+    *,
+    min_n: int = 20,
+    max_p: float = G3_MAX_P,
+    gated_metrics: Sequence[str] = G3_GATED_METRICS,
 ) -> list[GateResult]:
     """SPEC §5.2 G3: beats baseline "by more than run-to-run noise" — operationalised
     as BOTH the mean delta's lower 1-SE bound being positive AND the paired sign test
@@ -290,6 +314,8 @@ def gate_g3_quality(
     """
     results = []
     for c in comparisons:
+        if c.metric not in gated_metrics:
+            continue  # diagnostic, not a gate — see G3_GATED_METRICS
         if c.n < min_n:
             results.append(GateResult(f"G3_{c.metric}", None, f"withheld: n={c.n} < min_n={min_n}"))
             continue

@@ -46,6 +46,47 @@ will give 9 working commands; `arcsum-trace-report` will `ImportError` until bui
 wins. Read it in full before implementing anything — this file only orients you; it
 does not restate the spec's normative detail (formats, caps, gate criteria).
 
+### Four measured traps, all found on 2026-08-27 — do not re-derive
+
+Each cost real debugging time and is now pinned by a test. The docstrings carry the
+numbers; this is the index.
+
+1. **The SFT pool's two balance knobs compound against NOP** (`supervision/sft.py`).
+   `downsample_nop` solves its cap against the pool as it stands, then every row
+   `oversample_drop` appends dilutes NOP further, so the final share lands *below*
+   `max_nop_frac`. The `sft-dropv1` build fell to 25.7% NOP against a teacher rate of
+   38.2%; the resulting checkpoint stopped emitting `NOP` and churned instead —
+   `DROP` plus a near-identical re-`ADD` — burning up to 45 of a 53-step meeting's
+   steps on one topic. **Check the resulting share; never assume it lands at the cap.**
+2. **Greedy decoding degenerates into repetition on prose** (`backends/llama_server.py`
+   `repeat_penalty`). One synthesis emitted the same sentence eight times, giving that
+   eval its worst result. `repeat_penalty=1.1` cut it from 2,053 to 432 characters.
+   **Prose calls only** — reading steps emit a fixed op vocabulary, so a repetition
+   penalty there would punish the literal `ADD`/`DROP`/`ARC` tokens the format needs.
+   The baseline's *map* call is prose too, and gets its own client for exactly this
+   reason: penalising only the agent's prose would be the unfair baseline §5.2 forbids.
+3. **A llama-server 5xx is a server bug, not a verdict on the request**
+   (`backends/llama_server.py` `server_error_retries`). llama.cpp fails to parse its
+   own model's output when a multibyte char splits across a token boundary; it is
+   cache-state dependent, so the same meeting fails in one run and succeeds alone.
+   Fail-fast lost 2 of 20 meetings, and since §5.2's comparison is paired that cost
+   *both* arms a meeting and **withheld every G3 gate** for `n < min_n`. Serving with
+   `--jinja` avoids the peg-native path; the retry covers the rest.
+4. **G1's probe matched subject terms literally** (`probe.py`). Real output stated both
+   reversals perfectly but wrote "B 樓" for "B 棟" and "預算案" for "行銷預算", scoring a
+   false FAIL. `subject_terms` is now one tuple of acceptable surface forms per concept.
+   This cannot weaken the gate — a stale summary still fails on
+   `states_earlier_as_current`, pinned by a negative-control test.
+
+**Known open weakness**: on the longest meetings the model still fixates, re-emitting a
+byte-identical `ARC` while the transcript moves on. `set_arc` now refuses an unchanged
+arc so the instrumentation stops concealing it, but the model behaviour is unfixed. Its
+likely cause is coverage: only 1.6% of gold steps sit at index 40+, and the correct NOP
+rate *rises* with step index (32% → 51%). More long-meeting supervision is Phase 4 work.
+Note it is **not** simply "long meetings are bad" — a 40-chunk meeting is among the
+agent's biggest wins, while its worst loss was a 13-chunk meeting (that one was the
+repetition bug above).
+
 ### Two version constants govern what must not drift
 
 | constant | home | changing it means |

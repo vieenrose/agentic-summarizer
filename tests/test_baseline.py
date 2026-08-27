@@ -38,6 +38,42 @@ def test_summarise_window_cleans_the_output() -> None:
     assert summary == "這段內容討論搬遷案。"
 
 
+def test_summarise_window_falls_back_to_window_text_when_the_model_call_fails() -> None:
+    """A failed map call must not delete the window's content, and must not take the
+    whole meeting down with it — the same principle the reduce step already follows.
+
+    Measured: llama.cpp 500s when the model emits an invalid UTF-8 byte, deterministically
+    at temperature 0, and it strikes long map prose far more often than the agent's short
+    op lines. Two of twenty meetings died that way, and since SPEC §5.2's comparison is
+    PAIRED each loss cost the agent arm a meeting too, withholding G3 for `n < min_n`.
+    """
+
+    def exploding_model(system: str, user: str) -> str:
+        raise RuntimeError("llama-server 500: Content-only format")
+
+    chunk = Chunk(0, (Utterance("S1", "討論搬遷案的細節"),), tokens=8)
+    summary = summarise_window(chunk, exploding_model)
+    assert "討論搬遷案的細節" in summary
+
+
+def test_map_fallback_favours_the_baseline_not_the_agent() -> None:
+    """Direction matters: a workaround for a defect on the CONTROL arm must not be one
+    that flatters the treatment. Raw transcript text is more extractive than a real
+    summary, so this fallback helps the baseline on ROUGE/coverage/density. (Streaming
+    was rejected for the opposite reason — it truncates at the bad byte, silently
+    shortening only the baseline's output.)"""
+
+    def exploding_model(system: str, user: str) -> str:
+        raise RuntimeError("boom")
+
+    utts = tuple(Utterance("S1", f"議程第{i}項的詳細討論內容") for i in range(4))
+    chunk = Chunk(0, utts, tokens=40)
+    summary = summarise_window(chunk, exploding_model)
+    # Every utterance's content survives; nothing is dropped to make the fallback tidy.
+    for u in utts:
+        assert u.text in summary
+
+
 def test_summarise_window_records_usage() -> None:
     from arcsum.agent import Usage
 

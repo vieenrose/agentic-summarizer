@@ -199,7 +199,12 @@ def test_a_meetings_arm_exception_excludes_it_from_both_pairs_files(
     meeting from BOTH pairs files -- an unpaired candidate cannot enter SPEC §5.2's
     paired comparison -- while leaving every other meeting intact. Triggered on
     content unique to one meeting's transcript, not call order/count, so this cannot
-    become order-dependent and flaky."""
+    become order-dependent and flaky.
+
+    Triggered on the AGENT's reading step. A failing MAP call no longer reaches here:
+    `summarise_window` absorbs it into a deterministic window-text fallback rather than
+    losing the meeting (see its docstring). A reading-step failure still propagates,
+    which is the invariant this test exists to pin."""
     corpus = tmp_path / "corpus"
     corpus.mkdir()
     (corpus / "m1.txt").write_text(TRANSCRIPT, encoding="utf-8")
@@ -207,10 +212,13 @@ def test_a_meetings_arm_exception_excludes_it_from_both_pairs_files(
 
     def flaky_urlopen(req, timeout=None):
         body = json.loads(req.data.decode("utf-8"))
-        system = body["messages"][0]["content"]
-        user = body["messages"][1]["content"]
-        if system == map_system_prompt() and "第二場才會出現" in user:
-            raise OSError("simulated network failure")
+        if req.full_url.endswith("/apply-template"):
+            sysmsg = body["messages"][0]["content"]
+            user = body["messages"][1]["content"]
+            if sysmsg == step_system_prompt() and "第二場才會出現" in user:
+                raise OSError("simulated network failure")
+            return _FakeResponse({"prompt": f"{_RENDER_PREFIX}{sysmsg}<<END>>"})
+        system = _system_of(body)
         if system == step_system_prompt():
             # ADD (not NOP) so memory is non-empty: an all-NOP run leaves memory
             # empty, which synthesize_memory short-circuits without a model call.
@@ -223,6 +231,8 @@ def test_a_meetings_arm_exception_excludes_it_from_both_pairs_files(
             content = _REDUCE_PROSE
         else:
             raise AssertionError(f"unexpected system prompt: {system!r}")
+        if req.full_url.endswith("/completion"):
+            return _FakeResponse({"content": content})
         return _FakeResponse({"choices": [{"message": {"content": content}}]})
 
     monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", flaky_urlopen)
@@ -230,14 +240,14 @@ def test_a_meetings_arm_exception_excludes_it_from_both_pairs_files(
     agent_pairs, baseline_pairs, skipped, failures = run_both_arms(
         corpus,
         {"m1": "ref1", "m2": "ref2"},
-        step_model=LlamaServer(),
-        synth_model=LlamaServer(),
-        reduce_model=LlamaServer(),
+        step_model=LlamaServer(raw_completion=True),
+        synth_model=LlamaServer(raw_completion=True),
+        reduce_model=LlamaServer(raw_completion=True),
     )
 
     assert skipped == []
-    assert "m2" in failures["baseline"]
-    assert "m2" not in failures["agent"]  # m2's agent arm never calls MAP at all
+    assert "m2" in failures["agent"]
+    assert "m2" not in failures["baseline"]  # the baseline arm never runs a reading step
     assert {p["meeting_id"] for p in agent_pairs} == {"m1"}
     assert {p["meeting_id"] for p in baseline_pairs} == {"m1"}
 

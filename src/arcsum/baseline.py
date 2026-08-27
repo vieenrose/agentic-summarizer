@@ -84,7 +84,32 @@ def summarise_window(
     sys = map_system_prompt()
     user = build_map_prompt(chunk)
     started = time.monotonic()
-    raw = model(sys, user)
+    try:
+        raw = model(sys, user)
+    except Exception:
+        # Deterministic fallback, same principle the reduce step already follows: a
+        # window that cannot be summarised must not delete the window's content, and
+        # must not take the whole meeting down with it.
+        #
+        # Measured 2026-08-27: llama.cpp returns a 500 when the model emits an invalid
+        # UTF-8 byte, refusing the whole response over one bad character. It is
+        # deterministic at temperature 0 with `cache_prompt: false`, so no retry escapes
+        # it, and it strikes the map call far more often than the agent's reading steps
+        # because map generates long prose while a reading step emits short op lines.
+        # Two of twenty meetings died this way — and since SPEC §5.2's comparison is
+        # PAIRED, each loss cost the agent arm a meeting too, dropping the pool to n=18
+        # and withholding every G3 gate for `n < min_n`. A server defect was deciding
+        # whether a gate got a verdict.
+        #
+        # Falling back to the window's own text keeps the meeting scoreable. Note the
+        # direction: raw transcript text is MORE extractive than a real summary, so this
+        # favours the baseline on ROUGE/coverage/density. That is deliberate — a
+        # workaround for a defect on the control arm must not be one that flatters the
+        # treatment. Streaming was rejected for the opposite reason: it returns content
+        # truncated at the bad byte, silently shortening only the baseline's output.
+        if usage is not None:
+            usage.record(token_len(sys) + token_len(user), 0, time.monotonic() - started)
+        return finalize(chunk.render(), token_len=token_len).text
     elapsed = time.monotonic() - started
     if usage is not None:
         usage.record(token_len(sys) + token_len(user), token_len(raw), elapsed)

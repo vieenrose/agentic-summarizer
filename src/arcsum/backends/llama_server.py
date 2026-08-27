@@ -39,6 +39,7 @@ may need a different toggle.
 from __future__ import annotations
 
 import json
+import sys
 from dataclasses import dataclass, field
 from urllib import error, request
 
@@ -80,6 +81,21 @@ class LlamaServer:
     #: Extra body fields passed through verbatim, so a MiniCPM5-specific need discovered
     #: in Phase 0 (e.g. a thinking-mode toggle) doesn't require touching this module.
     extra: dict = field(default_factory=dict)
+    #: Retries for a 500 from the server itself. NOT a general error policy: a 500 here
+    #: is llama.cpp failing to parse its OWN model's output, which is a server defect,
+    #: not a signal about the request. Measured 2026-08-27: two of twenty eval meetings
+    #: died on `"The model produced output that does not match the expected peg-native
+    #: format"`, the server log showing a replacement char mid-token
+    #: (`表彰�明`) — a multibyte character split across a token boundary. It is
+    #: cache-state dependent, not deterministic per meeting: the same meeting that
+    #: failed inside a full run succeeded when run alone, and re-failed on a rerun whose
+    #: earlier meetings had warmed the slot cache differently. Retrying re-runs the
+    #: request against different cache state, which is exactly what clears it.
+    #: Losing meetings to this is not acceptable — SPEC §5.2's comparison is paired, so
+    #: each loss costs BOTH arms a meeting and can drop the pool under `min_n` and
+    #: withhold a gate outright, which is how a server bug turns into a missing result.
+    #: Set to 0 to restore fail-fast.
+    server_error_retries: int = 2
 
     def __call__(self, system: str, user: str) -> str:
         body: dict = {
@@ -139,12 +155,20 @@ class LlamaServer:
         req = request.Request(f"{self.base_url}{path}", method="GET")
         return self._send(req)
 
-    def _send(self, req: request.Request) -> dict:
+    def _send(self, req: request.Request, *, attempt: int = 0) -> dict:
         try:
             with request.urlopen(req, timeout=self.timeout) as resp:
                 return json.loads(resp.read().decode("utf-8"))
         except error.HTTPError as exc:
             body = exc.read().decode("utf-8", errors="replace")[:400]
+            if exc.code >= 500 and attempt < self.server_error_retries:
+                # See `server_error_retries`. Only 5xx — a 4xx means the request itself
+                # is wrong and retrying it verbatim would just fail again.
+                print(
+                    f"[llama-server] {exc.code} on attempt {attempt + 1}, retrying: {body}",
+                    file=sys.stderr,
+                )
+                return self._send(req, attempt=attempt + 1)
             raise RuntimeError(f"llama-server {exc.code}: {body}") from exc
         except error.URLError as exc:
             raise RuntimeError(

@@ -162,6 +162,58 @@ def test_http_error_is_surfaced_with_code_and_body(monkeypatch: pytest.MonkeyPat
         LlamaServer()("s", "u")
 
 
+def test_server_500_is_retried_and_can_succeed(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A 500 here is llama.cpp failing to parse its OWN model's output (measured: a
+    multibyte char split across a token boundary), not a verdict on the request. It is
+    cache-state dependent, so a retry against different cache state clears it. Losing a
+    meeting to this costs BOTH arms one, and can withhold a gate for `n < min_n`."""
+    calls = []
+
+    def fake_urlopen(req, timeout=None):
+        calls.append(req)
+        if len(calls) == 1:
+            raise urllib.error.HTTPError(
+                req.full_url, 500, "Internal Server Error", {}, io.BytesIO(b"peg-native")
+            )
+        return _FakeResponse(OK_RESPONSE)
+
+    monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", fake_urlopen)
+    assert LlamaServer()("s", "u")
+    assert len(calls) == 2
+
+
+def test_server_500_still_raises_once_retries_are_exhausted(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Retrying must not become an infinite mask over a genuinely broken server."""
+    calls = []
+
+    def fake_urlopen(req, timeout=None):
+        calls.append(req)
+        raise urllib.error.HTTPError(
+            req.full_url, 500, "Internal Server Error", {}, io.BytesIO(b"boom")
+        )
+
+    monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", fake_urlopen)
+    with pytest.raises(RuntimeError, match="llama-server 500: boom"):
+        LlamaServer(server_error_retries=2)("s", "u")
+    assert len(calls) == 3  # the original attempt plus two retries
+
+
+def test_client_error_is_not_retried(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A 4xx says the REQUEST is wrong; re-sending it verbatim would only fail again."""
+    calls = []
+
+    def fake_urlopen(req, timeout=None):
+        calls.append(req)
+        raise urllib.error.HTTPError(req.full_url, 400, "Bad Request", {}, io.BytesIO(b"nope"))
+
+    monkeypatch.setattr("arcsum.backends.llama_server.request.urlopen", fake_urlopen)
+    with pytest.raises(RuntimeError, match="llama-server 400: nope"):
+        LlamaServer(server_error_retries=2)("s", "u")
+    assert len(calls) == 1
+
+
 def test_url_error_is_surfaced_as_not_running(monkeypatch: pytest.MonkeyPatch) -> None:
     def fake_urlopen(req, timeout=None):
         raise urllib.error.URLError("connection refused")

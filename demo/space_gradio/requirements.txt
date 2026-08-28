@@ -1,0 +1,6 @@
+# Prebuilt wheel (JamePeng/llama-cpp-python fork) instead of the PyPI source dist:
+# avoids a from-source cmake/g++ compile on HF's build infra (10+ min). It's a
+# dynamic-backend build tagged cu131, but with n_gpu_layers=0 it loads the CPU
+# backend at runtime and never touches a GPU.
+https://github.com/JamePeng/llama-cpp-python/releases/download/v0.3.47-cu131-linux-20260815/llama_cpp_python-0.3.47+cu131-cp310-cp310-linux_x86_64.whl
+huggingface_hub>=0.24

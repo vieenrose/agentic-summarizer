@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>arcsum — live agentic zh-TW meeting summarizer</title>
+<style>
+  :root {
+    --bg: #f6f8fa; --panel: #fff; --line: #d0d7de; --ink: #1f2328; --muted: #656d76;
+    --accent: #0969da; --add: #1a7f37; --drop: #cf222e; --hl: #fff3cd; --hl-edge: #f0a000;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d1117; --panel: #161b22; --line: #30363d; --ink: #e6edf3; --muted: #8b949e;
+      --accent: #58a6ff; --add: #3fb950; --drop: #f85149; --hl: #2d2410; --hl-edge: #bb8009;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0; padding: 18px; background: var(--bg); color: var(--ink);
+    font: 15px/1.5 -apple-system, BlinkMacSystemFont, "Segoe UI", "Noto Sans TC", sans-serif;
+  }
+  h1 { margin: 0 0 4px; font-size: 1.45rem; }
+  .sub { color: var(--muted); margin: 0 0 14px; max-width: 78ch; }
+  code { background: rgba(127,127,127,.15); padding: 1px 5px; border-radius: 4px; font-size: .9em; }
+  .controls { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 10px; }
+  select, button, textarea {
+    font: inherit; color: inherit; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 6px; padding: 7px 10px;
+  }
+  button { cursor: pointer; }
+  button:disabled { opacity: .5; cursor: not-allowed; }
+  #run { background: var(--accent); border-color: var(--accent); color: #fff; font-weight: 600; }
+  .track { background: rgba(127,127,127,.2); border-radius: 4px; height: 8px; overflow: hidden; }
+  #bar { background: var(--accent); height: 8px; width: 0; transition: width .25s; }
+  #status { color: var(--muted); font-size: .88rem; margin: 5px 0 14px; }
+  details { margin-bottom: 14px; }
+  textarea { width: 100%; min-height: 120px; }
+  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+  .panel {
+    background: var(--panel); border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px; height: 440px; overflow: auto;
+  }
+  .panel h2 { font-size: .82rem; text-transform: uppercase; letter-spacing: .05em;
+              color: var(--muted); margin: 0 0 8px; }
+  .line { padding: 2px 6px; margin: 1px 0; opacity: .5; border-radius: 3px; }
+  .line.active { opacity: 1; background: var(--hl); border-left: 3px solid var(--hl-edge); }
+  .op { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .88rem; padding: 1px 0; }
+  .op-arc { color: var(--accent); } .op-add { color: var(--add); }
+  .op-drop { color: var(--drop); } .op-nop { color: var(--muted); }
+  .arc { background: rgba(9,105,218,.1); border-left: 3px solid var(--accent);
+         padding: 6px 8px; margin-bottom: 8px; border-radius: 3px; }
+  .pt { padding: 3px 6px; border-bottom: 1px solid var(--line); font-size: .93rem; }
+  .muted { color: var(--muted); } .small { font-size: .84rem; }
+  .caret { opacity: .5; }
+  .prose-text { line-height: 1.85; font-size: 1.02rem; }
+  #prose-panel { height: auto; min-height: 130px; margin-top: 12px; }
+  footer { margin-top: 20px; color: var(--muted); font-size: .9rem; max-width: 80ch; }
+  footer a { color: var(--accent); }
+  table { border-collapse: collapse; margin: 8px 0; font-size: .88rem; }
+  td, th { border: 1px solid var(--line); padding: 3px 9px; text-align: left; }
+</style>
+</head>
+<body>
+
+<h1>arcsum — live agentic meeting summarizer</h1>
+<p class="sub">
+  A 1B model reads a Traditional-Chinese transcript in ~2,500-token chunks, curating a
+  two-slot external memory (<b>ARC</b> + <b>POINTS</b>) with
+  <code>ADD</code> / <code>DROP</code> / <code>ARC</code> / <code>NOP</code> edit lines.
+  No conversation history crosses steps — the memory is the only thing carried forward.
+  A final SYNTHESIZE call turns it into prose. <b>Everything runs in your browser.</b>
+</p>
+
+<div class="controls">
+  <select id="example" aria-label="transcript"></select>
+  <button id="run">▶ Run</button>
+  <button id="stop" disabled>■ Stop</button>
+</div>
+<div class="track"><div id="bar"></div></div>
+<p id="status">Loading…</p>
+
+<details>
+  <summary>Paste your own zh-TW transcript (format: <code>speaker: text</code>, one per line)</summary>
+  <textarea id="custom" placeholder="S1: 我們開始今天的會議。&#10;S2: 好的，先看預算案。"></textarea>
+</details>
+
+<div class="grid">
+  <div class="panel"><h2>Transcript</h2><div id="transcript"><i class="muted">No transcript loaded.</i></div></div>
+  <div class="panel"><h2>Model output (edit lines)</h2><div id="ops"><i class="muted">Waiting…</i></div></div>
+  <div class="panel"><h2>External memory</h2><div id="memory"><i class="muted">Empty.</i></div></div>
+</div>
+<div class="panel" id="prose-panel">
+  <h2>Final summary (SYNTHESIZE)</h2>
+  <div id="prose"><i class="muted">Produced after the last chunk, from the memory alone.</i></div>
+</div>
+
+<footer>
+  <h3>What you are watching</h3>
+  <p>
+    The middle panel is the model's raw output — it emits <i>only</i> edit lines, never
+    prose, until the very end. The right panel is the harness's memory after applying them
+    deterministically, with the token caps enforced and malformed or unsafe ops refused.
+  </p>
+  <p>
+    The design bet is what that memory buys: <b>a later chunk can overturn an earlier
+    conclusion.</b> Map-reduce cannot — it summarises each window independently, so a
+    decision reversed at minute 90 never reaches the summary of minute 10.
+  </p>
+
+  <h3>Honest status</h3>
+  <p>This checkpoint clears <b>6 of 7</b> ship gates against a <i>fair</i> map-reduce
+     baseline (same model, same chunk size, same output contract):</p>
+  <table>
+    <tr><th>gate</th><th>result</th></tr>
+    <tr><td>G1 revision probe</td><td>PASS</td></tr>
+    <tr><td>G2 faithfulness</td><td>PASS — 8 inversions vs 18</td></tr>
+    <tr><td>G3 ROUGE-2</td><td>PASS — wins 19/20 meetings</td></tr>
+    <tr><td>G3 ROUGE-L</td><td>PASS — wins 19/20 meetings</td></tr>
+    <tr><td>G4 on-device budget</td><td>PASS — projected, not measured</td></tr>
+    <tr><td>G3 ROUGE-1</td><td><b>FAIL</b> — 14/20, p=0.115</td></tr>
+  </table>
+  <p>
+    Under the project's all-or-nothing rule the recorded decision is <b>"ship the
+    baseline"</b>. ROUGE-1's effect size clears comfortably; it is the <i>consistency</i>
+    test that misses, by one meeting. The losses concentrate in long meetings, where the
+    model fixates — the known open weakness. Full numbers and caveats on the
+    <a href="https://huggingface.co/Luigi/minicpm5-1b-arcsum">model card</a>.
+  </p>
+
+  <h3>About this demo</h3>
+  <ul>
+    <li>The model (<b>~656 MB, Q4_K_M</b>) downloads once and is cached by your browser.
+        Later runs start immediately.</li>
+    <li><b>Q4_K_M is not the evaluated artifact</b> — every gate number above was measured
+        on Q8_0. Nothing you see here is an eval result.</li>
+    <li>The harness (<code>arcsum.js</code>) is a port of the Python package,
+        differential-tested byte-for-byte against it on prompts, chunking, op parsing,
+        memory eviction and prose cleanup. The mechanism is real, not re-enacted.</li>
+    <li>Examples are real held-out meetings from the evaluation set, deliberately short
+        ones — in-browser CPU inference is slow, and the model's weakness is long meetings.</li>
+    <li>Previously this Space demoed <b>CURSOR</b>, the prior project's protocol
+        (<code>ADD</code>/<code>UPD</code>/<code>DEL</code>/<code>CMP</code>/<code>NOP</code>
+        over a single NOTES state). That is a different, superseded architecture; the URL
+        slug still says <code>cursor-wasm-demo</code> for continuity.</li>
+  </ul>
+</footer>
+
+<script type="module" src="./app.js"></script>
+</body>
+</html>

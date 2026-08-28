@@ -37,7 +37,7 @@ metrics-mover = ["moverscore>=1.0.3", "pyemd>=1.0.0"]
 supervision = ["opencc>=1.1"]
 
 # Phase 3's held-out zh-TW audio slice (eval only, never training).
-asr = ["torch>=2.6", "transformers>=5.5", "librosa", "soundfile", "accelerate"]
+asr = ["torch>=2.6", "transformers>=5.5", "librosa", "soundfile", "accelerate", "opencc>=1.1"]
 
 # Offline teacher / fine-tune. Never installed on the reference device (SPEC §6).
 train = [
@@ -114,6 +114,11 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 # The Gradio demo renders zh-TW UI copy; an en dash in a numeric range is correct
 # typography, not an identifier hazard.
 "demo/space_gradio/app.py" = ["RUF001", "RUF002", "RUF003"]
+# These tools quote zh-TW/zh-CN text and the ASR model's own prompt verbatim; the
+# confusable characters are the data being documented.
+"tools/asr_transcribe.py" = ["RUF001", "RUF002", "RUF003"]
+"tools/latin_ablation.py" = ["RUF001", "RUF002", "RUF003"]
+"tools/v1_to_v2.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/conftest.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_lang.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_transcript.py" = ["RUF001", "RUF002", "RUF003"]

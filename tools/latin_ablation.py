@@ -93,9 +93,7 @@ def main(argv: list[str] | None = None) -> int:
         ratio = latin_ratio(body)
         dst = args.out_dir / f"{stem}-L{n:02d}.txt"
         dst.write_text(variant, encoding="utf-8")
-        print(
-            f"[ablation] {dst.name}  terms={n:2d}  latin={ratio * 100:5.2f}/100", file=sys.stderr
-        )
+        print(f"[ablation] {dst.name}  terms={n:2d}  latin={ratio * 100:5.2f}/100", file=sys.stderr)
     return 0
 
 

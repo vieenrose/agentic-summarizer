@@ -119,10 +119,29 @@ def summarise_window(
 def _reduce_once(
     summaries: tuple[str, ...], model: ModelFn, *, token_len: Callable[[str], int], usage: Usage
 ) -> Prose:
+    """A failed reduce call degrades to the deterministic concatenation this module
+    already falls back to when two reduce attempts fail the §3 contract — the same
+    "never delete decisions" rule, extended from a bad ANSWER to no answer at all.
+
+    Measured 2026-08-28: `summarise_window`'s equivalent fallback fixed the map leg, but
+    llama.cpp's invalid-UTF-8 500 then struck the REDUCE leg instead and still cost a
+    meeting (`LongBeachCC_10092018`). Because SPEC §5.2's comparison is paired, that also
+    cost the AGENT arm that meeting, dropping the pool to n=19 and withholding every G3
+    gate for `n < min_n=20` — a server defect deciding whether a gate gets a verdict.
+
+    Direction is the same as the map fallback's: concatenation preserves every window's
+    content and is MORE extractive than a real reduce, so it favours the baseline on
+    ROUGE/coverage/density. A workaround for a defect on the control arm must not be one
+    that flatters the treatment.
+    """
     sys = reduce_system_prompt()
     user = build_reduce_prompt(summaries)
     started = time.monotonic()
-    raw = model(sys, user)
+    try:
+        raw = model(sys, user)
+    except Exception:
+        usage.record(token_len(sys) + token_len(user), 0, time.monotonic() - started)
+        return finalize(" ".join(summaries), token_len=token_len)
     elapsed = time.monotonic() - started
     usage.record(token_len(sys) + token_len(user), token_len(raw), elapsed)
     return finalize(raw, token_len=token_len)

@@ -9,6 +9,7 @@ from __future__ import annotations
 
 from arcsum.baseline import run_map_reduce, summarise_window
 from arcsum.chunker import Chunk
+from arcsum.prompts import reduce_system_prompt
 from arcsum.tokens import heuristic_token_len
 from arcsum.transcript import Utterance
 from conftest import Scripted
@@ -431,9 +432,7 @@ def test_over_budget_reduce_output_is_compressed_not_shipped() -> None:
     # Both reduce attempts overflow, so the deterministic concatenation fallback runs --
     # and with long MAP summaries that concatenation is ITSELF over the cap, which is
     # exactly the real-world shape that shipped 2,181-token "summaries".
-    model = _ReduceScripted(
-        long_summary, long_summary, short_summary, map_response="很好 " * 400
-    )
+    model = _ReduceScripted(long_summary, long_summary, short_summary, map_response="很好 " * 400)
     result = run_map_reduce(meeting(12), model, budget=200, token_len=heuristic_token_len)
     assert result.windows > 1, "fixture needs a real reduce"
     assert result.compress_passes >= 1
@@ -454,3 +453,24 @@ def test_in_budget_reduce_output_is_not_compressed() -> None:
     model = _ReduceScripted("這是一段簡短的會議摘要。")
     result = run_map_reduce(meeting(12), model, budget=200, token_len=heuristic_token_len)
     assert result.compress_passes == 0
+
+
+def test_reduce_falls_back_to_concatenation_when_the_call_fails() -> None:
+    """The map fallback fixed the map leg; llama.cpp's invalid-UTF-8 500 then struck the
+    REDUCE leg and still cost a meeting. Paired scoring means that also costs the AGENT
+    arm the meeting, withholding G3 for n < min_n. Concatenation preserves every
+    window's content and is MORE extractive than a real reduce, so it favours the
+    baseline -- the workaround must not flatter the treatment."""
+    calls = {"n": 0}
+
+    def map_ok_reduce_explodes(system: str, user: str) -> str:
+        if system == reduce_system_prompt():
+            calls["n"] += 1
+            raise RuntimeError("llama-server 500: Content-only format")
+        return "這段討論了搬遷案的細節。"
+
+    utts = [Utterance("S1", f"第{i}項議程的詳細討論內容。" * 20) for i in range(60)]
+    result = run_map_reduce(utts, map_ok_reduce_explodes)
+
+    assert calls["n"] > 0  # the reduce call really was attempted and really did fail
+    assert result.prose.text  # a meeting survives instead of raising

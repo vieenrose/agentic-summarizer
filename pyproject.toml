@@ -108,6 +108,12 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 "tests/test_prompts.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_guards.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_agent.py" = ["RUF001", "RUF002", "RUF003"]
+# Same rule, same reason: this parser's job is the zh-TW gazette's fullwidth delimiters,
+# so the confusable characters in its regexes and docs ARE the specification.
+"tools/ly_odt_to_v2.py" = ["RUF001", "RUF002", "RUF003"]
+# The Gradio demo renders zh-TW UI copy; an en dash in a numeric range is correct
+# typography, not an identifier hazard.
+"demo/space_gradio/app.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/conftest.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_lang.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_transcript.py" = ["RUF001", "RUF002", "RUF003"]

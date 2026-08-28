@@ -92,7 +92,9 @@ def main(argv: list[str] | None = None) -> int:
 
     body, stats = to_v2(paragraphs(args.odt))
     if stats["utterances"] < 5:
-        print(f"[ly->v2] REFUSED {args.odt}: only {stats['utterances']} utterances", file=sys.stderr)
+        print(
+            f"[ly->v2] REFUSED {args.odt}: only {stats['utterances']} utterances", file=sys.stderr
+        )
         return 1
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(body, encoding="utf-8")

@@ -20,8 +20,10 @@ from arcsum.supervision.sft import (
     downsample_nop,
     drop_bearing_share,
     drop_share,
+    late_step_share,
     nop_share,
     oversample_drop,
+    oversample_late_steps,
     split_by_meeting,
 )
 from arcsum.supervision.traces import all_replayed_cleanly, replay_sequence, replay_step
@@ -424,3 +426,61 @@ def test_report_with_no_traces_returns_none_for_every_rate() -> None:
     assert r.arc_share is None
     assert r.veto_rate is None
     assert r.total_steps == 0
+
+
+# --- oversample_late_steps -------------------------------------------------------------
+
+
+def make_step_pool(n_late: int, n_early: int, *, late_are_nops: bool = False) -> list[SftSample]:
+    """`n_late` samples at step 30, `n_early` at step 0."""
+    late = [
+        SftSample(
+            f"L{i}",
+            30,
+            "sys-v1",
+            "sys",
+            "prompt",
+            "NOP" if late_are_nops else "ADD - x",
+            is_nop=late_are_nops,
+        )
+        for i in range(n_late)
+    ]
+    early = [
+        SftSample(f"E{i}", 0, "sys-v1", "sys", "prompt", "ADD - y", is_nop=False)
+        for i in range(n_early)
+    ]
+    return late + early
+
+
+def test_oversample_late_steps_default_is_a_noop() -> None:
+    pool = make_step_pool(n_late=5, n_early=95)
+    assert oversample_late_steps(pool) == pool
+
+
+def test_oversample_late_steps_raises_the_share_toward_the_target() -> None:
+    """Measured motivation: only 1.6% of gold steps sit at index 40+, and the student
+    stops making progress deep in long meetings — re-emitting an identical ARC while the
+    transcript has moved on."""
+    pool = make_step_pool(n_late=5, n_early=95)  # 5% late
+    result = oversample_late_steps(pool, min_step=25, target_frac=0.3, seed=0)
+    assert late_step_share(result, min_step=25) == pytest.approx(0.3, abs=0.02)
+
+
+def test_oversample_late_steps_never_removes_or_alters_original_samples() -> None:
+    pool = make_step_pool(n_late=5, n_early=95)
+    result = oversample_late_steps(pool, min_step=25, target_frac=0.3, seed=0)
+    for s in pool:
+        assert s in result
+    assert len(result) > len(pool)
+
+
+def test_oversample_late_steps_pushes_the_nop_share_back_up() -> None:
+    """The compounding interaction the docstring warns about, pinned. Late steps are
+    NOP-heavy (the teacher's NOP rate rises from 32% at steps 0-9 to 51% at 40+), so
+    this knob partially undoes `downsample_nop`'s cap. `build_sft` reports every share
+    after the fact precisely so this is set by measurement, not assumption.
+    """
+    pool = make_step_pool(n_late=5, n_early=95, late_are_nops=True)
+    before = nop_share(pool)
+    result = oversample_late_steps(pool, min_step=25, target_frac=0.3, seed=0)
+    assert nop_share(result) > before

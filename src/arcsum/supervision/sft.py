@@ -174,6 +174,61 @@ def oversample_drop(
     return [*samples, *(rng.choice(drops) for _ in range(extra))]
 
 
+def late_step_share(samples: Sequence[SftSample], *, min_step: int = 25) -> float | None:
+    """Share of samples at step index >= `min_step` — the quantity `oversample_late_steps`
+    targets, reported so the knob is never set blind (see `oversample_drop`'s warning
+    about compounding)."""
+    if not samples:
+        return None
+    return sum(1 for s in samples if s.step >= min_step) / len(samples)
+
+
+def oversample_late_steps(
+    samples: Sequence[SftSample],
+    *,
+    min_step: int = 25,
+    target_frac: float = 0.0,
+    seed: int = 0,
+) -> list[SftSample]:
+    """Raise the share of LATE reading steps to `target_frac` by duplication.
+    `0.0` (the default) is a no-op, so existing builds are unchanged.
+
+    **Motivation, measured 2026-08-27.** Deep in a long meeting the student stops making
+    progress: it re-emits a byte-identical `ARC` while the transcript has already moved
+    to an unrelated agenda item, so later chunks' content never enters memory. The gold
+    pool barely covers that regime — only 1.6% of steps sit at index 40+ and 6.5% at
+    30-39 — while the behaviour the model needs there is *more* common than early on,
+    not less: the teacher's NOP rate RISES with step index (32% at 0-9 to 51% at 40+).
+    The model is least trained exactly where the correct answer is most often "nothing
+    changed, do not touch memory".
+
+    This is not a cap artifact: gold `ARC`s stay compact late (mean 50.8 tokens at step
+    >= 25 against an 80-token cap, only 2.6% within 10 of it), so the model is not being
+    squeezed into restating by an impending overflow.
+
+    **Ordering: run this LAST, after `downsample_nop` and `oversample_drop`, and CHECK
+    the resulting shares.** All three knobs compound — see `oversample_drop` — and late
+    steps are NOP-heavy, so this one pushes the NOP share back UP, partially undoing the
+    NOP cap. That interaction is the reason `late_step_share`, `nop_share` and
+    `drop_bearing_share` are all reported by `build_sft`: set this by measuring the
+    result, never by assuming the target was hit.
+    """
+    if target_frac <= 0.0:
+        return list(samples)
+
+    late = [s for s in samples if s.step >= min_step]
+    if not late or len(late) == len(samples):
+        return list(samples)
+
+    total = len(samples)
+    extra = int((target_frac * total - len(late)) / (1 - target_frac))
+    if extra <= 0:
+        return list(samples)
+
+    rng = random.Random(seed)
+    return [*samples, *(rng.choice(late) for _ in range(extra))]
+
+
 def drop_bearing_share(samples: Sequence[SftSample]) -> float | None:
     """Share of ALL samples whose completion contains a `DROP` — the quantity
     `oversample_drop` targets. Distinct from `drop_share`, which is the share of

@@ -24,8 +24,10 @@ from arcsum.supervision.sft import (
     downsample_nop,
     drop_bearing_share,
     drop_share,
+    late_step_share,
     nop_share,
     oversample_drop,
+    oversample_late_steps,
     split_by_meeting,
 )
 
@@ -87,6 +89,16 @@ def build_parser() -> argparse.ArgumentParser:
         help="duplicate DROP-bearing samples up to this share of the pool (0.0 = off). "
         "Motivation measured 2026-08-27: see supervision.sft.oversample_drop's docstring.",
     )
+    p.add_argument(
+        "--target-late-frac",
+        type=float,
+        default=0.0,
+        help="duplicate steps at index >= --late-min-step up to this share of the pool "
+        "(0.0 = off). Measured 2026-08-27: only 1.6%% of gold steps sit at index 40+, "
+        "and the student stops making progress deep in long meetings. Late steps are "
+        "NOP-heavy, so this pushes the NOP share back up -- read the reported shares.",
+    )
+    p.add_argument("--late-min-step", type=int, default=25)
     p.add_argument("--seed", type=int, default=0)
     return p
 
@@ -111,6 +123,15 @@ def main(argv: list[str] | None = None) -> int:
     # oversample_drop's docstring).
     before_drop_frac = drop_bearing_share(samples)
     samples = oversample_drop(samples, target_drop_frac=args.target_drop_frac, seed=args.seed)
+    # LAST, and its effect on the other two shares is reported below rather than assumed
+    # -- late steps are NOP-heavy, so this partially undoes the NOP cap.
+    before_late_frac = late_step_share(samples, min_step=args.late_min_step)
+    samples = oversample_late_steps(
+        samples,
+        min_step=args.late_min_step,
+        target_frac=args.target_late_frac,
+        seed=args.seed,
+    )
     train, valid = split_by_meeting(samples, valid_frac=args.valid_frac, seed=args.seed)
 
     args.out_dir.mkdir(parents=True, exist_ok=True)
@@ -122,7 +143,9 @@ def main(argv: list[str] | None = None) -> int:
         f"total={len(samples)} train={len(train)} valid={len(valid)} "
         f"nop_share before={before_nop_share:.3f} after={nop_share(samples):.3f} "
         f"drop_share={drop_share(samples)} "
-        f"drop_bearing_frac before={before_drop_frac:.3f} after={drop_bearing_share(samples):.3f}",
+        f"drop_bearing_frac before={before_drop_frac:.3f} after={drop_bearing_share(samples):.3f} "
+        f"late_frac(>={args.late_min_step}) before={before_late_frac:.3f} "
+        f"after={late_step_share(samples, min_step=args.late_min_step):.3f}",
         file=sys.stderr,
     )
     return 0

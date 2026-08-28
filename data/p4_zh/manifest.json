@@ -1,0 +1,302 @@
+[
+  {
+    "meeting": "AlamedaCC_01202015",
+    "lines": 728,
+    "chunks": 52,
+    "cjk_ratio": 0.87
+  },
+  {
+    "meeting": "AlamedaCC_02022016",
+    "lines": 1277,
+    "chunks": 55,
+    "cjk_ratio": 0.864
+  },
+  {
+    "meeting": "AlamedaCC_03192019",
+    "lines": 1113,
+    "chunks": 52,
+    "cjk_ratio": 0.871
+  },
+  {
+    "meeting": "AlamedaCC_04072015",
+    "lines": 921,
+    "chunks": 53,
+    "cjk_ratio": 0.874
+  },
+  {
+    "meeting": "AlamedaCC_04182017",
+    "lines": 1427,
+    "chunks": 51,
+    "cjk_ratio": 0.875
+  },
+  {
+    "meeting": "AlamedaCC_06062017",
+    "lines": 1028,
+    "chunks": 49,
+    "cjk_ratio": 0.872
+  },
+  {
+    "meeting": "AlamedaCC_07062021",
+    "lines": 1115,
+    "chunks": 50,
+    "cjk_ratio": 0.873
+  },
+  {
+    "meeting": "AlamedaCC_07182017",
+    "lines": 1172,
+    "chunks": 57,
+    "cjk_ratio": 0.874
+  },
+  {
+    "meeting": "AlamedaCC_11042015",
+    "lines": 1383,
+    "chunks": 54,
+    "cjk_ratio": 0.868
+  },
+  {
+    "meeting": "AlamedaCC_11072017",
+    "lines": 1672,
+    "chunks": 66,
+    "cjk_ratio": 0.868
+  },
+  {
+    "meeting": "AlamedaCC_11272018",
+    "lines": 909,
+    "chunks": 34,
+    "cjk_ratio": 0.878
+  },
+  {
+    "meeting": "BostonCC_06292022",
+    "lines": 650,
+    "chunks": 36,
+    "cjk_ratio": 0.848
+  },
+  {
+    "meeting": "DenverCityCouncil_01252016",
+    "lines": 972,
+    "chunks": 54,
+    "cjk_ratio": 0.871
+  },
+  {
+    "meeting": "DenverCityCouncil_02082021",
+    "lines": 1107,
+    "chunks": 61,
+    "cjk_ratio": 0.884
+  },
+  {
+    "meeting": "DenverCityCouncil_02122018",
+    "lines": 975,
+    "chunks": 50,
+    "cjk_ratio": 0.866
+  },
+  {
+    "meeting": "DenverCityCouncil_02172015",
+    "lines": 696,
+    "chunks": 43,
+    "cjk_ratio": 0.866
+  },
+  {
+    "meeting": "DenverCityCouncil_04112016",
+    "lines": 1085,
+    "chunks": 60,
+    "cjk_ratio": 0.869
+  },
+  {
+    "meeting": "DenverCityCouncil_06082015",
+    "lines": 1391,
+    "chunks": 64,
+    "cjk_ratio": 0.86
+  },
+  {
+    "meeting": "DenverCityCouncil_06132016",
+    "lines": 1255,
+    "chunks": 72,
+    "cjk_ratio": 0.871
+  },
+  {
+    "meeting": "DenverCityCouncil_06202022",
+    "lines": 1599,
+    "chunks": 57,
+    "cjk_ratio": 0.86
+  },
+  {
+    "meeting": "DenverCityCouncil_07062015",
+    "lines": 1033,
+    "chunks": 51,
+    "cjk_ratio": 0.864
+  },
+  {
+    "meeting": "DenverCityCouncil_08172020",
+    "lines": 1025,
+    "chunks": 43,
+    "cjk_ratio": 0.873
+  },
+  {
+    "meeting": "DenverCityCouncil_08232021",
+    "lines": 850,
+    "chunks": 33,
+    "cjk_ratio": 0.856
+  },
+  {
+    "meeting": "DenverCityCouncil_08262019",
+    "lines": 1041,
+    "chunks": 60,
+    "cjk_ratio": 0.87
+  },
+  {
+    "meeting": "DenverCityCouncil_09162019",
+    "lines": 1295,
+    "chunks": 53,
+    "cjk_ratio": 0.867
+  },
+  {
+    "meeting": "DenverCityCouncil_09252017",
+    "lines": 1309,
+    "chunks": 59,
+    "cjk_ratio": 0.868
+  },
+  {
+    "meeting": "DenverCityCouncil_11022020",
+    "lines": 974,
+    "chunks": 28,
+    "cjk_ratio": 0.841
+  },
+  {
+    "meeting": "DenverCityCouncil_11162015",
+    "lines": 792,
+    "chunks": 54,
+    "cjk_ratio": 0.868
+  },
+  {
+    "meeting": "DenverCityCouncil_12142020",
+    "lines": 1064,
+    "chunks": 47,
+    "cjk_ratio": 0.861
+  },
+  {
+    "meeting": "LongBeachCC_01192016",
+    "lines": 1314,
+    "chunks": 59,
+    "cjk_ratio": 0.865
+  },
+  {
+    "meeting": "LongBeachCC_01212020",
+    "lines": 1344,
+    "chunks": 62,
+    "cjk_ratio": 0.874
+  },
+  {
+    "meeting": "LongBeachCC_02072017",
+    "lines": 946,
+    "chunks": 48,
+    "cjk_ratio": 0.88
+  },
+  {
+    "meeting": "LongBeachCC_02202018",
+    "lines": 930,
+    "chunks": 56,
+    "cjk_ratio": 0.879
+  },
+  {
+    "meeting": "LongBeachCC_03062018",
+    "lines": 1043,
+    "chunks": 66,
+    "cjk_ratio": 0.874
+  },
+  {
+    "meeting": "LongBeachCC_03132018",
+    "lines": 1068,
+    "chunks": 59,
+    "cjk_ratio": 0.874
+  },
+  {
+    "meeting": "LongBeachCC_03202018",
+    "lines": 1390,
+    "chunks": 60,
+    "cjk_ratio": 0.878
+  },
+  {
+    "meeting": "LongBeachCC_04022019",
+    "lines": 1084,
+    "chunks": 59,
+    "cjk_ratio": 0.878
+  },
+  {
+    "meeting": "LongBeachCC_06192018",
+    "lines": 1078,
+    "chunks": 60,
+    "cjk_ratio": 0.876
+  },
+  {
+    "meeting": "LongBeachCC_07142020",
+    "lines": 951,
+    "chunks": 55,
+    "cjk_ratio": 0.879
+  },
+  {
+    "meeting": "LongBeachCC_08112015",
+    "lines": 1388,
+    "chunks": 56,
+    "cjk_ratio": 0.873
+  },
+  {
+    "meeting": "LongBeachCC_08112020",
+    "lines": 897,
+    "chunks": 52,
+    "cjk_ratio": 0.882
+  },
+  {
+    "meeting": "LongBeachCC_08142018",
+    "lines": 966,
+    "chunks": 61,
+    "cjk_ratio": 0.879
+  },
+  {
+    "meeting": "LongBeachCC_08212018",
+    "lines": 825,
+    "chunks": 62,
+    "cjk_ratio": 0.885
+  },
+  {
+    "meeting": "LongBeachCC_09012015",
+    "lines": 882,
+    "chunks": 51,
+    "cjk_ratio": 0.873
+  },
+  {
+    "meeting": "LongBeachCC_09032019",
+    "lines": 1091,
+    "chunks": 51,
+    "cjk_ratio": 0.878
+  },
+  {
+    "meeting": "LongBeachCC_09042018",
+    "lines": 1621,
+    "chunks": 66,
+    "cjk_ratio": 0.881
+  },
+  {
+    "meeting": "LongBeachCC_09192017",
+    "lines": 1500,
+    "chunks": 63,
+    "cjk_ratio": 0.873
+  },
+  {
+    "meeting": "LongBeachCC_10042016",
+    "lines": 1159,
+    "chunks": 56,
+    "cjk_ratio": 0.879
+  },
+  {
+    "meeting": "LongBeachCC_10212014",
+    "lines": 903,
+    "chunks": 38,
+    "cjk_ratio": 0.866
+  },
+  {
+    "meeting": "LongBeachCC_12082020",
+    "lines": 1384,
+    "chunks": 68,
+    "cjk_ratio": 0.877
+  }
+]

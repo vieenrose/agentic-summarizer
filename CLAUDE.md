@@ -100,6 +100,43 @@ Note it is **not** simply "long meetings are bad" — a 40-chunk meeting is amon
 agent's biggest wins, while its worst loss was a 13-chunk meeting (that one was the
 repetition bug above).
 
+**Do not retry reweighting for this — it was tried and it regressed.** `sft-dropv3`
+(`runs/sft-dropv3/RESULT.md`) raised the late-step share 14.2% → 22.0% via
+`oversample_late_steps` and moved ROUGE-1 *away* from its gate: 14/20 (p=0.115) → 12/20
+(p=0.503), with rouge2 19→17 and rougeL 19→18. The mechanism was not inert — the
+53-chunk fixation meeting improved -0.164 → -0.073 and two meetings flipped to wins —
+but it broke four meetings `dropv2` won, because duplicating late steps duplicates
+NOP-heavy examples and trades content capture everywhere else for restraint at the end.
+**The transferable lesson: stable SHARES did not imply stable BEHAVIOUR.** That build
+held NOP (0.353 → 0.359) and DROP (0.320 → 0.325) nearly constant and was still a
+regression, because what changed was *which* samples carried those labels. Reading the
+shares `build_sft` reports is necessary, not sufficient. Closing this gap needs real
+Phase-4 long-meeting supervision, not a different mix of the same 200 meetings — and a
+hyperparameter search over `--target-late-frac` against the 20-meeting eval set would be
+fitting the only held-out data there is.
+
+### Gate status as of 2026-08-28 (`sft-dropv2`, n=20)
+
+`runs/sft-dropv2/g_report_final.json`. **Six of seven gates pass**; SPEC §5.2 is
+all-or-nothing, so the decision is still "ship the baseline" — the sanctioned
+negative-result outcome, not a failure to report.
+
+| gate | result |
+|---|---|
+| G1 revision | PASS |
+| G2 faithfulness | PASS — 8 vs 18 inversions (and better *per claim*: 5.7% vs 7.1%) |
+| G3 rouge2 | PASS — +0.055, p=0.000, 19/20 |
+| G3 rougeL | PASS — +0.066, p=0.000, 19/20 |
+| G4 budget | PASS — 19.58 min **projected**, see `runs/sft-dropv2/g4_projection.md` |
+| G3 rouge1 | **FAIL** — effect clears (+0.056, LB +0.035) but sign test 14/20 p=0.115 |
+
+Two caveats that belong with those numbers. **G4 was never measured on the phone** — the
+user authorised the projection and waived the device run; its margin is 2.1% and thermal
+throttling over a sustained 20-minute run is unmodelled and acts in the failing
+direction. **G2 rests on 18 paired meetings, not 20** — two baseline cases never scored
+even at `--max-tokens 14000`, and since longer summaries are what exhaust the judge, the
+excluded cases are plausibly the baseline's hardest, which flatters the agent slightly.
+
 ### Two version constants govern what must not drift
 
 | constant | home | changing it means |

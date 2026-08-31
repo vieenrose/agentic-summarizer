@@ -176,3 +176,40 @@ The gate is decided on PROSE. Fixing memory retention without fixing synthesis m
 mechanism and not the score. Both halves are needed — which is what
 `runs/g1-study.md` predicted ("no single-point fix can carry this gate") and this now
 quantifies: revision was ~48 points of the loss, synthesis is ~27 more.
+
+## The `v6` ASR regression is REAL — reproduced in-session, and `v7` inherits the risk
+
+Both checkpoints re-run tonight on `data/ly_phase3_v2` (same 20 real zh-TW meetings, same
+session, same harness), so this is not drift against a stale record:
+
+| checkpoint | curated | NOP | mean chars |
+|---|---|---|---|
+| `v5` | **17/20** | 28% | 223 |
+| `v6` | **15/20** | 33% | 248 |
+
+`v6` writes LONGER summaries and curates FEWER meetings — it abstains more. So the
+`late_point` fix that buys +48 points of reversal-arm memory retention costs 2 real-ASR
+meetings, and the mechanism (why carrying `key_term` through a revision would raise the NOP
+rate on unrelated ASR meetings) is NOT understood.
+
+**`qwen-tools-v7` = `v6` pool + 106 detail-preserving synthesis rows, so it inherits this.**
+Any v7 evaluation MUST include `tools/asr_gate.py`; a G1 improvement bought at 2 more ASR
+meetings is not obviously a win, and this is exactly the trade `runs/qwen-v2-heldout/RESULT.md`
+recorded for `v3`->`v4` and then found to be avoidable once the real cause was understood.
+
+## Pool signal after the detail rows
+
+```
+detail retention in synthesis targets:  46.9% (v5/v6)  ->  66.6% (v7)
+NOP share:                              33.2%          (healthy; trap 1's floor is the risk)
+v7 rows: 4,837 = 4,731 (v6) + 106 (detail)
+```
+
+The 106 rows reuse REAL memory states already in the pool, so only the target's retention
+policy changes; 13 were refused for preserving <80% of details and 68 memory states were
+skipped for carrying fewer than 2.
+
+**A guard caught a real mistake here:** the new rows were tagged `sys-v2`
+(`PROMPT_VERSION`) while the tool-call pool is `tools-v1` throughout — including its
+synthesis rows, whose completions are prose rather than tool calls.
+`train_toolcalls.py` refuses a mixed-version pool and stopped the run before it started.

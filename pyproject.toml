@@ -129,6 +129,7 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 "tools/gen_reversals.py" = ["RUF001", "RUF002", "RUF003"]
 "tools/gen_deliberation.py" = ["RUF001", "RUF002", "RUF003"]
 "tools/gen_hedge_synth.py" = ["RUF001", "RUF002", "RUF003"]
+"tools/gen_detail_synth.py" = ["RUF001", "RUF002", "RUF003"]
 # Carries zh-TW tool descriptions and instructions verbatim.
 "tools/to_toolcalls.py" = ["RUF001", "RUF002", "RUF003"]
 # Emits the zh-TW reviewer instructions and questionnaire verbatim.

@@ -1,0 +1,8 @@
+Failed to load /home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/torchao/_C_mxfp8.cpython-310-x86_64-linux-gnu.so: Could not load this library: /home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/torchao/_C_mxfp8.cpython-310-x86_64-linux-gnu.so
+Failed to load /home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/torchao/_C_cutlass_90a.abi3.so: Could not load this library: /home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/torchao/_C_cutlass_90a.abi3.so
+[train] 4837 rows, prompt_version=tools-v1
+[train] 4837 usable train examples, 419 valid
+The fast path is not available because one of the required library is not installed. Falling back to torch implementation. To install follow https://github.com/fla-org/flash-linear-attention#installation and https://github.com/Dao-AILab/causal-conv1d
+Loading weights:   0%|          | 0/320 [00:00<?, ?it/s]Loading weights: 100%|██████████| 320/320 [00:00<00:00, 24063.27it/s]
+warmup_ratio is deprecated and will be removed in v5.2. Use `warmup_steps` instead.
+  0%|          | 0/909 [00:00<?, ?it/s]  0%|          | 1/909 [00:15<3:56:54, 15.65s/it]  0%|          | 2/909 [00:30<3:45:25, 14.91s/it]  0%|          | 3/909 [00:43<3:36:46, 14.36s/it]  0%|          | 4/909 [00:58<3:40:35, 14.62s/it]  1%|          | 5/909 [01:13<3:41:14, 14.68s/it]  1%|          | 6/909 [01:28<3:44:46, 14.94s/it]  1%|          | 7/909 [01:43<3:40:40, 14.68s/it]  1%|          | 8/909 [01:59<3:47:56, 15.18s/it]  1%|          | 9/909 [02:15<3:54:09, 15.61s/it]  1%|          | 10/909 [02:31<3:53:00, 15.55s/it]                                                    1%|          | 10/909 [02:31<3:53:00, 15.55s/it]

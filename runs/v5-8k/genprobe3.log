@@ -1,0 +1,31 @@
+[rev] farmmarket#0: ok
+[rev] fireeng#0: ok
+[rev] solarroof#0: ok
+[rev] dogpark#0: ok
+[rev] nightmarket#0: ok
+[rev] bikeshare#0: ok
+[rev] schoolmerge#0: ok
+[rev] landfill#0: ok
+[rev] busshelter#0: ok
+[rev] watertax#0: refused after 6 attempts
+[rev] clinichours#0: ok
+[rev] sportfield#0: ok
+[rev] cemetery#0: ok
+[rev] shelter#0: ok
+[rev] riverwalk#0: ok
+[rev] transitstation#0: ok
+[rev] youthhousing#0: ok
+[rev] heritage#0: refused after 6 attempts
+[rev] industrialpark#0: ok
+[rev] jobtraining#0: ok
+[rev] airquality#0: ok
+[rev] smartlamp#0: ok
+[rev] hotspring#0: ok
+[rev] earlyintervention#0: refused after 6 attempts
+[rev] fishport#0: ok
+[rev] parkinglot#0: ok
+[rev] sewage#0: ok
+[rev] disability#0: ok
+[rev] tourism#0: ok
+[rev] marketrebuild#0: ok
+[rev] wrote 27, refused 3 -> data/reversals_probe

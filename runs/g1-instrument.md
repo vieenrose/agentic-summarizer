@@ -113,3 +113,66 @@ other points in the same step measure 0.35 and 0.48 and their subjects (`社會�
 `營養午餐`, `在地食材`) ARE in the chunk. **1 fabricated point of 8** — real, worth watching
 under G2, not the systemic ungroundedness it first looked like. Measure containment before
 calling something hallucination; this project has recorded that mistake once already.
+
+---
+
+# RESULT: the loss is now localized, and half of it is ours to fix
+
+Measured on the corrected instrument (27 reversal + 15 control scenarios), `--protocol tool`,
+`cache_prompt: false`. Columns are STRICT/PARTIAL. `runs/lossmap/`.
+
+| checkpoint | arm | emitted | memory | prose | passed |
+|---|---|---|---|---|---|
+| `v5` | reversal (27) | 51.9 / 74.1% | 18.5 / **22.2%** | 11.1 / 22.2% | 3 |
+| `v5` | control (15) | 60.0 / 93.3% | 53.3 / **86.7%** | 20.0 / 53.3% | 7 |
+| `v6` | reversal (27) | 55.6 / 77.8% | 44.4 / **70.4%** | 14.8 / 44.4% | 4 |
+| `v6` | control (15) | 73.3 / 93.3% | 60.0 / **86.7%** | 20.0 / 60.0% | 6 |
+
+## 1. The retention loss IS revision-specific — my reframe was wrong
+
+`v5`: control holds the detail in memory **86.7%**, reversal **22.2%** — a 64-point gap, with
+**0 harness refusals** and the loss attributed to `DROP`. The hypothesis that this is general
+point quality trainable from MeetingBank is REFUTED. `runs/g1-study.md`'s corpus reading
+stands.
+
+Recorded because the instrument was built specifically to test that hypothesis and then
+killed it. That is the instrument working, not wasted effort — the alternative was training
+on MeetingBank point-quality data and discovering it later.
+
+## 2. `qwen-tools-v6` DOES fix it, and was rejected on the broken instrument
+
+`v6` = `v5` + `late_point` carrying `key_term`. Reversal-arm memory retention **22.2% ->
+70.4%**; the control-vs-reversal gap collapses **64.5 -> 16.3 points**. The control arm is
+unchanged (86.7% both), which is what confirms the fix is targeted rather than a general
+shift.
+
+`runs/g1-study.md` records `v6` as "did not move the gate — probe 0/11 -> 1/11 (noise)". At
+n=11, with 2 of those 11 structurally unable to test cross-chunk revision, it could not have
+seen a 48-point mechanism change. **The fix was real and the instrument could not resolve it.**
+
+This does NOT by itself make `v6` shippable: its ASR regression (17/20 -> 15/20) is
+independent of this measurement and unretested.
+
+## 3. The dominant REMAINING loss is synthesis, and it is general
+
+```
+v6 reversal:  memory 70.4% -> prose 44.4%   (-26 points)
+v6 control:   memory 86.7% -> prose 60.0%   (-27 points)
+```
+
+**Identical in both arms.** It appears with no reversal anywhere in the transcript, so it is
+not revision-specific, not a corpus gap, and fully measurable on ordinary MeetingBank
+meetings. Synthesis is handed a memory point carrying the identifying detail and writes prose
+that paraphrases it away.
+
+This is the `tools/gen_hedge_synth.py` shape exactly — memory correct, prose lossy — and that
+intervention (12 rows) fixed its target, recovered both failing G3 gates, and improved ASR
+curation at once. **It has never been tried for identifying detail.** It is the highest-value
+untried move on G1 and it needs no new corpus.
+
+## Why the pass rate barely moved (3/27 -> 4/27)
+
+The gate is decided on PROSE. Fixing memory retention without fixing synthesis moves the
+mechanism and not the score. Both halves are needed — which is what
+`runs/g1-study.md` predicted ("no single-point fix can carry this gate") and this now
+quantifies: revision was ~48 points of the loss, synthesis is ~27 more.

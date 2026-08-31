@@ -1,0 +1,57 @@
+{
+ "config": {
+  "label": "qwen-tools-v5 @ corrected 3-chunk G1 transcripts",
+  "protocol": "tool",
+  "url": "http://127.0.0.1:8081",
+  "prompt_version": "sys-v2",
+  "legacy_prompt": false,
+  "extra_sys_line": "",
+  "max_tokens_step": 256,
+  "max_tokens_synth": 1200,
+  "repeat_penalty": 1.1,
+  "seed": 0,
+  "cache_prompt": false,
+  "generated_at": "2026-08-31T16:39:07+00:00",
+  "host": "louis"
+ },
+ "prose": {
+  "office_move_reversal": "會議審議多項市政事務，包括道路用地變更、社會住宅規劃及營養午餐採購規範等。首先討論一項關於南松街301號土地使用分區變更為城市型單戶住宅的分區法案，該案將原I-A UO-3分區變更為I-A UO-5分區；此類變更適用於南松街301號及南松街326號。接著，會議審議一項關於社會住宅規劃的條例，內容為修正《西雅圖市法規》第24.97章相關規定，以完善第二期社會住宅計畫之土地使用與開發標準；該案亦涉及多項既有條例及其附帶條件和豁免條款。最後，會議討論一項關於營養午餐計畫採購規範的修正案，旨在提高在地食材的使用比例，將原規定中的本地產品要求調整為總額不得超過百分之五十。整體而言，本次會議聚焦於更新南松街土地使用分區、強化社會住宅規劃標準，以及透過修改營養午餐採購規範提升當地食材供應。",
+  "budget_approval_reversal": "本次會議主要審議一項關於修正後下季度行銷預算的提案，並同步要求相關人員就《品質管理制度》之稽核結果向品質管理部門提出具體說明。根據提案內容，該項建議將調整下季度整體行銷活動及相關預算配置，使預算總額達兩百萬美元；此項決議經委員會一致同意後提交審議，後續將依程序由相關單位處理財務與行政事務，以確保資金運用符合組織需求並維持市場競爭力。"
+ },
+ "steps": {
+  "office_move_reversal": [
+   {
+    "step": 0,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議市政大樓搬遷案並作成決議。\", \"add\": [\"市政大樓搬遷案同意，B 棟為最佳方案\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 1 段，共 3 段"
+   },
+   {
+    "step": 1,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議多項市政事務，包括道路用地變更、社會住宅規劃及營養午餐採購規範等。\", \"add\": [\"道路用地變更：南松街301號由I-A UO-3變更為I-A UO-5\", \"社會住宅規劃：第二期已啟動，基地完成土地取得\", \"營養午餐採購：修正規範提高在地食材比例至百分之五十\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 2 段，共 3 段"
+   },
+   {
+    "step": 2,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議多項市政事務，包括道路用地變更、社會住宅規劃及營養午餐採購規範等。\"}}</tool_call>",
+    "prompt_head": "POSITION: 第 3 段，共 3 段"
+   }
+  ],
+  "budget_approval_reversal": [
+   {
+    "step": 0,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議討論下一季行銷預算並核准兩百萬。\", \"add\": [\"下一季行銷預算案核准，兩百萬\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 1 段，共 3 段"
+   },
+   {
+    "step": 1,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議下一季行銷預算及品質管理制度稽核結果。\", \"add\": [\"品質管理制度稽核結果請品保部說明\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 2 段，共 3 段"
+   },
+   {
+    "step": 2,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"下一季行銷預算\", \"品質管理制度稽核結果\"], \"arc\": \"會議審議修正後之下一季行銷預算及品質管理制度稽核結果。\", \"add\": [\"修正後下一季行銷預算為兩百萬\", \"品質管理制度稽核結果請品保部說明\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 3 段，共 3 段"
+   }
+  ]
+ }
+}

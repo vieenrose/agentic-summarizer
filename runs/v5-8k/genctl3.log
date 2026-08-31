@@ -1,0 +1,16 @@
+[rev] streetlight#0: ok
+[rev] recycling#0: refused after 6 attempts
+[rev] eldermeal#0: refused after 6 attempts
+[rev] floodgate#0: ok
+[rev] treecare#0: ok
+[rev] childcare#0: refused after 6 attempts
+[rev] foodbank#0: refused after 6 attempts
+[rev] watertest#0: refused after 6 attempts
+[rev] patrol#0: refused after 6 attempts
+[rev] roadsmooth#0: ok
+[rev] oldhouse#0: ok
+[rev] shelterplan#0: ok
+[rev] citizencard#0: ok
+[rev] homeless#0: refused after 6 attempts
+[rev] langrevival#0: ok
+[rev] wrote 8, refused 7 -> data/reversals_control

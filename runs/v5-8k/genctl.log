@@ -1,0 +1,16 @@
+[rev] streetlight#0: ok
+[rev] recycling#0: generation refused
+[rev] eldermeal#0: generation refused
+[rev] floodgate#0: ok
+[rev] treecare#0: ok
+[rev] childcare#0: generation refused
+[rev] foodbank#0: generation refused
+[rev] watertest#0: generation refused
+[rev] patrol#0: generation refused
+[rev] roadsmooth#0: ok
+[rev] oldhouse#0: ok
+[rev] shelterplan#0: ok
+[rev] citizencard#0: ok
+[rev] homeless#0: generation refused
+[rev] langrevival#0: ok
+[rev] wrote 8, refused 7 -> data/reversals_control

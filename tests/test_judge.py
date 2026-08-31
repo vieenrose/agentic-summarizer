@@ -405,3 +405,29 @@ def test_inversions_are_a_separate_count_never_folded_into_faith_claim() -> None
     score = judge_meeting(prose, meeting(), judge, model="local:8080/x", votes=1)
     assert isinstance(score.inverted, int)
     assert score.inverted > 0
+
+
+def test_retry_caps_reasoning_effort_after_an_empty_response(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """The retry must differ from the first attempt in a way that can actually change
+    the outcome. A reasoning judge can spend its whole budget in the reasoning channel
+    and return empty `content`; at temperature=0 an identical re-ask reproduces that
+    exactly. Measured 2026-08-29 on gpt-oss-20b: 21 of 40 baseline meetings failed this
+    way, systematically the LONGEST summaries (median 5,087 chars vs 562), which left G2
+    comparing only the control arm's shortest outputs.
+    """
+    bodies: list[dict] = []
+
+    def fake_urlopen(req, timeout=None):
+        bodies.append(json.loads(req.data.decode("utf-8")))
+        content = "" if len(bodies) == 1 else "SUPPORTED"
+        return _FakeResponse({"choices": [{"message": {"content": content}}]})
+
+    monkeypatch.setattr("arcsum.judge.client.request.urlopen", fake_urlopen)
+    client = JudgeClient()
+
+    assert client("local:8090/gpt-oss-20b", "sys", "user") == "SUPPORTED"
+    assert len(bodies) == 2
+    assert "chat_template_kwargs" not in bodies[0]
+    assert bodies[1]["chat_template_kwargs"] == {"reasoning_effort": "low"}

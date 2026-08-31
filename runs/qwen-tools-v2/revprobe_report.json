@@ -1,0 +1,205 @@
+{
+ "label": "qwen-tools-v2",
+ "protocol": "tool",
+ "url": "http://127.0.0.1:8081",
+ "generated_at": "2026-08-29T17:22:01+00:00",
+ "n": 11,
+ "passed": 2,
+ "unscored": [],
+ "results": [
+  {
+   "slug": "farmmarket",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "會議審議一項關於溪州假日市場設置的條例，內容為將該市場設於西霍爾蓋特街180號。根據原設定，此處將作為一個開放空間，供遊客在冬季進行休閒活動與熱氣球飛彈发射訓練等相關用途；同時亦允許於該地建造、維護並停放相關設施，以支持該場域的冬季使用需求。",
+   "memory_points": [
+    "溪州假日市集設定案改為撤回"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議並透過溪州假日市集設定案，決議由相關單位於一個月內完成執行計畫並報核准。\", \"add\": [\"溪州假日市集設定案透過，需一個月內完成並報核准\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"溪州假日\"], \"arc\": \"會議稍早透過的溪州假日市集設定案已改為撤回，需重新辦理。\", \"add\": [\"溪州假日市集設定案改為撤回\"]}}</tool_call>"
+   ]
+  },
+  {
+   "slug": "fireeng",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議處理了一項關於消防車的相關議程。根據記錄，原由核准的消防車汰換方案已改為決議，且該決定為否決；因此，會議需重新辦理此事項。",
+   "memory_points": [
+    "消防車汰換案改為決議否決"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議消防車汰換案並作成決議。\", \"add\": [\"消防車汰換案核准，雲梯消防車三十二公尺級\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"消防車汰\"], \"arc\": \"會議稍早核准的消防車汰換案已改為決議否決，需重新辦理。\", \"add\": [\"消防車汰換案改為決議否決\"]}}</tool_call>"
+   ]
+  },
+  {
+   "slug": "solarroof",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於行政大樓安裝於南側房頂的電力接收與發照裝置之條例案。該案旨在為符合資格者提供電力服務，並透過相關法規授權設立、維護及管理符合要求的電力設施；同時亦確認並批准某些先前行為。根據會議記錄，此項條例案已依程序經過提交、審查及表決等步驟，但現行議程安排將其作為中止事項重新辦理，以確保後續處理的連續性與规范性。",
+   "memory_points": [
+    "行政大樓南側屋頂光電系統案改為中止"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議行政大樓南側屋頂光電系統申請案並作成決議。\", \"add\": [\"行政大樓南側屋頂設光電系統案同意，需經相關部門修正\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"行政大樓南側屋頂\"], \"arc\": \"會議稍早同意的行政大樓南側屋頂光電系統案已改為中止，需重新辦理。\", \"add\": [\"行政大樓南側屋頂光電系統案改為中止\"]}}</tool_call>"
+   ]
+  },
+  {
+   "slug": "dogpark",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": true,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於動物園與寵物公園開放活動的決議案，並確認該事項自先前會議中已獲通過。根據相關規定，若某項決議案經宣讀後被認為符合程序且予以採納，則其內容將視為已完成辦理，無需再進行後續程式；此類案例通常適用於已獲授權或核准的公開活動、開放空間管理安排及與動物園合作夥伴簽訂之協議等事項。在本案中，該決議案旨在確認對先前會議中相關決策的保留，以維持動植物園開放活動的正常運作與執行秩序。整體而言，本次會議僅就一項既有決議案的延續進行程式性確認，並依程序不要求再行辦理。",
+   "memory_points": [
+    "寵物公園開放案改為決議退回"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議寵物公園開放案並作成決議。\", \"add\": [\"寵物公園開放案同意，河濱寵物活動區\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"寵物公園開放\"], \"arc\": \"會議稍早同意的寵物公園開放案已改為決議退回，需重新辦理。\", \"add\": [\"寵物公園開放案改為決議退回\"]}}</tool_call>"
+   ]
+  },
+  {
+   "slug": "nightmarket",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議依序審議多項涉及市府管理、公共安全與都市規劃的議程。首先，會議建議將一般餐飲店之營業時間提前至凌晨一點，以配合相關時段管理需求；同時要求市行政長官在公共衛生部門轄區內增加不定期夜間突擊稽查的频率，並引入第三方機構進行初步篩選。針對違規餐飲行為，會議建議對連續三次違規的店家實施吊照處分，並依情節严重程度設定逐步增加的罰款金額。接著，會議要求對符合資格之老舊建築進行電氣系統安全檢測，規定由消防局認定且具備相關專業資格的檢測機構可獲准使用，該機構須於三十天內提交報告，內容涵蓋合格檢測證明、測試結果及機構負責人說明；同時設定限期改善時程，逾期未完成相關計畫的建築物得停止使用並進行斷續營業。會議亦要求市行政長官與消防局合作制定針對性改善方案，包括設置臨時消防站、擴寬或重建消防通道、規劃新的或現有的消防路線，並安排兩週內提交修正後之平面圖與安全評估報告；另須於三十天內與消防局及市政處共同安排現場勘查，記錄相關發現與建議。",
+   "memory_points": [
+    "建議將一般餐飲店強制關門時間提前至凌晨一點",
+    "增加不定期夜間突擊稽查頻率並引入第三方初篩",
+    "對連續三次違規店家實施吊照處分與階梯式罰款",
+    "要求十年以上老舊建築進行電氣系統安全檢測",
+    "由消防局認定合格檢測機構並公開查詢",
+    "設定限期改善時程，逾期未改善可斷續營業",
+    "要求兩週內提出修正後平面圖與安全評估報告",
+    "消防局須與市政處共同安排現場勘驗並記錄"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議多項市政議程，包括餐飲營業時間規範、油煙稽查強化、老舊建築電氣安全檢測及消防通道規劃修正。\", \"add\": [\"建議將一般餐飲店強制關門時間提前至凌晨一點\", \"增加不定期夜間突擊稽查頻率並引入第三方初篩\", \"對連續三次違規店家實施吊照處分與階梯式罰款\", \"要求十年以上老舊建築進行電氣系統安全檢測\", \"由消防局認定合格檢測機構並公開查詢\", \"設定限期改善時程，逾期未改善可斷續營業\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議多項市政議程，包括餐飲營業時間規範、油煙稽查強化、老舊建築電氣安全檢測及消防通道規劃修正。\", \"add\": [\"要求兩週內提出修正後平面圖與安全評估報告\", \"消防局須與市政處共同安排現場勘驗並記錄\"]}}</tool_call>"
+   ]
+  },
+  {
+   "slug": "bikeshare",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於公共腳踏車擴充站的決議案，內容為將原同意議程中的相關事項調整為決議並予以緩慢處理。該案旨在確認或批准某些既定安排與決策方向，同時因程序性質（即由同意議程轉為決議及緩慢處理）而延遲其執行時程，以確保後續行動符合特定管理、技術或政策需求且能依規定順序進行。",
+   "memory_points": [
+    "公共腳踏車擴站案改為決議緩議"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議公共腳踏車擴站案並作成決議。\", \"add\": [\"公共腳踏車擴站案同意，照案核備\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"公共腳踏車\"], \"arc\": \"會議稍早同意的公共腳踏車擴站案已改為決議緩議，需重新辦理。\", \"add\": [\"公共腳踏車擴站案改為決議緩議\"]}}</tool_call>"
+   ]
+  },
+  {
+   "slug": "schoolmerge",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於東區國民小學合併案的條例，內容為將該案由「同意」轉為「暫不適合」。根據原條例規定，若兩家或更多個教育機構擬於同一地址進行合併，應先經相關委員會審查並確認其符合公共利益與教育發展需求；惟本次會議已依程序作出不同判斷，決定不再批准它們的合併方案。",
+   "memory_points": [
+    "東區國小合併案改為暫不合併"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議東區國小合併案並作成決議。\", \"add\": [\"東區國小合併案准予，中興與復興合併\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"東區國小\"], \"arc\": \"會議稍早准予的東區國小合併案已改為暫不合併，需重新辦理。\", \"add\": [\"東區國小合併案改為暫不合併\"]}}</tool_call>"
+   ]
+  },
+  {
+   "slug": "landfill",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於垃圾掩埋場的延期申請案。根據該案的規定，原申請旨在將符合資格者登記於公共衛生局檔案中，並允許其參加後續相關程序；然而，經審議後，會議決定不再給予任何延期許可，使此項申請失效。",
+   "memory_points": [
+    "垃圾掩埋場延期案改為不予延期"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議垃圾掩埋場延期案並作成決議。\", \"add\": [\"垃圾掩埋場延期案准予，第二期區運作正常\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"垃圾掩埋場延期案\"], \"arc\": \"會議稍早准予的垃圾掩埋場延期案已改為不予延期，需重新辦理。\", \"add\": [\"垃圾掩埋場延期案改為不予延期\"]}}</tool_call>"
+   ]
+  },
+  {
+   "slug": "busshelter",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": true,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於是否將公共工程局（以「候車亭」為經營名稱）的廣告業務委外服務協議進行審議的提案。該提案旨在確認或否決一份已實施的協議，並授權相關人員執行其內容；同時亦核准與該公司簽訂未來所有必要文件及任何修正案，以維持合約安排。會議針對此事項作出決議，若同意提交，則須經市議會四分之三多數票通過方可生效。",
+   "memory_points": [
+    "決議改為退回重議"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議並透過「候車亭廣告委外案」，決議將全市三百座候車亭廣告許可權交由專業廠商管理。\", \"add\": [\"決議將全市三百座候車亭廣告許可權委外給專業廠商管理\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"決議將全市\"], \"arc\": \"會議稍早透過的「候車亭廣告委外案」已改為退回重議，需重新辦理。\", \"add\": [\"決議改為退回重議\"]}}</tool_call>"
+   ]
+  },
+  {
+   "slug": "clinichours",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於公共衛生服務之條例，內容為修改並重新辦理「衛生局夜診」相關規定。根據原條例先前通過時所設定的標準，該項目旨在提供衛生人員在特定時段內進行免費或低成本醫療服務的機制；然而，經此次修正後，其運作方式已不再符合原設計，因此決定將原條例中的「衛生局夜診」部分內容予以停止試辦。會議同時亦處理另一項關於公共衛生服務之條例，該案旨在廢除其中一項與「社區巡邏隊」相關且曾獲批准的規定，以清理舊有程式、推動未來服務安排。整體而言，本次會議聚焦於修正既有條例的適用情境，使後續執行能更清楚地反映原定方向並避免出現歧視或混淆。",
+   "memory_points": [
+    "衛生局夜診案改為停止試辦"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議衛生局夜診案並作成決議。\", \"add\": [\"衛生所夜診案同意，山區三處試辦\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"衛生所夜\"], \"arc\": \"會議稍早同意的衛生局夜診案已改為停止試辦，需重新辦理。\", \"add\": [\"衛生局夜診案改為停止試辦\"]}}</tool_call>"
+   ]
+  },
+  {
+   "slug": "sportfield",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於運動場地的條例，內容為將原允許在公共場所設置運動場地的規定予以收回。該事項旨在調整既有市政法規中相關條文之適用範圍或解除對特定區域的強制性要求，使運動場地管理、設施維護及相關活動得以依新安排繼續執行，同時確保後續立法與行政程序能針對修正後的場地設定進行推進。",
+   "memory_points": [
+    "運動場地開放案改為收回"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議運動場地開放案並作成決議。\", \"add\": [\"運動場地開放案同意，校園操場夜間開放\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"運動場地開\"], \"arc\": \"會議稍早同意的運動場地開放案已改為收回，需重新辦理。\", \"add\": [\"運動場地開放案改為收回\"]}}</tool_call>"
+   ]
+  }
+ ]
+}

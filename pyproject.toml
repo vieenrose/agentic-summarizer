@@ -87,6 +87,10 @@ markers = [
 line-length = 100
 target-version = "py312"
 src = ["src", "tests"]
+# `runs/` holds FROZEN measurement artifacts -- the scripts committed there are the record
+# of how a number was produced and must stay byte-identical to what was actually run.
+# Reformatting them to satisfy the linter would silently invalidate that provenance.
+extend-exclude = ["runs"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
@@ -117,6 +121,18 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 # These tools quote zh-TW/zh-CN text and the ASR model's own prompt verbatim; the
 # confusable characters are the data being documented.
 "tools/asr_transcribe.py" = ["RUF001", "RUF002", "RUF003"]
+# Carries SPEC 2.2 stage 3's zh-TW composition prompt verbatim; its fullwidth punctuation
+# is part of the prompt text and must not drift from the pilot's.
+"tools/build_heldout_refs.py" = ["RUF001", "RUF002", "RUF003"]
+# Plants zh-TW scenario text and generation prompts verbatim; the fullwidth punctuation
+# is the data being generated, not an identifier hazard.
+"tools/gen_reversals.py" = ["RUF001", "RUF002", "RUF003"]
+"tools/gen_deliberation.py" = ["RUF001", "RUF002", "RUF003"]
+"tools/gen_hedge_synth.py" = ["RUF001", "RUF002", "RUF003"]
+# Carries zh-TW tool descriptions and instructions verbatim.
+"tools/to_toolcalls.py" = ["RUF001", "RUF002", "RUF003"]
+# Emits the zh-TW reviewer instructions and questionnaire verbatim.
+"tools/build_review_packet.py" = ["RUF001", "RUF002", "RUF003"]
 "tools/latin_ablation.py" = ["RUF001", "RUF002", "RUF003"]
 "tools/v1_to_v2.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/conftest.py" = ["RUF001", "RUF002", "RUF003"]

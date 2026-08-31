@@ -312,7 +312,7 @@ def test_token_len_name_is_recorded() -> None:
 def test_prompt_and_tokenize_version_are_recorded() -> None:
     model = Scripted(("摘要",))
     result = run_map_reduce(meeting(5), model)
-    assert result.prompt_version == "sys-v1"
+    assert result.prompt_version == "sys-v2"
     assert result.tokenize_version == "chartok-v1"
 
 

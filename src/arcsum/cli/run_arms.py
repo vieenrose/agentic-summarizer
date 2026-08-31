@@ -55,11 +55,13 @@ def run_both_arms(
     map_model: LlamaServer | None = None,
     budget: int = CHUNK_TOKENS,
     reduce_context_tokens: int | None = None,
-) -> tuple[list[dict], list[dict], list[str], dict[str, dict[str, str]]]:
+    skip_failed_steps: bool = False,
+    protocol: str = "edit",
+) -> tuple[list[dict], list[dict], list[str], dict[str, dict]]:
     """Returns `(agent_pairs, baseline_pairs, skipped_meeting_ids, failures)`.
 
-    `failures` is `{"agent": {meeting_id: repr(exc)}, "baseline": {meeting_id:
-    repr(exc)}}` — a meeting failing on EITHER arm is excluded from BOTH pairs lists
+    `failures` is `{"agent": ..., "baseline": ..., "agent_partial": ...}` — a meeting
+    failing on EITHER arm is excluded from BOTH pairs lists
     (an unpaired candidate cannot enter SPEC §5.2's paired comparison), but recorded
     by which arm actually failed and why, rather than silently vanishing alongside the
     meetings dropped for having no reference.
@@ -67,7 +69,10 @@ def run_both_arms(
     agent_pairs: list[dict] = []
     baseline_pairs: list[dict] = []
     skipped: list[str] = []
-    failures: dict[str, dict[str, str]] = {"agent": {}, "baseline": {}}
+    # `agent_partial` is separate from `agent` on purpose: those meetings are KEPT in
+    # the pairs files, so a reader who only counted `agent` would not learn that some
+    # summaries were built from an incomplete read.
+    failures: dict[str, dict] = {"agent": {}, "baseline": {}, "agent_partial": {}}
 
     for path in sorted(corpus_dir.glob("*.txt")):
         meeting_id = path.stem
@@ -81,8 +86,21 @@ def run_both_arms(
 
         agent_candidate: str | None = None
         try:
-            trace = run_agent(utterances, step_model, synth_model=synth_model, budget=budget)
+            trace = run_agent(
+                utterances,
+                step_model,
+                synth_model=synth_model,
+                budget=budget,
+                on_step_error="skip" if skip_failed_steps else "raise",
+                protocol=protocol,
+            )
             agent_candidate = trace.synthesis.prose.text if trace.synthesis else ""
+            if trace.failed_steps:
+                # Recorded even though the meeting SURVIVED: its summary was built from
+                # fewer chunks than the baseline read, so the pair is degraded, not
+                # equal. Silently keeping it would let a partial read count as a fair
+                # comparison. Reported alongside the hard failures, under its own key.
+                failures["agent_partial"][meeting_id] = trace.failed_steps
         except Exception as exc:  # one meeting must not sink the whole pass
             failures["agent"][meeting_id] = repr(exc)
 
@@ -159,6 +177,23 @@ def build_parser() -> argparse.ArgumentParser:
         "deployed model's real context size. Default: unbounded (old behaviour).",
     )
     p.add_argument(
+        "--protocol",
+        choices=("edit", "tool"),
+        default="edit",
+        help="SPEC §4.1 step grammar: 'edit' (v0 edit lines) or 'tool' (v1.0 batched "
+        "update_memory call). Only the AGENT arm is affected — the map-reduce baseline "
+        "is prose either way, which is what keeps §5.2's comparison fair across a "
+        "protocol change.",
+    )
+    p.add_argument(
+        "--skip-failed-steps",
+        action="store_true",
+        help="keep a meeting whose individual step calls fail, reading on against "
+        "unchanged memory and recording the skipped chunks (product behaviour). The "
+        "default fails the whole meeting, which is correct for a PAIRED experiment: a "
+        "partially read meeting is not comparable to a fully read one.",
+    )
+    p.add_argument(
         "--no-raw-completion",
         action="store_true",
         help="use /v1/chat/completions instead of /apply-template + /completion. The "
@@ -223,6 +258,8 @@ def main(argv: list[str] | None = None) -> int:
         map_model=map_model,
         budget=args.budget,
         reduce_context_tokens=args.reduce_context_tokens,
+        skip_failed_steps=args.skip_failed_steps,
+        protocol=args.protocol,
     )
 
     args.out_agent.write_text(
@@ -239,6 +276,12 @@ def main(argv: list[str] | None = None) -> int:
     if skipped:
         print(
             f"[run-arms] skipped {len(skipped)} meetings with no reference: {skipped}",
+            file=sys.stderr,
+        )
+    if failures["agent_partial"]:
+        print(
+            f"[run-arms] agent_partial={len(failures['agent_partial'])} meetings kept with "
+            f"SKIPPED steps: {failures['agent_partial']}",
             file=sys.stderr,
         )
     if failures["agent"] or failures["baseline"]:

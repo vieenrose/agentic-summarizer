@@ -1,0 +1,47 @@
+{
+ "config": {
+  "label": "qwen-tools-v5",
+  "protocol": "tool",
+  "url": "http://127.0.0.1:8081",
+  "prompt_version": "sys-v2",
+  "legacy_prompt": false,
+  "extra_sys_line": "",
+  "max_tokens_step": 256,
+  "max_tokens_synth": 1200,
+  "repeat_penalty": 1.1,
+  "seed": 0,
+  "cache_prompt": false,
+  "generated_at": "2026-08-31T10:12:02+00:00",
+  "host": "louis"
+ },
+ "prose": {
+  "office_move_reversal": "會議處理一項關於市政大樓搬遷的申請，並確認先前已同意的決議已改為撤回。此項涉及特定地點之建築移動安排，相關程序需重新辦理以維持法律上的規範性記錄。",
+  "budget_approval_reversal": "本次會議主要處理一項關於行銷預算調整的議程，內容為將原定核准的下一季行銷預算案改為重新提案，並要求相關部門與人員更新產品或服務供應商報價。此項議程旨在確保行銷預算依據最新市場資訊進行調整，使後續決策基於現行價格體系而非舊有標準，以提升預算規劃的準確性與靈活性。"
+ },
+ "steps": {
+  "office_move_reversal": [
+   {
+    "step": 0,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議市政大樓搬遷案並作成決議。\", \"add\": [\"市政大樓搬遷案同意，B 棟為最佳方案\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 1 段，共 2 段"
+   },
+   {
+    "step": 1,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"市政大樓搬遷\"], \"arc\": \"會議稍早同意的市政大樓搬遷案已改為撤回，需重新辦理。\", \"add\": [\"市政大樓搬遷案改為撤回\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 2 段，共 2 段"
+   }
+  ],
+  "budget_approval_reversal": [
+   {
+    "step": 0,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議討論下一季行銷預算並核准兩百萬。\", \"add\": [\"下一季行銷預算案核准，兩百萬\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 1 段，共 2 段"
+   },
+   {
+    "step": 1,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"下一季行銷\"], \"arc\": \"會議稍早核准的下一季行銷預算已改為重新提案，需更新報價。\", \"add\": [\"下一季行銷預算改為重新提案\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 2 段，共 2 段"
+   }
+  ]
+ }
+}

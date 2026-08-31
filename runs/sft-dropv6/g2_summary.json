@@ -1,0 +1,10 @@
+{
+ "paired": 14,
+ "agent_inversions": 3,
+ "baseline_inversions": 53,
+ "agent_claims": 77,
+ "baseline_claims": 598,
+ "baseline_unscored": 6,
+ "judge": "local:8090/gpt-oss-20b",
+ "votes": 3
+}

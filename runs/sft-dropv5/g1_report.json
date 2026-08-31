@@ -1,0 +1,32 @@
+{
+ "config": {
+  "label": "sft-dropv5",
+  "url": "http://127.0.0.1:8081",
+  "prompt_version": "sys-v2",
+  "legacy_prompt": true,
+  "max_tokens_step": 256,
+  "max_tokens_synth": 1200,
+  "repeat_penalty": 1.1,
+  "seed": 0,
+  "cache_prompt": false,
+  "generated_at": "2026-08-28T16:51:49+00:00",
+  "host": "louis"
+ },
+ "g1_passed": false,
+ "results": [
+  {
+   "name": "office_move_reversal",
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "distractor_absent": true,
+   "passed": false
+  },
+  {
+   "name": "budget_approval_reversal",
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "distractor_absent": true,
+   "passed": true
+  }
+ ]
+}

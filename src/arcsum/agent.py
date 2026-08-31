@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import time
 from collections.abc import Callable
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from arcsum.chunker import CHUNK_TOKENS, Chunk, iter_chunks
 from arcsum.guards import Outcome, apply_ops
@@ -28,20 +28,25 @@ from arcsum.memory import Memory
 from arcsum.ops import Arc, Drop, Nop, Op, parse_ops, render_op
 from arcsum.prompts import (
     PROMPT_VERSION,
+    TOOLCALL_PROMPT_VERSION,
     build_memory_view,
     build_step_prompt,
     build_synth_prompt,
     step_system_prompt,
     synth_system_prompt,
+    tool_step_system_prompt,
 )
 from arcsum.prose import Prose, finalize, ungrounded_numbers
 from arcsum.tokens import TOKENIZE_VERSION, heuristic_token_len, token_len_name
+from arcsum.toolcalls import parse_tool_calls
 from arcsum.transcript import Utterance
 
-#: SPEC §4.1's table: ~250 SYS + <=600 memory + ~2,500 chunk ~= 3,500. Set above that
-#: measured total, mirroring the headroom the prior project's STEP_BUDGET left above its
-#: own ~2.9k estimate — real prompts vary, and this must fail loud, not truncate.
-STEP_BUDGET = 3800
+#: SPEC §4.1's table at 8k context: ~190 SYS (tool schema) + <=600 memory + ~6,400 chunk
+#: ~= 7,200. Set above that measured total, mirroring the headroom the prior project's
+#: STEP_BUDGET left above its own estimate — real prompts vary, and this must fail loud,
+#: not truncate. Raised from 3,800 alongside `CHUNK_TOKENS` 2500 -> 6400; see that
+#: constant's note for the device measurements behind the change.
+STEP_BUDGET = 7600
 
 #: A one-line nudge appended to the user turn on a `nop_retry` re-ask. Deliberately
 #: minimal: it must not change the op grammar or the model's task, only press on the
@@ -114,6 +119,24 @@ class Step:
 #: calling the model. Deliberately states only what is actually known.
 EMPTY_MEMORY_PROSE = "本次會議沒有記錄到具體的決議或討論重點。"
 
+#: Prepended to the summary when `on_step_error="skip"` dropped one or more chunks, so a
+#: PARTIAL read is never presented as a complete one.
+#:
+#: `skip` exists so a single transient failure does not cost a whole meeting (measured: one
+#: llama.cpp 500 took a paired eval from n=20 to n=19 and withheld every gate). But the
+#: same behaviour in a product means the reader is handed a summary of a meeting the system
+#: did not finish reading, with nothing on the page saying so. Recording it in
+#: `trace.failed_steps` serves the harness; this serves the person who has to trust the
+#: output. `{n}` and `{total}` are filled in by `partial_read_notice`.
+_PARTIAL_READ_NOTICE = "（注意：本摘要有 {n}/{total} 段內容未能讀取，可能遺漏該部分的決議。）\n"
+
+
+def partial_read_notice(failed: int, total: int) -> str:
+    """The user-facing warning for a partial read. Empty string when the read was whole."""
+    if not failed or total <= 0:
+        return ""
+    return _PARTIAL_READ_NOTICE.format(n=failed, total=total)
+
 
 @dataclass(frozen=True, slots=True)
 class Synthesis:
@@ -152,6 +175,11 @@ class Trace:
     #: Chunk indices where `NOP_COLLAPSE_K` consecutive NOPs fired on a content-rich
     #: chunk. Reported, never repaired — see `guards.apply_ops`'s docstring for why.
     coverage_gaps: list[int] = field(default_factory=list)
+    #: Chunk indices whose model call FAILED and was skipped under
+    #: `on_step_error="skip"`. Empty under the default `"raise"`. Never silently empty
+    #: when a step was lost: a summary built from a partial read must SAY so, or the
+    #: coverage metrics quietly describe a different meeting than the one supplied.
+    failed_steps: list[int] = field(default_factory=list)
     usage: Usage = field(default_factory=Usage)
 
     @property
@@ -207,6 +235,8 @@ def run_agent(
     on_step: Callable[[int, float, int], None] | None = None,
     synthesize: bool = True,
     nop_retry: bool = False,
+    on_step_error: str = "raise",
+    protocol: str = "edit",
 ) -> Trace:
     """Read `utterances` chunk by chunk, curating `memory` via edit lines, then
     (unless `synthesize=False`) run the final `SYNTHESIZE` call.
@@ -220,10 +250,18 @@ def run_agent(
     mem = memory if memory is not None else Memory()
     mem.token_len = token_len
 
-    sys = step_system_prompt()
+    # SPEC §4.1: v0 emits edit lines, v1.0 emits one `update_memory` tool call. Both land
+    # on the same `Op` list, so memory, guards, caps and eviction are shared — the two
+    # protocols are comparable on one harness rather than forked.
+    if protocol not in ("edit", "tool"):
+        raise ValueError(f"unknown protocol {protocol!r}; expected 'edit' or 'tool'")
+    use_tools = protocol == "tool"
+    sys = tool_step_system_prompt() if use_tools else step_system_prompt()
     trace = Trace(
         memory=mem,
-        prompt_version=PROMPT_VERSION,
+        # A v1.0 tool-call run must never be confused with a v0 edit-line run in any
+        # trace or eval record — the two are not comparable.
+        prompt_version=TOOLCALL_PROMPT_VERSION if use_tools else PROMPT_VERSION,
         tokenize_version=TOKENIZE_VERSION,
         token_len_name=token_len_name(token_len),
         budget=budget,
@@ -238,7 +276,7 @@ def run_agent(
         elapsed = time.monotonic() - started
         trace.usage.record(token_len(sys) + token_len(user), token_len(raw), elapsed)
 
-        ops = parse_ops(raw)
+        ops = parse_tool_calls(raw) if use_tools else parse_ops(raw)
         vetoed: list[tuple[str, str]] = []
         if op_filter is not None:
             kept: list[Op] = []
@@ -258,9 +296,12 @@ def run_agent(
         )
         return raw, elapsed, ops, vetoed, outcome
 
-    for chunk in iter_chunks(utterances, budget=budget, token_len=token_len):
+    # Materialised rather than streamed: `POSITION` needs the chunk COUNT, and the count
+    # is only knowable once packing has finished. Chunks are small and already in memory.
+    chunks = list(iter_chunks(utterances, budget=budget, token_len=token_len))
+    for chunk in chunks:
         memory_before = build_memory_view(trace.memory)
-        user = build_step_prompt(trace.memory, chunk)
+        user = build_step_prompt(trace.memory, chunk, total=len(chunks))
         prompt_tokens = token_len(sys) + token_len(user)
         if prompt_tokens > step_budget:
             raise StepBudgetExceeded(
@@ -268,7 +309,25 @@ def run_agent(
                 "Lower the chunk budget rather than truncating the prompt."
             )
 
-        raw, elapsed, ops, vetoed, outcome = call(chunk, user)
+        try:
+            raw, elapsed, ops, vetoed, outcome = call(chunk, user)
+        except RuntimeError:
+            # A step whose model call fails after its own retries. Under the default
+            # "raise" this aborts the meeting, which is right for a paired experiment:
+            # a partially-read meeting is not comparable to a fully-read one.
+            #
+            # Under "skip" the chunk is recorded in `trace.failed_steps` and the read
+            # CONTINUES against unchanged memory. That is the product behaviour — one
+            # bad step should not cost the whole summary. Measured: an eval run lost
+            # `AlamedaCC_11162021` entirely to a single llama.cpp 500 (trap 3), taking
+            # the paired n from 20 to 19 and withholding every G3 gate. `StepBudgetExceeded`
+            # is deliberately NOT caught here: it means the prompt is too big for the
+            # configured budget, which is a configuration error that every later step
+            # would hit too, not a transient server fault.
+            if on_step_error != "skip":
+                raise
+            trace.failed_steps.append(chunk.index)
+            continue
         retried = False
         if nop_retry and outcome.nop_collapse:
             retry_user = user + _NOP_RETRY_NUDGE
@@ -306,6 +365,15 @@ def run_agent(
         trace.synthesis = synthesize_memory(
             trace.memory, synth_model or model, token_len=token_len, usage=trace.usage
         )
+        # A partial read must SAY so on the summary itself. `trace.failed_steps` already
+        # records it for the harness; this is for the person reading the output, who
+        # otherwise cannot tell a whole meeting from one the system gave up on.
+        notice = partial_read_notice(len(trace.failed_steps), len(chunks))
+        if notice:
+            prose = trace.synthesis.prose
+            trace.synthesis = replace(
+                trace.synthesis, prose=replace(prose, text=notice + prose.text)
+            )
 
     return trace
 

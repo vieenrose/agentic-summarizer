@@ -37,10 +37,16 @@ from arcsum.tokens import heuristic_token_len
 from arcsum.transcript import Utterance, parse_transcript
 
 MODEL_REPO = os.environ.get("ARCSUM_MODEL_REPO", "Luigi/minicpm5-1b-arcsum")
-#: Q4_K_M, NOT the evaluated artifact. Every gate number in the model card was measured
-#: on Q8_0; this quant is here because a 1.15 GB model on Space CPU makes a live demo
-#: unwatchable. Stated in the UI too, so nobody reads demo output as an eval result.
-MODEL_FILE = os.environ.get("ARCSUM_MODEL_FILE", "MiniCPM5-1B.Q4_K_M.gguf")
+#: Q8_0 — the EVALUATED artifact, and now the only one published.
+#: Q4_K_M used to be served here for speed. It was then MEASURED against Q8_0 on the same
+#: 40 held-out meetings and is materially worse: the agent's margin over the map-reduce
+#: baseline more than halves on ROUGE-1 (+0.077 -> +0.034, wins 29/40 -> 22/40) and its
+#: summaries run ~30% shorter (226 vs 320 chars), i.e. it simply records less. A demo
+#: running that quant under the card's Q8 numbers would misrepresent the system, so the
+#: file was withdrawn from the model repo.
+#: Cost: 1.15 GB instead of 688 MB, and slower on Space CPU. `ARCSUM_MODEL_FILE` can
+#: still point elsewhere — but measure any replacement before trusting it.
+MODEL_FILE = os.environ.get("ARCSUM_MODEL_FILE", "MiniCPM5-1B.Q8_0.gguf")
 
 MAX_TOKENS_STEP = 512
 MAX_TOKENS_SYNTH = 1000
@@ -377,14 +383,23 @@ independently, so a decision reversed at minute 90 never reaches the summary of 
 
 ### Honest status
 
-This checkpoint clears **6 of 7** of the project's ship gates — it beats a fair
-map-reduce baseline (same model, same chunk size) on ROUGE-2 and ROUGE-L (19/20 meetings
-each) and on faithfulness (8 vs 18 inversions), but misses ROUGE-1's consistency test
-(14/20, p=0.115). Under an all-or-nothing rule the recorded decision is *ship the
-baseline*. Full numbers and caveats: [model card](https://hf.co/{MODEL_REPO}).
+This checkpoint clears **6 of 7** ship gates on **40 held-out meetings** it was never
+trained or tuned on. It beats a fair map-reduce baseline (same model, same chunk size) on
+all three ROUGE metrics — 29/40, 31/40, 33/40 meetings — and on faithfulness by a wide
+margin (**18 inversions vs 109**), while writing summaries ~8x shorter. On long meetings
+(≥400 lines) it wins 9 of 10.
 
-**This demo runs Q4_K_M for speed; the evaluated artifact is Q8_0.** No number above was
-measured on the quant you are watching. Expect a few seconds per chunk on Space CPU.
+It **fails the revision probe (G1)**: given a decision reversed later in the meeting it
+states the reversal but drops the identifying detail. Under an all-or-nothing rule the
+recorded decision is therefore *ship the baseline*. Two further caveats travel with the
+numbers: the on-device latency gate is a **projection, never measured on a phone**, and
+faithfulness per-claim actually favours the baseline (7.3% vs 4.9%) — the agent wins on
+absolute inversions partly because it asserts far less. Full detail:
+[model card](https://hf.co/{MODEL_REPO}).
+
+**This demo runs Q8_0 — the same artifact every number above was measured on.** A smaller
+Q4_K_M build was withdrawn after measurement showed it keeps under half the quality margin.
+Expect several seconds per chunk on Space CPU; that is the cost of running the real thing.
 """
     )
 

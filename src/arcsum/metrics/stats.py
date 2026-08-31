@@ -214,8 +214,18 @@ def count_inversions(
         record = systems.get(system)
         if record is None:
             continue
-        if paired_with is not None and paired_with not in systems:
-            continue
+        if paired_with is not None:
+            # The other arm must carry the FIELD, not merely exist. Records from the
+            # ROUGE scorer and from the judge are merged into one index, and the ROUGE
+            # pass produces a record for every meeting in BOTH arms -- so a bare
+            # `paired_with in systems` is true even when only one arm was judged, and
+            # the pairing silently does nothing. Measured 2026-08-29: a run with 35
+            # judged agent meetings and 19 judged baseline meetings summed "14 vs 11"
+            # across different denominators and reported G2 FAIL; paired correctly on
+            # the 19 both arms carry, it is 8 vs 11.
+            other = systems.get(paired_with)
+            if other is None or other.get(field_name) is None:
+                continue
         total += record.get(field_name, 0) or 0
     return total
 

@@ -1,0 +1,7 @@
+{
+  "agent": {},
+  "baseline": {
+    "SeattleCityCouncil_06072021": "RuntimeError('llama-server 500: {\"error\":{\"code\":500,\"message\":\"The model produced output that does not match the expected Content-only format\",\"type\":\"server_error\"}}')",
+    "SeattleCityCouncil_06272016": "RuntimeError('llama-server 500: {\"error\":{\"code\":500,\"message\":\"The model produced output that does not match the expected Content-only format\",\"type\":\"server_error\"}}')"
+  }
+}

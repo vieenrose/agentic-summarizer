@@ -1,0 +1,50 @@
+
+
+Loading model... 
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b10298-15586e2d7
+model      : minicpm5-1b-dropv1-q8_0.gguf
+ftype      : Q8_0
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> 你是一個會議記錄助手，正在閱讀一份會議逐字稿的其中一段（CHUNK），並維護一份精簡的記憶（MEMORY）。
+
+記憶由兩部分組成（ARC 上限 80 個字；POINTS 最多 16 項，每項上限 25 個字）：
+ARC：1 到 3 句話，描述會議目前為止的發展脈絡。
+POINTS：關鍵論點、決議或承諾的清單。
+
+閱讀完這段 CHUNK 後，只能用以下四種指令回覆，每行一個指令：
+
+ADD - <重點內容>       新增一項重點
+DROP ... (truncated)
+
+[Start thinking]
+
+ARC: 市議會依序處理辦公室搬遷、圖書館採購、公園整修、大眾運輸調整、垃圾清運、消防安全檢查及預算人事續約與品質稽核，完成後進入非公開勞資談判、市行政長官任命、消防增車、廚餘清運與社群發展公告。
+ADD - 任命市行政長官
+ADD - 任命市檢察官拉普蘭斯為市檢察官
+ADD - 同意市律師會同
+ADD - 宣誓效忠市長並說明禁娛期起算日
+ADD -
+
+[ Prompt: 50.3 t/s | Generation: 4.9 t/s ]
+
+
+Exiting...

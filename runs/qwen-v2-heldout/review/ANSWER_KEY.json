@@ -1,0 +1,78 @@
+{
+ "seed": 20260830,
+ "note": "do not open before review is complete",
+ "assignments": [
+  {
+   "item": 1,
+   "meeting_id": "DenverCityCouncil_04062020",
+   "A": "agent",
+   "B": "baseline"
+  },
+  {
+   "item": 2,
+   "meeting_id": "SeattleCityCouncil_02082021",
+   "A": "baseline",
+   "B": "agent"
+  },
+  {
+   "item": 3,
+   "meeting_id": "DenverCityCouncil_04112022",
+   "A": "agent",
+   "B": "baseline"
+  },
+  {
+   "item": 4,
+   "meeting_id": "SeattleCityCouncil_04182016",
+   "A": "agent",
+   "B": "baseline"
+  },
+  {
+   "item": 5,
+   "meeting_id": "SeattleCityCouncil_09292020",
+   "A": "baseline",
+   "B": "agent"
+  },
+  {
+   "item": 6,
+   "meeting_id": "KingCountyCC_03172021",
+   "A": "agent",
+   "B": "baseline"
+  },
+  {
+   "item": 7,
+   "meeting_id": "SeattleCityCouncil_10292018",
+   "A": "baseline",
+   "B": "agent"
+  },
+  {
+   "item": 8,
+   "meeting_id": "DenverCityCouncil_11182019",
+   "A": "agent",
+   "B": "baseline"
+  },
+  {
+   "item": 9,
+   "meeting_id": "LongBeachCC_04172018",
+   "A": "baseline",
+   "B": "agent"
+  },
+  {
+   "item": 10,
+   "meeting_id": "LongBeachCC_04072015",
+   "A": "agent",
+   "B": "baseline"
+  },
+  {
+   "item": 11,
+   "meeting_id": "LongBeachCC_03172020",
+   "A": "agent",
+   "B": "baseline"
+  },
+  {
+   "item": 12,
+   "meeting_id": "DenverCityCouncil_06112018",
+   "A": "agent",
+   "B": "baseline"
+  }
+ ]
+}

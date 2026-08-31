@@ -1,0 +1,86 @@
+{
+  "treatment": "agent",
+  "control": "baseline",
+  "paired_count": 20,
+  "g1_passed": true,
+  "comparisons": [
+    {
+      "metric": "rouge1",
+      "n": 20,
+      "wins": 14,
+      "losses": 6,
+      "ties": 0,
+      "mean_delta": 0.055647779939633525,
+      "stderr": 0.020993201951751472,
+      "p_value": 0.11531829833984375
+    },
+    {
+      "metric": "rouge2",
+      "n": 20,
+      "wins": 19,
+      "losses": 1,
+      "ties": 0,
+      "mean_delta": 0.0549269867260226,
+      "stderr": 0.01116337284764781,
+      "p_value": 4.00543212890625e-05
+    },
+    {
+      "metric": "rougeL",
+      "n": 20,
+      "wins": 19,
+      "losses": 1,
+      "ties": 0,
+      "mean_delta": 0.0660910018476787,
+      "stderr": 0.010445159090532381,
+      "p_value": 4.00543212890625e-05
+    },
+    {
+      "metric": "coverage",
+      "n": 20,
+      "wins": 2,
+      "losses": 18,
+      "ties": 0,
+      "mean_delta": -0.011378540387697412,
+      "stderr": 0.0024420840841094583,
+      "p_value": 0.0004024505615234375
+    },
+    {
+      "metric": "density",
+      "n": 20,
+      "wins": 3,
+      "losses": 17,
+      "ties": 0,
+      "mean_delta": -0.7896702123493285,
+      "stderr": 0.19072781900696176,
+      "p_value": 0.0025768280029296875
+    }
+  ],
+  "gates": [
+    {
+      "gate": "G2_faithfulness",
+      "passed": null,
+      "detail": "withheld: no judge records"
+    },
+    {
+      "gate": "G3_rouge1",
+      "passed": false,
+      "detail": "mean_delta=+0.056 SE=0.021 lower_bound=+0.035 p=0.115 (effect size clears but sign test does not, p>0.05)"
+    },
+    {
+      "gate": "G3_rouge2",
+      "passed": true,
+      "detail": "mean_delta=+0.055 SE=0.011 lower_bound=+0.044 p=0.000"
+    },
+    {
+      "gate": "G3_rougeL",
+      "passed": true,
+      "detail": "mean_delta=+0.066 SE=0.010 lower_bound=+0.056 p=0.000"
+    },
+    {
+      "gate": "G4_budget",
+      "passed": true,
+      "detail": "19.6 min (ceiling 20)"
+    }
+  ],
+  "decision": "ship the baseline"
+}

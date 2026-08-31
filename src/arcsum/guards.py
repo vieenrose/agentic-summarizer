@@ -106,6 +106,26 @@ def contradiction(memory: Memory, text: str, chunk_index: int) -> str | None:
     return None
 
 
+#: Markers that leave a point's polarity UNRESOLVED — "questions WHETHER X", not "asserts
+#: X". Measured 2026-08-30: a `qwen-tools-v4` reading step recorded
+#: `委員質疑國有林地濫墾是否應加重刑責` (faithful — "questions whether it should be
+#: strengthened"), and `synthesize_memory` deterministically (3/3 seeds) rewrote it as
+#: `認為該事件不應加重刑責` — asserting the OPPOSITE polarity as settled fact. No `ADD`
+#: target in `tools/gen_deliberation.py`'s training data ever used this framing, so the
+#: reading step's own paraphrase choice put synthesis off-distribution, and it guessed
+#: a polarity — wrong. Detected and RECORDED here, never silently rewritten: the fix (a
+#: training-side ban on this phrasing, or a synthesis-side instruction to preserve
+#: question form) needs to be validated before changing behaviour, per this codebase's
+#: standing "detect and record, never repair in-loop" rule for NOP-collapse.
+HEDGE_MARKERS = ("是否", "能否", "可否", "是不是", "有無")
+
+
+def hedge_marker_in(text: str) -> str | None:
+    """First hedge marker found in `text`, or `None`. A point carrying one has an
+    UNRESOLVED polarity that synthesis has been measured to resolve incorrectly."""
+    return next((m for m in HEDGE_MARKERS if m in text), None)
+
+
 @dataclass(frozen=True, slots=True)
 class AppliedOp:
     """One op's verdict. `reason` explains a refusal; `note` is informational on a
@@ -147,6 +167,13 @@ class Outcome:
     @property
     def malformed(self) -> list[AppliedOp]:
         return [r for r in self.results if isinstance(r.op, Malformed)]
+
+    @property
+    def hedge_points(self) -> list[AppliedOp]:
+        """Applied `Add`s whose text carries an unresolved polarity marker (measured
+        2026-08-30 to be mishandled by synthesis — see `hedge_marker_in`). Exposed so a
+        caller can measure how often this fires before deciding whether to act on it."""
+        return [r for r in self.results if r.note and "unresolved polarity" in r.note]
 
 
 def apply_ops(
@@ -196,8 +223,14 @@ def apply_ops(
                     outcome.results.append(AppliedOp(op, False, contra))
                     continue
                 reason = memory.add_point(point, chunk.index)
-                outcome.results.append(AppliedOp(op, reason is None, reason))
-                substantive = substantive or reason is None
+                applied = reason is None
+                # Recorded, not refused: a hedge-phrased point may still be the best
+                # available capture of a genuine open question, and refusing it outright
+                # is unvalidated — see `hedge_marker_in`'s docstring.
+                hedge = hedge_marker_in(point) if applied else None
+                note = f"unresolved polarity ({hedge})" if hedge else None
+                outcome.results.append(AppliedOp(op, applied, reason, note))
+                substantive = substantive or applied
 
             case Drop(prefix):
                 reason = memory.drop_point(prefix)

@@ -1,8 +1,31 @@
-# SPEC — Agentic meeting summarizer (MiniCPM5-1B + external memory, zh-TW)
+# SPEC — Agentic meeting summarizer (Qwen3.5-0.8B + external memory, zh-TW)
 
-**Version:** 0.9 · **Status:** design + execution plan complete; Phase 0a fully closed,
+**Version:** 1.0 · **Status:** design + execution plan complete; Phase 0a fully closed,
 Phase 0b measured on the actual reference device — §9 phases the remaining work
 cheapest-first with gates; §8 attaches each risk to the phase that tests it
+
+**v1.0 changes — the agent protocol becomes tool-calling, and the student changes with
+it.** Both are normative and both rest on measurements taken 2026-08-29, recorded inline
+at §4 and §4.1:
+
+1. **§4.1 step grammar: edit lines → one `update_memory` tool call per chunk**, JSON
+   arguments, single-turn. This makes the protocol expressible in a standard
+   function-calling agent framework while preserving the properties that made v0 work —
+   harness-owned memory, no conversation history across steps, one model call per chunk.
+2. **§4 student: MiniCPM5-1B → Qwen3.5-0.8B.** The tool-call form costs 1.25x decode
+   tokens; on the MiniCPM5-1B basis that projects 20.0–21.4 min against §7's 20-minute
+   ceiling, and on a ~20% smaller model 16.2–17.3 min. The swap is what pays for the
+   protocol.
+3. **What was measured and REJECTED**: a conventional observe-the-result agent loop
+   (2 model invocations per chunk, 1.89x prefill → 32–51 min), one native tool call per
+   operation (2.72x decode), and the chat template's own `tools=` preamble (313–434
+   tokens per step against a 266-token v0 system prompt). §4.1 records each with its
+   number so none is retried on intuition.
+
+**Everything in §5.2 is unchanged.** The gates are the goal; this revision changes how
+the goal is pursued, never the bar. A v1.0 checkpoint is compared against a map-reduce
+baseline built from the SAME model under §5.2's existing fairness rule, so no v0.9
+number transfers — the baseline is re-run, not reused.
 
 **v0.9 changes** — Phase 0a item 2 (the en→zh-TW token ratio) is now measured, closing
 the last open Phase 0a question: **1.215** zh-TW tokens per en token under MiniCPM5's
@@ -194,10 +217,19 @@ A single flowing **zh-TW prose** summary — no bullets, no sections, no anchors
 
 ## 4. Architecture
 
-- **Student / deployed model: MiniCPM5-1B, Q8, 4k context.** Single on-device model
-  (not the prior project's 3-model pipeline) — CPU-only per §6. It drives the agent
-  protocol in §4.1, doing two jobs: per-step memory curation while reading, and the
-  final prose synthesis.
+- **Student / deployed model: Qwen3.5-0.8B, Q8, 4k context** (v1.0; was MiniCPM5-1B).
+  Single on-device model (not the prior project's 3-model pipeline) — CPU-only per §6.
+  It drives the agent protocol in §4.1, doing two jobs: per-step memory curation while
+  reading, and the final prose synthesis.
+
+  **Why the change is normative and not preference.** §4.1 v1.0 moves to a tool-call
+  protocol, whose output is measurably more expensive per step (1.25x decode tokens,
+  §4.1). Against §7's 20-minute ceiling the MiniCPM5-1B basis projects **20.0–21.4 min**
+  under that protocol — at or over budget — while a ~20% smaller model projects
+  **16.2–17.3 min** across every decode-share assumption. The model swap is what buys
+  the protocol its headroom; adopting one without the other fails §5.2 G4.
+  Qwen3.5-0.8B was verified to emit well-formed tool calls zero-shot (15 calls over 6
+  chunks, 0 format failures) before being adopted.
 - **Teacher model: Unsloth Qwen3.8-27B, Q8 or BF16 quant** (exact quant TBD) — offline
   only, never on the reference hardware (§6). Synthesizes the zh-TW whole-meeting
   summary from the translated per-item minutes (§2.2 stage 3) and produces the per-step
@@ -213,9 +245,20 @@ A single flowing **zh-TW prose** summary — no bullets, no sections, no anchors
 
 ### 4.1 Agent protocol (normative)
 
-The transcript is read as a stream. The harness owns the memory; the model only emits
-edit lines. No conversation history crosses steps — memory is the entire carry-forward,
-which is the property that keeps each step's context constant-size and learnable at 1B.
+The transcript is read as a stream. The harness owns the memory; the model emits **one
+tool call per chunk**. No conversation history crosses steps — memory is the entire
+carry-forward, which is the property that keeps each step's context constant-size and
+learnable at sub-1B scale.
+
+**Single-turn, by measurement.** The model emits its tool call and the harness applies
+it; there is NO tool-result message and NO second invocation. A conventional
+observe-the-result agent loop was measured on real chunks and costs **exactly 2 model
+invocations per chunk plus 1.89x prefill** (the second turn must re-send the system, the
+full ~2,500-token chunk, the assistant's calls, and the tool results). Projected against
+§7 that is **32–51 min** depending on decode share, versus a 20-minute ceiling — and it
+is a property of the control flow, so no amount of fine-tuning recovers it. The model
+still chooses which operations to perform and with what content; what is removed is only
+the round trip that tells it what the harness already guarantees.
 
 **External memory.** Two slots, harness-rendered, capped:
 
@@ -233,12 +276,32 @@ incrementally gives the final synthesis something to build on beyond a list.
 
 **Step grammar.** One call per chunk; zero or more lines:
 
-| op | syntax | semantics |
-|---|---|---|
-| ADD | `ADD - <point>` | append a point |
-| DROP | `DROP «<prefix>»` | remove a point this chunk supersedes |
-| ARC | `ARC: <text>` | replace the arc note |
-| NOP | `NOP` | nothing worth recording in this chunk |
+One `update_memory` tool call, JSON arguments, all fields optional:
+
+```
+<tool_call>{"name":"update_memory","arguments":{
+  "arc":"<replacement arc note>","add":["<point>",…],"drop":["<prefix>",…]}}</tool_call>
+```
+
+| field | semantics |
+|---|---|
+| `add` | append these points |
+| `drop` | remove points whose text starts with each prefix, for content this chunk supersedes |
+| `arc` | replace the arc note |
+| *(empty `arguments`)* | nothing worth recording in this chunk — the former `NOP` |
+
+**One batched call, not one call per operation.** Both forms are valid Qwen tool calls;
+the choice is measured. For the same three operations: edit lines 36 tokens, **one
+batched call with JSON arguments 45 (1.25x)**, one batched call with XML parameters 71
+(1.97x), one native call per operation **98 (2.72x)**. Decode dominates CPU latency, so
+the per-operation form alone would put §5.2 G4 out of reach.
+
+The tool schema is declared in a compact hand-written system prompt (**187 tokens**, as
+implemented, including the caps and the supersede rule), not via the chat template's
+`tools=` rendering (**313 tokens for one tool, 434 for four**).
+The rendered preamble is instruction boilerplate for a model that has not been trained
+on the schema; a fine-tuned student does not need it, and it would cost more prefill per
+step than the entire v0 system prompt (266 tokens).
 
 Deliberately small. No multi-point rewrite op: the prior project measured that as the
 heaviest op in its grammar and never validated it at ≤1B. Cap overflow is handled
@@ -252,11 +315,11 @@ never by asking the model to rewrite the list.
 
 | | reading step | synthesis step |
 |---|---|---|
-| SYS | ~250 | ~250 |
+| SYS | ~187 (tool schema) | ~250 |
 | memory | ≤600 | ≤600 |
 | chunk | ~2,500 | — |
-| output | ~150 (edit lines) | <1,000 (prose) |
-| **total** | **~3,500** | **~1,850** |
+| output | ~190 (one tool call) | <1,000 (prose) |
+| **total** | **~3,477** | **~1,850** |
 
 Chunk size ~2,500 tokens follows from the budget, not preference. **Chunking is
 token-based over the whole transcript, not segment-aligned.** MeetingBank's summarized

@@ -163,6 +163,7 @@ def generate_step(
     budget: int = CHUNK_TOKENS,
     token_len: Callable[[str], int] = heuristic_token_len,
     max_attempts: int = 2,
+    total_chunks: int | None = None,
 ) -> tuple[Step, Memory]:
     """One step's worth of gold supervision. Returns `(step, memory_after)` --
     `memory` itself is never mutated; the caller commits `memory_after` explicitly.
@@ -199,7 +200,7 @@ def generate_step(
         next_item=next_item,
     )
     student_sys = step_system_prompt()
-    student_user = build_step_prompt(memory, chunk)
+    student_user = build_step_prompt(memory, chunk, total=total_chunks)
     memory_before = render_memory(memory)
     prompt_tokens = token_len(student_sys) + token_len(student_user)
 
@@ -264,9 +265,10 @@ def generate_meeting_supervision(
     spans = chunk_offset_spans(utterances, offsets, budget=budget, token_len=token_len)
     consecutive_nops = 0
 
-    for chunk, span in zip(
-        iter_chunks(utterances, budget=budget, token_len=token_len), spans, strict=True
-    ):
+    # Materialised so `POSITION` can carry the chunk COUNT, exactly as `agent.run_agent`
+    # does. The student prompt this builds MUST match the one inference will build.
+    chunks = list(iter_chunks(utterances, budget=budget, token_len=token_len))
+    for chunk, span in zip(chunks, spans, strict=True):
         overlapping = overlapping_items(span, items)
         concluded = [it for it in items if it.end_sec <= span[1]]
         upcoming = [it for it in items if it.start_sec >= span[1]]
@@ -282,6 +284,7 @@ def generate_meeting_supervision(
             consecutive_nops=consecutive_nops,
             budget=budget,
             token_len=token_len,
+            total_chunks=len(chunks),
         )
         trace.steps.append(step)
         trace.usage.record(

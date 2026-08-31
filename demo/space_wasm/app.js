@@ -16,7 +16,14 @@ const CONFIG_PATHS = {
 };
 
 const MODEL_REPO = "Luigi/minicpm5-1b-arcsum";
-const MODEL_FILE = "MiniCPM5-1B.Q4_K_M.gguf";
+// Q8_0 only. Q4_K_M was dropped after being MEASURED against it on the 40 held-out
+// meetings: the agent's margin over the map-reduce baseline more than halved on rouge1
+// (+0.077 -> +0.034, wins 29/40 -> 22/40), and Q4 summaries came out ~30% shorter
+// (226 vs 320 chars), i.e. it records less. Shipping a quant that weak behind the model
+// card's Q8 numbers would misrepresent the system.
+// COST: 1.15 GB into the wasm heap instead of 688 MB. This front-end is NOT deployed;
+// if it ever is, verify it still loads on a modest device first.
+const MODEL_FILE = "MiniCPM5-1B.Q8_0.gguf";
 const N_CTX = 4096;
 const MAX_TOKENS_STEP = 512;
 const MAX_TOKENS_SYNTH = 700;

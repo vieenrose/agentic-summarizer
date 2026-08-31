@@ -1,0 +1,86 @@
+{
+  "treatment": "agent",
+  "control": "baseline",
+  "paired_count": 40,
+  "g1_passed": false,
+  "comparisons": [
+    {
+      "metric": "rouge1",
+      "n": 40,
+      "wins": 25,
+      "losses": 15,
+      "ties": 0,
+      "mean_delta": 0.0447058072549092,
+      "stderr": 0.02450486180742714,
+      "p_value": 0.1538599441628321
+    },
+    {
+      "metric": "rouge2",
+      "n": 40,
+      "wins": 26,
+      "losses": 14,
+      "ties": 0,
+      "mean_delta": 0.030853453959288412,
+      "stderr": 0.012125579909345183,
+      "p_value": 0.0806904677519924
+    },
+    {
+      "metric": "rougeL",
+      "n": 40,
+      "wins": 28,
+      "losses": 12,
+      "ties": 0,
+      "mean_delta": 0.04015175126901267,
+      "stderr": 0.010127024932850972,
+      "p_value": 0.01658900337497471
+    },
+    {
+      "metric": "coverage",
+      "n": 40,
+      "wins": 6,
+      "losses": 34,
+      "ties": 0,
+      "mean_delta": -0.014221148569719618,
+      "stderr": 0.0032385271233047355,
+      "p_value": 8.364584573428147e-06
+    },
+    {
+      "metric": "density",
+      "n": 40,
+      "wins": 5,
+      "losses": 35,
+      "ties": 0,
+      "mean_delta": -0.8788568290556805,
+      "stderr": 0.17860783283872705,
+      "p_value": 1.382612026645802e-06
+    }
+  ],
+  "gates": [
+    {
+      "gate": "G2_faithfulness",
+      "passed": null,
+      "detail": "withheld: no judge records"
+    },
+    {
+      "gate": "G3_rouge1",
+      "passed": false,
+      "detail": "mean_delta=+0.045 SE=0.025 lower_bound=+0.020 p=0.154 (effect size clears but sign test does not, p>0.05)"
+    },
+    {
+      "gate": "G3_rouge2",
+      "passed": false,
+      "detail": "mean_delta=+0.031 SE=0.012 lower_bound=+0.019 p=0.081 (effect size clears but sign test does not, p>0.05)"
+    },
+    {
+      "gate": "G3_rougeL",
+      "passed": true,
+      "detail": "mean_delta=+0.040 SE=0.010 lower_bound=+0.030 p=0.017"
+    },
+    {
+      "gate": "G4_budget",
+      "passed": null,
+      "detail": "withheld: no device measurement provided"
+    }
+  ],
+  "decision": "ship the baseline"
+}

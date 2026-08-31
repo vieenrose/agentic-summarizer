@@ -1,0 +1,104 @@
+[
+ {
+  "domain": "meetingbank",
+  "n_points": 380,
+  "mean": 0.416,
+  "median": 0.394,
+  "frac_below_0.3": 0.329,
+  "worst": [
+   {
+    "containment": 0.0,
+    "meeting": "AlamedaCC_11162021",
+    "text": "審議市長住房與無"
+   },
+   {
+    "containment": 0.0,
+    "meeting": "AlamedaCC_11162021",
+    "text": "審議資源整合與預算使用決議"
+   },
+   {
+    "containment": 0.0,
+    "meeting": "DenverCityCouncil_01032022",
+    "text": "合約涉及多個機構"
+   },
+   {
+    "containment": 0.0,
+    "meeting": "DenverCityCouncil_05032021",
+    "text": "委員建議避免�"
+   },
+   {
+    "containment": 0.0,
+    "meeting": "DenverCityCouncil_05032021",
+    "text": "已獲得議員贊成"
+   }
+  ]
+ },
+ {
+  "domain": "probe",
+  "n_points": 33,
+  "mean": 0.465,
+  "median": 0.429,
+  "frac_below_0.3": 0.152,
+  "worst": [
+   {
+    "containment": 0.214,
+    "meeting": "budget_approval_reversal",
+    "text": "採購部續約倉儲空間租約並提議議價"
+   },
+   {
+    "containment": 0.214,
+    "meeting": "office_move_reversal",
+    "text": "回收物變賣收入可抵銷部分新增成本"
+   },
+   {
+    "containment": 0.222,
+    "meeting": "budget_approval_reversal",
+    "text": "修正案應依最新報價編列"
+   },
+   {
+    "containment": 0.286,
+    "meeting": "budget_approval_reversal",
+    "text": "會議進入決議程式，討論駁回兩百萬元行銷預算案並要求重新提議。"
+   },
+   {
+    "containment": 0.286,
+    "meeting": "office_move_reversal",
+    "text": "廚餘處理量約三成餘裕可吸收增加量"
+   }
+  ]
+ },
+ {
+  "domain": "ly",
+  "n_points": 14,
+  "mean": 0.352,
+  "median": 0.267,
+  "frac_below_0.3": 0.571,
+  "worst": [
+   {
+    "containment": 0.154,
+    "meeting": "ivod-17664",
+    "text": "建議將成癮物質防治納入健康課程"
+   },
+   {
+    "containment": 0.25,
+    "meeting": "ivod-17664",
+    "text": "建議將電子煙危害納入健康教育"
+   },
+   {
+    "containment": 0.25,
+    "meeting": "ivod-17664",
+    "text": "會議審議多項健康與聽力相關條例，並討論將聽力不良及心理健康教育納入學校健康教育與輔導法。"
+   },
+   {
+    "containment": 0.267,
+    "meeting": "ivod-17664",
+    "text": "建議將成癮物質防治統計納入健康教育"
+   },
+   {
+    "containment": 0.267,
+    "meeting": "ivod-17664",
+    "text": "建議將成癮物質防治統計納入健康教育"
+   }
+  ]
+ }
+]

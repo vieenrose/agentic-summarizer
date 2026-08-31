@@ -31,7 +31,7 @@ class ArcsumModel:
       synthesis call writes a whole summary.
     """
 
-    def __init__(self, gguf_path: str, n_ctx: int = 4096, n_threads: int = 2):
+    def __init__(self, gguf_path: str, n_ctx: int = 8192, n_threads: int = 2):
         self.llm = Llama(
             model_path=gguf_path,
             n_ctx=n_ctx,

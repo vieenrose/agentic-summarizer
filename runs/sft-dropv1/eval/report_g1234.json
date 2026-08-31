@@ -1,0 +1,96 @@
+{
+  "treatment": "agent",
+  "control": "baseline",
+  "paired_count": 20,
+  "g1_passed": true,
+  "comparisons": [
+    {
+      "metric": "rouge1",
+      "n": 20,
+      "wins": 11,
+      "losses": 9,
+      "ties": 0,
+      "mean_delta": 0.00690190024515446,
+      "stderr": 0.028739070295831285,
+      "p_value": 0.8238029479980469
+    },
+    {
+      "metric": "rouge2",
+      "n": 20,
+      "wins": 13,
+      "losses": 7,
+      "ties": 0,
+      "mean_delta": 0.024145135388802978,
+      "stderr": 0.013756001644998154,
+      "p_value": 0.26317596435546875
+    },
+    {
+      "metric": "rougeL",
+      "n": 20,
+      "wins": 16,
+      "losses": 4,
+      "ties": 0,
+      "mean_delta": 0.03872778717447022,
+      "stderr": 0.010766588533087951,
+      "p_value": 0.01181793212890625
+    },
+    {
+      "metric": "coverage",
+      "n": 20,
+      "wins": 2,
+      "losses": 18,
+      "ties": 0,
+      "mean_delta": -0.009524141485317222,
+      "stderr": 0.002772532741801011,
+      "p_value": 0.0004024505615234375
+    },
+    {
+      "metric": "density",
+      "n": 20,
+      "wins": 5,
+      "losses": 15,
+      "ties": 0,
+      "mean_delta": -0.515861428168619,
+      "stderr": 0.2835371782066319,
+      "p_value": 0.04138946533203125
+    }
+  ],
+  "gates": [
+    {
+      "gate": "G2_faithfulness",
+      "passed": true,
+      "detail": "treatment=8 baseline=11"
+    },
+    {
+      "gate": "G3_rouge1",
+      "passed": false,
+      "detail": "mean_delta=+0.007 SE=0.029 lower_bound=-0.022 p=0.824"
+    },
+    {
+      "gate": "G3_rouge2",
+      "passed": false,
+      "detail": "mean_delta=+0.024 SE=0.014 lower_bound=+0.010 p=0.263 (effect size clears but sign test does not, p>0.05)"
+    },
+    {
+      "gate": "G3_rougeL",
+      "passed": true,
+      "detail": "mean_delta=+0.039 SE=0.011 lower_bound=+0.028 p=0.012"
+    },
+    {
+      "gate": "G3_coverage",
+      "passed": false,
+      "detail": "mean_delta=-0.010 SE=0.003 lower_bound=-0.012 p=0.000"
+    },
+    {
+      "gate": "G3_density",
+      "passed": false,
+      "detail": "mean_delta=-0.516 SE=0.284 lower_bound=-0.799 p=0.041"
+    },
+    {
+      "gate": "G4_budget",
+      "passed": true,
+      "detail": "19.3 min (ceiling 20)"
+    }
+  ],
+  "decision": "ship the baseline"
+}

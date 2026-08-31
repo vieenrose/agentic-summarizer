@@ -153,7 +153,7 @@ def test_over_budget_step_raises_step_budget_exceeded() -> None:
 
 
 def test_step_budget_default_is_documented() -> None:
-    assert STEP_BUDGET == 3800
+    assert STEP_BUDGET == 7600
 
 
 def test_budget_uses_the_injected_tokenizer() -> None:
@@ -600,7 +600,7 @@ def test_run_agent_uses_the_same_model_for_synthesis_by_default() -> None:
 def test_trace_records_prompt_and_tokenize_version() -> None:
     model = Scripted()
     trace = run_agent(meeting(5), model, synthesize=False)
-    assert trace.prompt_version == "sys-v1"
+    assert trace.prompt_version == "sys-v2"
     assert trace.tokenize_version == "chartok-v1"
 
 
@@ -620,3 +620,109 @@ def test_saturated_memory_fits_the_step_budget() -> None:
     model = Scripted(("NOP",))
     trace = run_agent(meeting(5), model, memory=memory, synthesize=False)
     assert trace.steps[0].prompt_tokens <= STEP_BUDGET
+
+
+def test_step_error_aborts_the_meeting_by_default() -> None:
+    """Default stays fail-fast. A partially-read meeting is NOT comparable to a fully
+    read one, so a paired experiment must lose the meeting rather than quietly score a
+    summary built from fewer chunks than its opponent saw."""
+    utterances = meeting(300)
+
+    def boom(_sys: str, _user: str) -> str:
+        raise RuntimeError("llama-server 500")
+
+    with pytest.raises(RuntimeError):
+        run_agent(utterances, boom, synthesize=False)
+
+
+def test_step_error_skip_records_the_chunk_and_keeps_reading() -> None:
+    """`on_step_error="skip"` is the PRODUCT behaviour: one failed step must not cost the
+    whole summary. Measured — an eval run lost `AlamedaCC_11162021` to a single
+    llama.cpp 500, taking paired n from 20 to 19 and withholding every G3 gate.
+
+    The failure must be RECORDED, not merely survived: a summary built from a partial
+    read has to say so, or coverage metrics silently describe a different meeting.
+    """
+    utterances = meeting(300)
+    calls = {"n": 0}
+
+    def flaky(_sys: str, _user: str) -> str:
+        calls["n"] += 1
+        if calls["n"] == 1:
+            raise RuntimeError("llama-server 500")
+        return "ADD - 市議會核准搬遷案"
+
+    trace = run_agent(utterances, flaky, synthesize=False, on_step_error="skip")
+
+    assert trace.failed_steps == [0]
+    assert len(trace.steps) >= 1
+    assert all(s.index != 0 for s in trace.steps)
+    assert trace.memory.points  # the surviving steps still curated memory
+
+
+def test_step_budget_exceeded_is_not_swallowed_by_skip() -> None:
+    """A prompt over budget is a CONFIGURATION error every later step would hit too, not
+    a transient server fault — skipping it would silently read nothing."""
+    utterances = meeting(300)
+
+    with pytest.raises(StepBudgetExceeded):
+        run_agent(
+            utterances,
+            lambda _s, _u: "NOP",
+            synthesize=False,
+            step_budget=1,
+            on_step_error="skip",
+        )
+
+
+def test_tool_protocol_lands_on_the_same_ops_and_stamps_its_own_version() -> None:
+    """SPEC §4.1 v1.0. The step grammar changed; memory, guards and caps did not. A run
+    must also stamp `tools-v1`, because a tool-call trace and an edit-line trace are not
+    comparable and mixing them in one eval would be silent."""
+    utterances = meeting(60)
+    call = (
+        '<tool_call>{"name":"update_memory","arguments":'
+        '{"arc":"會議脈絡","add":["市議會核准搬遷案"]}}</tool_call>'
+    )
+
+    trace = run_agent(utterances, lambda _s, _u: call, synthesize=False, protocol="tool")
+
+    assert trace.prompt_version == "tools-v1"
+    assert trace.memory.arc == "會議脈絡"
+    assert any("搬遷案" in p.text for p in trace.memory.points)
+
+
+def test_unknown_protocol_is_refused() -> None:
+    with pytest.raises(ValueError, match="unknown protocol"):
+        run_agent(meeting(10), lambda _s, _u: "NOP", synthesize=False, protocol="react")
+
+
+def test_partial_read_is_declared_on_the_summary_itself() -> None:
+    """`on_step_error="skip"` keeps a meeting alive through a transient failure, but the
+    reader must be told the read was incomplete. `trace.failed_steps` serves the harness;
+    the notice serves the person deciding whether to trust the minutes."""
+    utterances = meeting(300)
+    calls = {"n": 0}
+
+    def flaky(_sys: str, user: str) -> str:
+        if "MEMORY:" in user:
+            calls["n"] += 1
+            if calls["n"] == 1:
+                raise RuntimeError("llama-server 500")
+            return "ADD - 市議會核准搬遷案"
+        return "本次會議通過搬遷案。"
+
+    trace = run_agent(utterances, flaky, on_step_error="skip")
+
+    assert trace.failed_steps
+    assert "未能讀取" in trace.synthesis.prose.text
+
+
+def test_a_complete_read_carries_no_notice() -> None:
+    trace = run_agent(
+        meeting(300),
+        lambda _s, u: "ADD - 市議會核准搬遷案" if "MEMORY:" in u else "本次會議通過搬遷案。",
+    )
+
+    assert trace.failed_steps == []
+    assert "未能讀取" not in trace.synthesis.prose.text

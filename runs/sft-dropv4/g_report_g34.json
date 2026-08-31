@@ -1,0 +1,86 @@
+{
+  "treatment": "agent",
+  "control": "baseline",
+  "paired_count": 20,
+  "g1_passed": true,
+  "comparisons": [
+    {
+      "metric": "rouge1",
+      "n": 20,
+      "wins": 14,
+      "losses": 6,
+      "ties": 0,
+      "mean_delta": 0.09704409044077304,
+      "stderr": 0.03864043075143659,
+      "p_value": 0.11531829833984375
+    },
+    {
+      "metric": "rouge2",
+      "n": 20,
+      "wins": 17,
+      "losses": 3,
+      "ties": 0,
+      "mean_delta": 0.050757005665001693,
+      "stderr": 0.018552905776312884,
+      "p_value": 0.0025768280029296875
+    },
+    {
+      "metric": "rougeL",
+      "n": 20,
+      "wins": 17,
+      "losses": 3,
+      "ties": 0,
+      "mean_delta": 0.06177180262772208,
+      "stderr": 0.015598432517293617,
+      "p_value": 0.0025768280029296875
+    },
+    {
+      "metric": "coverage",
+      "n": 20,
+      "wins": 5,
+      "losses": 15,
+      "ties": 0,
+      "mean_delta": -0.008521501443120633,
+      "stderr": 0.0034315820487196996,
+      "p_value": 0.04138946533203125
+    },
+    {
+      "metric": "density",
+      "n": 20,
+      "wins": 5,
+      "losses": 15,
+      "ties": 0,
+      "mean_delta": -0.5352335780852948,
+      "stderr": 0.24968488677201534,
+      "p_value": 0.04138946533203125
+    }
+  ],
+  "gates": [
+    {
+      "gate": "G2_faithfulness",
+      "passed": null,
+      "detail": "withheld: no judge records"
+    },
+    {
+      "gate": "G3_rouge1",
+      "passed": false,
+      "detail": "mean_delta=+0.097 SE=0.039 lower_bound=+0.058 p=0.115 (effect size clears but sign test does not, p>0.05)"
+    },
+    {
+      "gate": "G3_rouge2",
+      "passed": true,
+      "detail": "mean_delta=+0.051 SE=0.019 lower_bound=+0.032 p=0.003"
+    },
+    {
+      "gate": "G3_rougeL",
+      "passed": true,
+      "detail": "mean_delta=+0.062 SE=0.016 lower_bound=+0.046 p=0.003"
+    },
+    {
+      "gate": "G4_budget",
+      "passed": null,
+      "detail": "withheld: no device measurement provided"
+    }
+  ],
+  "decision": "ship the baseline"
+}

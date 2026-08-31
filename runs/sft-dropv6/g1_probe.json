@@ -1,0 +1,19 @@
+{
+  "g1_passed": false,
+  "results": [
+    {
+      "name": "office_move_reversal",
+      "states_later": false,
+      "states_earlier_as_current": false,
+      "distractor_absent": true,
+      "passed": false
+    },
+    {
+      "name": "budget_approval_reversal",
+      "states_later": true,
+      "states_earlier_as_current": false,
+      "distractor_absent": true,
+      "passed": true
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+{
+  "baseline/AlamedaCC_11162021": "RuntimeError: empty content from judge after retry",
+  "baseline/DenverCityCouncil_10172016": "RuntimeError: empty content from judge after retry",
+  "baseline/LongBeachCC_02012022": "RuntimeError: empty content from judge after retry",
+  "baseline/LongBeachCC_05232017": "RuntimeError: empty content from judge after retry",
+  "baseline/SeattleCityCouncil_06272016": "RuntimeError: empty content from judge after retry",
+  "baseline/SeattleCityCouncil_12132021": "RuntimeError: empty content from judge after retry"
+}

@@ -486,3 +486,22 @@ def test_merging_does_not_mutate_the_caller_s_records() -> None:
     records = [original, {"meeting_id": "m1", "system": "agent", "inversions": 3}]
     load_scores(records)
     assert "inversions" not in original, "input records must not be mutated in place"
+
+
+def test_count_inversions_pairing_requires_the_field_not_just_a_record() -> None:
+    """A ROUGE-scored record for the other arm must NOT make a meeting look paired.
+
+    Score records and judge records are merged into one index; the ROUGE pass emits a
+    record for every meeting in both arms, so pairing on record EXISTENCE silently
+    admits meetings the judge never scored for the opposing arm. Measured 2026-08-29:
+    35 judged agent meetings vs 19 judged baseline meetings summed to "14 vs 11" and
+    failed G2, where the 19 genuinely paired meetings give 8 vs 11.
+    """
+    scores = {
+        "m1": {"agent": {"inversions": 2}, "baseline": {"inversions": 5}},
+        # baseline present (from the ROUGE pass) but NEVER judged:
+        "m2": {"agent": {"inversions": 9}, "baseline": {"rouge1": 0.4}},
+    }
+
+    assert count_inversions(scores, "agent", paired_with="baseline") == 2
+    assert count_inversions(scores, "baseline", paired_with="agent") == 5

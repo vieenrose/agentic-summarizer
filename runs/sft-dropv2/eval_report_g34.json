@@ -1,0 +1,96 @@
+{
+  "treatment": "agent",
+  "control": "baseline",
+  "paired_count": 18,
+  "g1_passed": false,
+  "comparisons": [
+    {
+      "metric": "rouge1",
+      "n": 18,
+      "wins": 14,
+      "losses": 4,
+      "ties": 0,
+      "mean_delta": 0.049372262048173916,
+      "stderr": 0.026481694063430945,
+      "p_value": 0.0308837890625
+    },
+    {
+      "metric": "rouge2",
+      "n": 18,
+      "wins": 16,
+      "losses": 2,
+      "ties": 0,
+      "mean_delta": 0.049773151491840216,
+      "stderr": 0.012753932785540972,
+      "p_value": 0.001312255859375
+    },
+    {
+      "metric": "rougeL",
+      "n": 18,
+      "wins": 17,
+      "losses": 1,
+      "ties": 0,
+      "mean_delta": 0.059501709015786136,
+      "stderr": 0.011192993161117512,
+      "p_value": 0.00014495849609375
+    },
+    {
+      "metric": "coverage",
+      "n": 18,
+      "wins": 3,
+      "losses": 14,
+      "ties": 1,
+      "mean_delta": -0.0035191468111837538,
+      "stderr": 0.0015029614959693105,
+      "p_value": 0.012725830078125
+    },
+    {
+      "metric": "density",
+      "n": 18,
+      "wins": 7,
+      "losses": 11,
+      "ties": 0,
+      "mean_delta": -0.4146793957083035,
+      "stderr": 0.35689640635673126,
+      "p_value": 0.480682373046875
+    }
+  ],
+  "gates": [
+    {
+      "gate": "G2_faithfulness",
+      "passed": null,
+      "detail": "withheld: no judge records"
+    },
+    {
+      "gate": "G3_rouge1",
+      "passed": null,
+      "detail": "withheld: n=18 < min_n=20"
+    },
+    {
+      "gate": "G3_rouge2",
+      "passed": null,
+      "detail": "withheld: n=18 < min_n=20"
+    },
+    {
+      "gate": "G3_rougeL",
+      "passed": null,
+      "detail": "withheld: n=18 < min_n=20"
+    },
+    {
+      "gate": "G3_coverage",
+      "passed": null,
+      "detail": "withheld: n=18 < min_n=20"
+    },
+    {
+      "gate": "G3_density",
+      "passed": null,
+      "detail": "withheld: n=18 < min_n=20"
+    },
+    {
+      "gate": "G4_budget",
+      "passed": true,
+      "detail": "19.3 min (ceiling 20)"
+    }
+  ],
+  "decision": "ship the baseline"
+}

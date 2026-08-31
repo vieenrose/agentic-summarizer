@@ -1,0 +1,44 @@
+
+
+Loading model... 
+
+▄▄ ▄▄
+██ ██
+██ ██  ▀▀█▄ ███▄███▄  ▀▀█▄    ▄████ ████▄ ████▄
+██ ██ ▄█▀██ ██ ██ ██ ▄█▀██    ██    ██ ██ ██ ██
+██ ██ ▀█▄██ ██ ██ ██ ▀█▄██ ██ ▀████ ████▀ ████▀
+                                    ██    ██
+                                    ▀▀    ▀▀
+
+build      : b10298-15586e2d7
+model      : minicpm5-1b-dropv1-q8_0.gguf
+ftype      : Q8_0
+modalities : text
+
+available commands:
+  /exit or Ctrl+C     stop or exit
+  /regen              regenerate the last response
+  /clear              clear the chat history
+  /read <file>        add a text file
+  /glob <pattern>     add text files using globbing pattern
+
+
+
+> 你是一個會議記錄助手。以下是目前累積的會議記憶（ARC 與 POINTS）。
+
+請根據這份記憶，寫出一段流暢連貫的繁體中文摘要，不超過 1000 個字：
+- 不使用條列式、不使用小標題、不加時間戳記。
+- 只寫一段連續的文字，讀起來像一篇完整的會議摘要，而不是重點清單。
+- 全部使用繁體中文書寫。
+
+MEMORY:
+ARC: 市議會依序處理辦公室搬遷、圖書館採購、公園整修、大眾運輸調整、� ... (truncated)
+
+[Start thinking]
+
+嗯，用户提供了一項會議記錄，內容涵蓋辦公室搬遷、圖書館採購、公園整修、大眾運輸調整、垃圾清運契約及消防安全檢查等多項議程，並提到人行道整修與資訊系統維護的決議。會議中有人員任命、交通運輸改善、電動車發展、垃圾清運處理、倉儲空間續約等事項。整體而言，這段會議記錄主要透過決議與通知完成程式，並就後續決策、預算調整及後續安排作出表達。
+
+[ Prompt: 83.7 t/s | Generation: 7.2 t/s ]
+
+
+Exiting...

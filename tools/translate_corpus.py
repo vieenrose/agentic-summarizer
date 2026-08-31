@@ -36,6 +36,7 @@ REPO = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(REPO / "src"))
 
 from arcsum.lang import cjk_ratio  # noqa: E402
+from arcsum.supervision.teacher import to_traditional  # noqa: E402
 from arcsum.transcript import parse_transcript  # noqa: E402
 
 #: TranslateGemma is NOT a chat model. Its chat template rejects ordinary string
@@ -162,14 +163,22 @@ def translate_file(src: Path, base_url: str, *, max_tokens: int, workers: int) -
             out[i] = t
 
     final = []
-    for t, u in zip(out, utts):
+    for t, u in zip(out, utts, strict=True):
         if t and t.strip():
-            final.append(t.strip())
+            # Collapse ALL whitespace: the model sometimes returns a newline inside a
+            # single utterance's translation, which would split it into two output lines
+            # -- the second with no "speaker: " prefix, so it parses as UNK and the file
+            # gains a line. Measured on AlamedaCC_01202015 (729 lines out of 728 in).
+            # Same treatment the teacher output already gets: TranslateGemma also drifts
+            # into occasional simplified characters despite a zh-TW target (measured, one
+            # stray 国 / 会 per ~1000 lines). s2twp is a safe no-op on correct traditional
+            # text, and this is training data for a zh-TW-only system.
+            final.append(to_traditional(" ".join(t.split())))
         else:
-            final.append(u.text)  # keep ENGLISH; dropping corrupts the line count
+            final.append(" ".join(u.text.split()))  # keep ENGLISH; dropping breaks count
             kept_english += 1
 
-    body = "\n".join(f"{u.speaker}: {t}" for u, t in zip(utts, final)) + "\n"
+    body = "\n".join(f"{u.speaker}: {t}" for u, t in zip(utts, final, strict=True)) + "\n"
     return body, {
         "lines_in": len(utts), "lines_out": len(final),
         "kept_english": kept_english,

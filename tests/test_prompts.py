@@ -25,7 +25,7 @@ from arcsum.transcript import Utterance
 
 
 def test_prompt_version_is_a_stable_string() -> None:
-    assert PROMPT_VERSION == "sys-v1"
+    assert PROMPT_VERSION == "sys-v2"
 
 
 def test_step_system_prompt_is_zh_tw() -> None:
@@ -137,3 +137,29 @@ def test_build_reduce_prompt_handles_a_single_summary() -> None:
 def test_build_reduce_prompt_handles_no_summaries() -> None:
     prompt = build_reduce_prompt([])
     assert "SUMMARIES:" in prompt
+
+
+def test_step_prompt_carries_position_when_total_is_given() -> None:
+    """Pins `POSITION` (sys-v2). Two builds of genuine long-meeting supervision fixed
+    long meetings (4/9 -> 9/9 wins) and broke short ones (10/11 -> 5/11) because the
+    prompt carried no position signal, so late-step behaviour could only be absorbed
+    globally, never conditioned. See `runs/sft-dropv5/RESULT.md`."""
+    memory = Memory()
+    chunk = Chunk(index=43, utterances=(Utterance("S1", "測試"),), tokens=4)
+
+    prompt = build_step_prompt(memory, chunk, total=55)
+
+    assert prompt.startswith("POSITION: 第 44 段，共 55 段\n")
+    assert prompt.index("POSITION") < prompt.index("MEMORY:") < prompt.index("CHUNK:")
+
+
+def test_step_prompt_without_total_omits_position_entirely() -> None:
+    """Omitting `total` must not leave a half-rendered POSITION line behind."""
+    memory = Memory()
+    memory.add_point("市議會核准搬遷案", 0)
+    chunk = Chunk(index=0, utterances=(Utterance("S1", "測試"),), tokens=4)
+
+    prompt = build_step_prompt(memory, chunk)
+
+    assert "POSITION" not in prompt
+    assert prompt == f"MEMORY:\n{render_memory(memory)}\nCHUNK:\n{chunk.render()}\n"

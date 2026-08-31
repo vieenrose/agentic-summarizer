@@ -24,7 +24,11 @@ from arcsum.prose import PROSE_MAX_TOKENS
 from arcsum.render import render_memory
 
 #: Bump on ANY change to the text below, or to a constant it interpolates.
-PROMPT_VERSION = "sys-v1"
+PROMPT_VERSION = "sys-v2"
+
+#: SPEC §4.1 v1.0 tool-call protocol. Separate constant so a v1 run is never confused
+#: with a v0 one in any trace or eval record.
+TOOLCALL_PROMPT_VERSION = "tools-v1"
 
 _CAPS_LINE = (
     f"ARC 上限 {ARC_TOKENS} 個字；POINTS 最多 {POINTS_CAP} 項，每項上限 {POINT_TOKENS} 個字"
@@ -90,10 +94,79 @@ def build_memory_view(memory: Memory) -> str:
     return f"MEMORY:\n{render_memory(memory)}\n"
 
 
-def build_step_prompt(memory: Memory, chunk: Chunk) -> str:
-    """MEMORY then CHUNK, fixed order — memory is small and stable in shape, the chunk
-    is the varying part, and the model always reads them in the same places."""
-    return f"MEMORY:\n{render_memory(memory)}\nCHUNK:\n{chunk.render()}\n"
+#: **REFUTED, 2026-08-28 — do not re-add an empty-memory label.** The reading step's
+#: recency bias is a STEP-0 effect: over 6 real meetings, step-0 points score 0.134
+#: trigram containment against their chunk's HEAD and 0.413 against its TAIL
+#: (head-favoured 9/40), while steps 1+ are head-favoured (0.174 vs 0.102, 25/46). Adding
+#: "（尚無任何記錄，這是會議的第一段，本段所有重點都是新的）" to the `MEMORY:` header DOES fix
+#: that: the probe's chunk 0 then yields `ADD - 辦公室搬遷案決議透過，確定搬遷至B棟`.
+#:
+#: It still makes G1 WORSE — 1 of 2 probe cases passing under `sys-v2`, 0 of 2 with the
+#: label, and all three wordings tried behaved the same. The mechanism: a fuller step-0
+#: memory suppresses REVISION at step 1, where the model then emits an ARC-only update
+#: with no `DROP` of the superseded point and no `ADD` of the reversal. One probe case
+#: went from stating the reversal to asserting the STALE decision as current
+#: (`states_earlier_as_current` flipped to True), which is exactly what G1 exists to
+#: catch. Same shape as trap 7: fuller memory is not free.
+
+
+def position_line(index: int, total: int) -> str:
+    """The `POSITION:` prefix, defined ONCE. Offline tools that re-render a stored pool
+    must emit the byte-identical line inference will send, so they import this rather
+    than reproducing the format -- the same single-source-of-truth rule `tokens.py`
+    applies to "is this character CJK"."""
+    return f"POSITION: 第 {index + 1} 段，共 {total} 段\n"
+
+
+#: SPEC §4.1 v1.0's step SYS prompt: a COMPACT hand-written tool schema, deliberately not
+#: the chat template's `tools=` rendering. Measured on Qwen3.5-0.8B: the template preamble
+#: is 313 tokens for one tool and 434 for four, against 81 for this and 266 for the v0
+#: edit-line prompt. The rendered preamble is instruction boilerplate aimed at a model that
+#: has never seen the schema; a fine-tuned student does not need it, and paying it on every
+#: one of ~14 steps is the difference between fitting §7's budget and missing it.
+_TOOL_STEP_SYS = f"""你是一個會議記錄助手。逐段閱讀會議逐字稿，維護一份精簡的記憶：
+ARC（1到3句會議脈絡，上限 {ARC_TOKENS} 個字）與 POINTS（最多 {POINTS_CAP} 項，每項上限 {POINT_TOKENS} 個字）。
+
+每讀完一段，只回覆一次工具呼叫：
+<tool_call>{{"name":"update_memory","arguments":{{"arc":"…","add":["…"],"drop":["…"]}}}}</tool_call>
+
+- add：新增重點。drop：移除開頭符合前綴的舊重點（前綴至少 {MIN_PREFIX_TOKENS} 個字）。arc：取代脈絡摘要。三者皆可省略。
+- 若這段推翻了先前的重點，同時給 drop 與 add，不要保留互相矛盾的兩項。
+- 這段沒有值得記錄的新資訊時，arguments 留空：{{}}。
+- 全部使用繁體中文。"""
+
+
+def tool_step_system_prompt() -> str:
+    return _TOOL_STEP_SYS
+
+
+def build_step_prompt(memory: Memory, chunk: Chunk, *, total: int | None = None) -> str:
+    """POSITION, then MEMORY, then CHUNK, in that fixed order — memory is small and
+    stable in shape, the chunk is the varying part, and the model always reads them in
+    the same places.
+
+    **The order is now MEASURED, not just argued.** Swapping to CHUNK-then-MEMORY was
+    tested on the hypothesis that the model re-ADDs points already visible in memory
+    because memory sits at the under-attended head of the prompt (the same positional
+    weakness that drops chunk heads). It is much worse, on 4 meetings at the production
+    budget: applied-op rate 79.0% -> 44.2%, duplicate points 12.2% -> 29.5%, unchanged
+    ARCs 5.5% -> 11.4%, and total emitted ops 271 -> 509. Do not reorder these.
+
+    **`POSITION` exists because late-step behaviour was otherwise unlearnable.** Until
+    `sys-v2` the prompt carried no step index and no chunk count, so the model could not
+    tell step 3 of 5 from step 44 of 55 except indirectly, through how saturated the
+    memory happened to look. That made position-dependent behaviour impossible to
+    *condition* and possible only to absorb globally, which is exactly what two measured
+    builds did: adding genuine long-meeting supervision moved long meetings 4/9 -> 8/9
+    -> 9/9 while pushing short ones 10/11 -> 6/11 -> 5/11, with
+    `corr(meeting length, change) = +0.671`. Holding the NOP share fixed did not
+    separate them (`runs/sft-dropv5/RESULT.md`), because the mix was never the cause.
+
+    `total` is optional only so the state-only and map views stay buildable; every
+    reading step passes it. Omitting it reproduces the `sys-v1` body exactly.
+    """
+    head = "" if total is None else position_line(chunk.index, total)
+    return f"{head}MEMORY:\n{render_memory(memory)}\nCHUNK:\n{chunk.render()}\n"
 
 
 def build_synth_prompt(memory: Memory) -> str:

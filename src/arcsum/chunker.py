@@ -22,10 +22,25 @@ from dataclasses import dataclass
 from arcsum.tokens import heuristic_token_len
 from arcsum.transcript import SEP, Utterance
 
-#: SPEC §4.1. Phase 0 may raise this if 8k context fits the device envelope; keep it a
-#: parameter everywhere, because chunk size is baked into the SFT distribution and must
-#: match between trace generation and deployment.
-CHUNK_TOKENS = 2500
+#: SPEC §4.1, raised 2500 -> 6400 on 2026-08-31 after 8k context was MEASURED to fit the
+#: device envelope (`runs/g4-device-measured.md`). §4.1 always framed 4k as "a budget
+#: choice, not a model limit — and it is falsifiable"; this is that falsification.
+#:
+#: Measured on the real Oppo Reno 7, Q8_0, all 8 cores:
+#:   - peak RSS 4k -> 8k costs only +50 MB (1,784 -> 1,834 MB). §4.1's RSS objection was
+#:     extrapolated from an 8B model; Qwen3.5-0.8B is hybrid linear-attention (6 of 24
+#:     layers full attention) so its KV cache is nearly context-independent.
+#:   - prefill is 16% slower PER TOKEN at the longer context (58.20 -> 48.67 t/s), but
+#:     steps/meeting fall 15.2 -> 5.9, cutting the ~800-token SYS+memory overhead and the
+#:     per-step decode by ~61% each. Net: 19.1 -> 16.9 min against a 20-minute ceiling,
+#:     margin 5% -> 16% — the difference between a budget that cannot absorb the measured
+#:     process-contention stalls and one that can.
+#:
+#: **Chunk size is baked into the SFT distribution.** Changing it REQUIRES regenerating
+#: supervision and retraining; serving an old checkpoint at a new chunk size is
+#: off-distribution and was the confound that muddied `runs/chunk1500/`. Keep it a
+#: parameter everywhere so trace generation and deployment cannot silently disagree.
+CHUNK_TOKENS = 6400
 
 #: Lines re-shown at the head of the next chunk, so a decision spanning a boundary is not
 #: cut in half.

@@ -1,0 +1,8 @@
+{
+  "agent": {
+    "SeattleCityCouncil_12132021": "RuntimeError('llama-server 500: {\"error\":{\"code\":500,\"message\":\"The model produced output that does not match the expected peg-native format\",\"type\":\"server_error\"}}')"
+  },
+  "baseline": {
+    "LongBeachCC_02012022": "RuntimeError('llama-server 500: {\"error\":{\"code\":500,\"message\":\"The model produced output that does not match the expected peg-native format\",\"type\":\"server_error\"}}')"
+  }
+}

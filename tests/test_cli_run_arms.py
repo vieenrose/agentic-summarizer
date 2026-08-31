@@ -100,7 +100,7 @@ def test_run_both_arms_produces_paired_meetings(tmp_path, monkeypatch: pytest.Mo
     )
 
     assert skipped == []
-    assert failures == {"agent": {}, "baseline": {}}
+    assert failures == {"agent": {}, "baseline": {}, "agent_partial": {}}
     assert len(agent_pairs) == 1
     assert len(baseline_pairs) == 1
     assert agent_pairs[0]["meeting_id"] == "m1"
@@ -186,7 +186,7 @@ def test_one_meetings_baseline_failure_does_not_lose_other_meetings(
     # m2's baseline arm does NOT raise (the overflow guard in baseline.py converts it
     # to a deterministic fallback, not an exception) -- so it is not a "failure" here,
     # it is a successful (if degraded) baseline result. Both meetings pair normally.
-    assert failures == {"agent": {}, "baseline": {}}
+    assert failures == {"agent": {}, "baseline": {}, "agent_partial": {}}
     assert {p["meeting_id"] for p in agent_pairs} == {"m1", "m2"}
     assert {p["meeting_id"] for p in baseline_pairs} == {"m1", "m2"}
 

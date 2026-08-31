@@ -20,6 +20,7 @@ from arcsum.guards import (
     Outcome,
     apply_ops,
     contradiction,
+    hedge_marker_in,
     polarity,
 )
 from arcsum.memory import Memory, Point
@@ -366,3 +367,40 @@ def test_apply_ops_accepts_no_model_callable() -> None:
 def test_render_op_still_works_for_ops_seen_through_applied_op() -> None:
     result = AppliedOp(Add("x"), True)
     assert render_op(result.op) == "ADD - x"
+
+
+# --- hedge_marker_in / Outcome.hedge_points ---------------------------------------------
+
+
+def test_hedge_marker_in_finds_whether_or_not_phrasing() -> None:
+    assert hedge_marker_in("委員質疑國有林地濫墾是否應加重刑責") == "是否"
+    assert hedge_marker_in("委員要求加重刑責並溯及查處") is None
+
+
+def test_add_with_hedge_marker_is_applied_and_flagged_not_refused() -> None:
+    """Detect and record, never repair in-loop — the standing rule this codebase applies
+    to NOP-collapse. A hedge-phrased point may be the best available capture of a
+    genuine open question; refusing it outright is unvalidated. Measured 2026-08-30:
+    `synthesize_memory` deterministically (3/3 seeds) rewrote
+    `委員質疑國有林地濫墾是否應加重刑責` — "questions WHETHER it should be strengthened" —
+    into `認為該事件不應加重刑責` — asserting the OPPOSITE polarity as settled fact.
+    """
+    memory = Memory()
+    chunk = rich_chunk()
+
+    outcome = apply_ops(memory, [Add("委員質疑國有林地濫墾是否應加重刑責")], chunk)
+
+    assert outcome.results[0].applied is True
+    assert outcome.results[0].note == "unresolved polarity (是否)"
+    assert len(outcome.hedge_points) == 1
+    assert memory.points  # the point is still recorded, not dropped
+
+
+def test_add_without_hedge_marker_carries_no_note() -> None:
+    memory = Memory()
+    chunk = rich_chunk()
+
+    outcome = apply_ops(memory, [Add("委員要求加重刑責並溯及查處")], chunk)
+
+    assert outcome.results[0].note is None
+    assert outcome.hedge_points == []

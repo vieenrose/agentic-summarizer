@@ -138,6 +138,15 @@ class JudgeClient:
             "temperature": 0.0,
             "max_tokens": self.max_tokens * (attempt + 1),
         }
+        if attempt >= 1:
+            # A reasoning judge can spend its ENTIRE budget in the reasoning channel and
+            # return empty `content`. Measured 2026-08-29 against gpt-oss-20b: 21 of 40
+            # baseline meetings failed this way, and because the baseline's summaries are
+            # ~9x longer (median 5,087 chars vs 562) the losses were systematic, not
+            # random -- G2 ended up comparing only the control arm's SHORTEST outputs.
+            # Retrying with reasoning capped is what makes the retry meaningfully
+            # different; simply re-asking a temperature=0 model reproduces the failure.
+            body["chat_template_kwargs"] = {"reasoning_effort": "low"}
         req = request.Request(
             f"{base_url}/v1/chat/completions",
             data=json.dumps(body).encode("utf-8"),
@@ -153,7 +162,8 @@ class JudgeClient:
         except error.URLError as exc:
             raise RuntimeError(f"cannot reach judge at {base_url} — is it running?") from exc
 
-        content = response["choices"][0]["message"].get("content") or ""
+        message = response["choices"][0]["message"]
+        content = message.get("content") or ""
         if not content:
             if attempt >= 1:
                 # Fail loud: scoring this as "missing" would quietly depress

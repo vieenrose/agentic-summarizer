@@ -366,3 +366,18 @@ def test_to_traditional_preserves_op_syntax_markers() -> None:
     assert "DROP «" in converted
     assert "ARC:" in converted
     assert converted.endswith("NOP")
+
+
+def test_generate_step_passes_total_chunks_through_to_the_stored_prompt() -> None:
+    """The stored gold prompt must be BYTE-IDENTICAL to what `run_agent` will build for
+    the same chunk, POSITION included. `sys-v2` made the teacher and the live loop each
+    learn the chunk count independently; if only one of them passed it, every training
+    target would carry a prompt inference never sends, and no other test would notice."""
+    memory = Memory()
+    chunk = _chunk()
+    teacher = Scripted(default="ADD - 市議會核准搬遷案，預算編列兩百萬元。")
+
+    step, _after = generate_step(memory, chunk, teacher, grounding_items=[ITEM_A], total_chunks=55)
+
+    assert step.user == build_step_prompt(Memory(), chunk, total=55)
+    assert "共 55 段" in step.user

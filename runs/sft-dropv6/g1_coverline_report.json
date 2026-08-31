@@ -1,0 +1,33 @@
+{
+ "config": {
+  "label": "dropv6 + cover-whole-chunk line",
+  "url": "http://127.0.0.1:8081",
+  "prompt_version": "sys-v2",
+  "legacy_prompt": false,
+  "extra_sys_line": "- 請涵蓋整段 CHUNK 的內容，包括開頭的部分，不要只記錄後半段。",
+  "max_tokens_step": 256,
+  "max_tokens_synth": 1200,
+  "repeat_penalty": 1.1,
+  "seed": 0,
+  "cache_prompt": false,
+  "generated_at": "2026-08-28T17:45:50+00:00",
+  "host": "louis"
+ },
+ "g1_passed": false,
+ "results": [
+  {
+   "name": "office_move_reversal",
+   "states_later": false,
+   "states_earlier_as_current": true,
+   "distractor_absent": true,
+   "passed": false
+  },
+  {
+   "name": "budget_approval_reversal",
+   "states_later": false,
+   "states_earlier_as_current": true,
+   "distractor_absent": true,
+   "passed": false
+  }
+ ]
+}

@@ -243,11 +243,22 @@ def main(argv: list[str] | None = None) -> int:
         tokenizer = tokenizer.tokenizer
 
     _eos = tokenizer.eos_token or "</s>"
-    if "<|im_end|>" in tokenizer.get_vocab():
+    vocab = tokenizer.get_vocab()
+    if "<|im_end|>" in vocab:
         if tokenizer.eos_token != "<|im_end|>":
             tokenizer.eos_token = "<|im_end|>"
             tokenizer.eos_token_id = tokenizer.convert_tokens_to_ids("<|im_end|>")
         _eos = "<|im_end|>"
+    if _eos not in vocab:
+        # Some tokenizer backends report a PLACEHOLDER eos_token that is not itself in
+        # the vocabulary (observed on Qwen3.5-0.8B under the Tokenizers backend, which
+        # returned the literal '<EOS_TOKEN>'), and TRL then refuses to start. Recover the
+        # real token from the id, which is authoritative, rather than trusting the string.
+        eos_id = getattr(tokenizer, "eos_token_id", None)
+        recovered = tokenizer.convert_ids_to_tokens(eos_id) if eos_id is not None else None
+        if recovered and recovered in vocab:
+            _eos = recovered
+            tokenizer.eos_token = recovered
 
     if args.regime == "lora":
         model = FastLanguageModel.get_peft_model(
@@ -305,6 +316,22 @@ def main(argv: list[str] | None = None) -> int:
         eos_token=_eos,
     )
     print(f"[sft] cfg eos_token={sft_cfg.eos_token!r} regime={args.regime} lr={lr}", flush=True)
+
+    # Re-assert immediately before construction: TRL validates `eos_token` against the
+    # processing_class it is handed, and the tokenizer can be re-patched between our
+    # earlier normalisation and here (observed on Qwen3.5-0.8B, where the reported
+    # eos_token reverted to the literal placeholder '<EOS_TOKEN>' on one rank only, so
+    # rank0 started and rank1 aborted the run).
+    _vocab = tokenizer.get_vocab()
+    if sft_cfg.eos_token not in _vocab:
+        _id = getattr(tokenizer, "eos_token_id", None)
+        _tok = tokenizer.convert_ids_to_tokens(_id) if _id is not None else None
+        sft_cfg.eos_token = _tok if (_tok and _tok in _vocab) else "<|im_end|>"
+    if tokenizer.eos_token not in _vocab:
+        tokenizer.eos_token = sft_cfg.eos_token
+    print(
+        f"[sft] eos re-asserted: cfg={sft_cfg.eos_token!r} tok={tokenizer.eos_token!r}", flush=True
+    )
 
     trainer = _RealSFTTrainer(
         model=model,

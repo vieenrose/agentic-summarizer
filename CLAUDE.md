@@ -52,7 +52,7 @@ does not restate the spec's normative detail (formats, caps, gate criteria).
 
 ### Five measured traps, all found on 2026-08-27 — do not re-derive
 
-(Four more, measured 2026-08-28, follow this list.)
+(Four more, measured 2026-08-28, follow this list, then trap 10 on serving flags.)
 
 Each cost real debugging time and is now pinned by a test. The docstrings carry the
 numbers; this is the index.
@@ -154,6 +154,50 @@ shares `build_sft` reports is necessary, not sufficient. Closing this gap needs 
 Phase-4 long-meeting supervision, not a different mix of the same 200 meetings — and a
 hyperparameter search over `--target-late-frac` against the 20-meeting eval set would be
 fitting the only held-out data there is.
+
+### Trap 10, measured 2026-08-31 — the jinja flag is per-ROLE, not per-model-family
+
+**`--jinja` for the teacher, `--no-jinja` for the student. Both are Qwen; the flag is not
+about the model, it is about which prompt string the server builds.** Getting this backwards
+is silent: it produces plausible-looking output and a plausible-looking failure rate.
+
+Cost: a supervision regeneration launched with `--no-jinja` on the teacher came back
+**`dirty=13/13` on every meeting**. It was only catchable because the recorded clean-replay
+rate is 51% (`tools/mix_phase4.py`) and 100% is impossible-looking. **Had it returned ~70% I
+would have read it as "large chunks are harder for the teacher"** — a plausible, entirely
+wrong conclusion, baked into a retrained pool. Keep the 51% number prominent for this reason.
+
+Measured on `/apply-template`, same messages, tail of the rendered prompt:
+
+| server | rendered tail |
+|---|---|
+| student Qwen3.5-0.8B, `--no-jinja` | `…<\|im_start\|>assistant\n` |
+| student Qwen3.5-0.8B, `--jinja` | `…assistant\n<think>\n` |
+| teacher Qwen3.8-27B, `--jinja` + `enable_thinking:false` | `…assistant\n<think>\n\n</think>\n\n` |
+| teacher Qwen3.8-27B, `--jinja` default | reasoning preamble injected into SYS, then `<think>\n` |
+| teacher Qwen3.8-27B, `--no-jinja` | plain ChatML — **no `<think>` at all** |
+
+- **Student needs `--no-jinja`**: its GGUF template unconditionally opens `<think>\n`, and
+  `tools/train_toolcalls.py` trained on plain ChatML. Serving under jinja prefixes every
+  prompt with tokens the fine-tune never saw.
+- **Teacher needs `--jinja`**: `chat_template_kwargs: {enable_thinking: false}` is honored
+  ONLY on the jinja path; the legacy builder ignores it silently.
+
+**The counterintuitive part, and the actual mechanism:** `--no-jinja` gives the teacher no
+`<think>` marker at all — and that is exactly the failure. Suppression works by PRE-FILLING
+an already-closed `<think>\n\n</think>` so the model resumes past it. **Absence of the marker
+is not absence of thinking; it is absence of the thing that stops it.** A reasoning model with
+no marker opens one itself.
+
+So the real dependency is on `chat_template_kwargs`, not on jinja per se — a client that
+prefilled the closed think-block itself could run the teacher `--no-jinja`.
+
+**This reaches further than the teacher.** `cli/run_arms.py` defaults `raw_completion=True`,
+so BOTH eval arms render through `/apply-template` too. Serving the student under `--jinja`
+would put a stray `<think>` in every prompt of every reported measurement — an eval-wide
+confound attributable to a serving flag, not to whatever was being tested. Check the flag
+before trusting any number. Note trap 3 tried `--jinja` for a DIFFERENT reason (MiniCPM5's
+UTF-8 500s) and found it did not help; that is not a licence to leave it on.
 
 ### SPEC v1.0: tool-call protocol + Qwen3.5-0.8B — `qwen-tools-v5` is the current best
 

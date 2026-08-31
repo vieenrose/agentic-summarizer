@@ -215,3 +215,78 @@ def test_probe_result_passed_is_the_conjunction(
 ) -> None:
     result = ProbeResult("x", later, earlier_current, distractor_absent)
     assert result.passed is expected
+
+
+# --- the GENERATED probe set (`data/reversals_probe`) -----------------------------------
+#
+# The two pins above cover `probe_data.py`'s hand-written gate cases. They never covered
+# the generated 30-scenario independent probe, and that gap cost a real measurement: on
+# 2026-08-31, 2 of 11 generated scenarios (`bikeshare`, `nightmarket`) carried the
+# reversal INSIDE chunk 0 alongside the decision, so the model saw both in one step. Every
+# recorded independent-probe figure -- 0/11, 1/11, 2/11 across five separate G1 fix
+# attempts -- therefore had a wrong denominator, and those attempts were compared against
+# each other on an instrument that was silently measuring single-step revision for part of
+# its range.
+#
+# Root cause was in `tools/gen_reversals.py::build_gold`: it located the reversal with
+# `reversed(chunks)`, i.e. the LAST chunk containing it. Chunks overlap by `OVERLAP_LINES`,
+# so a reversal near a boundary appears twice, and `late_i > early_i` passed while the
+# model's own first sight of it was in the earlier chunk.
+
+
+def _probe_corpus() -> list[tuple[str, str, dict]]:
+    """(slug, transcript, scenario) for every generated probe meeting, or [] if the
+    corpus is absent -- these are data-dependent checks and must not fail the suite on a
+    fresh clone with no generated data."""
+    import json
+    from pathlib import Path
+
+    root = Path(__file__).resolve().parent.parent / "data" / "reversals_probe"
+    index = root / "scenarios.json"
+    if not index.is_file():
+        return []
+    by_slug = {s["slug"]: s for s in json.loads(index.read_text(encoding="utf-8"))}
+    out = []
+    for f in sorted(root.glob("*.txt")):
+        slug = f.name.split("-")[0]
+        if slug in by_slug:
+            out.append((slug, f.read_text(encoding="utf-8"), by_slug[slug]))
+    return out
+
+
+def test_generated_probe_reversal_is_never_visible_before_the_decision_chunk() -> None:
+    """The reversal must first appear STRICTLY LATER than the decision, measured the way
+    the model experiences it: chunks in order, first occurrence, overlap included.
+
+    Deliberately NOT `reversed(chunks)` -- that is the exact bug this pins.
+    """
+    from arcsum.transcript import parse_transcript
+
+    corpus = _probe_corpus()
+    if not corpus:
+        pytest.skip("data/reversals_probe not generated")
+
+    broken = []
+    for slug, text, sc in corpus:
+        chunks = list(
+            iter_chunks(parse_transcript(text), budget=CHUNK_TOKENS, token_len=heuristic_token_len)
+        )
+        early = next((i for i, c in enumerate(chunks) if sc["early"] in c.render()), None)
+        late = next((i for i, c in enumerate(chunks) if sc["late"] in c.render()), None)
+        if early is None or late is None or late <= early:
+            broken.append(f"{slug}: {len(chunks)} chunk(s), early={early} late={late}")
+    assert not broken, (
+        f"at CHUNK_TOKENS={CHUNK_TOKENS} these probe scenarios cannot test cross-chunk "
+        "revision -- the model sees the reversal no later than the decision:\n  "
+        + "\n  ".join(broken)
+    )
+
+
+def test_generated_probe_is_large_enough_to_separate_a_fix_from_noise() -> None:
+    """At n=11 a move from 1 to 2 passes is indistinguishable from noise, which is why
+    five successive G1 attempts could not be told apart. The set is sized so a real
+    capability gain is visible above sampling error."""
+    corpus = _probe_corpus()
+    if not corpus:
+        pytest.skip("data/reversals_probe not generated")
+    assert len(corpus) >= 24, f"independent probe has only {len(corpus)} scenarios"

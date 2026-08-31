@@ -153,7 +153,7 @@ def test_over_budget_step_raises_step_budget_exceeded() -> None:
 
 
 def test_step_budget_default_is_documented() -> None:
-    assert STEP_BUDGET == 7600
+    assert STEP_BUDGET == 3800
 
 
 def test_budget_uses_the_injected_tokenizer() -> None:

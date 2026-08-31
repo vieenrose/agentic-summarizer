@@ -22,25 +22,37 @@ from dataclasses import dataclass
 from arcsum.tokens import heuristic_token_len
 from arcsum.transcript import SEP, Utterance
 
-#: SPEC §4.1, raised 2500 -> 6400 on 2026-08-31 after 8k context was MEASURED to fit the
-#: device envelope (`runs/g4-device-measured.md`). §4.1 always framed 4k as "a budget
-#: choice, not a model limit — and it is falsifiable"; this is that falsification.
+#: SPEC §4.1. Raised to 6400 on 2026-08-31 and REVERTED to 2500 the same day, on
+#: measurement. Keep this at 2500 unless all three findings below are addressed.
 #:
-#: Measured on the real Oppo Reno 7, Q8_0, all 8 cores:
-#:   - peak RSS 4k -> 8k costs only +50 MB (1,784 -> 1,834 MB). §4.1's RSS objection was
-#:     extrapolated from an 8B model; Qwen3.5-0.8B is hybrid linear-attention (6 of 24
-#:     layers full attention) so its KV cache is nearly context-independent.
-#:   - prefill is 16% slower PER TOKEN at the longer context (58.20 -> 48.67 t/s), but
-#:     steps/meeting fall 15.2 -> 5.9, cutting the ~800-token SYS+memory overhead and the
-#:     per-step decode by ~61% each. Net: 19.1 -> 16.9 min against a 20-minute ceiling,
-#:     margin 5% -> 16% — the difference between a budget that cannot absorb the measured
-#:     process-contention stalls and one that can.
+#: The 8k case was real on latency and is preserved in `runs/g4-device-measured.md`:
+#: peak RSS costs only +50 MB (Qwen3.5-0.8B is hybrid linear-attention, 6 of 24 layers
+#: full attention, so its KV cache is nearly context-independent), and though prefill is
+#: 16% slower per token, steps/meeting fall 15.2 -> 5.9 and the meeting goes 19.1 -> 16.9
+#: min — margin against the 20-minute ceiling 5% -> 16%. That margin is the only measured
+#: lever on G4's real exposure (process-contention stalls, worst case 21.6 min).
+#:
+#: **It was reverted anyway, because three things broke at 6400** (`runs/v5-8k/`):
+#:   1. NOP supervision collapses. Teacher NOP share 38.2% -> **1.4%** (18 of 1,326 steps
+#:      over the 200-meeting pilot): a 6,400-token chunk almost always overlaps SOME
+#:      item-covered span, so honest NOP targets nearly vanish. Trap 1 records what a
+#:      NOP-starved pool produces — a checkpoint that cannot abstain and churns
+#:      DROP + near-identical re-ADD. `mix_phase4` can downsample NOP, never manufacture it.
+#:   2. G3 rouge1 FAILS. `qwen-tools-v5` at 6400 over the 40 held-out meetings: 21/19,
+#:      +0.003, p=0.875, down from 28/12, +0.069, p=0.017. rouge2/rougeL survive at
+#:      roughly half their margin. (Off-distribution serving, so not decisive alone —
+#:      but it is the direction trap 6 and `runs/chunk1500/` both predict.)
+#:   3. Every G1 probe scenario collapses to ONE chunk, so the gate silently measures
+#:      nothing. Pinned now by tests over BOTH probe sets; see `probe_data.py`.
+#:
+#: Note 8k SERVING context (`n_ctx`) is a separate knob and remains 8192 — it is only the
+#: transcript-per-step that reverts.
 #:
 #: **Chunk size is baked into the SFT distribution.** Changing it REQUIRES regenerating
 #: supervision and retraining; serving an old checkpoint at a new chunk size is
 #: off-distribution and was the confound that muddied `runs/chunk1500/`. Keep it a
 #: parameter everywhere so trace generation and deployment cannot silently disagree.
-CHUNK_TOKENS = 6400
+CHUNK_TOKENS = 2500
 
 #: Lines re-shown at the head of the next chunk, so a decision spanning a boundary is not
 #: cut in half.

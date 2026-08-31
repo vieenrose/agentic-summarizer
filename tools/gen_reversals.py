@@ -131,6 +131,61 @@ PROBE_SCENARIOS: tuple[Scenario, ...] = (
     Scenario("sportfield", "運動場地開放案", "校園操場夜間開放", "決議准予開放", "決議收回",
              "校方反映安全維護人力不足",
              ("照明電費分攤", "場地預約制度", "器材保管責任")),
+    Scenario("cemetery", "公墓遷葬案", "第三公墓東側區塊", "決議准予遷葬", "決議另案研議",
+             "遷葬補償標準與家屬共識未達成",
+             ("納骨塔容量評估", "祭祀動線規劃", "周邊道路拓寬")),
+    Scenario("shelter", "動物收容所擴建案", "北區收容所第二期", "決議照案核可", "決議暫停辦理",
+             "鄰地地權尚未完成徵收",
+             ("認養宣導活動", "絕育補助名額", "獸醫人力配置")),
+    Scenario("riverwalk", "河濱步道延伸案", "左岸七公里段", "決議准予施作", "決議全案退回",
+             "生態評估指出影響水鳥棲地",
+             ("自行車道銜接", "夜間照明規劃", "洪泛期封閉機制")),
+    Scenario("transitstation", "客運轉運站興建案", "西站地下轉運層", "決議同意興建", "決議不予同意",
+             "交通量預估模型遭認定高估",
+             ("月台配置檢討", "計程車招呼站", "行李寄存服務")),
+    Scenario("youthhousing", "青年住宅招租案", "文昌段社會住宅", "決議照案實施", "決議重新公告",
+             "所得門檻設定排除主要目標族群",
+             ("租金分級制度", "點數評分方式", "公設管理費用")),
+    Scenario("heritage", "歷史建築指定案", "舊糖廠倉庫群", "決議登錄指定", "決議不予登錄",
+             "文資審議認定原貌已大幅改建",
+             ("修復經費來源", "再利用方向", "周邊土地使用")),
+    Scenario("industrialpark", "產業園區開發案", "南科特定專用區", "決議准予開發", "決議駁回申請",
+             "水電供應承諾未取得事業單位確認",
+             ("引進產業類別", "汙水處理容量", "聯外道路負荷")),
+    Scenario("jobtraining", "職業訓練委辦案", "照顧服務員班次", "決議准予委辦", "決議取消委辦",
+             "受訓學員就業銜接率低於契約標準",
+             ("師資鐘點費率", "術科場地設備", "結訓輔導機制")),
+    Scenario("airquality", "空品淨區劃設案", "市中心三處學區", "決議公告劃設", "決議暫不劃設",
+             "老舊車輛替換補助尚未到位",
+             ("監測站增設", "稽查人力調度", "宣導期程安排")),
+    Scenario("smartlamp", "智慧路燈建置案", "幹道兩百盞試辦", "決議准予試辦", "決議中止試辦",
+             "資通訊設備採購爭議進入申訴程序",
+             ("節能效益評估", "資料傳輸規格", "維運責任歸屬")),
+    Scenario("hotspring", "溫泉區開發管理案", "北投溪上游段", "決議同意備查", "決議退回補正",
+             "溫泉取供事業許可文件不齊",
+             ("水權分配比例", "泉質檢驗頻率", "住宿容留人數")),
+    Scenario("earlyintervention", "早期療育中心設置案", "東區療育據點",
+             "決議准予設置", "決議延後辦理",
+             "治療師招募未達開辦人力門檻",
+             ("轉介流程建立", "家長支持團體", "交通接送補助")),
+    Scenario("fishport", "漁貨直銷中心案", "南方澳直銷站", "決議照案通過", "決議不予核准",
+             "用地屬國有財產尚未完成撥用",
+             ("冷鏈設備規格", "拍賣制度調整", "觀光動線區隔")),
+    Scenario("parkinglot", "立體停車場興建案", "中正段公有停車場", "決議准予興建", "決議重新評估",
+             "車位需求調查母體遭質疑不具代表性",
+             ("收費費率級距", "機車停放空間", "施工交維計畫")),
+    Scenario("sewage", "汙水下水道接管案", "第四期接管工程", "決議核定實施", "決議保留議案",
+             "用戶接管意願調查回收率過低",
+             ("管線埋設深度", "施工賠償標準", "接管費用補助")),
+    Scenario("disability", "身心障礙者輔具中心案", "中區輔具服務站", "決議同意設立", "決議不予設立",
+             "現有服務量能經評估尚未飽和",
+             ("輔具租借流程", "維修技師培訓", "到宅評估服務")),
+    Scenario("tourism", "觀光纜車興建案", "山線觀光纜車", "決議准予推動", "決議停止推動",
+             "環境影響評估認定需進入二階審查",
+             ("站體量體規劃", "地質鑽探結果", "遊客承載管制")),
+    Scenario("marketrebuild", "傳統市場改建案", "第一公有市場", "決議照案核備", "決議撤銷核備",
+             "攤商安置方案未取得多數同意",
+             ("臨時攤位配置", "施工分期方式", "租金調整機制")),
 )
 
 #: CONTROL scenarios: the decision is made and NEVER reversed. A model taught to handle
@@ -251,7 +306,22 @@ def build_gold(sc: Scenario, body: str) -> list[dict] | None:
 
     early_i = next((c.index for c in chunks if sc.early in c.render() and sc.key_term in
                     c.render()), None)
-    late_i = next((c.index for c in reversed(chunks) if sc.late in c.render()), None)
+    # FIRST chunk carrying the reversal, not the last. Chunks OVERLAP (`OVERLAP_LINES`),
+    # so a reversal near a boundary appears in two chunks; taking the last one then reads
+    # `late_i > early_i` and accepts a meeting where the model — which sees chunks one at
+    # a time, in order — already had the reversal in front of it when it recorded the
+    # decision. That is a single-step revision, not the cross-chunk revision G1 exists to
+    # test, and the gate silently scores it as if it were.
+    #
+    # Measured 2026-08-31: 2 of 11 generated probe scenarios (`bikeshare`, `nightmarket`)
+    # were structurally incapable of testing cross-chunk revision, so every recorded G1
+    # probe figure (0/11, 1/11, 2/11 across five fix attempts) had a wrong denominator.
+    # Same bug class as the ~120-token transcripts pinned by `tests/test_probe.py`, which
+    # covered `probe_data.py`'s two gate cases but never this generated set.
+    #
+    # Taking the first occurrence also places the gold op correctly: the model should
+    # revise as soon as the reversal is visible, not one chunk later.
+    late_i = next((c.index for c in chunks if sc.late in c.render()), None)
     if early_i is None or late_i is None or late_i <= early_i:
         return None
 

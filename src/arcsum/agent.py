@@ -41,12 +41,12 @@ from arcsum.tokens import TOKENIZE_VERSION, heuristic_token_len, token_len_name
 from arcsum.toolcalls import parse_tool_calls
 from arcsum.transcript import Utterance
 
-#: SPEC §4.1's table at 8k context: ~190 SYS (tool schema) + <=600 memory + ~6,400 chunk
-#: ~= 7,200. Set above that measured total, mirroring the headroom the prior project's
-#: STEP_BUDGET left above its own estimate — real prompts vary, and this must fail loud,
-#: not truncate. Raised from 3,800 alongside `CHUNK_TOKENS` 2500 -> 6400; see that
-#: constant's note for the device measurements behind the change.
-STEP_BUDGET = 7600
+#: SPEC §4.1's table: ~190 SYS (tool schema) + <=600 memory + ~2,500 chunk ~= 3,300. Set
+#: above that measured total, mirroring the headroom the prior project's STEP_BUDGET left
+#: above its own estimate — real prompts vary, and this must fail loud, not truncate.
+#: Briefly 7,600 alongside `CHUNK_TOKENS` 6400; both reverted together on 2026-08-31 —
+#: see that constant's note for the three measurements that forced it back.
+STEP_BUDGET = 3800
 
 #: A one-line nudge appended to the user turn on a `nop_retry` re-ask. Deliberately
 #: minimal: it must not change the op grammar or the model's task, only press on the

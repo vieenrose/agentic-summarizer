@@ -201,6 +201,32 @@ CONTROL_SCENARIOS: tuple[Scenario, ...] = (
              "", ("志工招募", "食材供應商", "場地無障礙")),
     Scenario("floodgate", "抽水站增設案", "低窪地區兩處", "決議照案核定", "決議照案核定",
              "", ("防汛演練", "警戒水位標準", "維護保養合約")),
+    Scenario("treecare", "行道樹修剪維護案", "中山路樟樹段", "決議照案通過", "決議照案通過",
+             "", ("修剪週期規範", "廢枝清運方式", "樹穴透水鋪面")),
+    Scenario("childcare", "公共托育家園設置案", "西區托育家園", "決議准予設置", "決議准予設置",
+             "", ("收托年齡範圍", "托育人員資格", "收費級距規劃")),
+    Scenario("foodbank", "實物銀行擴點案", "三處社區發放站", "決議同意辦理", "決議同意辦理",
+             "", ("物資來源盤點", "領取資格認定", "志工排班方式")),
+    Scenario("watertest", "校園飲水機水質檢驗案", "全市國中小飲水設備", "決議照案核定",
+             "決議照案核定",
+             "", ("檢驗項目範圍", "濾心更換頻率", "檢驗結果公告")),
+    Scenario("patrol", "社區巡守隊補助案", "十二個里巡守隊", "決議准予補助", "決議准予補助",
+             "", ("裝備採購項目", "巡邏路線規劃", "保險投保方式")),
+    Scenario("roadsmooth", "路平專案第二期", "幹道十二公里段", "決議照案實施", "決議照案實施",
+             "", ("刨鋪施工時段", "人手孔下地", "驗收厚度標準")),
+    Scenario("oldhouse", "老屋健檢補助案", "屋齡三十年以上住宅", "決議同意受理", "決議同意受理",
+             "", ("結構評估項目", "補助額度上限", "申請文件簡化")),
+    Scenario("shelterplan", "防災避難收容處所檢討案", "全市四十處收容處所",
+             "決議照案備查", "決議照案備查",
+             "", ("物資儲備盤點", "無障礙動線", "收容人數上限")),
+    Scenario("citizencard", "市民卡功能擴充案", "交通與圖書整合功能", "決議准予推動",
+             "決議准予推動",
+             "", ("個資保護機制", "掛失補發流程", "特約商店招募")),
+    Scenario("homeless", "街友服務中心案", "車站周邊服務據點", "決議同意設置", "決議同意設置",
+             "", ("盥洗設施配置", "就業轉介機制", "醫療巡診安排")),
+    Scenario("langrevival", "本土語言復振計畫", "國小沉浸式教學班", "決議照案通過",
+             "決議照案通過",
+             "", ("師資培訓時數", "教材編纂進度", "家庭共學推廣")),
 )
 
 _ALL = {s.slug for s in TRAIN_SCENARIOS} | {s.slug for s in PROBE_SCENARIOS}
@@ -208,6 +234,13 @@ assert len(_ALL) == len(TRAIN_SCENARIOS) + len(PROBE_SCENARIOS), "scenario slugs
 assert not ({s.subject for s in TRAIN_SCENARIOS} & {s.subject for s in PROBE_SCENARIOS})
 assert not ({s.key_term for s in TRAIN_SCENARIOS} & {s.key_term for s in PROBE_SCENARIOS})
 assert not ({s.late for s in TRAIN_SCENARIOS} & {s.late for s in PROBE_SCENARIOS})
+#: The CONTROL arm is compared directly against the PROBE arm (`tools/loss_map.py`), so it
+#: must be independent of it too — a shared subject or key term would let one arm's result
+#: leak into the other's.
+assert not ({s.subject for s in CONTROL_SCENARIOS} & {s.subject for s in PROBE_SCENARIOS})
+assert not ({s.key_term for s in CONTROL_SCENARIOS} & {s.key_term for s in PROBE_SCENARIOS})
+assert not ({s.subject for s in CONTROL_SCENARIOS} & {s.subject for s in TRAIN_SCENARIOS})
+assert not ({s.key_term for s in CONTROL_SCENARIOS} & {s.key_term for s in TRAIN_SCENARIOS})
 
 _WRITE_SYS = """你是一個會議逐字稿產生器。請寫出一段真實自然的繁體中文會議逐字稿。
 
@@ -218,7 +251,7 @@ _WRITE_SYS = """你是一個會議逐字稿產生器。請寫出一段真實自�
 - 全部使用繁體中文。"""
 
 
-def _part_prompt(sc: Scenario, part: str) -> str:
+def _part_prompt(sc: Scenario, part: str, *, filler_lines: int = 30) -> str:
     if part == "early":
         return (
             f"請寫出一段市政會議逐字稿，內容是審議「{sc.subject}」，"
@@ -230,7 +263,8 @@ def _part_prompt(sc: Scenario, part: str) -> str:
         items = "、".join(sc.fillers)
         return (
             f"請寫出一段市政會議逐字稿，內容依序討論以下三個與前面無關的議題：{items}。"
-            "不要提到任何搬遷、採購撤銷或先前議案的翻案。大約 30 到 40 行。"
+            f"不要提到任何搬遷、採購撤銷或先前議案的翻案。大約 {filler_lines} 到 "
+            f"{filler_lines + 10} 行。"
         )
     return (
         f"請寫出一段市政會議逐字稿。會議稍早已經{sc.early}了「{sc.subject}」，"
@@ -256,12 +290,31 @@ def _clean(raw: str) -> list[str]:
     return out
 
 
-def generate_meeting(model: LlamaServer, sc: Scenario, *, control: bool = False) -> str | None:
+def outcome_variants(word: str) -> tuple[str, ...]:
+    """Surface forms that all count as the outcome having been stated.
+
+    SINGLE SOURCE OF TRUTH, imported by `tools/score_reversals.py`. The generator and the
+    scorer previously each decided this for themselves, and they disagreed: the scorer
+    accepted 「撤回」/「予以撤回」 for a planted 「決議撤回」 (trap 5's lesson — the gate asks
+    whether the final state is reported, not whether one surface form was chosen), while
+    the generator demanded the literal string and threw the meeting away.
+
+    Measured 2026-08-31: that asymmetry refused 7 of 15 CONTROL scenarios against 3 of 30
+    probe scenarios, because the control arm's planted outcomes are longer and clumsier to
+    say (「主席宣布這個案子決議照案核定」), so a writer paraphrases them more often. A
+    control arm sampled by a different rule than the treatment arm is not a control.
+    """
+    bare = word.removeprefix("決議").removeprefix("照案")
+    return tuple({word, bare, f"決議{bare}", f"予以{bare}"})
+
+
+def generate_meeting(model: LlamaServer, sc: Scenario, *, control: bool = False,
+                     filler_lines: int = 30) -> str | None:
     """`control=True` omits the reversal part entirely: the decision is taken and stands."""
     lines: list[str] = []
     parts = ("early", "filler") if control else ("early", "filler", "reversal")
     for part in parts:
-        raw = model(_WRITE_SYS, _part_prompt(sc, part))
+        raw = model(_WRITE_SYS, _part_prompt(sc, part, filler_lines=filler_lines))
         got = _clean(raw)
         if len(got) < 8:
             return None
@@ -269,11 +322,37 @@ def generate_meeting(model: LlamaServer, sc: Scenario, *, control: bool = False)
     body = "\n".join(lines) + "\n"
     # The planted facts must actually be present, or the gold ops would describe text
     # the student never sees.
-    needles = (sc.key_term, sc.early) if control else (sc.key_term, sc.early, sc.late)
-    for needle in needles:
-        if needle not in body:
+    # `key_term` is required VERBATIM -- it is the identifying detail the probe measures
+    # survival of, so a paraphrase there would silently change what is being tested.
+    # Outcome words are matched by variant, matching how the scorer reads them.
+    if sc.key_term not in body:
+        return None
+    outcomes = (sc.early,) if control else (sc.early, sc.late)
+    for word in outcomes:
+        if not any(v in body for v in outcome_variants(word)):
             return None
     return body
+
+
+def crosses_a_chunk_boundary(sc: Scenario, body: str) -> bool:
+    """Does the reversal first become visible STRICTLY LATER than the decision?
+
+    This is the property G1 exists to test, and it must be enforced on the TRANSCRIPT,
+    not only on the gold: the probe split carries no gold, so a `build_gold` refusal
+    leaves a structurally useless transcript on disk. Measured 2026-08-31 — 5 of 30
+    regenerated probe scenarios put the reversal inside chunk 0 with the decision even
+    after `build_gold` was corrected, because nothing gated the `.txt` write.
+
+    First occurrence in BOTH cases, because that is the order the model reads chunks in.
+    Chunks overlap (`OVERLAP_LINES`), so a phrase near a boundary appears twice; using
+    the last occurrence for the reversal reads as "a later chunk" while the model in fact
+    already had it in front of it when it recorded the decision.
+    """
+    chunks = list(iter_chunks(parse_transcript(body), budget=CHUNK_TOKENS,
+                              token_len=heuristic_token_len))
+    early = next((c.index for c in chunks if sc.early in c.render()), None)
+    late = next((c.index for c in chunks if sc.late in c.render()), None)
+    return early is not None and late is not None and late > early
 
 
 def build_gold(sc: Scenario, body: str) -> list[dict] | None:
@@ -375,6 +454,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--url", default="http://127.0.0.1:8082")
     p.add_argument("--rebuild-gold", action="store_true",
                    help="recompute gold from transcripts already in --out; no generation")
+    p.add_argument("--attempts", type=int, default=6,
+                   help="generation retries per variant before giving up")
     p.add_argument("--repeats", type=int, default=5,
                    help="variants per scenario (train only); each gets its own generation")
     args = p.parse_args(argv)
@@ -405,13 +486,37 @@ def main(argv: list[str] | None = None) -> int:
     written = failed = 0
     for sc in scenarios:
         for k in range(repeats):
-            model = LlamaServer(base_url=args.url, max_tokens=3000, seed=k,
-                                temperature=0.8 if repeats > 1 else 0.3,
-                                extra={"chat_template_kwargs": {"enable_thinking": False}})
-            body = generate_meeting(model, sc, control=is_control)
+            # RETRY across seeds. Generation is stochastic and both refusal reasons
+            # below are properties of a particular draw, not of the scenario: a single
+            # deterministic attempt threw away 8 of 30 probe and 7 of 15 control
+            # scenarios on 2026-08-31, which would have shrunk the instrument well below
+            # the size that makes a G1 result separable from noise.
+            #
+            # Each retry lengthens the filler. A `not in a later chunk` refusal means the
+            # reversal landed just before the chunk boundary, and more intervening
+            # unrelated business is exactly what pushes it past — so the retry attacks
+            # the actual cause rather than just re-rolling.
+            body = None
+            for attempt in range(args.attempts):
+                model = LlamaServer(
+                    base_url=args.url, max_tokens=3000, seed=k * 100 + attempt,
+                    temperature=0.8 if repeats > 1 else 0.3 + 0.1 * attempt,
+                    extra={"chat_template_kwargs": {"enable_thinking": False}})
+                cand = generate_meeting(model, sc, control=is_control,
+                                        filler_lines=30 + 15 * attempt)
+                if cand is None:
+                    continue  # a planted needle is missing; a different draw may carry it
+                # A reversal meeting whose reversal is visible in the decision's own chunk
+                # tests single-step revision, not the cross-chunk revision G1 measures.
+                # Enforced here so it applies to the probe split, which writes no gold.
+                if not is_control and not crosses_a_chunk_boundary(sc, cand):
+                    continue
+                body = cand
+                break
             if body is None:
                 failed += 1
-                print(f"[rev] {sc.slug}#{k}: generation refused", file=sys.stderr)
+                print(f"[rev] {sc.slug}#{k}: refused after {args.attempts} attempts",
+                      file=sys.stderr)
                 continue
             name = f"{sc.slug}-{k}"
             (args.out / f"{name}.txt").write_text(body, encoding="utf-8")

@@ -33,23 +33,11 @@ sys.path.insert(0, str(REPO / "src"))
 sys.path.insert(0, str(REPO / "tools"))
 
 from gen_reversals import CONTROL_SCENARIOS, PROBE_SCENARIOS  # noqa: E402
+from gen_reversals import outcome_variants as _outcome_variants  # noqa: E402
 
 from arcsum.agent import run_agent  # noqa: E402
 from arcsum.backends.llama_server import LlamaServer  # noqa: E402
 from arcsum.transcript import parse_transcript  # noqa: E402
-
-
-def _outcome_variants(word: str) -> tuple[str, ...]:
-    """Accept the bare verb as well as the 決議-prefixed form.
-
-    Trap 5 all over again: the first version of this scorer required the literal
-    「決議撤回」 and scored a FALSE FAIL on a run whose memory correctly held
-    「農產直銷市集設定案撤回」 and whose prose said 「會議作成決議予以否決」. The gate asks
-    whether the FINAL state is reported, not whether one particular surface form was
-    chosen, and `arcsum.probe` already learned this lesson with `subject_terms`.
-    """
-    bare = word.removeprefix("決議").removeprefix("照案")
-    return tuple({word, bare, f"決議{bare}", f"予以{bare}"})
 
 
 def _subject_variants(sc) -> tuple[str, ...]:

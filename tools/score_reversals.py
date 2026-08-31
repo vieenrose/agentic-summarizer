@@ -37,6 +37,7 @@ from gen_reversals import outcome_variants as _outcome_variants  # noqa: E402
 
 from arcsum.agent import run_agent  # noqa: E402
 from arcsum.backends.llama_server import LlamaServer  # noqa: E402
+from arcsum.ops import render_op  # noqa: E402
 from arcsum.transcript import parse_transcript  # noqa: E402
 
 
@@ -118,6 +119,26 @@ def main(argv: list[str] | None = None) -> int:
             "memory_points": [pt.text for pt in trace.memory.points],
             "failed_steps": trace.failed_steps,
             "steps": [s.raw for s in trace.steps],
+            # Per-op verdicts, so a `key_term` that was emitted but is absent from final
+            # memory can be attributed. Without this the two mechanisms are
+            # indistinguishable in the artifact: (a) the harness REFUSED the op
+            # (`point too long`, `duplicate point`, contradiction guard) -- a supervision
+            # or cap problem we can fix; (b) a later step DROPped it and the replacement
+            # did not carry the term -- `qwen-tools-v6`'s lossy revision, which is
+            # revision-specific and points at the corpus instead. `tools/loss_map.py`
+            # measured emitted 8/11 vs memory 2/11 on the v5 set, so this gap is where
+            # G1 is actually being lost and guessing at its cause is not good enough.
+            "op_verdicts": [
+                {
+                    "step": st.index,
+                    "op": render_op(a.op),
+                    "applied": a.applied,
+                    "reason": a.reason,
+                    "note": a.note,
+                }
+                for st in trace.steps
+                for a in st.outcome.results
+            ],
         })
         print(f"[rev-probe] {sc.slug}: {'PASS' if results[-1]['passed'] else 'FAIL'} "
               f"(subject={subject_ok} later={states_later} stale={states_earlier})",

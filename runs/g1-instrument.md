@@ -1,0 +1,115 @@
+# The G1 instrument was broken in four ways — 2026-08-31
+
+**Before any further G1 fix attempt, read this.** `runs/g1-study.md` records five refuted
+attempts and concludes G1 is a corpus limitation. That conclusion may still be right, but
+**every one of those attempts was compared on an instrument with the defects below**, and
+two of the four affect the numbers directly. The strategy question ("is revision the
+problem, or is it general point quality?") was never actually measured, because the arm
+that would answer it — the control arm — was never usable.
+
+## 1. The reversal could be visible in the decision's own chunk
+
+`tools/gen_reversals.py::build_gold` located the reversal with `reversed(chunks)`, i.e. the
+LAST chunk containing it. Chunks OVERLAP (`OVERLAP_LINES`), so a reversal near a boundary
+appears in two chunks; `late_i > early_i` then reads as "a later chunk" while the model —
+which sees chunks one at a time, in order — already had the reversal in front of it when it
+recorded the decision. That is single-step revision, which G1 is not testing.
+
+**Measured: 2 of 11** probe scenarios (`bikeshare`, `nightmarket`). So every recorded
+independent-probe figure — 0/11, 1/11, 2/11 across five attempts — had a wrong denominator.
+9 valid scenarios, not 11.
+
+This is the same bug class `tests/test_probe.py` already pinned for `probe_data.py`'s two
+hand-written gate cases, and the ~120-token transcripts before that. It recurred because the
+pins covered `arcsum.probe` and never `data/reversals_probe`.
+
+## 2. The transcript was written even when the gold was refused
+
+`build_gold` gates the `.jsonl`. The probe split carries no gold, so a refusal left a
+structurally useless `.txt` on disk. **5 of 30** regenerated scenarios put the reversal
+inside chunk 0 even after defect 1 was corrected. The check now runs in the write path.
+
+## 3. Generator and scorer disagreed on what counts as the outcome being stated
+
+`score_reversals` accepts the bare verb and the 決議-prefixed form (trap 5's lesson: the gate
+asks whether the FINAL STATE is reported, not whether one surface form was chosen). The
+generator demanded the literal planted string and discarded the meeting otherwise.
+
+**This hit the two arms unequally: 7 of 15 control scenarios refused against 3 of 30 probe
+scenarios**, because control outcomes are longer and clumsier to say
+(「主席宣布這個案子決議照案核定」) so a writer paraphrases them more often. **A control arm
+sampled by a stricter rule than the treatment arm is not a control.** One definition now
+lives in `gen_reversals.outcome_variants` and the scorer imports it. `key_term` stays
+verbatim-required — it is the thing whose survival the probe measures.
+
+## 4. Nothing partitioned the control arm from the probe arm
+
+The import-time asserts covered TRAIN vs PROBE only. `tools/loss_map.py` compares CONTROL
+against PROBE, so a shared subject or key term would let one arm's result leak into the
+other's. Asserts added.
+
+**And the control arm was never actually built.** `data/reversals_control` held 2 of 4
+scenarios (`floodgate`, `streetlight`); `recycling` and `eldermeal` had failed generation
+silently and nobody noticed, because no tool consumed the control arm. It is now 15
+scenarios with retries.
+
+## What was actually measured, and the one new number
+
+`tools/loss_map.py` traces `key_term` through three stages. Run against the EXISTING
+`runs/qwen-tools-v5/revprobe_report.json` (the old 11-scenario set):
+
+```
+                        STRICT / PARTIAL (>=60% contiguous run)
+reversal  n=11  emitted 4/8 (36.4% / 72.7%)  memory 2/2 (18.2%)  prose 1/2 (9.1% / 18.2%)
+```
+
+**`emitted` is new** — `runs/g1-study.md`'s loss map began at "reaches MEMORY" and so never
+measured whether the reading step produced the term at all.
+
+**And the strict/partial split matters more than the new stage does. Do not quote strict
+alone.** Read strictly, the model never writes the detail down in 7 of 11 and the loss is
+upstream of memory. Read partially, it writes a recognisable form **8 times out of 11** and
+then loses 6 of those between emission and final memory. The partial reading is the correct
+one: emission is mostly fine, **the deficit is retention**. An early draft of this file
+claimed the opposite from the strict column alone; that was wrong, and it was wrong in the
+flattering direction — "the model can't even write it down" is a tidier story than "we lose
+it somewhere in our own memory pipeline".
+
+Retention loss has three candidate mechanisms, and at 11 meetings × ~2 chunks the cap is not
+plausibly one of them (`POINTS_CAP=16` is never approached):
+
+1. the op was REFUSED (`point too long`, `duplicate point`, contradiction guard);
+2. a later step `DROP`ped it and the replacement did not carry the term — this is exactly
+   `qwen-tools-v6`'s lossy-revision finding, and it is revision-specific;
+3. eviction by `spread` — ruled out by the cap arithmetic above.
+
+If (2) dominates, the loss IS revision-specific and the corpus reading in `g1-study.md`
+stands. **The control arm is what separates them**, which is why it had to be built before
+any of this could be concluded — and why the fact that it never existed (defect 3/4 above)
+is the most consequential of the four defects.
+
+`score_reversals` does not currently record per-op apply outcomes, so mechanism (1) cannot
+be distinguished from (2) in the existing artifacts. That is the next instrument gap.
+
+## Separately: extending the two G1 gate transcripts changed the test
+
+`probe_data.py`'s two cases were extended today so they still span multiple chunks. They now
+run 3 chunks with ~2,500 tokens of unrelated business BETWEEN the decision and the reversal;
+previously the two were adjacent. `qwen-tools-v5` FAILs both, but this is not the same FAIL —
+the mechanism is now visible and different:
+
+- `office_move` step 1 (intervening business) OVERWRITES the ARC, losing the 搬遷 thread.
+- step 2 carries the full reversal (`搬遷`, `B 棟`, `撤回` all present) and the model emits
+  **only an ARC update — no `DROP`, no `ADD`**. The reversal is never recorded.
+
+A 2-chunk instrument structurally could not have shown this. Intervening business, not the
+reversal itself, is what breaks the chain.
+
+**One fabricated point, and do not over-read it.** `office_move` step 1 emitted
+`道路用地變更：南松街301號由I-A UO-3變更為I-A UO-5` — character-trigram containment against
+its own chunk **0.00**. `UO-3` appears in the training pool only inside Denver zoning
+SYNTHESIS targets, never in a prompt, so this is memorized-output regurgitation. But the
+other points in the same step measure 0.35 and 0.48 and their subjects (`社會住宅`,
+`營養午餐`, `在地食材`) ARE in the chunk. **1 fabricated point of 8** — real, worth watching
+under G2, not the systemic ungroundedness it first looked like. Measure containment before
+calling something hallucination; this project has recorded that mistake once already.

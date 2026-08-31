@@ -284,11 +284,18 @@ vs 187 for a hand-written schema prompt).
   `Qwen3VLProcessor` and TRL then reads `eos_token` as a literal `'<EOS_TOKEN>'`
   placeholder and aborts. Use `tools/train_toolcalls.py` (plain `transformers.Trainer`,
   explicit completion-only masking) instead.
-- It carries an MTP head at block 24 (`mtp_num_hidden_layers: 1`, 15 tensors) that a
-  text-tower fine-tune drops. llama.cpp's GGUF converter *asserts* those tensors exist.
-  Copy them back from the base checkpoint before converting — correct, not a fudge, since
-  training never touches them. Also: 248k vocab OOMs at batch 4 on a 32GB card; use
-  batch 1 with grad accumulation.
+- It carries an MTP head (`mtp_num_hidden_layers: 1`, 15 `mtp.*` tensors). **The
+  "copy them back from base before converting" instruction that used to sit here is WRONG
+  for the current training path and was removed on 2026-08-31.** Verified against
+  `runs/qwen-tools-v6/final`: base has 488 tensors / 15 `mtp.*`, the fine-tune has 335 /
+  **15 `mtp.*`** — the head is preserved. The 153-tensor difference is entirely
+  `model.visual.*`, the vision tower, which a text-only GGUF does not want. Converting
+  `final` directly succeeds and reproduces the shipped v6 GGUF's exact size. The old claim
+  probably held for the `AutoModelForCausalLM` path unsloth forced; it did not survive the
+  move to `tools/train_toolcalls.py`. Use `tools/export_gguf.sh`, which asserts the 15
+  tensors are present and stops if the training path changes. Also: 248k vocab OOMs at
+  batch 4 on a 32GB card; use batch 1 with grad accumulation (909 steps ≈ 3h45m for a
+  4,837-row pool at `--batch-size 1 --grad-accum 16`).
 - `save_strategy="epoch"` + `load_best_model_at_end` on eval loss is now the default in
   `train_toolcalls.py`. Both Qwen runs bottomed at epoch 2 and rose at epoch 3; the first
   build (`qwen-tools-v2`) shipped the overfit epoch-3 model before this was fixed.

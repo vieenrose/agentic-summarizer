@@ -1,0 +1,86 @@
+{
+  "treatment": "agent",
+  "control": "baseline",
+  "paired_count": 40,
+  "g1_passed": false,
+  "comparisons": [
+    {
+      "metric": "rouge1",
+      "n": 40,
+      "wins": 19,
+      "losses": 21,
+      "ties": 0,
+      "mean_delta": -0.009552599558489212,
+      "stderr": 0.014645947508427485,
+      "p_value": 0.8746293123804207
+    },
+    {
+      "metric": "rouge2",
+      "n": 40,
+      "wins": 23,
+      "losses": 17,
+      "ties": 0,
+      "mean_delta": 0.01587608945316147,
+      "stderr": 0.007984038536108382,
+      "p_value": 0.42959050784338615
+    },
+    {
+      "metric": "rougeL",
+      "n": 40,
+      "wins": 33,
+      "losses": 7,
+      "ties": 0,
+      "mean_delta": 0.03456393473040738,
+      "stderr": 0.00667319831899645,
+      "p_value": 4.2277022657799534e-05
+    },
+    {
+      "metric": "coverage",
+      "n": 40,
+      "wins": 11,
+      "losses": 29,
+      "ties": 0,
+      "mean_delta": -0.010615206390239846,
+      "stderr": 0.0030319102371556355,
+      "p_value": 0.006426576095691416
+    },
+    {
+      "metric": "density",
+      "n": 40,
+      "wins": 11,
+      "losses": 29,
+      "ties": 0,
+      "mean_delta": -0.5702654958509465,
+      "stderr": 0.19332875612820552,
+      "p_value": 0.006426576095691416
+    }
+  ],
+  "gates": [
+    {
+      "gate": "G2_faithfulness",
+      "passed": null,
+      "detail": "withheld: no judge records"
+    },
+    {
+      "gate": "G3_rouge1",
+      "passed": false,
+      "detail": "mean_delta=-0.010 SE=0.015 lower_bound=-0.024 p=0.875"
+    },
+    {
+      "gate": "G3_rouge2",
+      "passed": false,
+      "detail": "mean_delta=+0.016 SE=0.008 lower_bound=+0.008 p=0.430 (effect size clears but sign test does not, p>0.05)"
+    },
+    {
+      "gate": "G3_rougeL",
+      "passed": true,
+      "detail": "mean_delta=+0.035 SE=0.007 lower_bound=+0.028 p=0.000"
+    },
+    {
+      "gate": "G4_budget",
+      "passed": true,
+      "detail": "19.0 min (ceiling 20)"
+    }
+  ],
+  "decision": "ship the baseline"
+}

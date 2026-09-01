@@ -1,0 +1,57 @@
+{
+ "config": {
+  "label": "qwen-tools-v7 epoch2",
+  "protocol": "tool",
+  "url": "http://127.0.0.1:8086",
+  "prompt_version": "sys-v2",
+  "legacy_prompt": false,
+  "extra_sys_line": "",
+  "max_tokens_step": 256,
+  "max_tokens_synth": 1200,
+  "repeat_penalty": 1.1,
+  "seed": 0,
+  "cache_prompt": false,
+  "generated_at": "2026-09-01T00:33:51+00:00",
+  "host": "louis"
+ },
+ "prose": {
+  "office_move_reversal": "會議首先處理一項關於市政辦公空間調整的法案，該法案旨在通過對 B 棟大樓進行調整，以符合現行法規要求。隨後，會議進入圖書館年度採購計畫的討論階段，明確規定該計畫必須於二零一七年六月三十日前提交給相關機構，以便後續審議與執行。在社會住宅議題方面，會議確認第一期規劃包含三百二十戶單位，第二期規劃則為二百四十戶，並指出 B 棟大樓因消防檢查未通過而無法進行進一步搬遷，因此行政處提出臨時動議，以說明該搬遷案的後續安排。此外，會議亦審議校園營養午餐食材採購規範，並確認長期照顧服務的人力配置與經費來源，確保相關資源配置符合現行政策與實際需求。",
+  "budget_approval_reversal": "本次會議主要審議了行銷預算相關事項，並就該筆金額進行表決。在討論過程中，會議確認了行銷預算的核准狀態，其中下一季的 New Product 宣傳預算定為兩百萬美元。此項決議旨在透過新產品宣傳活動籌措資金，以支持市場推廣與消費者教育，確保後續行銷計畫能依規定標準運作並獲得適當資源支援。"
+ },
+ "steps": {
+  "office_move_reversal": [
+   {
+    "step": 0,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議進入市政辦公空間調整案表決，透過 B 棟大樓搬遷，並開始討論圖書館年度採購計畫。\", \"add\": [\"市政辦公空間調整案透過，B 棟大樓\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 1 段，共 3 段"
+   },
+   {
+    "step": 1,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議完成市政辦公空間調整案表決，並進入圖書館年度採購計畫討論；隨後審議社會住宅興建進度、校園營養午餐食材採購規範，並確認長期照顧服務的人力配置與經費來源。\", \"add\": [\"圖書館年度採購計畫需於二零一七年六月三十日前提交\", \"社會住宅第一期規劃三百二十戶，第二期規劃二百四十戶\", \"校園營養午餐食材採購規範經修正採準，並自下學期起實施\", \"長期照顧服務現行人力配置不足，明年度規劃調高薪資與培訓\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 2 段，共 3 段"
+   },
+   {
+    "step": 2,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議完成市政辦公空間調整案表決，並審議圖書館年度採購計畫、社會住宅興建進度與校園營養午餐食材採購規範；隨後處理長期照顧服務人力配置、河川防洪工程、停車空間及市場改善等議程，並審議搬遷案。\", \"add\": [\"B 棟大樓消防檢查未通過，搬遷決議撤回\", \"行政處提出臨時動議，請說明搬遷案後續安排\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 3 段，共 3 段"
+   }
+  ],
+  "budget_approval_reversal": [
+   {
+    "step": 0,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議進入下一季行銷預算案討論，經表決核准兩百萬美元。\", \"add\": [\"行銷預算核准，下一季新產品宣傳預算為兩百萬美元\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 1 段，共 3 段"
+   },
+   {
+    "step": 1,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議進入下一季行銷預算案討論，經表決核准兩百萬美元。\"}}</tool_call>",
+    "prompt_head": "POSITION: 第 2 段，共 3 段"
+   },
+   {
+    "step": 2,
+    "raw": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"行銷預算核准\"], \"arc\": \"會議進入下一季行銷預算案討論，經表決駁回兩百萬美元。\", \"add\": [\"行銷預算核准，下一季新產品宣傳預算為兩百萬美元\"]}}</tool_call>",
+    "prompt_head": "POSITION: 第 3 段，共 3 段"
+   }
+  ]
+ }
+}

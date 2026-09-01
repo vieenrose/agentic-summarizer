@@ -213,3 +213,50 @@ skipped for carrying fewer than 2.
 (`PROMPT_VERSION`) while the tool-call pool is `tools-v1` throughout — including its
 synthesis rows, whose completions are prose rather than tool calls.
 `train_toolcalls.py` refuses a mixed-version pool and stopped the run before it started.
+
+---
+
+# `qwen-tools-v7`: G1 mechanism fixed, G3 LOST. Not a replacement for `v5`.
+
+Full gate set, `data/heldout_zh` (40 meetings), CHUNK_TOKENS=2500, epoch-2 checkpoint.
+
+| | `v5` | **`v7` ep2** |
+|---|---|---|
+| independent probe (27) | 3 | **11** |
+| prose retention (probe) | 22.2% | **59.3%** |
+| control−reversal memory gap | +64.5 | **−4.4** |
+| real-ASR curated | 17/20 | 17/20 |
+| G3 rouge1 | **PASS** 28/12 +0.069 p=0.017 | **FAIL** 19/21 −0.010 p=0.875 |
+| G3 rouge2 | **PASS** 29/11 +0.041 p=0.006 | **FAIL** 23/17 +0.016 p=0.430 |
+| G3 rougeL | PASS 35/5 +0.057 | PASS 33/7 +0.035 |
+| G1 gate (2 cases) | FAIL | FAIL |
+
+**`v5` remains the recommendation.** `v7` wins the mechanism and loses two gates.
+
+## Why — and a prediction of mine that was WRONG
+
+Before building `gen_detail_synth.py` I checked whether detail preservation would fight
+G3, found the references carry 9.6 distinct details against the agent's 5.2, and concluded
+the two were aligned because preserving detail moves output TOWARD the reference. **The
+check was sound and the conclusion did not follow.** Measured after the fact:
+
+```
+reference    chars 558  details 8.2
+v5 agent     chars 349  details 4.5
+v7 agent     chars 317  details 2.6   <- FEWER details, and shorter
+```
+
+`v7` preserves the planted `key_term` far better (probe prose 22% -> 59%) while emitting
+**fewer details overall**. Both are true: the training improved RETENTION OF WHAT IT KEEPS
+and reduced HOW MUCH IT KEEPS. A probe that measures survival of one planted term cannot
+distinguish those, and rewards the first while being blind to the second.
+
+**The transferable lesson: a retention metric and a coverage metric can move in opposite
+directions, and the probe only sees retention.** I measured density (details per summary)
+and reasoned about it as though it constrained quantity. It does not. Any future synthesis
+intervention must report BOTH the probe's retention rate AND mean details per summary on
+held-out meetings, or it can look like a win while shedding content.
+
+This is the same shape as `v3`->`v4` (a real capability gain paid for in G3 precision) —
+which was later shown to be avoidable once the true cause was found. Whether this one is
+avoidable is unknown; the `v4` precedent says do not assume it is fundamental.

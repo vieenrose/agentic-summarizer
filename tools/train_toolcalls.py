@@ -22,6 +22,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 import sys
 from pathlib import Path
 
@@ -129,9 +130,35 @@ def main(argv: list[str] | None = None) -> int:
     trainer.train()
     final = args.out / "final"
     model.config.use_cache = True
-    trainer.save_model(str(final))
+
+    # DO NOT trust `load_best_model_at_end` here. Measured 2026-09-01 on transformers
+    # 5.5.0: it runs, emits "There were missing keys in the checkpoint model loaded"
+    # listing EVERY weight, and leaves the last-epoch weights in memory. The cause is a
+    # key-prefix mismatch -- `Qwen3_5ForConditionalGeneration` saves
+    # `model.language_model.*` while the reload looks for `model.*` -- so nothing matches
+    # and the warning is the only symptom.
+    #
+    # It failed silently for every v1.0 checkpoint: v5, v6 and v7 `final` are each
+    # byte-identical to their LAST checkpoint and differ from their best one, despite
+    # `trainer_state.json` correctly naming the best. Eval loss rises at epoch 3 on every
+    # run (v7: 0.7790 -> 0.7712 -> 0.8590), so every shipped checkpoint was past its
+    # minimum -- including the retrain that was recorded as having "ruled out"
+    # overfitting as the cause of the real-ASR regression.
+    #
+    # Copy the best checkpoint's files directly instead. Verified by comparing a tensor
+    # that actually moves during training (an mlp weight); `model.norm.weight` is a poor
+    # discriminator because it barely changes between epochs.
+    best = getattr(trainer.state, "best_model_checkpoint", None)
+    if best and Path(best).is_dir():
+        final.mkdir(parents=True, exist_ok=True)
+        for f in Path(best).iterdir():
+            if f.is_file() and f.name not in {"optimizer.pt", "scheduler.pt", "rng_state.pth"}:
+                shutil.copy2(f, final / f.name)
+        print(f"[train] saved BEST ({Path(best).name}) -> {final}", file=sys.stderr)
+    else:
+        trainer.save_model(str(final))
+        print(f"[train] no best checkpoint recorded; saved LAST -> {final}", file=sys.stderr)
     tok.save_pretrained(str(final))
-    print(f"[train] saved -> {final}", file=sys.stderr)
     return 0
 
 

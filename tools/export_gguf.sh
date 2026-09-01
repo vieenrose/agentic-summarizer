@@ -3,24 +3,22 @@
 #
 #   tools/export_gguf.sh runs/qwen-tools-v7/final runs/qwen-tools-v7/gguf
 #
-# **No tensor surgery is required, and CLAUDE.md said otherwise until 2026-08-31.**
-# That note read: "it carries an MTP head at block 24 (mtp_num_hidden_layers: 1, 15
-# tensors) that a text-tower fine-tune drops ... Copy them back from the base checkpoint
-# before converting." Verified against `runs/qwen-tools-v6/final`:
+# **The MTP head IS dropped from intermediate checkpoints — CLAUDE.md was right, and my
+# first correction to it on 2026-08-31 was wrong.** Measured properly on 2026-09-01:
 #
-#   base checkpoint   488 tensors, 15 named mtp.*
-#   fine-tuned final  335 tensors, 15 named mtp.*   <- MTP IS PRESERVED
-#   difference        153 tensors, ALL model.visual.*  (the vision tower)
+#   base checkpoint          488 tensors, 15 mtp.*
+#   runs/qwen-tools-v6/final 335 tensors, 15 mtp.*   <- save_model kept them
+#   runs/qwen-tools-v7/*     320 tensors,  0 mtp.*   <- checkpoints AND final: dropped
 #
-# `tools/train_toolcalls.py` saves the MTP head; what it drops is the vision tower, which
-# the text-only GGUF does not want. Converting `final` directly succeeds and reproduces
-# the shipped v6 GGUF byte-for-byte in size (833,591,584 B). Copying MTP tensors "back"
-# would have been a no-op at best.
+# So whether the head survives depends on the save path, and it is not reliable. The first
+# correction generalised from a single `v6/final` that happened to retain it.
 #
-# The claim was probably true for the `AutoModelForCausalLM` path that unsloth forced
-# (see CLAUDE.md's Qwen3.5 integration notes) and did not survive the move to
-# `train_toolcalls.py`. Left here rather than deleted because a future session hitting a
-# converter assert should know which of the two paths it is on.
+# Restoring the head from base is CORRECT, not a fudge: v6's trained MTP tensors are
+# bit-identical to base's, all 15/15, so training never touches them.
+#
+# Note the vision tower (153 `model.visual.*` tensors) IS dropped and should stay dropped —
+# a text-only GGUF does not want it.
+
 set -euo pipefail
 
 SRC=${1:?usage: export_gguf.sh <checkpoint-dir> <out-dir>}
@@ -30,24 +28,41 @@ PY=${PYTHON:-.venv/bin/python}
 
 mkdir -p "$OUT"
 
-# Fail loudly if the MTP head is absent: llama.cpp's converter asserts on it, and a
-# missing head means the training path changed and this script's assumption no longer
-# holds. Better to stop here than to produce a GGUF that will not load.
-$PY - "$SRC" <<'PYEOF'
+# Restore the MTP head if this save path dropped it. llama.cpp's converter requires the
+# 15 `mtp.*` tensors; training never modifies them (verified 15/15 bit-identical to base),
+# so taking them from the base checkpoint is exact, not an approximation.
+BASE_SNAP=${BASE_SNAP:-$(ls -d "$HOME"/.cache/huggingface/hub/models--Qwen--Qwen3.5-0.8B/snapshots/*/ | head -1)}
+$PY - "$SRC" "$BASE_SNAP" <<'PYEOF'
 import glob, os, sys
 from safetensors import safe_open
-src = sys.argv[1]
-names = set()
-for f in glob.glob(os.path.join(src, "*.safetensors")):
-    with safe_open(f, framework="pt") as s:
-        names |= set(s.keys())
-mtp = [n for n in names if n.startswith("mtp.")]
-print(f"[export] {len(names)} tensors, {len(mtp)} MTP")
+from safetensors.torch import save_file
+
+src, base = sys.argv[1], sys.argv[2]
+
+def read(d):
+    out = {}
+    for f in glob.glob(os.path.join(d, "*.safetensors")):
+        with safe_open(f, framework="pt") as s:
+            for k in s.keys():
+                out[k] = s.get_tensor(k)
+    return out
+
+w = read(src)
+have = [k for k in w if k.startswith("mtp.")]
+print(f"[export] {len(w)} tensors, {len(have)} MTP")
+if len(have) == 15:
+    raise SystemExit(0)
+mtp = {k: v for k, v in read(base).items() if k.startswith("mtp.")}
 if len(mtp) != 15:
-    raise SystemExit(
-        f"[export] ABORT: expected 15 mtp.* tensors, found {len(mtp)}. The training path "
-        "changed; see this script's header before working around it."
-    )
+    raise SystemExit(f"[export] ABORT: base has {len(mtp)} mtp.* tensors, expected 15")
+w.update(mtp)
+for f in glob.glob(os.path.join(src, "*.safetensors")):
+    os.remove(f)
+idx = os.path.join(src, "model.safetensors.index.json")
+if os.path.exists(idx):
+    os.remove(idx)
+save_file(w, os.path.join(src, "model.safetensors"), metadata={"format": "pt"})
+print(f"[export] restored 15 MTP tensors from base -> {len(w)} total")
 PYEOF
 
 $PY "$LLAMA/convert_hf_to_gguf.py" "$SRC" --outfile "$OUT/f16.gguf" --outtype f16

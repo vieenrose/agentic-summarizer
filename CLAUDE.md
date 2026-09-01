@@ -284,21 +284,42 @@ vs 187 for a hand-written schema prompt).
   `Qwen3VLProcessor` and TRL then reads `eos_token` as a literal `'<EOS_TOKEN>'`
   placeholder and aborts. Use `tools/train_toolcalls.py` (plain `transformers.Trainer`,
   explicit completion-only masking) instead.
-- It carries an MTP head (`mtp_num_hidden_layers: 1`, 15 `mtp.*` tensors). **The
-  "copy them back from base before converting" instruction that used to sit here is WRONG
-  for the current training path and was removed on 2026-08-31.** Verified against
-  `runs/qwen-tools-v6/final`: base has 488 tensors / 15 `mtp.*`, the fine-tune has 335 /
-  **15 `mtp.*`** — the head is preserved. The 153-tensor difference is entirely
-  `model.visual.*`, the vision tower, which a text-only GGUF does not want. Converting
-  `final` directly succeeds and reproduces the shipped v6 GGUF's exact size. The old claim
-  probably held for the `AutoModelForCausalLM` path unsloth forced; it did not survive the
-  move to `tools/train_toolcalls.py`. Use `tools/export_gguf.sh`, which asserts the 15
-  tensors are present and stops if the training path changes. Also: 248k vocab OOMs at
-  batch 4 on a 32GB card; use batch 1 with grad accumulation (909 steps ≈ 3h45m for a
-  4,837-row pool at `--batch-size 1 --grad-accum 16`).
-- `save_strategy="epoch"` + `load_best_model_at_end` on eval loss is now the default in
-  `train_toolcalls.py`. Both Qwen runs bottomed at epoch 2 and rose at epoch 3; the first
-  build (`qwen-tools-v2`) shipped the overfit epoch-3 model before this was fixed.
+- It carries an MTP head (`mtp_num_hidden_layers: 1`, 15 `mtp.*` tensors) that the
+  fine-tune's save path **may or may not** keep, and llama.cpp's GGUF converter asserts
+  they exist. Measured 2026-09-01: `runs/qwen-tools-v6/final` has 335 tensors WITH the 15;
+  every `runs/qwen-tools-v7/` checkpoint AND its `final` have 320 WITHOUT them — same
+  script, same transformers 5.5.0. Do not assume either way. Restoring them from base is
+  exact: v6's trained MTP tensors are 15/15 bit-identical to base's, so training never
+  touches them. **Use `tools/export_gguf.sh`**, which detects and restores them. (The 153
+  `model.visual.*` vision-tower tensors are also dropped, and should stay dropped.)
+  Also: 248k vocab OOMs at batch 4 on a 32GB card; use batch 1 with grad accumulation
+  (909 steps ≈ 3h50m for a 4,837-row pool at `--batch-size 1 --grad-accum 16`).
+- **`load_best_model_at_end` SILENTLY DOES NOT WORK here, and every v1.0 checkpoint is
+  therefore the LAST epoch, not the best.** It was configured after `qwen-tools-v2` and
+  never verified; this file previously claimed it was fixed. Measured 2026-09-01 by
+  comparing a tensor that actually moves during training (an mlp weight —
+  `model.norm.weight` is a useless discriminator, it barely changes):
+
+  | | vs best ckpt | vs last ckpt |
+  |---|---|---|
+  | `v5/final` | diff 3.36e-04 | **IDENTICAL** |
+  | `v6/final` | diff 3.51e-04 | **IDENTICAL** |
+  | `v7/final` | diff 4.50e-04 | **IDENTICAL** |
+
+  Mechanism: transformers 5.5.0 saves `Qwen3_5ForConditionalGeneration` weights under
+  `model.language_model.*` while the best-model reload looks for `model.*`. Nothing
+  matches, it logs `There were missing keys in the checkpoint model loaded` listing EVERY
+  weight, and leaves the last-epoch weights in memory. `trainer_state.json` still names
+  the best checkpoint correctly, so the state file agrees with the intent and disagrees
+  with the artifact.
+
+  Eval loss rises at epoch 3 on every run (`v7`: 0.7790 → 0.7712 → **0.8590**), so every
+  shipped v1.0 checkpoint is past its minimum. **This also voids the recorded finding that
+  overfitting was "ruled out" as the cause of the real-ASR regression** — that retrain was
+  described as using best-epoch selection and did not.
+
+  `train_toolcalls.py` now copies the best checkpoint's files directly instead of trusting
+  the reload. Verify a new build with the mlp-weight comparison; do not trust the log.
 
 ### Real-ASR is now a standing gate — `tools/asr_gate.py` — because it silently regressed
 

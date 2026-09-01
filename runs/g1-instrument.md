@@ -359,3 +359,30 @@ Both sizes bottom at epoch 2 and rise monotonically after (0.8B: .7596 .7486 .75
 **Do not read the absolute numbers as ceilings.** The 6-epoch horizon is better than the
 2-epoch one at both sizes; nothing establishes it is optimal. The schedule is now the
 largest known unexplored axis.
+
+## Data work and configuration work do NOT compose — they reach the same ceiling
+
+0.8B, LoRA r32, 6-epoch cosine, best checkpoint, same instrument. Only the POOL differs:
+
+| pool | rows | best eval loss | probe | control |
+|---|---|---|---|---|
+| v5 (plain) | 4,731 | 0.7486 | **9/27** | 7/15 |
+| v7 (+detail +deliberation +hedge) | 4,837 | **0.7412** | **8/27** | 7/15 |
+
+8 vs 9 at n=27 is noise: **no detectable G1 gain from the enriched pool once the training
+configuration is right.** The v7 additions took the probe 3 -> 11/27 under the OLD
+(full-FT, 2-epoch) configuration, so they were a route to the same ceiling rather than an
+independent gain.
+
+Fourth instance tonight of eval loss disagreeing with the gate: the v7 pool has the LOWER
+loss and the (marginally) worse probe.
+
+**This does NOT make the pool work inert.** Those rows were built for things the reversal
+probe does not measure and which remain measured elsewhere: real-ASR curation 9/20 ->
+16/20, the deterministic synthesis negation bug, and prose detail retention. The claim is
+narrow — they do not add to G1 on top of a good configuration.
+
+**Effort-allocation lesson.** The data interventions were the expensive path to this
+number; LR horizon + adaptation method reached it alone, on the original pool. Neither was
+searched earlier because every prior run in this project held them fixed, which made them
+invisible as variables rather than known-good choices.

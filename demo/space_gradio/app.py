@@ -25,18 +25,18 @@ from model_backend import ArcsumModel
 from arcsum.chunker import CHUNK_TOKENS, iter_chunks
 from arcsum.guards import apply_ops
 from arcsum.memory import ARC_TOKENS, POINT_TOKENS, POINTS_CAP, Memory
-from arcsum.ops import parse_ops
 from arcsum.prompts import (
     build_step_prompt,
     build_synth_prompt,
-    step_system_prompt,
     synth_system_prompt,
+    tool_step_system_prompt,
 )
 from arcsum.prose import finalize
 from arcsum.tokens import heuristic_token_len
+from arcsum.toolcalls import parse_tool_calls
 from arcsum.transcript import Utterance, parse_transcript
 
-MODEL_REPO = os.environ.get("ARCSUM_MODEL_REPO", "Luigi/minicpm5-1b-arcsum")
+MODEL_REPO = os.environ.get("ARCSUM_MODEL_REPO", "Luigi/qwen35-0.8b-arcsum")
 #: Q8_0 — the EVALUATED artifact, and now the only one published.
 #: Q4_K_M used to be served here for speed. It was then MEASURED against Q8_0 on the same
 #: 40 held-out meetings and is materially worse: the agent's margin over the map-reduce
@@ -46,7 +46,7 @@ MODEL_REPO = os.environ.get("ARCSUM_MODEL_REPO", "Luigi/minicpm5-1b-arcsum")
 #: file was withdrawn from the model repo.
 #: Cost: 1.15 GB instead of 688 MB, and slower on Space CPU. `ARCSUM_MODEL_FILE` can
 #: still point elsewhere — but measure any replacement before trusting it.
-MODEL_FILE = os.environ.get("ARCSUM_MODEL_FILE", "MiniCPM5-1B.Q8_0.gguf")
+MODEL_FILE = os.environ.get("ARCSUM_MODEL_FILE", "Qwen3.5-0.8B.Q8_0.gguf")
 
 MAX_TOKENS_STEP = 512
 MAX_TOKENS_SYNTH = 1000
@@ -229,7 +229,7 @@ def run_demo(custom_transcript: str, example_name: str):
 
     chunks = list(iter_chunks(utterances, budget=CHUNK_TOKENS, token_len=heuristic_token_len))
     mem = Memory(token_len=heuristic_token_len)
-    sys_step = step_system_prompt()
+    sys_step = tool_step_system_prompt()
 
     yield (
         render_transcript_html(utterances, -1, -1),
@@ -278,7 +278,7 @@ def run_demo(custom_transcript: str, example_name: str):
         elapsed = time.time() - t0
 
         # The real harness: parse, then apply deterministically with every guard and cap.
-        outcome = apply_ops(mem, parse_ops(raw), chunk, consecutive_nops=consecutive_nops)
+        outcome = apply_ops(mem, parse_tool_calls(raw), chunk, consecutive_nops=consecutive_nops)
         consecutive_nops = consecutive_nops + 1 if outcome.nop_collapse else 0
 
         done = f"{status} ({elapsed:.1f}s)"

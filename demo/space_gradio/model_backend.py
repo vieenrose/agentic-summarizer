@@ -2,7 +2,7 @@
 
 Deliberately bypasses Llama.create_chat_completion(): that high-level API has no way to
 pass extra Jinja template variables through to the model's own embedded chat template,
-and MiniCPM5's template needs `enable_thinking=False` explicitly set (undefined -> the
+and Qwen3.5's template needs `enable_thinking=False` explicitly set (undefined -> the
 model free-runs into its own reasoning mode; matches llama-server's `--jinja` +
 `chat_template_kwargs` behavior, verified to reproduce the exact production non-thinking
 prompt: `<think>\\n\\n</think>\\n\\n` immediately closed, no reasoning preamble).
@@ -31,7 +31,8 @@ class ArcsumModel:
       synthesis call writes a whole summary.
     """
 
-    def __init__(self, gguf_path: str, n_ctx: int = 8192, n_threads: int = 2):
+    def __init__(self, gguf_path: str, n_ctx: int = 8192, n_threads: int = 2,
+                 plain_chatml: bool = True):
         self.llm = Llama(
             model_path=gguf_path,
             n_ctx=n_ctx,
@@ -41,13 +42,24 @@ class ArcsumModel:
             n_gpu_layers=0,
             verbose=False,
         )
-        template = self.llm.metadata.get("tokenizer.chat_template")
-        if not template:
-            raise RuntimeError("model gguf has no embedded chat_template")
-        self.formatter = Jinja2ChatFormatter(
-            template=template, eos_token=STOP, bos_token="<s>", add_generation_prompt=True
-        )
-        # MiniCPM5 ends a turn with <|im_end|>, which is NOT necessarily llm.token_eos().
+        # `plain_chatml` renders `<|im_start|>role\n...<|im_end|>` directly instead of
+        # running the GGUF's embedded jinja template. This is NOT a shortcut -- it is the
+        # configuration `qwen-tools-v5`'s published gate numbers were measured under
+        # (llama-server `--no-jinja`). Qwen3.5's own template appends a THINK block whose
+        # form depends on a branch: `enable_thinking=False` gives a closed
+        # `<think>\n\n</think>\n\n`, the default gives an open `<think>\n`. Both differ
+        # from what the evaluated server sent, and a demo that silently picks a third
+        # prompt shape is not showing the model that was measured.
+        self.plain_chatml = plain_chatml
+        self.formatter = None
+        if not plain_chatml:
+            template = self.llm.metadata.get("tokenizer.chat_template")
+            if not template:
+                raise RuntimeError("model gguf has no embedded chat_template")
+            self.formatter = Jinja2ChatFormatter(
+                template=template, eos_token=STOP, bos_token="<s>", add_generation_prompt=True
+            )
+        # Qwen3.5 ends a turn with <|im_end|>, which is NOT necessarily llm.token_eos().
         # Breaking only on token_eos() lets the model run past its turn and open a new
         # one -- measured: a synthesis emitted its summary, then the literal "assistant",
         # then a second near-duplicate summary, all of which reached the UI. Resolve the
@@ -65,14 +77,21 @@ class ArcsumModel:
         Mirrors the wasm demo's per-token cursor_step_next loop, so the UI can show a
         live typing effect rather than waiting for the whole step to finish.
         """
-        resp = self.formatter(
-            messages=[
-                {"role": "system", "content": system},
-                {"role": "user", "content": user},
-            ],
-            enable_thinking=False,
-        )
-        prompt_tokens = self.llm.tokenize(resp.prompt.encode("utf-8"), add_bos=False, special=True)
+        if self.plain_chatml:
+            prompt_text = (
+                f"<|im_start|>system\n{system}<|im_end|>\n"
+                f"<|im_start|>user\n{user}<|im_end|>\n"
+                f"<|im_start|>assistant\n"
+            )
+        else:
+            prompt_text = self.formatter(
+                messages=[
+                    {"role": "system", "content": system},
+                    {"role": "user", "content": user},
+                ],
+                enable_thinking=False,
+            ).prompt
+        prompt_tokens = self.llm.tokenize(prompt_text.encode("utf-8"), add_bos=False, special=True)
         self.last_prompt_tokens = len(prompt_tokens)
 
         out_tokens: list[int] = []

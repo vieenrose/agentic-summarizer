@@ -9,7 +9,7 @@ app_file: app.py
 pinned: false
 license: apache-2.0
 models:
-- Luigi/minicpm5-1b-arcsum
+- Luigi/qwen35-0.8b-arcsum
 ---
 
 # arcsum â€” live agentic meeting summarizer (zh-TW)
@@ -76,7 +76,7 @@ one meeting. The losses concentrate in long meetings, where the model fixates â€
 known open weakness.
 
 Full numbers, both caveated figures, and the training details:
-**[model card](https://huggingface.co/Luigi/minicpm5-1b-arcsum)**.
+**[model card](https://huggingface.co/Luigi/qwen35-0.8b-arcsum)**.
 
 ## Notes on this demo
 

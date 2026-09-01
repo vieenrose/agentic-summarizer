@@ -279,11 +279,28 @@ Also measured and rejected: the chat template's own `tools=` preamble (313-434 t
 vs 187 for a hand-written schema prompt).
 
 **Two integration blockers if you touch Qwen3.5 again:**
-- It is `Qwen3_5ForConditionalGeneration` (vision-language). `AutoModelForCausalLM` loads
-  only the text tower, which is why **unsloth cannot train it** — it surfaces as a
-  `Qwen3VLProcessor` and TRL then reads `eos_token` as a literal `'<EOS_TOKEN>'`
-  placeholder and aborts. Use `tools/train_toolcalls.py` (plain `transformers.Trainer`,
-  explicit completion-only masking) instead.
+- It is `Qwen3_5ForConditionalGeneration` (vision-language), so `AutoModelForCausalLM`
+  loads only the text tower.
+
+  **"unsloth cannot train it" — RETRACTED 2026-09-01, this was probably a wrong-loader
+  diagnosis recorded as a model limitation.** unsloth's own Qwen3.5 fine-tuning docs
+  (`https://unsloth.ai/docs/models/qwen3.5/fine-tune`) list 0.8B / 2B / 4B / 9B / 27B /
+  35B-A3B / 122B-A10B as supported, load DENSE models with
+  `FastLanguageModel.from_pretrained(..., load_in_16bit=True)`, support **full**
+  fine-tuning (not just LoRA), and require `transformers v5` — which this venv has (5.5.0).
+  The recorded failure (surfaces as `Qwen3VLProcessor`, TRL reads `eos_token` as a literal
+  `'<EOS_TOKEN>'` and aborts) is what the VISION loader path produces; `FastModel` /
+  `FastVisionModel` are documented for MoE and vision tuning respectively, NOT for dense
+  text fine-tuning.
+
+  This matters for VRAM, which has been the binding constraint: unsloth quotes 2B at 5 GB
+  for bf16 LoRA and ~4x that for FFT (~20 GB), against the ~24.7 GB per rank that
+  `train_toolcalls.py` + FSDP uses. **Re-test `FastLanguageModel` before assuming
+  `tools/train_toolcalls.py` is the only option** — it was written as a workaround for a
+  blocker that may not exist.
+
+  `tools/train_toolcalls.py` (plain `transformers.Trainer`, explicit completion-only
+  masking) still works and is what every v1.0 checkpoint was built with.
 - It carries an MTP head (`mtp_num_hidden_layers: 1`, 15 `mtp.*` tensors) that the
   fine-tune's save path **may or may not** keep, and llama.cpp's GGUF converter asserts
   they exist. Measured 2026-09-01: `runs/qwen-tools-v6/final` has 335 tensors WITH the 15;

@@ -75,6 +75,39 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--grad-accum", type=int, default=8)
     p.add_argument("--max-len", type=int, default=4096)
     p.add_argument("--seed", type=int, default=0)
+    # Default matches the 0.8B v1.0 builds exactly, so their results stay reproducible.
+    # `adamw_8bit` exists for larger students: AdamW keeps two fp32 moments per parameter,
+    # so a 2B model spends 16 GB on optimizer state alone (2e9 x 8 B) before a single
+    # activation — which is what OOMs a 32 GB card, not the sequence length. 8-bit moments
+    # cut that to ~4 GB. Measured 2026-09-01 while fitting Qwen3.5-2B on two 5090s that
+    # were already sharing ~7 GB with another tenant.
+    # NOTE: `adamw_8bit` DOES NOT COMPOSE WITH `--fsdp`. Measured 2026-09-01 on
+    # Qwen3.5-2B: epoch 1 trains fine, then checkpoint saving dies inside
+    # `torch/distributed/fsdp/_optim_utils.py::_convert_all_state_info` with
+    # "size of tensor a (254280704) must match tensor b (254278656)" — a 2,048-element
+    # gap, exactly the hidden size, because bitsandbytes' 8-bit state does not flatten to
+    # the shape FSDP's consolidation expects. Use one or the other. FSDP already shards
+    # optimizer state across ranks, which is the memory saving 8-bit was there for.
+    p.add_argument("--optim", default="adamw_torch",
+                   choices=("adamw_torch", "adamw_8bit"))
+    # DDP replicates the whole model per GPU, so it buys throughput and NOT capacity.
+    # FSDP shards parameters, gradients and optimizer state across ranks, which is what a
+    # model that does not fit on one card needs. Empty by default so the 0.8B builds keep
+    # their exact (single-GPU, DDP-free) behaviour.
+    p.add_argument("--fsdp", default="", help='e.g. "full_shard auto_wrap"')
+    # FSDP's auto-wrap reads the model's `_no_split_modules`, which for this
+    # vision-language config is {Qwen3_5VisionBlock, Qwen3_5DecoderLayer}. We load the
+    # TEXT TOWER only, so the vision class does not exist and auto-wrap dies with
+    # "Could not find the transformer layer class Qwen3_5VisionBlock in the model".
+    # Name the text decoder layer explicitly instead.
+    p.add_argument("--fsdp-layer-cls", default="Qwen3_5DecoderLayer")
+    # Write ONLY model weights in a checkpoint, skipping optimizer/scheduler state.
+    # Required to combine `--optim adamw_8bit` with `--fsdp`: 8-bit moments are needed for
+    # memory (fp32 Adam OOMs even sharded — measured, step 234 of 592) but FSDP's optimizer
+    # consolidation cannot flatten them (crash at epoch 1's save). Skipping that
+    # consolidation resolves both, and costs nothing here: this script reloads the best
+    # checkpoint by copying its FILES, never by resuming an optimizer.
+    p.add_argument("--save-only-model", action="store_true")
     args = p.parse_args(argv)
 
     import torch
@@ -109,7 +142,12 @@ def main(argv: list[str] | None = None) -> int:
         per_device_train_batch_size=args.batch_size,
         gradient_accumulation_steps=args.grad_accum,
         learning_rate=args.lr, warmup_ratio=0.03, lr_scheduler_type="cosine",
-        logging_steps=10, bf16=True, seed=args.seed,
+        logging_steps=10, bf16=True, seed=args.seed, optim=args.optim,
+        fsdp=args.fsdp,
+        save_only_model=args.save_only_model,
+        fsdp_config=(
+            {"transformer_layer_cls_to_wrap": [args.fsdp_layer_cls]} if args.fsdp else None
+        ),
         report_to=[], eval_strategy="epoch" if valid_ds else "no",
         per_device_eval_batch_size=args.batch_size,
         # Keep the BEST epoch, not the last. Measured on both Qwen runs: eval loss
@@ -119,7 +157,12 @@ def main(argv: list[str] | None = None) -> int:
         # was measuring overfitting as much as the change under test.
         save_strategy="epoch" if valid_ds else "no",
         save_total_limit=2,
-        load_best_model_at_end=bool(valid_ds),
+        # Disabled under `--save-only-model`: transformers refuses FSDP +
+        # save_only_model + load_best_model_at_end together. No loss — this flag is
+        # measured NOT to work on this architecture anyway (see the save block below),
+        # and `metric_for_best_model` still populates `state.best_model_checkpoint`,
+        # which is what the save block actually reads.
+        load_best_model_at_end=bool(valid_ds) and not args.save_only_model,
         metric_for_best_model="eval_loss",
         greater_is_better=False,
     )

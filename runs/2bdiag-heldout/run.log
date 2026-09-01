@@ -1,0 +1,3 @@
+[llama-server] 500 on attempt 1, retrying: {"error":{"code":500,"message":"The model produced output that does not match the expected Content-only format","type":"server_error"}}
+[llama-server] 500 on attempt 2, retrying: {"error":{"code":500,"message":"The model produced output that does not match the expected Content-only format","type":"server_error"}}
+[run-arms] 40 meetings -> runs/2bdiag-heldout/agent_pairs.json, runs/2bdiag-heldout/baseline_pairs.json

@@ -525,3 +525,42 @@ blocked on finding a checkpoint off this curve, not on generation capacity.
 this task, or is the reversal probe measuring something narrower than "handles revision
 well"? It rewards stating the late outcome crisply, which on a real meeting may amount to
 writing less about everything else.
+
+## THE TRAINING PATH ITSELF DEGRADES SUMMARIZATION — and it confounds most of tonight
+
+Same recipe (v5 pool, full FT, 2 epochs, lr 5e-5, effective batch 16), same instrument:
+
+| checkpoint | path | G3 | density delta |
+|---|---|---|---|
+| `v5` 0.8B | **VL repo + plain Trainer** | **3/3 PASS** | — |
+| `qwen08b-diag` 0.8B | text-only repo + unsloth | **0/3 FAIL** | **-1.319** |
+| `qwen2b-diag` 2B | text-only repo + unsloth | 0/3 FAIL | -1.105 |
+
+**Same size, same recipe, different path: 3/3 PASS vs 0/3 FAIL.** The 2B was not worse
+because it was bigger — the path is the variable. Density collapses by more than a full
+point and the agent loses coverage on 36 of 40 meetings.
+
+### This weakens the "probe/G3 trade-off curve" conclusion recorded above
+
+Of the four checkpoints on that curve, THREE (`lr2e-4`, `4B`, and the diag runs) came from
+the compromised path. Only `v5` (3/27 probe, 3/3 G3) and `v7` (11/27, 1/3 G3) were trained
+the way the shipping checkpoint was. **Two points, not four.** The trade may be real; the
+evidence for it is far thinner than claimed, and every LoRA/scale number from tonight is
+non-comparable to `v5`.
+
+Also corrected here: `v5`'s own independent-probe score is **3/27**, not the 5/27 quoted
+earlier — that figure was `qwen08b-diag`, the reproduction, i.e. a DIFFERENT model on the
+bad path.
+
+### Consequence: `--lora` now works without unsloth
+
+`tools/train_toolcalls.py --lora` (no `--unsloth`) uses peft on the plain-Trainer path, so
+LoRA results can be compared to `v5`/`v7`. Costs: ~7h45m for 1,818 steps vs ~1h under
+unsloth. Gradient checkpointing cannot be traded away to recover it — disabling it OOMs
+even at 1.7% trainable parameters, because the memory is dominated by the 248k-vocab logits
+and their gradient, which LoRA does not shrink.
+
+unsloth CANNOT load the VL repo at all: it routes to the vision processor and fails with
+"Incorrect image source ... Got <|im_start|>system". So CLAUDE.md's original
+"unsloth cannot train it" was correct FOR THE VL REPO, and the retraction was correct for
+the text-only weights. Both statements are true; they are about different checkpoints.

@@ -135,6 +135,15 @@ def main(argv: list[str] | None = None) -> int:
     import torch
     from transformers import AutoModelForCausalLM, AutoTokenizer, Trainer, TrainingArguments
 
+    # LoRA WITHOUT unsloth, via peft on the plain-Trainer path. This exists because the
+    # training path itself was measured to matter enormously: the same recipe at the same
+    # size gives 3/3 G3 PASS on (VL repo + plain Trainer) and 0/3 FAIL with density -1.319
+    # on (text-only repo + unsloth). Anything meant to be comparable to `v5`/`v7` must run
+    # on the plain-Trainer path. unsloth cannot load the VL repo at all -- it routes to the
+    # vision processor and tries to parse the prompt as a base64 image.
+    if args.lora and not args.unsloth:
+        from peft import LoraConfig, get_peft_model
+
     if args.unsloth:
         preloaded, tok = FastLanguageModel.from_pretrained(
             args.model, max_seq_length=args.max_len, load_in_4bit=False,
@@ -172,6 +181,18 @@ def main(argv: list[str] | None = None) -> int:
     model = preloaded if preloaded is not None else AutoModelForCausalLM.from_pretrained(
         args.model, dtype=torch.bfloat16
     )
+    if args.lora and not args.unsloth:
+        model = get_peft_model(model, LoraConfig(
+            r=args.lora_r, lora_alpha=args.lora_alpha, lora_dropout=0.0, bias="none",
+            task_type="CAUSAL_LM",
+            target_modules=["q_proj", "k_proj", "v_proj", "o_proj",
+                            "gate_proj", "up_proj", "down_proj"],
+        ))
+        model.print_trainable_parameters()
+    # Always on. Tried disabling it for the peft LoRA path to recover the ~35% it costs
+    # (plain Trainer is ~7x slower than unsloth: 7h35m vs 1h for 1,818 steps) -- it OOMs
+    # anyway. Trainable-parameter count is irrelevant here: the memory is dominated by the
+    # 248k-vocab logits tensor and its gradient, which LoRA does not shrink.
     model.gradient_checkpointing_enable()
     model.config.use_cache = False
 
@@ -233,6 +254,21 @@ def main(argv: list[str] | None = None) -> int:
     # weights, not adapters. Merging here keeps the downstream path (export_gguf.sh ->
     # quantize -> serve) byte-identical to a full fine-tune's, so a LoRA checkpoint and an
     # FFT checkpoint stay comparable through evaluation.
+    if args.lora and not args.unsloth:
+        # peft path: merge adapters into the base weights so `export_gguf.sh` sees a
+        # normal checkpoint, exactly as the unsloth path's save_pretrained_merged does.
+        best_ck = getattr(trainer.state, "best_model_checkpoint", None)
+        if best_ck and Path(best_ck).is_dir():
+            model.load_adapter(best_ck, adapter_name="best")
+            model.set_adapter("best")
+            print(f"[train] merging BEST adapter ({Path(best_ck).name})", file=sys.stderr)
+        merged = model.merge_and_unload()
+        merged.config.use_cache = True
+        merged.save_pretrained(str(final))
+        tok.save_pretrained(str(final))
+        print(f"[train] saved merged peft LoRA -> {final}", file=sys.stderr)
+        return 0
+
     if args.lora:
         best_ck = getattr(trainer.state, "best_model_checkpoint", None)
         if best_ck and Path(best_ck).is_dir():

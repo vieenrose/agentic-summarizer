@@ -1,0 +1,133 @@
+🦥 Unsloth: Will patch your computer to enable 2x faster free finetuning.
+🦥 Unsloth Zoo will now patch everything to make training faster!
+==((====))==  Unsloth 2026.8.18: Fast Qwen3_5 patching. Transformers: 5.5.0.
+   \\   /|    NVIDIA GeForce RTX 5090. Num GPUs = 1. Max memory: 31.367 GB. Platform: Linux.
+O^O/ \_/ \    Torch: 2.11.0+cu128. CUDA: 12.0. CUDA Toolkit: 12.8. Triton: 3.6.0
+\        /    Bfloat16 = TRUE. FA [Xformers = 0.0.35. FA2 = False]
+ "-____-"     Free license: http://github.com/unslothai/unsloth
+Unsloth: Fast downloading is enabled - ignore downloading bars which are red colored!
+Unsloth: QLoRA and full finetuning all not selected. Switching to 16bit LoRA.
+Loading weights:   0%|          | 0/473 [00:00<?, ?it/s]Loading weights:  44%|████▍     | 210/473 [00:00<00:00, 2094.68it/s]Loading weights: 100%|██████████| 473/473 [00:00<00:00, 2967.87it/s]
+[train] 4837 rows, prompt_version=tools-v1
+Unsloth: Explicit target_modules are constrained by the finetune_(vision|language|attention|mlp) filters; adapters attach only where both select.
+Traceback (most recent call last):
+  File "/home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/transformers/image_utils.py", line 489, in load_image
+    b64 = base64.decodebytes(image.encode())
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/lib/python3.12/base64.py", line 554, in decodebytes
+    return binascii.a2b_base64(s)
+           ^^^^^^^^^^^^^^^^^^^^^^
+binascii.Error: Invalid base64-encoded string: number of data characters (249) cannot be 1 more than a multiple of 4
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/luigi/agentic-summarizer/tools/train_toolcalls.py", line 261, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/luigi/agentic-summarizer/tools/train_toolcalls.py", line 167, in main
+    train_ds = build_examples(train_rows, tok, args.max_len)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/luigi/agentic-summarizer/tools/train_toolcalls.py", line 44, in build_examples
+    prompt_ids = tokenizer(prompt_text, add_special_tokens=False).input_ids
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/unsloth_zoo/tokenizer_utils.py", line 602, in patched_call
+    return original_call(self, images=images, text=text, videos=videos, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/transformers/models/qwen3_vl/processing_qwen3_vl.py", line 105, in __call__
+    image_inputs = self.image_processor(images=images, **output_kwargs["images_kwargs"])
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/transformers/image_processing_utils.py", line 217, in __call__
+    return self.preprocess(images, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/transformers/models/qwen2_vl/image_processing_qwen2_vl.py", line 146, in preprocess
+    return super().preprocess(images, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/transformers/image_processing_utils.py", line 400, in preprocess
+    return self._preprocess_image_like_inputs(images, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/transformers/image_processing_utils.py", line 311, in _preprocess_image_like_inputs
+    images = self._prepare_image_like_inputs(images, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/transformers/image_processing_utils.py", line 284, in _prepare_image_like_inputs
+    images = self._prepare_images_structure(images, expected_ndims=expected_ndims)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/transformers/image_processing_utils.py", line 257, in _prepare_images_structure
+    images = self.fetch_images(images)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/transformers/image_processing_base.py", line 483, in fetch_images
+    return load_image(image_url_or_urls)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/luigi/agentic-summarizer/.venv/lib/python3.12/site-packages/transformers/image_utils.py", line 492, in load_image
+    raise ValueError(
+ValueError: Incorrect image source. Must be a valid URL starting with `http://` or `https://`, a valid path to an image file, or a base64 encoded string. Got <|im_start|>system
+你是一個會議記錄助手，正在閱讀一份會議逐字稿的其中一段。請將這段內容摘要成一段簡短的繁體中文文字：
+- 不使用條列式、不加時間戳記，只描述這段內容本身，不需要考慮其他段落。
+- 全部使用繁體中文書寫。<|im_end|>
+<|im_start|>user
+CHUNK:
+S1: 好的，我們現在開始直播。
+S2: 好的，謝謝。那麼，各位晚上好，歡迎參加阿拉米達市的市議會會議。今天是 2020 年 6 月 16 日，星期二，我們現在開始召開特別市議會會議。請各位議員先進行點名。議事長。
+S1: 市議員德桑。
+S3: 給你。不好意思。
+S1: 不完全是。
+S4: 這裡。
+S1: 奧迪。
+S4: 我來了。
+S1: 好了。在這裡。市長，艾許克羅夫先生在嗎？有五位出席。
+S2: 好的，謝謝。所以，我們有 0.10 個需要定期處理的議程項目，除非市政府、市議會或公眾提出要求，否則將以一項動議來進行改進。女士。
+S3: 你會嗎？嗯……好吧。
+S2: 我們來看看。我是否可以提出動議，以批准本次閉門會議的議程？嗯，我明白了。副市長肯定可以提出動議，而且我看您似乎有發言權。那麼，在第二階段，我們可以進行點名投票，以批准本次議程，可以嗎？
+S1: 市議員德薩格。
+S4: 是的。
+S1: 接下來，請按讚。
+S4: 您好。
+S1: 喔。
+S4: 您好。
+S1: 艾許克拉夫市長您好。
+S2: 您好。
+S1: 這項任務由五個情報機構共同執行。
+S2: 好的。感謝各位。接下來，我們將聽取大家對非公開會議議程的意見。請問大家是否有想提出的意見？
+S1: 嗯，不，我想我們沒有。我說的沒錯。他們說他們會發送電子郵件，但他們還沒有發給我。讓我再確認一下我的電子郵件。不，我們沒有。
+S2: 好的。沒問題。而且現在沒有人在排隊等候。
+S3: 或者說，不管怎麼做都可以。
+S1: 哎，排隊的人都沒有舉手。
+S2: 所以請舉起手來。
+S1: 對，WebEx 沒有那個功能。那個功能只有 Zoom 才有。抱歉。
+S2: 沒關係。抱歉。是的，這確實很困難。好的。既然如此，我將結束公開評論環節，關於非公開會議的議題，議會將進入非公開會議，以審議以下事項，請記錄員宣讀。
+S1: A：這是關於A地塊的三方房地產談判會議，談判方為阿拉米達市和阿拉米達點合作夥伴，就B地塊的價格和條款進行談判，同時與法律顧問進行會議，討論現有的訴訟。訴訟案名為CSA，即保險公司與阿拉米達市之間的訴訟。法院為阿拉米達高等法院，案件編號為g193229934c，本次會議旨在預期啟動訴訟，並根據《政府法規》第540.9.6.9條C款進行。訴訟數量為一宗，阿拉米達市作為原告發起法律行動。 D：這是關於位於紀念路1號俱樂部大樓的房地產的三方房地產談判會議，該房地產為格林威高爾夫球場。談判方為阿拉米達市和格林威高爾夫球場，就價格和條款進行談判。此外，還將與房地產談判代表就位於布埃納維斯塔大道1521號的內部碼頭進行會議，談判方為阿拉米達市和北濱海灣公司，就價格和條款進行談判。
+S2: 好的。謝謝。
+S1: 而且，這次的直播並未轉為不公開的會議。
+S2: 非常好。謝謝。謝謝。好的。各位晚上好，歡迎參加阿拉米達市的市議會會議。今天是 2020 年 6 月 16 日，星期二。市議會剛剛結束了我們的非公開會議。現在，我請我們的市務秘書勞拉·魏辛格，來宣讀非公開會議中決定的事項。
+S1: 好的，謝謝。關於內部航站樓的房地產協商，以及員工提供的資訊和委員會提供的指導，都與您就格林威高爾夫球場的房地產協商有關。員工提供了資訊，委員會也提供了指導。這兩項事宜都沒有進行投票或延後。不，是第二項。我很抱歉，我沒有記錄下內部航站樓的投票結果，結果是委員會成員德薩格以4票對1票投了反對票。抱歉，我沒有在記錄上找到。然後，關於格林威高爾夫球場，也沒有進行投票。接著，關於可能的訴訟，員工提供了資訊，委員會也提供了指導，投票結果如下：委員會成員諾克斯、懷特、維拉和奧迪投了贊成票。市長伊西·阿什克拉夫和委員會成員D投了反對票。關於現有的訴訟，員工提供了資訊，委員會也提供了指導，由「五眼聯盟」負責。最後，關於選址，委員會給出了指導，員工也提供了資訊，但沒有進行投票。
+S2: 好的。非常感謝。至此，我們現在結束市議會的閉門會議。接下來，我們將開始市議會與社區發展委員會繼任機構的特別聯合會議。我們將從宣誓開始。請各位能夠站立，並與我一同宣誓。我向美國國旗宣誓效忠，並向它所代表的共和國宣誓效忠，一個在上帝庇佑下、不可分割的國家，擁有自由與正義。謝謝。現在請開始點名。議事長。
+S1: 委員會成員們意見不一。我沒有任何意見。
+S4: 一。
+S1: 現在。就是。
+S2: 嗯，我就是這麼想的。我欠你一場。
+S4: 很多，托尼。對。我現在就在這裡。
+S2: 現在。我來主持，沒錯。好的。所以，感謝大家。這次會議是繼任機構的會議，我們有待決事項清單。請問有人提議通過待決事項清單嗎？清單。但大家似乎沒有那麼積極。提議。副市長表示贊同，我想是市議員。沒錯。您有眼神交流。是的。感謝。我們有提議和贊同。我們可以進行點名投票來表決通過嗎？
+S4: 是的。
+S1: 沒錯。就是你。
+S2: 這是一次投票。你好。
+S4: 抱歉。我們都一樣。
+S2: 今晚有喜劇演員演出。
+S4: 是的。
+S1: 我可能是艾許克羅夫特，也可能不是。我所掌握的情報，是由五個情報機構提供的。
+S2: 好的。在說明了以上事項之後，我們將結束本次特別會議，本次會議的參與者包括：我、市議會以及繼任機構。接下來，我們將以點名的方式開始特別市議會會議。
+S1: 羅科被記錄在案，已缺席五次。
+S2: 謝謝。現在我們要開始討論一項先前會議中未能及時審閱的提案。這項提案是由市議會成員「惡意」提出的。女士，請您快速地為我們介紹一下這項提案。
+S1: 請參考《條例》第二章第 91.4 節 F 條，其中規定了關於特別會議的相關事宜。
+S2: 抱歉，我需要拿一些東西，所以稍微離開了鏡頭範圍。好的。那麼，維拉議員，現在請您發言。
+S3: 此致。感謝。我們在上次會議的尾聲時，簡短地談論過這個問題，我想繼續討論，但希望這次的討論也能盡量簡短。總而言之，我認為目前出現的問題是，我們該如何讓大家知道，針對這些特別會議，我們已經發布了相關通知，讓大家真正了解並注意到這些會議的存在？我想我們都明白，我們可能知道有特別會議，但其他人不一定知道。因此，我希望我們能進一步探討這個問題，因為「開放政府委員會」本來就要檢視《陽光法案》，讓他們也能參與討論。目前已經提出了一些建議，我想讓大家仔細檢視。其中一個建議是，是否有辦法在特別會議中，將其列入議程，並在我們的常規議程中註明，或者至少提前 12 天發布通知，以便給予大家足夠的時間。
+S2: 好的。嗯，好的。所以，嗯，您的意思是，您希望我們能為……為這些事情提供指導。您是希望我們去「陽光委員會」？還是希望那個委員會來考慮這個問題？
+S3: 我對哪個方案都沒意見。我只是覺得，這是因為他們要討論關於狗隻的相關事宜。他們可能想就此提出意見，因為他們已經在研究《陽光法案》。我覺得讓他們提出意見，然後再將提案提交給委員會重新審議，這樣會比較好。
+S4: 為了。
+S3: 批准。
+S2: 嗯，好的。其他委員會成員有什麼想法嗎？副會長，或許不是完全同意。<|im_end|>
+<|im_start|>assistant
+<think>
+
+</think>
+
+. Failed with Invalid base64-encoded string: number of data characters (249) cannot be 1 more than a multiple of 4

@@ -1,0 +1,722 @@
+{
+ "label": "0.8B LoRA ctl",
+ "protocol": "tool",
+ "url": "http://127.0.0.1:8095",
+ "generated_at": "2026-09-01T07:27:18+00:00",
+ "n": 15,
+ "passed": 5,
+ "unscored": [],
+ "results": [
+  {
+   "slug": "streetlight",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要審議了關於資訊中心系統穩定性、操作指南與多語言手冊的相關事項。會議首先指出，資訊中心應在系統上線後進行穩定測試，並要求提供使用者操作指南及同步多語言的手冊，以確保不同用戶群體能順利使用該系統；同時亦提出設立客服視窗的建議，以便提供更有效的支援服務。此外，會議也關注資料遷移進度，確認相關資料遷移工作已達百分之九十以上，預計本週內可完成最終任務。",
+   "memory_points": [
+    "資訊處要求系統上線後穩定",
+    "資訊處要求提供使用者操作指南",
+    "資訊處要求同步多語言手冊",
+    "資訊處要求設立客服視窗",
+    "資料遷移完成百分之九十",
+    "資料遷移預計本週內完成"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議完成全區LED路燈汰換案決議，並進入公共建築電費節省與故障通報系統升級討論。\", \"add\": [\"全區LED路燈汰換案決議照案透過\", \"公共建築電費節省估算含空調最佳化\", \"公共建築電費節省目標為每年約百分之十五\", \"公共建築電費節省投資回收期約三年\", \"公共建築電費節省優先處理能耗最高的建築\", \"故障通報系統升級預計下個月封閉測試\", \"故障通報系統升級預計下個月正式上線\", \"故障通報系統升級預計下個月正式上線\", \"故障通報系統升級預計下個月正式上線\", \"故障通報系統升級預計下個月正式上線\", \"故障通報系統升級預計下個月正式上線\", \"故障通報系統升級預計下個月正式上線\", \"故障通報系統升級預計下個月正式上線\", \"故障通報系統升級預計下個月正式上線\", \"故障通報系統升級預計下個月正式上線\", \"故障通報系統升級預計下個月正式上線\", \"故障通報系統升級預計下個月正式上線\", \"故障通報系統升級",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議結束，進入下一階段。\", \"add\": [\"資訊處要求系統上線後穩定\", \"資訊處要求提供使用者操作指南\", \"資訊處要求同步多語言手冊\", \"資訊處要求設立客服視窗\", \"資料遷移完成百分之九十\", \"資料遷移預計本週內完成\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議完成全區LED路燈汰換案決議，並進入公共建築電費節省與故障通報系統升級討論。\", \"add\": [\"全區LED路燈汰換",
+     "applied": false,
+     "reason": "no <tool_call> block",
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議結束，進入下一階段。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 資訊處要求系統上線後穩定",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 資訊處要求提供使用者操作指南",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 資訊處要求同步多語言手冊",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 資訊處要求設立客服視窗",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 資料遷移完成百分之九十",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 資料遷移預計本週內完成",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "recycling",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於資源回收獎勵的提案，內容為批准實施相關獎勵措施。該提案旨在鼓勵企業及相關單位在資源回收過程中採取積極行動，透過具體獎勵機制提升參與熱情與持續投入度。會議審議結果明確准予實施此項獎勵方案，並同步提出後續必要步驟以落實上述政策目標。",
+   "memory_points": [
+    "決議准予實施資源回收獎勵案"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議資源回收獎勵案並作成決議。\", \"add\": [\"決議准予實施資源回收獎勵案\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議資源回收獎勵案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 決議准予實施資源回收獎勵案",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "eldermeal",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於長者共同用餐的提案，內容為在松柏共餐據點內舉辦活動或聚會，以促進長者之間的交流與互動。該案經相關委員會進行審議後，由主席宣佈同意提交，並表示將依規定程序完成後續必要之步驟。",
+   "memory_points": [
+    "松柏共餐據點經委員討論透過"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議長者共餐案，松柏據點經討論後透過。\", \"add\": [\"松柏共餐據點經委員討論透過\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議長者共餐案，松柏據點經討論後透過。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 松柏共餐據點經委員討論透過",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "floodgate",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於低窪地區的排水設施擴建與抽水站建設的專案，內容為在特定區域內增加相關排水設施所需的抽水站，並經審議後予以通過。",
+   "memory_points": [
+    "低窪地區兩處排水設施增設抽水站計畫透過"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議低窪地區兩處排水設施增設抽水站計畫，並決議透過。\", \"add\": [\"低窪地區兩處排水設施增設抽水站計畫透過\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議低窪地區兩處排水設施增設抽水站計畫，並決議透過。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 低窪地區兩處排水設施增設抽水站計畫透過",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "treecare",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議處理了兩項與城市綠化維護及廢棄物管理相關的議程。首先，針對位於中山路樟樹段的灌木修剪作業進行表決，該項目旨在對特定區域的灌木進行適當修剪，以維持綠化環境的美觀度並符合相關規範要求；隨後，會議亦討論了關於廢棄枝條清運的相關規定與標準，內容涉及如何處理、運輸及管理廢棄物枝條等事項。",
+   "memory_points": [
+    "中山路樟樹段中度修剪案表決透過"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議完成中山路樟樹段修剪維護案表決，並進入廢枝清運規範討論。\", \"add\": [\"中山路樟樹段中度修剪案表決透過\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議完成中山路樟樹段修剪維護案表決，並進入廢枝清運規範討論。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 中山路樟樹段中度修剪案表決透過",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "childcare",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於公共托育服務與家庭環境的設置提案，內容為在台北市內湖區設立「文光托育之家」，以提供符合家庭需求的保育服務。該機構位於台北市內湖區，旨在協助家庭建立安全、可持續且符合當地文化與生活節奏的托育空間，同時提升社群對早期保育服務的認知與使用率。",
+   "memory_points": [
+    "公共托育家園設定案透過，文光托育家園"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議公共托育家園設定案並作成決議。\", \"add\": [\"公共托育家園設定案透過，文光托育家園\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議公共托育家園設定案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 公共托育家園設定案透過，文光托育家園",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "foodbank",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議首先處理一項關於幸福食物銀行擴充點之提案，經表決透過。隨後，會議討論如何提升志工排班效率，並提出採用系統化替班機制的方案；該機制旨在讓志工能透過系統檢視不同時段的替班安排，同時與原排班志工進行確認，以確保資源分配的透明與可追溯性。在志工培訓方面，會議亦建議將相關考核納入數位徽章體系中，使員工的學習成果得以量化並記錄於系統之中；此外，針對志工積分商城設計，可允許志工兌換小禮物或門票等獎勵，進一步激勵其持續參與服務。最後，會議另就勞工局與房管局的資料介面協調事宜提出建議，以改善相關部門之間資訊互通的便利性。整體而言，本次會議聚焦於優化志工排班、強化培訓考核機制及推動積分獎勵系統，並透過協調資料介面提升管理效率。",
+   "memory_points": [
+    "幸福食物銀行擴點案經表決透過",
+    "志工排班應採用系統化替班機制",
+    "志工可透過系統檢視替班時段",
+    "志工可與原排班志工確認替班",
+    "志工培訓考核可納入數位徽章",
+    "志工積分商城可兌換小禮物或門票",
+    "勞工局與房管局協調資料介面",
+    "志工激勵機制需提交主席審閱"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議幸福食物銀行擴點案並作成決議。\", \"add\": [\"幸福食物銀行擴點案經表決透過\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議幸福食物銀行擴點案並作成決議；另討論志工排班、替班機制與激勵機制。\", \"add\": [\"幸福食物銀行擴點案經表決透過\", \"志工排班應採用系統化替班機制\", \"志工可透過系統檢視替班時段\", \"志工可與原排班志工確認替班\", \"志工培訓考核可納入數位徽章\", \"志工積分商城可兌換小禮物或門票\", \"勞工局與房管局協調資料介面\", \"志工激勵機制需提交主席審閱\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議幸福食物銀行擴點案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 幸福食物銀行擴點案經表決透過",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議審議幸福食物銀行擴點案並作成決議；另討論志工排班、替班機制與激勵機制。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 幸福食物銀行擴點案經表決透過",
+     "applied": false,
+     "reason": "duplicate point",
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 志工排班應採用系統化替班機制",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 志工可透過系統檢視替班時段",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 志工可與原排班志工確認替班",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 志工培訓考核可納入數位徽章",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 志工積分商城可兌換小禮物或門票",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 勞工局與房管局協調資料介面",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 志工激勵機制需提交主席審閱",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "watertest",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於校園飲用水設施的檢查與維護改善專案。該案旨在對位於某校區的飲用水系統進行全面檢查，以評估其運作狀態、潛在風險並制定後續維護方案；同時亦針對相關設備進行改善措施，以提升飲水品質與使用安全。會議依此要求，將執行相關的水質檢驗程序及維護改善計畫，並明確各階段的時間表與執行細節，確保在合理時間內完成檢查、測試與技術支援工作，為校園飲用水設施的持續管理提供清晰依據。",
+   "memory_points": [
+    "決議照案核定校園飲水機水質檢驗及維護改善案"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議校園飲水機水質檢驗案，決議照案核定並要求一個月內提交執行時程表。\", \"add\": [\"決議照案核定校園飲水機水質檢驗及維護改善案\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議校園飲水機水質檢驗案，決議照案核定並要求一個月內提交執行時程表。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 決議照案核定校園飲水機水質檢驗及維護改善案",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "patrol",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於社會服務與社區安全相關之補助申請，內容為支援設立「社群巡守隊」以加強公共空間的秩序維護與公共安全。該案旨在透過組織化、專業化的巡守機制，提升對特定區域或場所的安全管理效能，並透過持續性的巡查與回應行動，有效預防犯罪行為、減少社會衝突，同時促進社區成員之間的互動與信任建立。會議審議此項補助計畫後，已作成決議予以批准，以正式授權相關單位依規定執行該項活動，確保社群巡守隊能持續運作並發揮實際作用。",
+   "memory_points": [
+    "社群巡守隊補助案經表決准予"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議社群巡守隊補助案並作成決議。\", \"add\": [\"社群巡守隊補助案經表決准予\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議社群巡守隊補助案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 社群巡守隊補助案經表決准予",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "roadsmooth",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於「路平專案」的後續事宜，內容為核准該專案之第二階段執行計畫，並依相關規定進行招標程序。會議審議通過此項決議後，將正式啟動相關招標流程，以確保後續工程或項目管理與執行的規範性與可持續性。",
+   "memory_points": [
+    "路平專案第二期專案核准，照案實施"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議路平專案第二期，決議照案實施並啟動招標程式。\", \"add\": [\"路平專案第二期專案核准，照案實施\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議路平專案第二期，決議照案實施並啟動招標程式。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 路平專案第二期專案核准，照案實施",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "oldhouse",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於老屋健康檢查補助的提案，內容為同意受理該項補助申請。",
+   "memory_points": [
+    "老屋健檢補助案同意受理"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議老屋健檢補助案並作成決議。\", \"add\": [\"老屋健檢補助案同意受理\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議老屋健檢補助案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 老屋健檢補助案同意受理",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "shelterplan",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議審議了多項與糧食、飲水庫存管理及無障礙動線規劃相關的決議。在糧食與飲水管理方面，會議確認並維持相關標準安全線為百分之九十五；同時建議將糧食和飲水的庫存輪換頻率由每半年一次改為每三個月一次，以確保供應穩定性。此外，會議亦審議了收容人數上限的調整方案，建議將上限設定為一千八百人，並啟動移動廁所預備機制、分流機制及預警機制，以應對可能出現的儲存壓力或需求波動。",
+   "memory_points": [
+    "糧食飲水庫存維持標準安全線百分之九十五",
+    "糧食飲水庫存輪換建議改為三個月一次",
+    "無障礙動線發現入口坡道偏高、走廊寬度不足",
+    "無障礙動線發現洗手間扶手安裝位置不符合人體工學",
+    "無障礙動線建議加裝較高輔助按鈕",
+    "收容人數上限建議調整為一千八百人",
+    "收容人數上限建議啟動移動廁所預備機制",
+    "收容人數上限建議啟動分流機制",
+    "收容人數上限建議啟動預警機制"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議收容處所檢討案並決議備查；隨後討論糧食飲水庫存輪換、無障礙動線與收容人數上限。\", \"add\": [\"糧食飲水庫存維持標準安全線百分之九十五\", \"糧食飲水庫存輪換建議改為三個月一次\", \"無障礙動線發現入口坡道偏高、走廊寬度不足\", \"無障礙動線發現洗手間扶手安裝位置不符合人體工學\", \"無障礙動線建議加裝較高輔助按鈕\", \"收容人數上限建議調整為一千八百人\", \"收容人數上限建議啟動移動廁所預備機制\", \"收容人數上限建議啟動分流機制\", \"收容人數上限建議啟動預警機制\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"糧食飲水庫存維持標準安全線百分之九十五\", \"糧食飲水庫存輪換建議改為三個月一次\", \"無障礙動線發現入口坡道偏高、走廊寬度不足\", \"無障礙動線發現洗手間扶手安裝位置不符合人體工學\", \"無障礙動線建議加裝較高輔助按鈕\", \"收容人數上限建議調整為一千八百人\", \"收容人數上限建議啟動移動廁所預備機制\", \"收容人數上限建議啟動分流機制\", \"收容人數上限建議啟動預警機制\"], \"arc\": \"會議審議收容處所檢討案並備查；隨後討論糧食飲水庫存輪換、無障礙動線與收容人數上限。\", \"add\": [\"糧食飲水庫存維持標準安全線百分之九十五\", \"糧食飲水庫存輪換建議改為三個月一次\", \"無障礙動線發現入口坡道偏高、走廊寬度不足\", \"無障礙動線發現洗手間扶手安裝位置不符合人體工學\", \"無障礙動線建議加裝較高輔助按鈕\", \"收容人數上限調整為一千八百人\", \"收容人數上限啟動移動廁所"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議收容處所檢討案並決議備查；隨後討論糧食飲水庫存輪換、無障礙動線與收容人數上限。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 糧食飲水庫存維持標準安全線百分之九十五",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 糧食飲水庫存輪換建議改為三個月一次",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 無障礙動線發現入口坡道偏高、走廊寬度不足",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 無障礙動線發現洗手間扶手安裝位置不符合人體工學",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 無障礙動線建議加裝較高輔助按鈕",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 收容人數上限建議調整為一千八百人",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 收容人數上限建議啟動移動廁所預備機制",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 收容人數上限建議啟動分流機制",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 收容人數上限建議啟動預警機制",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"糧食飲水庫存維持標準安全線百分之九十五\", \"糧食飲水庫存輪換建議改為三個月一次\", \"無障礙動線發現入口坡道偏高、走",
+     "applied": false,
+     "reason": "no <tool_call> block",
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "citizencard",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議審議一項關於市民卡系統功能擴充的提案，旨在整合交通與圖書資訊模組，使市民在捷運站內使用市民卡時可同時查詢相關服務。技術層面方面，該專案已完成相關系統的測試，並確保資料加密傳輸；資安單位已對所有資料進行最終稽核，確認符合安全標準。會議建議將捷運站內的換卡視窗與圖書館宣傳活動結合，以提升用戶體驗並促進資訊整合。提案預計於明年第一季度開始部署，並於第二季度進行試營運，以評估實際運作效果。整體而言，該案旨在透過技術升級與服務整合，讓市民在捷運出行時能更便捷地獲取交通資訊及相關圖書服務，同時強化數據安全與系統穩定性。",
+   "memory_points": [
+    "市民卡新增交通與圖書整合模組",
+    "技術層面與捷運及圖書館系統已測試",
+    "資料加密傳輸並通過資安單位最終稽核",
+    "建議捷運站內換卡視窗並結合圖書館宣傳",
+    "預計明年第一季度部署，第二季度試營運",
+    "本項已透過，將啟動後續作業"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議市民卡交通與圖書整合功能擴充案，並討論個資保護、掛失補發與特約商店招募標準。\", \"add\": [\"市民卡新增交通與圖書整合模組\", \"技術層面與捷運及圖書館系統已測試\", \"資料加密傳輸並通過資安單位最終稽核\", \"建議捷運站內換卡視窗並結合圖書館宣傳\", \"預計明年第一季度部署，第二季度試營運\", \"本項已透過，將啟動後續作業\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議市民卡交通與圖書整合功能擴充案，並討論個資保護、掛失補發與特約商店招募標準。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 市民卡新增交通與圖書整合模組",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 技術層面與捷運及圖書館系統已測試",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 資料加密傳輸並通過資安單位最終稽核",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 建議捷運站內換卡視窗並結合圖書館宣傳",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 預計明年第一季度部署，第二季度試營運",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 本項已透過，將啟動後續作業",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "homeless",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於設立「街友服務中心」的提案，該機構旨在為居民提供便利且免費的公共空間使用服務，以促進社區互動與生活品質提升。會議審議此項提案後，已作成決議予以通過。",
+   "memory_points": [
+    "街友服務中心案經表決透過"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議街友服務中心案並作成決議。\", \"add\": [\"街友服務中心案經表決透過\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議街友服務中心案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 街友服務中心案經表決透過",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "langrevival",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於推動台灣本土語言復振的議題，並通過決議案，核准相關預算及具體執行方案。該提案旨在透過資源投入與政策引導，協助地方社群、學校及文化機構逐步恢復和發展具有在地特色的語言表達方式，以促進族群間的文化認同與溝通交流。會議審議內容涵蓋了資金來源、使用方向、時間表與後續評估機制等細節，確保相關計畫既能有效落實本土語言復振的目標，又能符合當前的財政與行政資源安排。",
+   "memory_points": [
+    "決議核准本土語言復振計畫相關預算與執行方案"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議本土語言復振計畫，決議核准相關預算與執行方案。\", \"add\": [\"決議核准本土語言復振計畫相關預算與執行方案\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議本土語言復振計畫，決議核准相關預算與執行方案。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 決議核准本土語言復振計畫相關預算與執行方案",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  }
+ ]
+}

@@ -66,8 +66,20 @@ def main(argv: list[str] | None = None) -> int:
                         "reporting a withdrawal that never happened is the failure")
     args = p.parse_args(argv)
 
+    # `enable_thinking: False` reproduces the prompt the model was TRAINED on.
+    # `build_examples` uses `tokenizer.apply_chat_template(add_generation_prompt=True)`,
+    # which on the text-only Qwen3.5 repos ends the prompt with a CLOSED
+    # `<think>\n\n</think>\n\n`. llama.cpp's `--jinja` defaults the template's
+    # `enable_thinking` branch the other way and emits an OPEN `<think>\n` instead; under
+    # `--no-jinja` the block is absent entirely. Measured 2026-09-01: served without this,
+    # the 2B diagnostic emitted `<think>` in place of the tool-call prefix -- correct JSON
+    # underneath, but unparseable -- and scored 0/27 while the 0.8B scored 4/27. That is a
+    # prompt mismatch masquerading as a capability gap.
+    #
+    # Harmless on `--no-jinja` servers, which ignore `chat_template_kwargs`.
     common = {"base_url": args.url, "seed": 0, "raw_completion": True,
-              "extra": {"cache_prompt": False}}
+              "extra": {"cache_prompt": False,
+                        "chat_template_kwargs": {"enable_thinking": False}}}
     step = LlamaServer(max_tokens=256, **common)
     prose = LlamaServer(max_tokens=1200, repeat_penalty=1.1, **common)
 

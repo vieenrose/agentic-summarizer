@@ -18,6 +18,16 @@
 #
 # Note the vision tower (153 `model.visual.*` tensors) IS dropped and should stay dropped —
 # a text-only GGUF does not want it.
+#
+# **llama.cpp REQUIRES the MTP head at LOAD time, not just at convert time.** Measured
+# 2026-09-01 on `principled-intelligence/Qwen3.5-2B-text-only` (320 tensors, no MTP):
+# `convert_hf_to_gguf.py` succeeded and `llama-quantize` succeeded, then the server refused
+# it with `check_tensor_dims: tensor 'blk.24.attn_norm.weight' not found` — block 24 is the
+# MTP layer, which `mtp_num_hidden_layers: 1` in the config promises. A clean conversion is
+# NOT evidence the artifact will load; test serving before trusting an export.
+#
+# `BASE_SNAP` must point at the matching SIZE's base repo (Qwen3.5-2B for a 2B student),
+# not the 0.8B default.
 
 set -euo pipefail
 
@@ -66,6 +76,6 @@ print(f"[export] restored 15 MTP tensors from base -> {len(w)} total")
 PYEOF
 
 $PY "$LLAMA/convert_hf_to_gguf.py" "$SRC" --outfile "$OUT/f16.gguf" --outtype f16
-"$LLAMA/build/bin/llama-quantize" "$OUT/f16.gguf" "$OUT/Qwen3.5-0.8B.Q8_0.gguf" Q8_0
+"$LLAMA/build/bin/llama-quantize" "$OUT/f16.gguf" "$OUT/model.Q8_0.gguf" Q8_0
 rm -f "$OUT/f16.gguf"   # ~1.5 GB; the Q8_0 is what is served (SPEC §4)
-ls -la "$OUT/Qwen3.5-0.8B.Q8_0.gguf"
+ls -la "$OUT/model.Q8_0.gguf"

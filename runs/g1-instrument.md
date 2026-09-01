@@ -309,3 +309,53 @@ measuring BOTH:
   paid), which nothing measured before tonight.
 
 Do NOT rerun at 106 rows expecting a different outcome.
+
+---
+
+# Training configuration dominates: LoRA + a longer LR horizon nearly doubles G1
+
+All rows below: same pool (`sft_pool_tools_v5.jsonl`), same 4,731 examples, same effective
+batch 16, same seed, same probe/control instrument, best checkpoint by eval loss.
+
+| config | 0.8B probe | 2B probe | 0.8B ctl | 2B ctl |
+|---|---|---|---|---|
+| full FT, 2-epoch cosine | 5/27 | 6/27 | 6/15 | 9/15 |
+| **LoRA r32, 6-epoch cosine (best = ep2)** | **9/27** | **12/27** | **7/15** | **10/15** |
+
+`2B LoRA` at **12/27 beats `qwen-tools-v7`'s 11/27** — and v7 needed the deliberation,
+hedge AND detail-synthesis rows to get there, while this is the plain v5 pool.
+
+## The LR horizon alone moved the probe 4.5x
+
+Two 0.8B LoRA runs, IDENTICAL except `--epochs`, both taking their epoch-2 checkpoint:
+
+| schedule | best eval loss | probe |
+|---|---|---|
+| cosine over 592 steps (2 epochs) | 0.7530 | **2/27** |
+| cosine over 1,776 steps (6 epochs) | 0.7486 | **9/27** |
+
+Same method, same epoch, same data. The 6-epoch run's epoch-2 checkpoint sits earlier on
+the decay curve, i.e. at a higher LR. **A 0.004 difference in eval loss accompanies a 4.5x
+difference in probe pass rate** — eval loss is unusable for checkpoint selection here.
+
+Both sizes bottom at epoch 2 and rise monotonically after (0.8B: .7596 .7486 .7545 .7844
+.8234 .8415), so this is not an under-training artifact; it is the schedule.
+
+## Consequences for earlier conclusions
+
+1. **"G1 is not capacity-limited (+1/27 for 2.5x params)" is REVISED.** That was measured
+   under the full-FT 2-epoch schedule, which suppressed both arms. Under the LoRA 6-epoch
+   schedule the same size step gives **+3/27** (9 -> 12). At n=27, p~0.4, binomial SD ~2.5,
+   so +3 is ~1.2 sigma — suggestive, not conclusive. The corpus-limit claim is weakened,
+   not overturned.
+2. **Method and schedule were UNCONTROLLED across every comparison in this project**,
+   including the v5 -> v6 -> v7 sequence the current recommendation rests on. Those were
+   all full-FT at a fixed schedule, so they are internally consistent — but their absolute
+   levels are far below what configuration alone can reach.
+3. **Data work may have been the smaller lever.** v7's pool additions bought 3 -> 11/27
+   under one configuration; changing configuration alone buys 5 -> 12/27 on the ORIGINAL
+   pool. Both matter, but the ordering is the opposite of what was assumed.
+
+**Do not read the absolute numbers as ceilings.** The 6-epoch horizon is better than the
+2-epoch one at both sizes; nothing establishes it is optimal. The schedule is now the
+largest known unexplored axis.

@@ -42,6 +42,15 @@ class ArcsumModel:
             n_gpu_layers=0,
             verbose=False,
         )
+        # MEASURED 2026-09-01, both prompt shapes on 5 held-out meetings + the 27-scenario
+        # probe. They are close, and plain ChatML retains more detail, so it stays default:
+        #
+        #   plain ChatML (gates config)   probe 3/27   338 chars   5.8 details
+        #   trained prompt (closed think) probe 2/27   356 chars   3.6 details
+        #
+        # So v5's train/serve prompt mismatch is harmless. Do not "fix" it by switching to
+        # the template without re-measuring.
+        #
         # `plain_chatml` renders `<|im_start|>role\n...<|im_end|>` directly instead of
         # running the GGUF's embedded jinja template. This is NOT a shortcut -- it is the
         # configuration `qwen-tools-v5`'s published gate numbers were measured under

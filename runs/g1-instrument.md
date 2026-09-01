@@ -260,3 +260,52 @@ held-out meetings, or it can look like a win while shedding content.
 This is the same shape as `v3`->`v4` (a real capability gain paid for in G3 precision) —
 which was later shown to be avoidable once the true cause was found. Whether this one is
 avoidable is unknown; the `v4` precedent says do not assume it is fundamental.
+
+## WHERE v7 sheds content: the READING step, not synthesis
+
+Measured directly on 6 held-out meetings (16.7 steps each), both servers, same harness:
+
+```
+        applied-ops/mtg   final points   details-in-memory   prose chars   details-in-prose
+v5           37.3            10.33            9.67              301             5.67
+v7           18.2             5.33            2.17              306             1.67
+```
+
+**Prose length is unchanged (301 vs 306). Memory is starved before synthesis runs.** The
+106 SYNTHESIS-ONLY rows halved the READING step's applied ops on real meetings and cut
+details in memory by 78%. Synthesis is not the culprit; it faithfully renders a much
+poorer memory.
+
+Cross-call bleed like this is documented — `runs/qwen-v2-heldout/RESULT.md` records the
+reading step improving when only synthesis rows were added for `v5`. **The same mechanism
+runs in reverse here, and it is much larger.**
+
+**Why the probe was blind to it.** Probe scenarios are 2 chunks; real meetings are ~17
+steps. A per-step conservatism compounds ~8x more on a real meeting than on the
+instrument, and the probe's pass criterion (does ONE planted term survive) improves under
+"fewer, more carefully-chosen points" — the exact behaviour that loses G3.
+
+On the probe alone, `v7` looks better on every axis:
+
+```
+        points/mtg  details-in-memory  prose chars  details-in-prose
+v5 rev     1.07           0.04             180          0.19
+v7 rev     1.11           0.11             186          0.30
+```
+
+Both measurements are correct. They disagree because the instrument's meetings are short.
+**Any future probe-driven change must be re-measured on full-length meetings before it is
+believed.**
+
+## Next attempt, and the specific reason to expect it to work
+
+`gen_hedge_synth` moved its target with **12 rows**. This build used **106**, which is 36%
+of all synthesis rows in the pool — a far heavier thumb on the scale, and the reading-step
+damage scales with it. The obvious next build is the same intervention at ~24 rows,
+measuring BOTH:
+
+- probe prose retention (the thing being bought), and
+- **applied-ops/meeting and details-in-memory on held-out meetings** (the thing being
+  paid), which nothing measured before tonight.
+
+Do NOT rerun at 106 rows expecting a different outcome.

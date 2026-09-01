@@ -386,3 +386,54 @@ narrow — they do not add to G1 on top of a good configuration.
 number; LR horizon + adaptation method reached it alone, on the original pool. Neither was
 searched earlier because every prior run in this project held them fixed, which made them
 invisible as variables rather than known-good choices.
+
+## SCALE IS THE LARGEST LEVER — the "not capacity-limited" conclusion is OVERTURNED
+
+Identical configuration across sizes: v5 pool, LoRA r32/alpha64, 1,776-step cosine horizon,
+effective batch 16, same seed, best checkpoint by eval loss, same probe/control instrument.
+
+| size | probe (27) | control (15) | best eval loss | best epoch |
+|---|---|---|---|---|
+| 0.8B | 9 | 7 | 0.7486 | 2 |
+| 2B | 12 | 10 | 0.6789 | 2 |
+| **4B** | **17** | **13** | **0.6061** | **1** |
+| 9B | pending | | | |
+
+9 -> 12 -> 17 monotonic. At n=27 the 0.8B-vs-4B gap is ~3 sigma: real, not noise.
+
+**This overturns the earlier finding in this file that G1 is not capacity-limited.** That
+was measured full-FT at a 2-epoch cosine horizon (5/27 vs 6/27 for 0.8B vs 2B) — a
+configuration now known to suppress both arms. Under a proper schedule, 5x the parameters
+nearly doubles the probe, and 4B on the PLAIN v5 pool (17/27) beats every data intervention
+made in this project (v7's 11/27 required detail + deliberation + hedge rows).
+
+Ranking of levers, all measured on the same instrument:
+
+| lever | effect on probe |
+|---|---|
+| model size 0.8B -> 4B | **9 -> 17** |
+| LR horizon 2-epoch -> 6-epoch cosine (0.8B) | **2 -> 9** |
+| pool v5 -> v7 enrichment (good config) | 9 -> 8 (none) |
+| pool v5 -> v7 enrichment (old config) | 3 -> 11 |
+
+**Product implication, and it is not "use a bigger model".** G4 is measured at 19.0 min
+against a 20.00 min ceiling for 0.8B Q8 on the Reno 7. A 4B is ~5x the weights and fails
+the latency budget outright. So the DEPLOYABLE model is capacity-limited, which makes this
+a SPEC 6 question about device or latency budget — not something more supervision fixes.
+
+Best epoch is NOT constant across scale (0.8B/2B bottom at epoch 2, 4B at epoch 1), so
+these are best-of-schedule per size rather than same-epoch comparisons. That is the right
+choice but should be stated.
+
+## Two silent export failures, both now guarded
+
+`BASE_SNAP` was empty for the 4B export, so `${BASE_SNAP:-default}` fell back to the 0.8B
+snapshot and injected `[1024, 2048]` MTP tensors into a 4B model ([2560, 5120]). **The
+export reported success.** Worse, the script writes merged weights back into its INPUT
+directory, so the corrected re-run then saw 15 `mtp.*` tensors already present and skipped
+the restore — a second failure layered on the first, which is why the artifact had to be
+stripped before re-exporting.
+
+`export_gguf.sh` now validates the restored MTP hidden dim against a tensor taken from the
+model itself and aborts on mismatch. The in-place modification of the source directory
+remains a design wart worth fixing.

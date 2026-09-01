@@ -65,6 +65,19 @@ if len(have) == 15:
 mtp = {k: v for k, v in read(base).items() if k.startswith("mtp.")}
 if len(mtp) != 15:
     raise SystemExit(f"[export] ABORT: base has {len(mtp)} mtp.* tensors, expected 15")
+
+# The restored head MUST come from the SAME SIZE base. `BASE_SNAP` defaults to the 0.8B
+# snapshot, and an unset-or-empty override silently falls back to it -- which on
+# 2026-09-01 injected 0.8B `mtp.*` ([1024, 2048]) into a 4B checkpoint ([2560, 5120]).
+# The export "succeeded" and produced an unloadable GGUF. Check the dimension against a
+# tensor from the model itself rather than trusting the caller.
+ref = next((v for k, v in w.items() if k.endswith("model.norm.weight")
+            or k.endswith("language_model.norm.weight")), None)
+if ref is not None and mtp["mtp.fc.weight"].shape[0] != ref.shape[0]:
+    raise SystemExit(
+        f"[export] ABORT: base MTP hidden dim {mtp['mtp.fc.weight'].shape[0]} != model "
+        f"hidden dim {ref.shape[0]}. BASE_SNAP points at the wrong model SIZE."
+    )
 w.update(mtp)
 for f in glob.glob(os.path.join(src, "*.safetensors")):
     os.remove(f)

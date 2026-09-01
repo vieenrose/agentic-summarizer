@@ -25,6 +25,7 @@ from arcsum.guards import (
 )
 from arcsum.memory import Memory, Point
 from arcsum.ops import Add, Arc, Drop, Malformed, Nop, render_op
+from arcsum.tokens import heuristic_token_len
 from arcsum.transcript import Utterance
 
 
@@ -404,3 +405,70 @@ def test_add_without_hedge_marker_carries_no_note() -> None:
 
     assert outcome.results[0].note is None
     assert outcome.hedge_points == []
+
+
+# --- churn detection: DROP then re-ADD the same point --------------------------------
+#
+# Measured 2026-09-01 on G1's `budget_approval` with `qwen-tools-v7`: the model emitted
+# `drop ["行銷預算核准"]` and an ARC recording the reversal (...駁回...), then re-added the
+# byte-identical stale point. ARC said rejected, POINTS said approved, and the prose
+# reported the approval. Detected and RECORDED, never repaired -- see `restates_dropped`.
+
+
+def test_readd_of_a_dropped_point_is_recorded_not_refused() -> None:
+    """The op still applies. Refusing it would honour the DROP and lose the point
+    entirely; refusing the DROP would keep one the model explicitly retired. Neither is
+    safe to pick automatically, so the harness counts it and moves on."""
+    memory = Memory(token_len=heuristic_token_len)
+    memory.add_point("行銷預算核准，下一季新產品宣傳預算兩百萬", 0)
+    ops = [
+        Drop("行銷預算核准"),
+        Add("行銷預算核准，下一季新產品宣傳預算兩百萬"),
+    ]
+    outcome = apply_ops(memory, ops, rich_chunk(1), lang_check=False)
+    assert all(r.applied for r in outcome.results)
+    assert len(outcome.churn_points) == 1
+    assert "restates dropped" in outcome.churn_points[0].note
+
+
+def test_a_genuine_revision_is_not_flagged_as_churn() -> None:
+    """The behaviour G1 wants -- drop the superseded point, add one carrying the NEW
+    outcome -- must not be counted. If this fired here the metric would be measuring
+    correct revision as a defect."""
+    memory = Memory(token_len=heuristic_token_len)
+    memory.add_point("行銷預算核准，下一季新產品宣傳兩百萬", 0)
+    ops = [
+        Drop("行銷預算核准"),
+        Add("行銷預算改為駁回，須重新編列後再議"),
+    ]
+    outcome = apply_ops(memory, ops, rich_chunk(1), lang_check=False)
+    assert all(r.applied for r in outcome.results)
+    assert outcome.churn_points == []
+
+
+def test_churn_only_considers_drops_from_the_same_step() -> None:
+    """A point dropped in an EARLIER step carries no claim on this step's adds -- the
+    tally is per-step, like `Outcome` itself."""
+    memory = Memory(token_len=heuristic_token_len)
+    memory.add_point("行銷預算核准，下一季新產品宣傳兩百萬", 0)
+    first = apply_ops(memory, [Drop("行銷預算核准")], rich_chunk(1), lang_check=False)
+    assert all(r.applied for r in first.results)
+    second = apply_ops(
+        memory, [Add("行銷預算核准，下一季新產品宣傳兩百萬")], rich_chunk(2), lang_check=False
+    )
+    assert second.churn_points == []
+
+
+def test_churn_note_coexists_with_the_hedge_note() -> None:
+    """Both notes are informational on a SUCCESSFUL op and must not overwrite each
+    other -- `AppliedOp` splits `reason` and `note` precisely so signals stay separable."""
+    memory = Memory(token_len=heuristic_token_len)
+    memory.add_point("委員質疑是否應加重刑責並要求說明", 0)
+    ops = [
+        Drop("委員質疑是否"),
+        Add("委員質疑是否應加重刑責並要求說明"),
+    ]
+    outcome = apply_ops(memory, ops, rich_chunk(1), lang_check=False)
+    note = outcome.results[-1].note or ""
+    assert "unresolved polarity" in note
+    assert "restates dropped" in note

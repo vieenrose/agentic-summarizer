@@ -102,6 +102,8 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 "src/arcsum/lang.py" = ["RUF001", "RUF002", "RUF003"]
 "src/arcsum/tokens.py" = ["RUF001", "RUF002", "RUF003"]
 "src/arcsum/memory.py" = ["RUF001", "RUF002", "RUF003"]
+# The churn guard's docstring quotes verbatim the zh-TW ops that motivated it.
+"src/arcsum/guards.py" = ["RUF001", "RUF002", "RUF003"]
 "src/arcsum/ops.py" = ["RUF001", "RUF002", "RUF003"]
 "src/arcsum/prose.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_tokens.py" = ["RUF001", "RUF002", "RUF003"]

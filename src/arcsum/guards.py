@@ -32,7 +32,7 @@ from dataclasses import dataclass, field
 
 from arcsum.chunker import CHUNK_TOKENS, Chunk
 from arcsum.lang import MIN_CJK_RATIO_POINT, MIN_CJK_RATIO_PROSE, check_zh_tw
-from arcsum.memory import Memory
+from arcsum.memory import Memory, normalize
 from arcsum.ops import Add, Arc, Drop, Malformed, Nop, Op, render_op
 from arcsum.tokens import lexical_tokens
 
@@ -126,6 +126,42 @@ def hedge_marker_in(text: str) -> str | None:
     return next((m for m in HEDGE_MARKERS if m in text), None)
 
 
+#: Similarity above which a re-`ADD` is judged to restate a point `DROP`ped in the SAME
+#: step rather than revise it. Character-trigram Jaccard, so it is script-appropriate and
+#: uses the same instrument as the rest of the harness.
+CHURN_SIMILARITY = 0.7
+
+
+def _trigrams(text: str) -> set[str]:
+    t = normalize(text)
+    return {t[i : i + 3] for i in range(max(len(t) - 2, 0))} or {t}
+
+
+def restates_dropped(text: str, dropped: list[str]) -> str | None:
+    """The text a `DROP` removed this step that `text` merely restates, or `None`.
+
+    **Detected and RECORDED, never refused** — the same discipline as `nop_collapse` and
+    `hedge_marker_in`, and for the same reason: the correct repair is genuinely ambiguous.
+    A model emitting `DROP «X»` then `ADD «X'»` with X'~=X has said two contradictory
+    things, and neither branch is safe to take automatically. Refusing the `ADD` honours
+    the `DROP` and loses the point entirely; refusing the `DROP` keeps a point the model
+    explicitly retired. Measured 2026-09-01 on G1's `budget_approval`, where
+    `qwen-tools-v7` emitted `drop ["行銷預算核准"]` with `arc ...駁回...` and then re-added
+    the byte-identical stale point `行銷預算核准，下一季新產品宣傳預算為兩百萬美元`, so the
+    ARC recorded the reversal and POINTS recorded the superseded decision.
+
+    Note this is trap 1's churn signature (DROP + near-identical re-ADD), which the record
+    attributes to a NOP-starved pool — but `v7`'s pool is at 33.2% NOP, so that explanation
+    does NOT fit here and the cause is open. Count it before acting on it.
+    """
+    cand = _trigrams(text)
+    for old in dropped:
+        prev = _trigrams(old)
+        if len(cand & prev) / max(len(cand | prev), 1) >= CHURN_SIMILARITY:
+            return old
+    return None
+
+
 @dataclass(frozen=True, slots=True)
 class AppliedOp:
     """One op's verdict. `reason` explains a refusal; `note` is informational on a
@@ -169,6 +205,12 @@ class Outcome:
         return [r for r in self.results if isinstance(r.op, Malformed)]
 
     @property
+    def churn_points(self) -> list[AppliedOp]:
+        """Applied `Add`s that merely restate a point dropped in the same step. Exposed
+        for measurement; see `restates_dropped` for why nothing is refused."""
+        return [r for r in self.results if r.note and "restates dropped" in r.note]
+
+    @property
     def hedge_points(self) -> list[AppliedOp]:
         """Applied `Add`s whose text carries an unresolved polarity marker (measured
         2026-08-30 to be mishandled by synthesis — see `hedge_marker_in`). Exposed so a
@@ -198,6 +240,10 @@ def apply_ops(
     """
     outcome = Outcome()
     substantive = False
+    #: Texts removed by a `DROP` earlier in THIS step's emission order, so a later `ADD`
+    #: can be checked against them. Emission order is already load-bearing here (the
+    #: contradiction guard relies on DROP-then-ADD succeeding), so this rides on it.
+    dropped_here: list[str] = []
 
     for op in ops:
         match op:
@@ -228,12 +274,22 @@ def apply_ops(
                 # available capture of a genuine open question, and refusing it outright
                 # is unvalidated — see `hedge_marker_in`'s docstring.
                 hedge = hedge_marker_in(point) if applied else None
-                note = f"unresolved polarity ({hedge})" if hedge else None
+                churn = restates_dropped(point, dropped_here) if applied else None
+                notes = []
+                if hedge:
+                    notes.append(f"unresolved polarity ({hedge})")
+                if churn:
+                    notes.append(f"restates dropped «{churn}»")
+                note = "; ".join(notes) or None
                 outcome.results.append(AppliedOp(op, applied, reason, note))
                 substantive = substantive or applied
 
             case Drop(prefix):
+                idx = memory.find(prefix)
+                removed = memory.points[idx].text if idx is not None else None
                 reason = memory.drop_point(prefix)
+                if reason is None and removed is not None:
+                    dropped_here.append(removed)
                 outcome.results.append(AppliedOp(op, reason is None, reason))
                 substantive = substantive or reason is None
 

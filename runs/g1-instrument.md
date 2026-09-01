@@ -479,3 +479,49 @@ Report probe AND mean prose chars/details on held-out meetings, or preferably G3
 This was violated three times in one session — the v7 pool ("no gain", when it nearly
 doubled content), the LR horizon ("largest lever", when it halved content), and the scale
 sweep ("capacity is the answer", when the 4B fails G3).
+
+## The probe/G3 trade-off is REAL: four checkpoints, three unrelated routes, one curve
+
+| checkpoint | how it got there | probe | rouge1 | rouge2 | rougeL | density delta |
+|---|---|---|---|---|---|---|
+| `v5` | full-FT, 2-ep, v5 pool | 5/27 | **PASS** +0.069 | **PASS** +0.041 | PASS +0.057 | — |
+| `v7` | + detail/deliberation/hedge rows | 11/27 | FAIL -0.010 | FAIL +0.016 | PASS +0.035 | -0.570 |
+| `lr2e-4` | LoRA r32, **lr 2e-4**, v7 pool | 13/27 | FAIL **-0.030** | FAIL +0.011 | PASS +0.037 | -0.282 |
+| `4B` | 5x parameters | 17/27 | FAIL -0.002 | FAIL -0.006 | PASS +0.021 | -0.676 |
+
+Everything above ~10/27 on the probe fails rouge1 AND rouge2; the only checkpoint passing
+all three G3 gates has the WORST probe. Reached by data enrichment, by parameter scale, and
+by LoRA hyperparameters — three mechanisms with nothing in common. **When independent routes
+land on the same curve, the trade is a property of the objective, not of any one model.**
+
+`lr2e-4` is the least content-degraded of the high-probe group (density -0.282 vs -0.570 and
+-0.676; coverage not significantly down at all) and still has the WORST rouge1 delta. So this
+is NOT simply "terser output scores worse" — the summaries are differently SHAPED.
+
+### The hyperparameter finding that produced it
+
+Every LoRA run before this used `r=32, alpha=64, lr=5e-5` — the FULL-FINE-TUNE learning
+rate, never varied. Holding the v7 pool and 6-epoch horizon fixed:
+
+| change | best loss | probe | prose chars | details | points |
+|---|---|---|---|---|---|
+| reference r32 / 5e-5 | 0.7412 | 8/27 | 229 | 2.4 | 5.60 |
+| r64 / alpha128 | **0.7367** | 10/27 | 238 | 2.4 | 8.00 |
+| **lr 2e-4** | 0.7495 | **13/27** | 233 | 2.6 | **9.00** |
+
+`lr=2e-4` gives the best probe with the WORST loss of the three, and bottoms an epoch
+earlier — a fifth instance tonight of eval loss failing to predict the gate.
+
+This also retires the "LR horizon is a mysterious large lever" claim: the 6-epoch cosine was
+buying effective learning rate by accident. LoRA was simply under-trained at the FFT LR.
+
+### Consequence for the distillation plan
+
+**There is currently no checkpoint worth distilling from.** A teacher must be good at BOTH;
+`lr2e-4` would transfer a rouge1 failure, `v5` would transfer a 5/27 probe. The plan is
+blocked on finding a checkpoint off this curve, not on generation capacity.
+
+**Open design question, now the central one:** are G1 and G3-rouge1 genuinely opposed for
+this task, or is the reversal probe measuring something narrower than "handles revision
+well"? It rewards stating the late outcome crisply, which on a real meeting may amount to
+writing less about everything else.

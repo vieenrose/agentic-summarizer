@@ -1,0 +1,1679 @@
+{
+ "label": "r64",
+ "protocol": "tool",
+ "url": "http://127.0.0.1:8103",
+ "generated_at": "2026-09-01T15:26:38+00:00",
+ "n": 27,
+ "passed": 10,
+ "unscored": [],
+ "results": [
+  {
+   "slug": "farmmarket",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理一項關於「溪州假日市集」的議題。根據會議記錄，該項議程在先前階段中已經透過，但隨後因相關情境或政策調整，決定將原定的決議內容進行修正，將其正式改為「撤回」。此變更意味著原本可能存在的批准或核准意圖已不再適用，因此必須重新辦理後續程序以恢復正常運作。",
+   "memory_points": [
+    "決議將溪州假日市集設定案改為撤回"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議農產直銷市集設定案並作成決議。\", \"add\": [\"決議透過溪州假日市集設定案\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"決議透過溪州\"], \"arc\": \"會議稍早透過的溪州假日市集設定案已改為決議撤回，需重新辦理。\", \"add\": [\"決議將溪州假日市集設定案改為撤回\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議農產直銷市集設定案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 決議透過溪州假日市集設定案",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «決議透過溪州»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早透過的溪州假日市集設定案已改為決議撤回，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 決議將溪州假日市集設定案改為撤回",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "fireeng",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理一項關於消防車汰換與廢除的議題。根據會議記錄，此前曾核准的相關計畫或決議已發生變更，正式將原本可能透過行政程序進行的消防車汰換案，正式改為「決議否決」的形式。此類議程在後續執行時，必須重新辦理以確保程序的完整性與合法性，因此本次會議的核心任務是重新啟動該項消防車汰換相關流程，以完成從核准到廢除的完整法律程式。",
+   "memory_points": [
+    "消防車汰換案改為決議否決，需重新辦理"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議消防車汰換案並作成決議。\", \"add\": [\"消防車汰換案核准，採購一輛雲梯消防車\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"消防車汰\"], \"arc\": \"會議稍早核准的消防車汰換案已改為決議否決，需重新辦理。\", \"add\": [\"消防車汰換案改為決議否決，需重新辦理\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議消防車汰換案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 消防車汰換案核准，採購一輛雲梯消防車",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «消防車汰»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早核准的消防車汰換案已改為決議否決，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 消防車汰換案改為決議否決，需重新辦理",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "solarroof",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理一項關於屋頂光電設施的相關議題，內容為將此前已同意的屋頂光電專案由原狀態調整為中止狀態，並要求重新辦理該項事宜。根據會議記錄，此變更旨在修正先前決策或條件，使後續程序與執行方向得以重新確認與規劃。",
+   "memory_points": [],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議屋頂光電設定案並作成決議。\", \"add\": [\"屋頂光電案同意，行政大樓南側設置兩百千瓦太陽能板\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"屋頂光電案\"], \"arc\": \"會議稍早同意的屋頂光電案已改為中止，需重新辦理。\", \"add\": [\"屋頂光電案改為中止，行政大樓南側設置兩百千瓦太陽能板\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議屋頂光電設定案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 屋頂光電案同意，行政大樓南側設置兩百千瓦太陽能板",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «屋頂光電案»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早同意的屋頂光電案已改為中止，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 屋頂光電案改為中止，行政大樓南側設置兩百千瓦太陽能板",
+     "applied": false,
+     "reason": "point too long (26 > 25 tokens)",
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "dogpark",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理了河濱寵物活動區的相關議題。根據記錄，該區域的規劃面積約為兩百坪，具體設計包括設置圍欄與獨立出入口。在運作機制上，清潔維護工作由公園處負責並實施每日巡檢，噪音問題已透過規劃緩衝綠帶進行解決。關於開放時間，規定為上午八點至下午五點。針對飼主責任，會議建議強制寵物保險以分散風險，同時增加寵物登記驗證機制；此外，入口處需設告示牌標示清理糞便，並提供二十四小時緊急醫療支援。在環境管理方面，清潔頻率調整方案經試點後確認有效，飼主的責任宣導則主要透過教育與社群媒體進行。針對夜間照明範圍的擴充，現行方案尚需評估電力供應與維護成本。 會議中還發生了一起動物防疫事件，動物防疫單位緊急來電指出河濱區存在隔離風險，這促使相關部門重新審視現有措施。最後，會議正式決議將原來的寵物公園開放案改為退回議程，並要求相關單位重新辦理該專案，以確保後續運作符合最新防疫與環境標準。",
+   "memory_points": [
+    "河濱寵物活動區規劃約兩百坪",
+    "區域設圍欄與獨立出入口",
+    "清潔維護由公園處負責並每日巡檢",
+    "噪音問題已規劃緩衝綠帶",
+    "開放時間為上午八點至下午五點",
+    "建議強制寵物保險以分散風險",
+    "建議增加寵物登記驗證機制",
+    "入口處設告示牌標示清理糞便",
+    "提供二十四小時緊急醫療支援",
+    "環境清潔頻率調整方案經試點",
+    "飼主責任宣導以教育與社群媒體為主",
+    "夜間照明範圍擴充需評估電力與維護",
+    "動物防疫單位緊急來電指出河濱區隔離風險",
+    "寵物公園開放案改為決議退回，要求重新辦理"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議寵物公園開放案並作成決議。\", \"add\": [\"河濱寵物活動區規劃約兩百坪\", \"區域設圍欄與獨立出入口\", \"清潔維護由公園處負責並每日巡檢\", \"噪音問題已規劃緩衝綠帶\", \"開放時間為上午八點至下午五點\", \"建議強制寵物保險以分散風險\", \"建議增加寵物登記驗證機制\", \"入口處設告示牌標示清理糞便\", \"提供二十四小時緊急醫療支援\", \"決議照案透過並要求一個月內完成細部規劃\", \"環境清潔頻率調整方案經試點\", \"飼主責任宣導以教育與社群媒體為主\", \"夜間照明範圍擴充需評估電力與維護\", \"動物防疫單位緊急來電指出河濱區隔離風險\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"決議照案透過\"], \"arc\": \"會議稍早透過的寵物公園開放案已改為決議退回，需重新辦理。\", \"add\": [\"寵物公園開放案改為決議退回，要求重新辦理\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議寵物公園開放案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 河濱寵物活動區規劃約兩百坪",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 區域設圍欄與獨立出入口",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 清潔維護由公園處負責並每日巡檢",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 噪音問題已規劃緩衝綠帶",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 開放時間為上午八點至下午五點",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 建議強制寵物保險以分散風險",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 建議增加寵物登記驗證機制",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 入口處設告示牌標示清理糞便",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 提供二十四小時緊急醫療支援",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 決議照案透過並要求一個月內完成細部規劃",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 環境清潔頻率調整方案經試點",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 飼主責任宣導以教育與社群媒體為主",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 夜間照明範圍擴充需評估電力與維護",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 動物防疫單位緊急來電指出河濱區隔離風險",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «決議照案透過»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早透過的寵物公園開放案已改為決議退回，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 寵物公園開放案改為決議退回，要求重新辦理",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "nightmarket",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要審議了夜市攤販管理相關事項，並正式批准該案予以備查。在後續討論中，會議重點聚焦於商業區的營業時間規定以及針對油煙排放的稽查機制。根據會議內容，相關單位將依現行法規與實務規範，對商業區內的營業活動進行嚴格監管，確保符合安全衛生標準；同時，亦將加強對油煙排放物的檢測頻率與記錄方式，以落實環境保護要求，並透過稽查程序維護公共空間的空氣品質與居住環境。",
+   "memory_points": [],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議夜市攤販管理案並准予備查，隨後進入商業區營業時間與油煙稽查議題。\", \"add\": [\"夜市攤販管理案准予備查，光復路臨時攤區改善計畫生效\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"夜市攤販\"], \"arc\": \"會議已審議夜市攤販管理案並准予備查，隨後進入商業區營業時間與油煙稽查議題。\", \"add\": [\"夜市攤販管理案改為不予備查，光復路臨時攤區改善計畫生效\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議夜市攤販管理案並准予備查，隨後進入商業區營業時間與油煙稽查議題。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 夜市攤販管理案准予備查，光復路臨時攤區改善計畫生效",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «夜市攤販»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議已審議夜市攤販管理案並准予備查，隨後進入商業區營業時間與油煙稽查議題。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 夜市攤販管理案改為不予備查，光復路臨時攤區改善計畫生效",
+     "applied": false,
+     "reason": "point too long (27 > 25 tokens)",
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "bikeshare",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要聚焦於行政與工程領域的多項議題討論，其中一項核心議程是審議「公共腳踏車擴站」案，明確擬定新增二十處站點的具體方案。在會議過程中，相關單位針對該擴站計畫進行了詳細的規劃與說明，旨在透過增加停車空間來優化公共設施使用效率並提升市民出行便利性。此項議題雖未直接提及時間軸或具體執行細節，但作為會議重點之一，其核心在於確立腳踏車擴站的建設方向與規模標準，以配合整體行政與工程工作的推進。",
+   "memory_points": [
+    "公共腳踏車擴站案擬新增二十處站點"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議討論多項行政與工程議題，並處理公共腳踏車擴站案。\", \"add\": [\"公共腳踏車擴站案擬新增二十處站點\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "NOP",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議討論多項行政與工程議題，並處理公共腳踏車擴站案。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 公共腳踏車擴站案擬新增二十處站點",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "schoolmerge",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議主要審議了「市立中興與復興國小合併案」，但經討論後決定將該案由原本的「合併」狀態調整為「暫不合併」。此類決議通常意味著在正式完成合併程序、取得相關行政許可或達成法定條件前，暫時維持原來的分立狀態，待後續流程走完再行處理。",
+   "memory_points": [
+    "市立中興與復興國小合併案改為暫不合併"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議市立中興與復興國小合併案並准予合併。\", \"add\": [\"市立中興與復興國小合併案准予合併\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"市立中興\"], \"arc\": \"會議審議市立中興與復興國小合併案並准予合併。\", \"add\": [\"市立中興與復興國小合併案改為暫不合併\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議市立中興與復興國小合併案並准予合併。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 市立中興與復興國小合併案准予合併",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «市立中興»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議審議市立中興與復興國小合併案並准予合併。",
+     "applied": false,
+     "reason": "arc unchanged",
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 市立中興與復興國小合併案改為暫不合併",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "landfill",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議主要審議一項關於掩埋場延役的相關議題，經討論後形成如下決議：該項議題將由原來的延期安排調整為「不予延役」，並確定進入第二期五年執行階段。此類事項屬於行政與法規範疇，旨在明確後續作業方向與時間表，確保相關資源與程序能依既定路線推進。",
+   "memory_points": [
+    "掩埋場延期案改為不予延役，第二期五年"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議處理掩埋場延役案並作成決議。\", \"add\": [\"掩埋場延役案准予，第二期五年\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"掩埋場延役\"], \"arc\": \"會議處理掩埋場延役案並作成決議。\", \"add\": [\"掩埋場延期案改為不予延役，第二期五年\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議處理掩埋場延役案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 掩埋場延役案准予，第二期五年",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «掩埋場延役»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議處理掩埋場延役案並作成決議。",
+     "applied": false,
+     "reason": "arc unchanged",
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 掩埋場延期案改為不予延役，第二期五年",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "busshelter",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理一項關於將原定的候車亭廣告委外專案調整為重新辦理的議題。根據會議記錄，該專案此前已獲得部分同意，但現行方案因故需進行修正與重新審議，因此決定將其歸檔並改為退回重議程序。此項調整旨在確保後續執行情況符合最新需求或法規更新，同時維持原有委外架構下的運作方式，使相關單位能依新規定繼續執行原計畫。",
+   "memory_points": [
+    "候車亭廣告委外案改為退回重議，經表決贊成"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議候車亭廣告委外案並作成決議。\", \"add\": [\"候車亭廣告委外案經表決贊成，決議照案通過\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"候車亭廣告委外案經表決贊成\"], \"arc\": \"會議稍早贊成的候車亭廣告委外案已改為退回重議，需重新辦理。\", \"add\": [\"候車亭廣告委外案改為退回重議，經表決贊成\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議候車亭廣告委外案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 候車亭廣告委外案經表決贊成，決議照案通過",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «候車亭廣告委外案經表決贊成»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早贊成的候車亭廣告委外案已改為退回重議，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 候車亭廣告委外案改為退回重議，經表決贊成",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "clinichours",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理一項關於衛生所夜診制度調整的議程事項。根據會議記錄，原定的衛生所夜診案已決定由試辦模式改為正式執行模式，但該調整的適用範圍被明確限定為位於山區的三處衛生所。此變更旨在確保相關醫療服務在特定區域內能順利運作並符合實際需求，因此會議需重新辦理此次調整事宜，以完成從試辦到正式執行的轉折。",
+   "memory_points": [
+    "衛生所夜診案改為停止試辦，範圍限於山區三處衛生所"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議衛生所夜診案並作成決議，同意試辦範圍限於山區三處衛生所。\", \"add\": [\"衛生所夜診案同意試辦，範圍限於山區三處衛生所\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"衛生所夜診\"], \"arc\": \"會議稍早同意的衛生所夜診案已改為停止試辦，需重新辦理。\", \"add\": [\"衛生所夜診案改為停止試辦，範圍限於山區三處衛生所\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議衛生所夜診案並作成決議，同意試辦範圍限於山區三處衛生所。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 衛生所夜診案同意試辦，範圍限於山區三處衛生所",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «衛生所夜診»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早同意的衛生所夜診案已改為停止試辦，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 衛生所夜診案改為停止試辦，範圍限於山區三處衛生所",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "sportfield",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要審議了校園操場夜間開放案，並正式准予該案執行。根據決議，校園操場的開放時間為週一至五晚六時至九點。在財務與管理層面，會議建議將照明電費按部門實際使用量進行分攤，以確保資源使用的透明與合理。此外，針對場地預約機制，系統必須穩定運作且需保留電話預約管道，以滿足後續需求；同時，器材保管責任也應建立借出登記與失竊標準，透過規範化流程提升管理效率與安全性。",
+   "memory_points": [
+    "校園操場夜間開放案准予，週一至五晚六至九點",
+    "照明電費建議按部門實際使用量分攤",
+    "場地預約系統需穩定且保留電話預約管道",
+    "器材保管責任應建立借出登記與失竊標準"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議校園操場夜間開放案並准予開放，隨後討論照明電費分攤與場地預約制度。\", \"add\": [\"校園操場夜間開放案准予，週一至五晚六至九點\", \"照明電費建議按部門實際使用量分攤\", \"場地預約系統需穩定且保留電話預約管道\", \"器材保管責任應建立借出登記與失竊標準\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"器材保管責任\"], \"arc\": \"會議審議校園操場夜間開放案並准予開放，隨後討論照明電費分攤與場地預約制度。\", \"add\": [\"器材保管責任應建立借出登記與失竊標準\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議校園操場夜間開放案並准予開放，隨後討論照明電費分攤與場地預約制度。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 校園操場夜間開放案准予，週一至五晚六至九點",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 照明電費建議按部門實際使用量分攤",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 場地預約系統需穩定且保留電話預約管道",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 器材保管責任應建立借出登記與失竊標準",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «器材保管責任»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議審議校園操場夜間開放案並准予開放，隨後討論照明電費分攤與場地預約制度。",
+     "applied": false,
+     "reason": "arc unchanged",
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 器材保管責任應建立借出登記與失竊標準",
+     "applied": true,
+     "reason": null,
+     "note": "restates dropped «器材保管責任應建立借出登記與失竊標準»"
+    }
+   ]
+  },
+  {
+   "slug": "cemetery",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議主要審議了公墓遷葬相關事宜。首先，會議進入市立殯儀館納骨塔容量評估報告的討論階段，根據評估結果顯示，若五年內不進行補償，納骨塔的缺口將達一千二百格，這表明在現有設施與需求之間存在明顯的不平衡，因此必須立即採取行動進行修復或擴建。隨後，會議進入公墓遷葬案審議環節，儘管該遷葬計畫涉及第三公墓東側區塊的遷移，但由於補償標準尚未達成，最終決定將此案件改為另案研議，以保留後續處理空間。在討論過程中，會議也關注了祭祀動線問題，指出目前的車輛與行人混行方式存在安全隐患，並建議透過交通改善措施來解決，包括實施單向迴圈設計、設置專用步行通道以及優化道路規劃等。此外，針對基礎設施建設，會議特別提及道路拓寬計畫，明確指出該項工程需徵求土地，且評估範圍涵蓋地下化或高架化的選項，以確保施工與維護的可行性與安全性。",
+   "memory_points": [
+    "納骨塔容量評估顯示五年缺口達一千二百格",
+    "垂直擴建受限建築法規，優先評估空地",
+    "建議預約制與電子顯示屏以分散高峰需求",
+    "祭祀動線問題在於車輛與行人混行",
+    "交通改善包括單向迴圈、專用步行通道",
+    "道路拓寬需徵地，建議評估地下化或高架化"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議第三公墓東側區塊遷葬案並准予遷葬，隨後進入市立殯儀館納骨塔容量評估報告討論。\", \"add\": [\"納骨塔容量評估顯示五年缺口達一千二百格\", \"垂直擴建受限建築法規，優先評估空地\", \"建議預約制與電子顯示屏以分散高峰需求\", \"祭祀動線問題在於車輛與行人混行\", \"交通改善包括單向迴圈、專用步行通道\", \"道路拓寬需徵地，建議評估地下化或高架化\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"交通改善包括單向迴圈、專用步行通道\", \"道路拓寬需徵地，建議評估地下化或高架化\"], \"arc\": \"會議已准予第三公墓東側區塊遷葬，並進入市立殯儀館納骨塔容量評估報告討論；隨後審議公墓遷葬案，因補償標準未達成而改為另案研議。\", \"add\": [\"納骨塔容量評估顯示五年缺口達一千二百格\", \"垂直擴建受限建築法規，優先評估空地\", \"交通改善包括單向迴圈、專用步行通道\", \"道路拓寬需徵地，建議評估地下化或高架化\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議第三公墓東側區塊遷葬案並准予遷葬，隨後進入市立殯儀館納骨塔容量評估報告討論。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 納骨塔容量評估顯示五年缺口達一千二百格",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 垂直擴建受限建築法規，優先評估空地",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 建議預約制與電子顯示屏以分散高峰需求",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 祭祀動線問題在於車輛與行人混行",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 交通改善包括單向迴圈、專用步行通道",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 道路拓寬需徵地，建議評估地下化或高架化",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «交通改善包括單向迴圈、專用步行通道»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «道路拓寬需徵地，建議評估地下化或高架化»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議已准予第三公墓東側區塊遷葬，並進入市立殯儀館納骨塔容量評估報告討論；隨後審議公墓遷葬案，因補償標準未達成而改為另案研議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 納骨塔容量評估顯示五年缺口達一千二百格",
+     "applied": false,
+     "reason": "duplicate point",
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 垂直擴建受限建築法規，優先評估空地",
+     "applied": false,
+     "reason": "duplicate point",
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 交通改善包括單向迴圈、專用步行通道",
+     "applied": true,
+     "reason": null,
+     "note": "restates dropped «交通改善包括單向迴圈、專用步行通道»"
+    },
+    {
+     "step": 1,
+     "op": "ADD - 道路拓寬需徵地，建議評估地下化或高架化",
+     "applied": true,
+     "reason": null,
+     "note": "restates dropped «道路拓寬需徵地，建議評估地下化或高架化»"
+    }
+   ]
+  },
+  {
+   "slug": "shelter",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理一項關於收容所第二期擴建案的議程調整事項。根據會議記錄，該案在最初階段曾獲得贊成，但隨後因相關議題或程序原因，已正式改為「決議」並決定「暫停辦理」。此變更意味著原定的繼續推進計畫將不再執行，必須重新啟動整個審議流程以處理新的狀態。",
+   "memory_points": [
+    "收容所第二期擴建案改為決議暫停辦理"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議動物收容所擴建案並作成決議。\", \"add\": [\"收容所第二期擴建案經表決贊成\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"收容所第二期\"], \"arc\": \"會議稍早贊成的收容所第二期擴建案已改為決議暫停辦理，需重新辦理。\", \"add\": [\"收容所第二期擴建案改為決議暫停辦理\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議動物收容所擴建案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 收容所第二期擴建案經表決贊成",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «收容所第二期»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早贊成的收容所第二期擴建案已改為決議暫停辦理，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 收容所第二期擴建案改為決議暫停辦理",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "riverwalk",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": true,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要審議了兩項相關議題。首先，會議處理了河濱步道延伸案，並正式准予施作，以完善該區域的步道設施與景觀連接。隨後，會議進入市中心腳踏車道銜接部分的討論，針對其中一段路段發現坡度過大的問題，建議引入機械輔助坡道來改善通行體驗與安全性，確保騎行者能順利通過該段道路。",
+   "memory_points": [
+    "市中心腳踏車道銜接坡度過大，建議機械輔助坡道"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議河濱步道延伸案並准予施作，隨後進入市中心腳踏車道銜接與夜間照明規劃討論。\", \"add\": [\"市中心腳踏車道銜接坡度過大，建議機械輔助坡道\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"市中心腳踏車道\"], \"arc\": \"會議審議河濱步道延伸案並准予施作，隨後進入市中心腳踏車道銜接與夜間照明規劃討論。\", \"add\": [\"市中心腳踏車道銜接坡度過大，建議機械輔助坡道\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議河濱步道延伸案並准予施作，隨後進入市中心腳踏車道銜接與夜間照明規劃討論。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 市中心腳踏車道銜接坡度過大，建議機械輔助坡道",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «市中心腳踏車道»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議審議河濱步道延伸案並准予施作，隨後進入市中心腳踏車道銜接與夜間照明規劃討論。",
+     "applied": false,
+     "reason": "arc unchanged",
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 市中心腳踏車道銜接坡度過大，建議機械輔助坡道",
+     "applied": true,
+     "reason": null,
+     "note": "restates dropped «市中心腳踏車道銜接坡度過大，建議機械輔助坡道»"
+    }
+   ]
+  },
+  {
+   "slug": "transitstation",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理一項關於西鐵車站地下轉運層的興建案，該案此前曾獲得部分同意，但經審議後正式改為「不予同意」。根據會議記錄，此變更意味著相關工程將不再獲准推進或批准，需重新辦理後續程序。此次調整是基於對現有規劃、技術可行性或社會影響等評估結果的重新考量，因此必須重新提交審查與決策流程以進行最終定案。",
+   "memory_points": [
+    "西站地下轉運層興建案改為不予同意，西站地下轉運層"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議西站地下轉運層興建案並作成決議。\", \"add\": [\"西站地下轉運層興建案同意，西站地下轉運層\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"西站地下轉運層\"], \"arc\": \"會議稍早同意的西站地下轉運層興建案已改為不予同意，需重新辦理。\", \"add\": [\"西站地下轉運層興建案改為不予同意，西站地下轉運層\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議西站地下轉運層興建案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 西站地下轉運層興建案同意，西站地下轉運層",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «西站地下轉運層»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早同意的西站地下轉運層興建案已改為不予同意，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 西站地下轉運層興建案改為不予同意，西站地下轉運層",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "youthhousing",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理一項關於青年住宅招租事宜的決議調整。根據會議記錄，原定的「照案實施」決議已不再適用，因此該項議程必須進行重新審議。具體而言，相關青年住宅招租案需由官方重新公告，以確保資訊傳達與公眾知情權的維護。此次變更的核心在於從原有的執行機制轉為重新啟動公開招租程序，旨在透過新的公告方式處理此前已完成的實施階段，並維持後續招租活動的正常運作與透明度。",
+   "memory_points": [
+    "青年住宅招租案改為重新公告，原照案實施失效"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議青年住宅招租案並作成決議。\", \"add\": [\"青年住宅招租案決議照案實施\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"青年住宅招租案決議照案實施\"], \"arc\": \"會議稍早的照案實施決議已改為重新公告，需重新審議青年住宅招租案。\", \"add\": [\"青年住宅招租案改為重新公告，原照案實施失效\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議青年住宅招租案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 青年住宅招租案決議照案實施",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «青年住宅招租案決議照案實施»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早的照案實施決議已改為重新公告，需重新審議青年住宅招租案。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 青年住宅招租案改為重新公告，原照案實施失效",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "industrialpark",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議首先審議了「南科特定專用區開發案」，該專案經相關程式審查後予以透過，確認其符合既定規劃與法規要求。隨後，會議轉入另一項議題討論，內容聚焦於汙水處理擴充工程及聯外道路交通改善計畫。在汙水處理方面，會議將評估現有設施能力不足之問題，並探討如何通過擴充措施提升系統效能與穩定性；同時也會審議相關技術方案、預算編列與執行機制，以確保該項工程能長期運作且符合環保標準。此外，會議亦針對聯外道路（非市區道路）的改善進行規劃討論，包括路權調整、基礎設施升級及交通流量管理策略，以提升區域內交通效率並促進周邊發展。整體而言，本次會議在透過南科特定專用區開發案後，繼續深入探討汙水處理與道路交通改善等關鍵議題，以推動後續工程落實與城市功能提升。",
+   "memory_points": [
+    "南科特定專用區開發案准予透過"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"產業園區開發案已審議並透過，會議轉入汙水處理擴充與聯外道路交通改善討論。\", \"add\": [\"南科特定專用區產業園區開發案准予透過\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"南科特定專\"], \"arc\": \"產業園區開發案已審議並透過，會議轉入汙水處理擴充與聯外道路交通改善討論。\", \"add\": [\"南科特定專用區開發案准予透過\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 產業園區開發案已審議並透過，會議轉入汙水處理擴充與聯外道路交通改善討論。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 南科特定專用區產業園區開發案准予透過",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «南科特定專»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 產業園區開發案已審議並透過，會議轉入汙水處理擴充與聯外道路交通改善討論。",
+     "applied": false,
+     "reason": "arc unchanged",
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 南科特定專用區開發案准予透過",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "jobtraining",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理一項關於照顧服務員班次的相關議程。根據會議記錄，原議程中曾准予照顧服務員班次的申請，但現行議程已將該事項改為「取消」並重新辦理。具體而言，此項調整旨在修正先前核准的班次安排，使後續執行或相關程序符合新的規定與需求。",
+   "memory_points": [
+    "照顧服務員班次案改為取消，七月開課"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議職業訓練委辦照顧服務員班次案並作成決議。\", \"add\": [\"照顧服務員班次案准予委辦，七月開課\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"照顧服務員班\"], \"arc\": \"會議稍早准予照顧服務員班次案，現改為取消並重新辦理。\", \"add\": [\"照顧服務員班次案改為取消，七月開課\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議職業訓練委辦照顧服務員班次案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 照顧服務員班次案准予委辦，七月開課",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «照顧服務員班»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早准予照顧服務員班次案，現改為取消並重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 照顧服務員班次案改為取消，七月開課",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "airquality",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於城市中心區域空氣品質淨區的議題。根據先前決議，該等空氣品質淨區已獲批准並正式劃設；然而，經審議後，會議決定將此項規劃調整為「暫不劃設」狀態。此次變更的主要目的在於重新辦理相關程序，以確保後續空氣品質淨區的設立與管理符合最新法規及實際需求。",
+   "memory_points": [
+    "市中心三處學區空氣品質淨區案改為暫不劃設"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議空氣品質淨區劃設案並作成決議。\", \"add\": [\"市中心三處學區劃設空氣品質淨區\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"市中心三處\"], \"arc\": \"會議稍早決議市中心三處學區空氣品質淨區，現改為暫不劃設，需重新辦理。\", \"add\": [\"市中心三處學區空氣品質淨區案改為暫不劃設\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議空氣品質淨區劃設案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 市中心三處學區劃設空氣品質淨區",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «市中心三處»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早決議市中心三處學區空氣品質淨區，現改為暫不劃設，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 市中心三處學區空氣品質淨區案改為暫不劃設",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "smartlamp",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要審議了智慧路燈試辦案並准予通過，隨後進入全市公共建築節能效益評估討論。在市府圖書館的節能效果方面，報告指出其節能成效顯著，電費下降了百分之十五；然而針對體育館，由於活動負荷較高，標準節能方案的效果表現不佳。基於此，會議建議先針對體育館進行動態負載模型試點，以驗證不同節能耗度的實際影響。 在數據傳輸技術層面，資料傳輸標準化問題成為討論焦點。報告建議採用MQTT 5.0作為新的數據傳輸標準，並指出舊裝置應透過閘道器轉換為MQTT 5.0格式，同時建議統一數據傳輸格式為JSON格式，以確保跨系統間的兼容性與一致性。此外，會議也關注了維運責任歸屬問題，強調在故障發生時需明確界定責任界線，以避免管理層理上的模糊性。",
+   "memory_points": [
+    "市府圖書館節能效果顯著，電費下降百分之十五",
+    "體育館因活動負荷高，標準節能方案效果不佳",
+    "建議先針對體育館進行動態負載模型試點",
+    "資料傳輸標準化問題，建議採用MQTT 5.0",
+    "舊裝置建議透過閘道器轉換為MQTT 5.0格式",
+    "數據傳輸格式建議統一為JSON格式",
+    "維運責任歸屬問題，需明確故障時責任界線"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議智慧路燈試辦案並准予通過，進入全市公共建築節能效益評估討論。\", \"add\": [\"市府圖書館節能效果顯著，電費下降百分之十五\", \"體育館因活動負荷高，標準節能方案效果不佳\", \"建議先針對體育館進行動態負載模型試點\", \"資料傳輸標準化問題，建議採用MQTT 5.0\", \"舊裝置建議透過閘道器轉換為MQTT 5.0格式\", \"數據傳輸格式建議統一為JSON格式\", \"維運責任歸屬問題，需明確故障時責任界線\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議智慧路燈試辦案並准予通過，進入全市公共建築節能效益評估討論。\"}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議智慧路燈試辦案並准予通過，進入全市公共建築節能效益評估討論。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 市府圖書館節能效果顯著，電費下降百分之十五",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 體育館因活動負荷高，標準節能方案效果不佳",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 建議先針對體育館進行動態負載模型試點",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 資料傳輸標準化問題，建議採用MQTT 5.0",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 舊裝置建議透過閘道器轉換為MQTT 5.0格式",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 數據傳輸格式建議統一為JSON格式",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 維運責任歸屬問題，需明確故障時責任界線",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議審議智慧路燈試辦案並准予通過，進入全市公共建築節能效益評估討論。",
+     "applied": false,
+     "reason": "arc unchanged",
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "hotspring",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理一項關於溫泉區開發管理的議題。根據會議記錄，此前同意的溫泉區開發管理案已發生變更，正式由「決議」形式轉換為「決議」，且該事項需重新辦理。具體而言，此項規範針對北投溪上游段進行調整與重申，以確保後續相關規劃與執行情況符合新的決策方向。",
+   "memory_points": [
+    "溫泉區開發管理案改為決議，北投溪上游段規範"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議溫泉區開發管理案並作成決議。\", \"add\": [\"溫泉區開發管理案同意備查，北投溪上游段規範\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"溫泉區開發\"], \"arc\": \"會議稍早同意的溫泉區開發管理案已改為決議，需重新辦理。\", \"add\": [\"溫泉區開發管理案改為決議，北投溪上游段規範\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議溫泉區開發管理案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 溫泉區開發管理案同意備查，北投溪上游段規範",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «溫泉區開發»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早同意的溫泉區開發管理案已改為決議，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 溫泉區開發管理案改為決議，北投溪上游段規範",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "fishport",
+   "subject_present": true,
+   "states_later": true,
+   "states_earlier_as_current": false,
+   "passed": true,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於漁業許可證相關事項。根據會議記錄，原已核准的「漁貨直銷中心」案已改為決議不予核准，該案涉及南方澳直銷站。此變更需重新辦理，以符合新的行政與法規要求。",
+   "memory_points": [
+    "漁貨直銷中心案改為決議不予核准，南方澳直銷站"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議漁貨直銷中心案並作成決議。\", \"add\": [\"漁貨直銷中心案核准，南方澳直銷站設漁獲展示區\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"漁貨直銷\"], \"arc\": \"會議稍早核准的漁貨直銷中心案已改為不予核准，需重新辦理。\", \"add\": [\"漁貨直銷中心案改為決議不予核准，南方澳直銷站\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議漁貨直銷中心案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 漁貨直銷中心案核准，南方澳直銷站設漁獲展示區",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «漁貨直銷»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早核准的漁貨直銷中心案已改為不予核准，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 漁貨直銷中心案改為決議不予核准，南方澳直銷站",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "parkinglot",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理一項關於中正區中正路段的公共停車場建設議題，該項目此前曾獲准批准興建，但經審議後，其性質由原本的「興建」轉為「重新評估」。根據相關法規與行政程序，此變更旨在調整後續的土地使用、規劃審查及執照申請等流程，使管理層能更精準地把握該區域的實際需求與發展方向。",
+   "memory_points": [
+    "中正段公有停車場案改為重新評估"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議中正段公有停車場興建案並作成決議。\", \"add\": [\"中正段公有停車場興建案准予興建\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"中正段公有停車場興建案准予興建\"], \"arc\": \"會議稍早准予興建的正中段公有停車場案已改為重新評估。\", \"add\": [\"中正段公有停車場案改為重新評估\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議中正段公有停車場興建案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 中正段公有停車場興建案准予興建",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «中正段公有停車場興建案准予興建»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早准予興建的正中段公有停車場案已改為重新評估。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 中正段公有停車場案改為重新評估",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "sewage",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於汙水下水道管線接管的議題，內容為將原定的第四期接管案由「核准」狀態調整為「決議」，並決定重新辦理相關程序。該案件涉及東區與南區交界處的十二點五公里範圍內之管線接續事宜，此次變更旨在透過正式決議形式確認後續執行政策或法規的適用性，以確保後續作業依既定方向進行。",
+   "memory_points": [
+    "第四期接管案改為決議，東區南區交界處十二點五公里"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議汙水下水道接管案並作成決議。\", \"add\": [\"第四期接管工程核定，東區南區交界處十二點五公里\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"第四期接管工程\"], \"arc\": \"會議稍早核定的第四期汙水下水道接管案已改為決議，需重新辦理。\", \"add\": [\"第四期接管案改為決議，東區南區交界處十二點五公里\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議汙水下水道接管案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 第四期接管工程核定，東區南區交界處十二點五公里",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «第四期接管工程»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早核定的第四期汙水下水道接管案已改為決議，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 第四期接管案改為決議，東區南區交界處十二點五公里",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "disability",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": true,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要處理一項關於設立「中區輔具服務站」的提案。根據會議記錄，該案的議程顯示，在先前已同意的相關案文稍早已被修改或調整，因此此項新設機構的申請需重新辦理以確保程序正確性與執行細節符合最新要求。儘管如此，整體而言，會議仍同意設立中區輔具服務站，並明確其預計期限為三個月內啟用，這表明該機構雖因案文變更而需重辦，但其核心目標與運作框架得以保留和延續。",
+   "memory_points": [
+    "同意設立中區輔具服務站，預計三個月內啟用"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議身心障礙者輔具中心案並作成決議。\", \"add\": [\"同意設立中區輔具服務站，預計三個月內啟用\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"同意設立中區\"], \"arc\": \"會議稍早同意的中區輔具服務站案已改為不予設立，需重新辦理。\", \"add\": [\"同意設立中區輔具服務站，預計三個月內啟用\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議身心障礙者輔具中心案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 同意設立中區輔具服務站，預計三個月內啟用",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «同意設立中區»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早同意的中區輔具服務站案已改為不予設立，需重新辦理。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 同意設立中區輔具服務站，預計三個月內啟用",
+     "applied": true,
+     "reason": null,
+     "note": "restates dropped «同意設立中區輔具服務站，預計三個月內啟用»"
+    }
+   ]
+  },
+  {
+   "slug": "tourism",
+   "subject_present": false,
+   "states_later": false,
+   "states_earlier_as_current": false,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議主要審議了觀光纜車相關議題，並最終通過決議予以處理。在後續討論中，會議重點聚焦於市中心站的體量與體規劃，以及地質鑽探所獲得的關鍵資料。根據鑽探結果，該區域的地质構造特徵對建築設計與結構安全產生了重要影響，需依據最新的地質調查報告進行相應的工程評估與設計修正。",
+   "memory_points": [],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議觀光纜車案並作成決議，隨後討論市中心站體量體規劃與地質鑽探結果。\", \"add\": [\"市中心站體量體規劃建議總樓地板面積控制在八萬五千平方公尺\", \"地質鑽探發現地下十五公尺處存在軟土層，建議採用深基礎工法\", \"施工週期延長約四個月，將實施區域性封路，需同步交通疏導\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議觀光纜車案並作成決議，隨後討論市中心站體量體規劃與地質鑽探結果。\"}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議觀光纜車案並作成決議，隨後討論市中心站體量體規劃與地質鑽探結果。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 市中心站體量體規劃建議總樓地板面積控制在八萬五千平方公尺",
+     "applied": false,
+     "reason": "point too long (28 > 25 tokens)",
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 地質鑽探發現地下十五公尺處存在軟土層，建議採用深基礎工法",
+     "applied": false,
+     "reason": "point too long (28 > 25 tokens)",
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 施工週期延長約四個月，將實施區域性封路，需同步交通疏導",
+     "applied": false,
+     "reason": "point too long (26 > 25 tokens)",
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議審議觀光纜車案並作成決議，隨後討論市中心站體量體規劃與地質鑽探結果。",
+     "applied": false,
+     "reason": "arc unchanged",
+     "note": null
+    }
+   ]
+  },
+  {
+   "slug": "marketrebuild",
+   "subject_present": true,
+   "states_later": false,
+   "states_earlier_as_current": true,
+   "passed": false,
+   "invented_reversal": [],
+   "prose": "本次會議處理一項關於第一公有市場改建案的議程，內容為將原來的核備決議予以撤銷並正式廢除。根據會議記錄，該案此前已獲相關單位同意提交審議，但現行程序已改變，不再進行核備環節，直接進入最終決策階段。此舉旨在簡化後續流程，使相關行政與法律程式得以順勢推進至最終定稿或修改後狀態。",
+   "memory_points": [
+    "第一公有市場改建案改為決議撤銷核備"
+   ],
+   "failed_steps": [],
+   "steps": [
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"arc\": \"會議審議第一公有市場改建案並作成決議。\", \"add\": [\"第一公有市場改建案經表決照案核備\"]}}</tool_call>",
+    "<tool_call>{\"name\": \"update_memory\", \"arguments\": {\"drop\": [\"第一公有市場\"], \"arc\": \"會議稍早核備的第一公有市場改建案已改為決議撤銷核備。\", \"add\": [\"第一公有市場改建案改為決議撤銷核備\"]}}</tool_call>"
+   ],
+   "op_verdicts": [
+    {
+     "step": 0,
+     "op": "ARC: 會議審議第一公有市場改建案並作成決議。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 0,
+     "op": "ADD - 第一公有市場改建案經表決照案核備",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "DROP «第一公有市場»",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ARC: 會議稍早核備的第一公有市場改建案已改為決議撤銷核備。",
+     "applied": true,
+     "reason": null,
+     "note": null
+    },
+    {
+     "step": 1,
+     "op": "ADD - 第一公有市場改建案改為決議撤銷核備",
+     "applied": true,
+     "reason": null,
+     "note": null
+    }
+   ]
+  }
+ ]
+}

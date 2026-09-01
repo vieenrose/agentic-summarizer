@@ -43,9 +43,11 @@ def gen_trace_for_meeting(
     *,
     synth_model: LlamaServer | None = None,
     budget: int = CHUNK_TOKENS,
+    protocol: str = "edit",
 ) -> Trace:
     utterances = parse_transcript(text)
-    return run_agent(utterances, model, synth_model=synth_model, budget=budget)
+    return run_agent(utterances, model, synth_model=synth_model, budget=budget,
+                     protocol=protocol, on_step_error="skip")
 
 
 def trace_to_sft_rows(meeting_id: str, trace: Trace) -> list[dict]:
@@ -92,6 +94,16 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument("--max-tokens-step", type=int, default=512)
     p.add_argument("--max-tokens-synth", type=int, default=1200)
     p.add_argument("--budget", type=int, default=CHUNK_TOKENS, help="chunk token budget")
+    # SPEC 4.1 step grammar. A tool-call student emits `<tool_call>{...}` and an
+    # edit-line student emits ADD/DROP/ARC/NOP; running the wrong one records raw text the
+    # parser rejects, so every row would be unusable while the tool still "succeeds".
+    p.add_argument("--protocol", choices=("edit", "tool"), default="edit")
+    # Extra llama-server body fields, e.g.
+    #   --extra '{"chat_template_kwargs": {"enable_thinking": false}}'
+    # The text-only Qwen3.5 repos train with a CLOSED <think></think> in the prompt;
+    # served without this the model emits <think> in place of the tool-call prefix and
+    # every completion is unparseable (measured 2026-09-01, 0/27 on the probe).
+    p.add_argument("--extra", default="")
     p.add_argument("--out", type=Path, required=True, help="write SFT-shaped JSONL rows here")
     p.add_argument(
         "--report-out", type=Path, default=None, help="write the JSON supervision report here"
@@ -106,15 +118,18 @@ def main(argv: list[str] | None = None) -> int:
         print(f"[gen-traces] no .txt files found under {args.corpus}", file=sys.stderr)
         return 1
 
-    model = LlamaServer(base_url=args.url, max_tokens=args.max_tokens_step)
-    synth_model = LlamaServer(base_url=args.synth_url or args.url, max_tokens=args.max_tokens_synth)
+    extra = json.loads(args.extra) if args.extra else {}
+    model = LlamaServer(base_url=args.url, max_tokens=args.max_tokens_step, extra=extra)
+    synth_model = LlamaServer(base_url=args.synth_url or args.url,
+                              max_tokens=args.max_tokens_synth, extra=extra)
 
     traces: list[Trace] = []
     rows: list[dict] = []
     for path in paths:
         meeting_id = path.stem
         trace = gen_trace_for_meeting(
-            path.read_text(encoding="utf-8"), model, synth_model=synth_model, budget=args.budget
+            path.read_text(encoding="utf-8"), model, synth_model=synth_model,
+            budget=args.budget, protocol=args.protocol,
         )
         traces.append(trace)
         rows.extend(trace_to_sft_rows(meeting_id, trace))

@@ -437,3 +437,45 @@ stripped before re-exporting.
 `export_gguf.sh` now validates the restored MTP hidden dim against a tensor taken from the
 model itself and aborts on mismatch. The in-place modification of the source directory
 remains a design wart worth fixing.
+
+## The 4B is NOT usable as a teacher: best probe, failing G3
+
+`runs/4b-heldout/`, 40 held-out meetings, agent vs the fair map-reduce baseline at the
+SAME model (SPEC 5.2).
+
+| gate | 4B LoRA e6 |
+|---|---|
+| G3 rouge1 | **FAIL** 19/21, -0.002, p=0.875 |
+| G3 rouge2 | **FAIL** 19/21, -0.006, p=0.875 |
+| G3 rougeL | PASS 28/12, +0.021 |
+| coverage | against, 12/28, p=0.017 |
+| density | against, 10/30, **-0.676**, p=0.002 |
+
+Its content on 5 held-out meetings: **210 chars, 0.6 details** against references at
+558 chars / 8.2 details.
+
+**Distilling this model would transfer its sparsity.** Generation of a 200-meeting
+distillation pool was started and STOPPED before this was measured; had it run, the student
+would have been trained to imitate a teacher that loses to the baseline on 2 of 3 G3 gates.
+Check a proposed teacher on the SHIPPING gate, not on the diagnostic probe.
+
+## The central finding: probe score and summarization quality are DISSOCIATED
+
+| checkpoint | probe | prose chars | details | G3 |
+|---|---|---|---|---|
+| `v5` full-FT 2-ep | 5/27 | 301 | 5.67 | **3/3 PASS** |
+| `v7` | 11/27 | 317 | 2.6 | 1/3 pass |
+| 0.8B LoRA 6-ep (v5 pool) | 9/27 | **133** | **0.2** | not run |
+| 0.8B LoRA 6-ep (v7 pool) | 8/27 | 229 | 2.4 | not run |
+| 4B LoRA 6-ep (v5 pool) | **17/27** | 210 | 0.6 | **1/3 pass** |
+| reference | — | 558 | 8.2 | — |
+
+The reversal probe rewards terse, decision-focused output and is STRUCTURALLY BLIND to
+coverage loss. Every configuration that improved the probe tonight did so while shedding
+content, and the one checkpoint that passes all three G3 gates (`v5`) has the worst probe.
+
+**Standing requirement: no configuration or data change is "better" on the probe alone.
+Report probe AND mean prose chars/details on held-out meetings, or preferably G3 itself.**
+This was violated three times in one session — the v7 pool ("no gain", when it nearly
+doubled content), the LR horizon ("largest lever", when it halved content), and the scale
+sweep ("capacity is the answer", when the 4B fails G3).

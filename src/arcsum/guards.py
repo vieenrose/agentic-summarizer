@@ -31,7 +31,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 
 from arcsum.chunker import CHUNK_TOKENS, Chunk
-from arcsum.lang import MIN_CJK_RATIO_POINT, MIN_CJK_RATIO_PROSE, check_zh_tw
+from arcsum.lang import MIN_CJK_RATIO_ARC, MIN_CJK_RATIO_POINT, check_zh_tw
 from arcsum.memory import Memory, normalize
 from arcsum.ops import Add, Arc, Drop, Malformed, Nop, Op, render_op
 from arcsum.tokens import lexical_tokens
@@ -254,7 +254,7 @@ def apply_ops(
                 outcome.results.append(AppliedOp(op, False, reason))
 
             case Arc(text):
-                if lang_check and (bad := check_zh_tw(text, min_cjk_ratio=MIN_CJK_RATIO_PROSE)):
+                if lang_check and (bad := check_zh_tw(text, min_cjk_ratio=MIN_CJK_RATIO_ARC)):
                     outcome.results.append(AppliedOp(op, False, bad))
                     continue
                 reason = memory.set_arc(text)

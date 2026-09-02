@@ -472,3 +472,41 @@ def test_churn_note_coexists_with_the_hedge_note() -> None:
     note = outcome.results[-1].note or ""
     assert "unresolved polarity" in note
     assert "restates dropped" in note
+
+
+# --- the ARC language floor ------------------------------------------------------------
+#
+# Measured 2026-09-02 on a real zh-TW ASR meeting about DRAM supply: every ARC the model
+# proposed carried product names (Xingrui, D4, AVL) and was refused at 0.66 against the
+# PROSE floor of 0.70, so memory held no ARC for the entire run -- while the same text was
+# acceptable as a POINT at 0.35. Synthesis then received "ARC: -" plus four fragmentary
+# technical points and confabulated a different meeting entirely (a Long Beach municipal
+# ordinance on medical devices, with invented ordinance numbers). Re-running synthesis WITH
+# an ARC removed the fabricated topic markers, confirming the ARC's absence as the cause.
+
+
+def test_arc_with_technical_latin_terms_is_accepted() -> None:
+    """An ARC is INTERNAL MEMORY, not product output. SPEC §3's zh-TW guarantee is about
+    the SUMMARY and is still enforced at MIN_CJK_RATIO_PROSE in `prose.finalize`."""
+    memory = Memory(token_len=heuristic_token_len)
+    arc = "會議討論手機配件與機密協議，涉及支持流、肉炮D4及Xingrui低5等選項。"
+    outcome = apply_ops(memory, [Arc(arc)], rich_chunk())
+    assert outcome.results[0].applied, outcome.results[0].reason
+    assert memory.arc == arc
+
+
+def test_a_majority_latin_arc_is_still_refused() -> None:
+    """Loosening the floor must not disable the guard: the failure it exists to catch is
+    an English ARC reaching a zh-TW-only product."""
+    memory = Memory(token_len=heuristic_token_len)
+    outcome = apply_ops(memory, [Arc("The council approved the DRAM supply motion.")], rich_chunk())
+    assert not outcome.results[0].applied
+    assert "zh-TW" in (outcome.results[0].reason or "")
+    assert memory.arc == ""
+
+
+def test_the_final_summary_still_uses_the_stricter_prose_floor() -> None:
+    """The ARC floor moving must not move the SUMMARY's. These are different contracts."""
+    from arcsum.lang import MIN_CJK_RATIO_ARC, MIN_CJK_RATIO_POINT, MIN_CJK_RATIO_PROSE
+
+    assert MIN_CJK_RATIO_POINT < MIN_CJK_RATIO_ARC < MIN_CJK_RATIO_PROSE

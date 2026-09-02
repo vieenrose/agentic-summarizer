@@ -829,3 +829,46 @@ is strongly favourable, but it IS a spec-visible change (`POINTS_CAP` is normati
 should be measured on G3 before adopting.
 
 **Credit where due: this came from a user reading the debug export, not from any gate.**
+
+## Fourth demo log: the ARC language floor causes topic-level confabulation
+
+Real zh-TW ASR meeting (DRAM supply chain), the demo's own example. Three failures:
+
+**1. 5 of 6 chunks returned NOP.** Dense commercial content -- capacity numbers, pricing,
+customer relationships -- recorded as nothing. This is the documented ASR/deliberation gap
+("the model requires an explicit STATED OUTCOME"), now visible on the demo's own example.
+
+**2. EVERY ARC was refused by the language guard**, so memory held no ARC for the whole run:
+
+```
+insufficient zh-TW content (0.66 < 0.7 CJK ratio)
+```
+
+The ARC was checked at `MIN_CJK_RATIO_PROSE` (0.70). The same text is acceptable as a POINT
+at 0.35. Real technical meetings carry product names (`Xingrui`, `D4`, `AVL`), so the ARC
+was unreachable for this entire domain.
+
+**3. Synthesis invented a different meeting.** From 4 points about DRAM pricing it produced
+a summary about 醫療器材 (medical devices) under 《長灘市市政法規》 (Long Beach municipal
+code), citing ordinances 125097/125098/125099. Nothing in memory or the transcript. This is
+confabulation from MeetingBank training priors, not distortion of the input.
+
+### (2) CAUSES (3) — verified, not inferred
+
+Same four points, synthesis re-run with and without an ARC:
+
+| | length | fabricated-topic markers |
+|---|---|---|
+| no ARC (what happened) | 316 chars | **醫療, 條例** |
+| with ARC | 343 chars | **none** |
+
+Without a narrative anchor the model falls back on training priors. With one it stays on
+topic. (It still invents details -- a company name, a year -- so the ARC fixes the TOPIC
+failure, not all fabrication.)
+
+### Fix
+
+`MIN_CJK_RATIO_ARC = 0.50`, between the point floor (0.35) and the prose floor (0.70).
+The ARC is INTERNAL MEMORY STATE; SPEC §3's zh-TW guarantee is about the SUMMARY and is
+still enforced at 0.70 in `prose.finalize`. A majority-Latin ARC is still refused, pinned
+by a negative-control test.

@@ -1,0 +1,22 @@
+[judge] 1091 calls, 0+0 tokens, $0.0000
+  local:8121/gpt-oss: $0.0000
+[judge] wrote 22 records -> runs/e3-heldout/g2_baseline_judged.jsonl
+[judge] 18 case(s) FAILED and are absent from the output -- they are not scored as clean; see --out-failures
+[judge]   baseline/LongBeachCC_06152021: TimeoutError: timed out
+[judge]   baseline/LongBeachCC_07052016: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/LongBeachCC_09072021: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/LongBeachCC_09202016: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_02082021: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_02222022: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_02292016: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_03232015: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_04122022: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_04182016: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_05032022: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_08052019: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_09062016: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_09112017: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_09282015: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_09292020: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_10292018: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?
+[judge]   baseline/SeattleCityCouncil_11022020: RuntimeError: cannot reach judge at http://127.0.0.1:8121 — is it running?

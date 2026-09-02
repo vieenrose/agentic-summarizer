@@ -26,6 +26,24 @@ MIN_CJK_RATIO_PROSE = 0.70
 #: acronym ("CB 118618"), so the floor is looser than prose's.
 MIN_CJK_RATIO_POINT = 0.35
 
+#: The ARC sits between the two, and used to be checked at the PROSE floor -- which was
+#: wrong twice over. The ARC is INTERNAL MEMORY STATE, not the product's output: SPEC §3's
+#: guarantee is about the SUMMARY, and that is still enforced at `MIN_CJK_RATIO_PROSE`.
+#:
+#: Measured 2026-09-02 on a real zh-TW ASR meeting about DRAM supply. Every ARC the model
+#: proposed carried product names (`Xingrui`, `D4`, `AVL`) and was refused at 0.66 < 0.70,
+#: so memory held NO ARC for the whole run -- while the SAME text would have been accepted
+#: as a point at 0.35. Synthesis then received `ARC: -` plus four fragmentary technical
+#: points and confabulated an entirely different meeting: a Long Beach municipal ordinance
+#: on medical devices, complete with invented ordinance numbers.
+#:
+#: Verified causal, not coincidental: re-running synthesis on the same four points WITH an
+#: ARC removes the fabricated topic markers entirely; without one they return.
+#:
+#: 0.50 keeps the guard meaningful -- an ARC that is majority-Latin is still refused -- while
+#: admitting the technical zh-TW that real meetings contain.
+MIN_CJK_RATIO_ARC = 0.50
+
 
 def cjk_ratio(text: str) -> float:
     """Fraction of non-whitespace characters that are CJK ideographs.

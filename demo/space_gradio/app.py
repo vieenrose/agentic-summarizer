@@ -25,6 +25,7 @@ from model_backend import ArcsumModel
 from arcsum.chunker import CHUNK_TOKENS, iter_chunks
 from arcsum.guards import apply_ops
 from arcsum.memory import ARC_TOKENS, POINT_TOKENS, POINTS_CAP, Memory
+from arcsum.ops import render_op
 from arcsum.prompts import (
     build_step_prompt,
     build_synth_prompt,
@@ -152,29 +153,48 @@ def render_transcript_html(utterances: list[Utterance], first: int, last: int) -
     return _panel("Transcript", label, "".join(rows))
 
 
+#: One colour per op kind, shared by the live view and the applied-memory view.
+_OP_COLOUR = {"Arc": "#0969da", "Add": "#1a7f37", "Drop": "#cf222e"}
+
+
 def render_ops_html(status: str, raw: str, live: bool) -> str:
+    """Render the step's raw output.
+
+    **Protocol-aware.** `qwen-tools-v5` emits ONE line -- an `update_memory` tool call
+    carrying JSON -- not the ADD/DROP/ARC edit lines the previous checkpoint produced. The
+    old renderer coloured lines by their leading keyword and fell through to plain grey
+    for anything else, so a tool call rendered as a single escaped blob of
+    `<tool_call>{"name": ...}` and read on screen as raw markup.
+
+    So: parse it and show the ops. While a step is still STREAMING the JSON is truncated
+    and cannot parse, which is not an error -- fall back to the raw text with the wrapper
+    stripped and let it wrap, so the user still sees tokens arriving.
+    """
     if not raw:
-        body = "<i style='opacity:.6'>Waiting…</i>"
-    else:
-        lines = []
-        for line in raw.splitlines():
-            s = line.strip()
-            if not s:
-                continue
-            color = (
-                "#0969da"
-                if s.startswith("ARC")
-                else "#1a7f37"
-                if s.startswith("ADD")
-                else "#cf222e"
-                if s.startswith("DROP")
-                else "#57606a"
-            )
-            lines.append(
+        return _panel("Model output (tool call)", status, "<i style='opacity:.6'>Waiting…</i>",
+                      active=live)
+
+    rows: list[str] = []
+    ops = parse_tool_calls(raw)
+    parsed = [o for o in ops if type(o).__name__ != "Malformed"]
+    if parsed:
+        for op in parsed:
+            kind = type(op).__name__
+            rows.append(
                 f"<div style='font-family:ui-monospace,monospace;font-size:.9em;"
-                f"color:{color};padding:1px 0'>{_esc(s)}</div>"
+                f"color:{_OP_COLOUR.get(kind, '#57606a')};padding:1px 0;"
+                f"white-space:pre-wrap;word-break:break-word'>{_esc(render_op(op))}</div>"
             )
-        body = "".join(lines) + ("<span style='opacity:.5'>▌</span>" if live else "")
+    else:
+        # Streaming, or genuinely malformed. Strip the wrapper so the panel shows the
+        # JSON being built rather than the tag noise around it.
+        shown = raw.replace("<tool_call>", "").replace("</tool_call>", "").strip()
+        rows.append(
+            f"<div style='font-family:ui-monospace,monospace;font-size:.85em;"
+            f"color:#57606a;white-space:pre-wrap;word-break:break-word;"
+            f"opacity:.85'>{_esc(shown)}</div>"
+        )
+    body = "".join(rows) + ("<span style='opacity:.5'>▌</span>" if live else "")
     return _panel("Model output (tool call)", status, body, active=live)
 
 

@@ -872,3 +872,65 @@ failure, not all fabrication.)
 The ARC is INTERNAL MEMORY STATE; SPEC §3's zh-TW guarantee is about the SUMMARY and is
 still enforced at 0.70 in `prose.finalize`. A majority-Latin ARC is still refused, pinned
 by a negative-control test.
+
+---
+
+# SELF-DISTILLATION FIXES THE CLIFF AND THE ASR GAP, AND LOSES G3
+
+`runs/selfdistil-e3` — the v5 pool with its 187 teacher-memory synthesis rows REPLACED by
+190 rows pairing the STUDENT'S OWN memories (from `cli/gen_traces` over the 200 pilot
+meetings) with teacher-written summaries. High-occupancy rows oversampled 4x so the
+>=13-point share matches the old pool's 58% and provenance is the only variable.
+
+## The cliff is gone
+
+| points in memory | `v5` | **self-distilled** |
+|---|---|---|
+| 2 | 102 | **254** |
+| 6 | 189 | **404** |
+| 12 | 544 | 482 |
+| **13** | **116** | **342** |
+| **14** | **77** | **400** |
+| **15** | **88** | **587** |
+
+Length now RISES with memory instead of collapsing. **Exposure bias was the cause**: every
+synthesis row paired a teacher-authored memory with a summary, while inference always
+presents a student-authored one. No new examples were needed — only the inputs changed.
+
+## Every other axis improved too
+
+| | `v5` | self-distilled |
+|---|---|---|
+| independent probe | 3/27 | **12/27** |
+| real-ASR curated | 17/20, NOP 28% | **19/20, NOP 8%** |
+| mean ASR summary | 223 chars | 292 chars |
+
+19/20 is the best real-ASR result this project has measured. The NOP rate falling 28% -> 8%
+is the DELIBERATION GAP closing: the student's own memories include the chunks it used to
+abstain on, so those chunks now appear in synthesis training rather than being absent.
+
+## But G3 goes 3/3 -> 0/3
+
+| gate | result |
+|---|---|
+| rouge1 | FAIL — 21/19, **+0.011**, p=0.875 |
+| rouge2 | FAIL — 23/17, **+0.014**, p=0.430 |
+| rougeL | FAIL — 26/14, **+0.027**, p=0.081 |
+| density | -0.932 (7/33) |
+
+All three effects are POSITIVE — the agent is slightly better than the baseline, just not
+CONSISTENTLY better, where `v5` was (28/12, 29/11, 35/5).
+
+**The mechanism is a real limitation of the method as applied.** A self-distilled target is
+the teacher summarising the STUDENT's memory. Wherever the reading step missed something,
+the target faithfully omits it too — so the model gets better at rendering an impoverished
+memory, while G3 scores against references built from GOLD MINUTES containing what the
+student never captured. **Self-distillation propagated the reading step's omissions into
+the synthesis objective.**
+
+## Standing position
+
+`v5` still holds under SPEC §5.2's all-or-nothing rule. But this checkpoint is far better
+on the failure modes a user actually hits — which were found by reading debug logs, not by
+any gate. The obvious next step is to fix the READING step's omissions before self-
+distilling, so the targets are not capped by what the student happened to capture.

@@ -771,3 +771,61 @@ signature; clean-text gates tolerate it and noisy real ASR does not.
 
 **Standing rule, reaffirmed the hard way: no checkpoint is a candidate until
 `tools/asr_gate.py` has run on it.** The clean-text gates cannot see this failure mode.
+
+---
+
+# SYNTHESIS COLLAPSES ABOVE 12 MEMORY POINTS — found from user demo logs
+
+`qwen-tools-v5`, synthesis in isolation, fixed seed, identical ARC, points added one at a
+time from a real run's memory:
+
+| points in memory | prose length |
+|---|---|
+| 2 | 102 chars |
+| 4 | 135 |
+| 6 | 189 |
+| 9 | 361 |
+| **12** | **544** |
+| **13** | **116** |
+| 14 | 77 |
+| 15 | 88 |
+
+**A 4.7x collapse from ONE additional point.** Reproducible at `temperature=0`. Confirmed
+independently by three user demo logs, where prose length tracks POINT COUNT and not
+meeting length: 3 points -> 258 chars, 6 points -> 588 chars, but 15 points -> 55 chars,
+and the 6-point meeting had MORE chunks than the 15-point one.
+
+**Past the cliff it also fabricates.** At 14 points it invented a surname
+(`佩爾克·羅森塔爾`); at 15, in the user's log, it reported a committee member as
+`已故` (deceased) when memory said only "reappoint Perk". Memory was correct in both cases;
+the invention is entirely at the synthesis step.
+
+## It is NOT a data problem — the pool teaches the opposite
+
+| memory size | share of synthesis training rows | mean TARGET length |
+|---|---|---|
+| <=12 points | 41.7% | 355 chars |
+| **>=13 points** | **58.3%** (86 rows at exactly 16) | **641 chars** |
+
+The pool is well populated at high occupancy and teaches "more points -> LONGER summary".
+The model inverts that above 12. So this is a generalisation failure of the 0.8B student at
+high memory occupancy, not a gap in supervision.
+
+## Why it matters more than any gate number
+
+`POINTS_CAP` is 16, and a meeting of more than ~4 chunks routinely fills memory past 12. So
+**the failure mode is the common case, not an edge case**: the longer and richer the
+meeting, the less informative the summary — the exact inverse of what the product promises.
+No G1/G2/G3 number exposes it, because ROUGE against a reference does not notice that the
+summary used 2 of 15 available facts.
+
+## Mitigation available without retraining
+
+Lowering `POINTS_CAP` from 16 to 12 keeps synthesis on the good side of the cliff.
+`spread()` evicts evenly and keeps endpoints, so early and late content both survive.
+Measured trade: a 12-point memory yields 544 chars covering 12 facts, against a 15-point
+memory yielding 88 chars covering 2. Losing 3 points from memory to gain 10 in the summary
+is strongly favourable, but it IS a spec-visible change (`POINTS_CAP` is normative) and
+should be measured on G3 before adopting.
+
+**Credit where due: this came from a user reading the debug export, not from any gate.**

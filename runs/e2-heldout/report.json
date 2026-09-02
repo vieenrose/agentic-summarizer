@@ -1,0 +1,86 @@
+{
+  "treatment": "agent",
+  "control": "baseline",
+  "paired_count": 40,
+  "g1_passed": false,
+  "comparisons": [
+    {
+      "metric": "rouge1",
+      "n": 40,
+      "wins": 14,
+      "losses": 26,
+      "ties": 0,
+      "mean_delta": -0.0439902861981945,
+      "stderr": 0.019276135070393254,
+      "p_value": 0.0806904677519924
+    },
+    {
+      "metric": "rouge2",
+      "n": 40,
+      "wins": 19,
+      "losses": 21,
+      "ties": 0,
+      "mean_delta": 0.006696001218210014,
+      "stderr": 0.010856924647057568,
+      "p_value": 0.8746293123804207
+    },
+    {
+      "metric": "rougeL",
+      "n": 40,
+      "wins": 28,
+      "losses": 12,
+      "ties": 0,
+      "mean_delta": 0.03281236666123397,
+      "stderr": 0.010275269403962306,
+      "p_value": 0.01658900337497471
+    },
+    {
+      "metric": "coverage",
+      "n": 40,
+      "wins": 17,
+      "losses": 22,
+      "ties": 1,
+      "mean_delta": -0.0019976284894550277,
+      "stderr": 0.0015742975801159762,
+      "p_value": 0.5223973804968409
+    },
+    {
+      "metric": "density",
+      "n": 40,
+      "wins": 13,
+      "losses": 27,
+      "ties": 0,
+      "mean_delta": -0.40116849627208745,
+      "stderr": 0.14419783042266296,
+      "p_value": 0.03847730828420026
+    }
+  ],
+  "gates": [
+    {
+      "gate": "G2_faithfulness",
+      "passed": null,
+      "detail": "withheld: no judge records"
+    },
+    {
+      "gate": "G3_rouge1",
+      "passed": false,
+      "detail": "mean_delta=-0.044 SE=0.019 lower_bound=-0.063 p=0.081"
+    },
+    {
+      "gate": "G3_rouge2",
+      "passed": false,
+      "detail": "mean_delta=+0.007 SE=0.011 lower_bound=-0.004 p=0.875"
+    },
+    {
+      "gate": "G3_rougeL",
+      "passed": true,
+      "detail": "mean_delta=+0.033 SE=0.010 lower_bound=+0.023 p=0.017"
+    },
+    {
+      "gate": "G4_budget",
+      "passed": null,
+      "detail": "withheld: no device measurement provided"
+    }
+  ],
+  "decision": "ship the baseline"
+}

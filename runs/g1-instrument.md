@@ -676,3 +676,41 @@ Each earlier theory was supported by a real measurement and was still wrong, bec
 compared checkpoints that differed in more than one way. The discipline that would have
 caught it sooner: **enumerate every difference between two artifacts before attributing a
 gap to one of them.**
+
+---
+
+# THE SHIPPING PICTURE, resolved: `diag`-last replaces `v5`
+
+All 0.8B, so G4 is unchanged. 40 held-out meetings, same instrument throughout.
+
+| gate | `v5` | **`qwen08b-diag` last epoch** |
+|---|---|---|
+| G1 independent probe | 3/27 | **6/27** |
+| G2 faithfulness | PASS — 16 inv / 283 claims = **5.7%**, baseline 4.0% | **PASS — 11 inv / 272 claims = 4.0%, baseline 5.5%** |
+| G3 rouge1 | PASS +0.069 | PASS +0.030 |
+| G3 rouge2 | PASS +0.041 | PASS +0.037 |
+| G3 rougeL | PASS +0.057 | PASS +0.052 |
+
+**G2 is the headline.** Every prior report carried the caveat that the agent's PER-CLAIM
+inversion rate was WORSE than the baseline's (5.7% vs 4.0%) and that it won on absolute
+count partly by saying less. `diag`-last wins on both axes: fewer inversions (11 vs 16) at
+a comparable claim count, and 4.0% against the baseline's 5.5%. That caveat is now retired.
+
+## The 106 detail rows: a clean, isolated trade
+
+`v7` = `v5` + **106 detail rows and nothing else** (the reversal and deliberation rows were
+already in `v5`). So the following is a one-variable ablation at identical LR, length,
+selection, size and seed:
+
+| detail rows | probe | control | G3 |
+|---|---|---|---|
+| 0 | 6/27 | 6/15 | **3/3 PASS** |
+| 24 | 6/27 | 9/15 | (running) |
+| 106 | **12/27** | 10/15 | **1/3** (rouge1 -0.045, rouge2 -0.001) |
+
+**2.2% of the pool doubles G1 and breaks rouge1/rouge2.** The response is threshold-like,
+not graded: 24 rows move the control arm but not the probe at all.
+
+This also corrects a correction. I recorded that the earlier "v7 pool adds nothing" result
+was an under-training artifact. Half true: under-training WAS hiding the probe gain
+(8/27 -> 12/27 once selection is fixed), but the G3 cost was real the whole time.

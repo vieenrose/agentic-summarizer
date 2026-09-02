@@ -714,3 +714,36 @@ not graded: 24 rows move the control arm but not the probe at all.
 This also corrects a correction. I recorded that the earlier "v7 pool adds nothing" result
 was an under-training artifact. Half true: under-training WAS hiding the probe gain
 (8/27 -> 12/27 once selection is fixed), but the G3 cost was real the whole time.
+
+
+## CORRECTION: that ablation was CONFOUNDED — FFT vs LoRA, not the pool
+
+The table above compares `diag` (0 rows) against `v7pool-e2` (106) and `det24` (24) as if
+the pool were the only variable. It is not:
+
+```
+qwen08b-diag : "Using bfloat16 full finetuning"   <- FULL FINE-TUNE
+v7pool-e2    : "Switching to 16bit LoRA"          <- LoRA
+det24-e2     : "Switching to 16bit LoRA"          <- LoRA
+```
+
+WITHIN LoRA the pool effect runs the OTHER way: 106 rows gives probe 12/27 and G3 1/3,
+24 rows gives probe 6/27 and G3 **0/3** (rouge1 -0.076, worse than either neighbour). More
+detail rows is better on both axes there, which is the opposite of what was claimed.
+
+The G3 3/3 PASS belongs to FULL FINE-TUNING, not to "0 detail rows". Across everything
+measured:
+
+| G3 result | adaptation |
+|---|---|
+| `v5` 3/3 PASS | full FT |
+| `diag`-last 3/3 PASS | full FT |
+| `lr2e-4`, `vl-lora-lr2e4`, `v7pool-e2`, `det24` all 0-1/3 | **LoRA** |
+
+So the live hypothesis is **LoRA does not reach the content behaviour full fine-tuning
+does**, and the pool is a second-order effect on top of that.
+
+**This is the fifth time in one session that a gap was attributed to the wrong variable**
+because the compared artifacts differed in more than one way. The recurring fix is the same
+and I keep not applying it: enumerate EVERY difference between two runs before attributing
+anything, mechanically, from the logs -- not from memory of what was intended.

@@ -34,6 +34,21 @@ DEFAULT_PICKS = [
     "SeattleCityCouncil_09102018",
 ]
 
+#: Extra transcripts committed under `demo/extra_examples/` rather than pulled from a
+#: pairs file. These exist to show the model on material the eval set does NOT contain:
+#: real ASR (not TranslateGemma-translated MeetingBank), a commercial rather than
+#: municipal domain, and genuine recognition noise -- the opening lines of the DRAM
+#: meeting are repeated subtitle boilerplate, which exercises the `NOP` path that every
+#: MeetingBank-derived example leaves untouched.
+#:
+#: **Anonymised before commit.** The source was a real supply-chain negotiation; every
+#: company, customer, vendor, person and identifying place name was replaced with a
+#: fictive equivalent and the result audited against the original name list. Pricing and
+#: negotiating positions were left intact because, with the parties anonymised, they no
+#: longer identify anyone and they are what makes the transcript a realistic test.
+EXTRA_DIR = REPO / "demo/extra_examples"
+EXTRA_PICKS = ["dram_supply_meeting.v2.txt"]
+
 HEADER_JS = """/* Real held-out zh-TW meetings from the evaluation set (TranslateGemma-translated
  * MeetingBank, format v2). Only the SHORT ones: in-browser CPU inference is slow, and
  * the model's known weakness is long meetings anyway.
@@ -58,6 +73,8 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--out-py", type=Path, default=None)
     p.add_argument("--out-js", type=Path, default=None)
     p.add_argument("--meetings", nargs="*", default=DEFAULT_PICKS)
+    p.add_argument("--extras", nargs="*", default=EXTRA_PICKS,
+                   help="filenames under demo/extra_examples/ to include")
     args = p.parse_args(argv)
 
     if not args.out_py and not args.out_js:
@@ -70,6 +87,18 @@ def main(argv: list[str] | None = None) -> int:
         return 1
 
     examples = {}
+    for name in args.extras:
+        f = EXTRA_DIR / name
+        if not f.is_file():
+            print(f"[make-examples] missing extra: {f}", file=sys.stderr)
+            return 1
+        src = f.read_text(encoding="utf-8")
+        n = len(list(iter_chunks(parse_transcript(src), budget=CHUNK_TOKENS,
+                                 token_len=heuristic_token_len)))
+        label = f.stem.replace(".v2", "").replace("_", " ")
+        examples[f"{label} — real ASR ({n} chunks)"] = src
+        print(f"[make-examples] {f.name}: {n} chunks, {len(src)} chars", file=sys.stderr)
+
     for mid in args.meetings:
         src = pairs[mid]["source"]
         n = len(

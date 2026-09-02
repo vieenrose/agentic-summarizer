@@ -78,10 +78,13 @@ def _cut_at_turn_end(text: str) -> str:
 #: Off by default deliberately: on ZeroGPU an `@spaces.GPU` call CONSUMES QUOTA whether or
 #: not the model actually uses the device, so a Space that only needs CPU should not carry
 #: the decorator on its hot path. See the conditional wrapping below.
-N_GPU_LAYERS = int(os.environ.get("ARCSUM_N_GPU_LAYERS", "0"))
+GPU_LAYERS = int(os.environ.get("ARCSUM_N_GPU_LAYERS", "-1"))
+#: Whether the UI toggle starts checked. GPU stays OFF by default: ZeroGPU quota is
+#: finite and a CPU run costs none of it.
+GPU_DEFAULT = os.environ.get("ARCSUM_GPU_DEFAULT", "0") not in ("0", "", "false", "False")
 
 
-def get_model() -> ArcsumModel:
+def get_model(n_gpu_layers: int) -> ArcsumModel:
     """Build the model, caching only in CPU mode.
 
     **A CUDA `Llama` must NOT be cached across ZeroGPU calls.** ZeroGPU attaches a device
@@ -91,9 +94,9 @@ def get_model() -> ArcsumModel:
     avoids re-reading 833 MB per request.
     """
     global _model
-    if N_GPU_LAYERS != 0:
+    if n_gpu_layers != 0:
         path = hf_hub_download(MODEL_REPO, MODEL_FILE)
-        return ArcsumModel(path, n_gpu_layers=N_GPU_LAYERS)
+        return ArcsumModel(path, n_gpu_layers=n_gpu_layers)
     if _model is None:
         path = hf_hub_download(MODEL_REPO, MODEL_FILE)
         _model = ArcsumModel(path, n_gpu_layers=0)
@@ -107,11 +110,22 @@ def _esc(text: str) -> str:
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def _panel(title: str, status: str, body_html: str) -> str:
+def _panel(title: str, status: str, body_html: str, *, active: bool = False) -> str:
+    """One of the three live panels.
+
+    `active` puts a blue rule on the panel currently doing work. With three panels
+    updating at different rates it is otherwise genuinely hard to tell where to look --
+    the reading step writes to the middle panel, the applier to the right one, and the
+    transcript highlight moves on the left.
+
+    Colours come from `currentColor`/transparent rather than literal white so the panel
+    does not render black-on-white inside a dark-themed Space.
+    """
     badge = f"<span style='opacity:.6;font-size:.85em'>{_esc(status)}</span>" if status else ""
+    border = "#0969da" if active else "#d0d7de"
     return (
-        "<div style='border:1px solid #d0d7de;border-radius:8px;padding:10px;"
-        "height:460px;overflow:auto;background:#fff'>"
+        f"<div style='border:1px solid {border};border-radius:8px;padding:10px;"
+        f"height:460px;overflow:auto;background:transparent'>"
         f"<div style='display:flex;justify-content:space-between;align-items:baseline;"
         f"margin-bottom:8px'><b>{_esc(title)}</b>{badge}</div>{body_html}</div>"
     )
@@ -161,7 +175,7 @@ def render_ops_html(status: str, raw: str, live: bool) -> str:
                 f"color:{color};padding:1px 0'>{_esc(s)}</div>"
             )
         body = "".join(lines) + ("<span style='opacity:.5'>▌</span>" if live else "")
-    return _panel("Model output (edit lines)", status, body)
+    return _panel("Model output (tool call)", status, body, active=live)
 
 
 def render_memory_html(mem: Memory, n_chunks: int, step: int) -> str:
@@ -201,25 +215,64 @@ def render_prose_html(text: str, live: bool) -> str:
             + f"</div><div style='margin-top:10px;opacity:.55;font-size:.85em'>"
             f"{len(text)} characters</div>"
         )
-    return _panel("Final summary (SYNTHESIZE)", "", body)
+    return _panel("Final summary (SYNTHESIZE)", "", body, active=live)
 
 
-def _progress(pct: float, label: str) -> str:
+def _progress(pct: float, label: str, *, elapsed: float | None = None,
+              mode: str | None = None) -> str:
+    """Progress bar with elapsed time and a CPU/GPU badge.
+
+    Elapsed time is not decoration: a CPU run of the 6-chunk example takes minutes, and
+    the commonest way a live demo is misread is a user deciding it has hung. Showing the
+    clock move makes "slow" legible as slow rather than broken.
+    """
+    bits = []
+    if mode:
+        colour = "#1a7f37" if mode == "GPU" else "#57606a"
+        bits.append(
+            f"<span style='background:{colour};color:#fff;border-radius:3px;"
+            f"padding:0 5px;font-size:.78em'>{_esc(mode)}</span>"
+        )
+    bits.append(f"<span>{_esc(label)}</span>")
+    if elapsed is not None:
+        bits.append(f"<span style='opacity:.55'>{elapsed:.0f}s</span>")
     return (
         f"<div style='margin:6px 0'><div style='background:#eaeef2;border-radius:4px;height:8px'>"
         f"<div style='background:#0969da;height:8px;border-radius:4px;"
-        f"width:{pct:.1f}%'></div></div>"
-        f"<div style='opacity:.7;font-size:.88em;margin-top:4px'>{_esc(label)}</div></div>"
+        f"width:{pct:.1f}%;transition:width .2s'></div></div>"
+        f"<div style='opacity:.75;font-size:.88em;margin-top:4px;display:flex;gap:8px;"
+        f"align-items:center'>{''.join(bits)}</div></div>"
     )
 
 
 # --- the run loop ----------------------------------------------------------------------
 
-_BUSY = (gr.update(interactive=False), gr.update(interactive=False), gr.update(interactive=True))
-_IDLE = (gr.update(interactive=True), gr.update(interactive=True), gr.update(interactive=False))
+#: (run_btn, example_dd, stop_btn, gpu_toggle) -- the tuple width must match the tail of
+#: `run_demo`'s outputs list exactly, or Gradio silently misassigns updates to components.
+_BUSY = (
+    gr.update(interactive=False),
+    gr.update(interactive=False),
+    gr.update(interactive=True),
+    gr.update(interactive=False),
+)
+_IDLE = (
+    gr.update(interactive=True),
+    gr.update(interactive=True),
+    gr.update(interactive=False),
+    gr.update(interactive=True),
+)
 
 
-def run_demo(custom_transcript: str, example_name: str):
+def _run(custom_transcript: str, example_name: str, n_gpu_layers: int):
+    mode = "GPU" if n_gpu_layers != 0 else "CPU"
+    t0 = time.time()
+
+    def _bar(pct: float, label: str) -> str:
+        """Named `_bar`, not `prog`: the reading loop already binds a local `prog` to a
+        rendered string, and shadowing this closure with it makes the SECOND chunk raise
+        `'str' object is not callable`."""
+        return _progress(pct, label, elapsed=time.time() - t0, mode=mode)
+
     text = (custom_transcript or "").strip() or EXAMPLES.get(example_name, "")
     empty = (
         render_transcript_html([], -1, -1),
@@ -238,7 +291,7 @@ def run_demo(custom_transcript: str, example_name: str):
     try:
         utterances = parse_transcript(text)
     except ValueError as exc:
-        yield (*empty, _progress(0, f"Transcript format error: {exc}"), *_IDLE)
+        yield (*empty, _bar(0, f"Transcript format error: {exc}"), *_IDLE)
         return
 
     chunks = list(iter_chunks(utterances, budget=CHUNK_TOKENS, token_len=heuristic_token_len))
@@ -250,10 +303,10 @@ def run_demo(custom_transcript: str, example_name: str):
         render_ops_html("", "", False),
         render_memory_html(mem, len(chunks), 0),
         render_prose_html("", False),
-        _progress(0, "Loading the model…" if _model is None else "Starting…"),
+        _bar(0, "Loading the model…" if _model is None or n_gpu_layers else "Starting…"),
         *_BUSY,
     )
-    model = get_model()
+    model = get_model(n_gpu_layers)
 
     consecutive_nops = 0
     idx = 0
@@ -264,7 +317,7 @@ def run_demo(custom_transcript: str, example_name: str):
         t_html = render_transcript_html(utterances, first, last)
         m_html = render_memory_html(mem, len(chunks), ci)
         status = f"step {ci + 1}/{len(chunks)}"
-        prog = _progress(ci / len(chunks) * 90, f"{status} — reading…")
+        prog = _bar(ci / len(chunks) * 90, f"{status} — reading…")
 
         yield (
             t_html,
@@ -301,7 +354,7 @@ def run_demo(custom_transcript: str, example_name: str):
             render_ops_html(done, raw, False),
             render_memory_html(mem, len(chunks), ci + 1),
             render_prose_html("", False),
-            _progress((ci + 1) / len(chunks) * 90, done),
+            _bar((ci + 1) / len(chunks) * 90, done),
             *_BUSY,
         )
 
@@ -314,7 +367,7 @@ def run_demo(custom_transcript: str, example_name: str):
         render_ops_html("reading done", "", False),
         final_m,
         render_prose_html("", True),
-        _progress(92, "SYNTHESIZE — writing the summary…"),
+        _bar(92, "SYNTHESIZE — writing the summary…"),
         *_BUSY,
     )
 
@@ -331,7 +384,7 @@ def run_demo(custom_transcript: str, example_name: str):
             render_ops_html("reading done", "", False),
             final_m,
             render_prose_html(_cut_at_turn_end(prose_raw), True),
-            _progress(96, "SYNTHESIZE — writing the summary…"),
+            _bar(96, "SYNTHESIZE — writing the summary…"),
             *_BUSY,
         )
 
@@ -341,7 +394,7 @@ def run_demo(custom_transcript: str, example_name: str):
         render_ops_html("reading done", "", False),
         final_m,
         render_prose_html(prose.text, False),
-        _progress(100, "done"),
+        _bar(100, "done"),
         *_IDLE,
     )
 
@@ -363,14 +416,27 @@ def run_demo(custom_transcript: str, example_name: str):
 # ZeroGPU quota for a call that never touches the device. A no-op stub keeps the Space
 # bootable, since ZeroGPU hard-fails at startup unless it detects at least one such
 # function.
-if N_GPU_LAYERS != 0:
-    run_demo = spaces.GPU(duration=int(os.environ.get("ARCSUM_GPU_DURATION", "180")))(run_demo)
-else:
+@spaces.GPU(duration=int(os.environ.get("ARCSUM_GPU_DURATION", "180")))
+def _run_gpu(custom_transcript: str, example_name: str):
+    """GPU entry point. ZeroGPU attaches a device for the duration of THIS call, so the
+    whole agent loop runs inside it and the model is built here (never cached -- the
+    device is reclaimed on return, which would invalidate a cached CUDA model)."""
+    yield from _run(custom_transcript, example_name, GPU_LAYERS)
 
-    @spaces.GPU(duration=1)
-    def _zerogpu_registration_noop() -> None:
-        """Never called; exists only so ZeroGPU sees a GPU function at startup."""
-        return None
+
+def _run_cpu(custom_transcript: str, example_name: str):
+    """CPU entry point, deliberately NOT decorated. `@spaces.GPU` consumes ZeroGPU quota
+    on every call whether or not the device is touched, so routing CPU runs through a
+    decorated function would bill GPU time for CPU work. Keeping two entry points is the
+    only way to make the toggle free when it is off."""
+    yield from _run(custom_transcript, example_name, 0)
+
+
+def run_demo(custom_transcript: str, example_name: str, use_gpu: bool):
+    """Dispatch on the UI toggle. `_run_gpu` is still a real `@spaces.GPU` function, so
+    ZeroGPU sees one at startup and the Space boots -- the old no-op stub is no longer
+    needed."""
+    yield from (_run_gpu if use_gpu else _run_cpu)(custom_transcript, example_name)
 
 
 with gr.Blocks(title="arcsum — live agentic zh-TW meeting summarizer") as demo:
@@ -384,14 +450,21 @@ with gr.Blocks(title="arcsum — live agentic zh-TW meeting summarizer") as demo
         "on the right is the <i>only</i> thing carried forward. A final SYNTHESIZE call "
         "turns it into prose.</p></div>"
     )
-    with gr.Row():
+    with gr.Row(equal_height=True):
         example_dd = gr.Dropdown(
             choices=list(EXAMPLES.keys()),
             value=(list(EXAMPLES.keys()) or [None])[0],
             label="transcript",
+            scale=4,
         )
-        run_btn = gr.Button("▶ Run", variant="primary")
-        stop_btn = gr.Button("■ Stop", interactive=False)
+        gpu_toggle = gr.Checkbox(
+            value=GPU_DEFAULT,
+            label="GPU acceleration",
+            info="ZeroGPU; uses quota. Off = CPU, free but slower.",
+            scale=2,
+        )
+        run_btn = gr.Button("▶ Run", variant="primary", scale=1)
+        stop_btn = gr.Button("■ Stop", interactive=False, scale=1)
 
     progress_html = gr.HTML(_progress(0, "Pick a transcript and press Run."))
 
@@ -412,9 +485,10 @@ with gr.Blocks(title="arcsum — live agentic zh-TW meeting summarizer") as demo
         f"""
 ### What you are watching
 
-The **middle panel** is the model's raw output — it emits *only* edit lines, never prose,
-until the very end. The **right panel** is the harness's memory after applying them
-deterministically (with the token caps enforced, and malformed or unsafe ops refused).
+The **middle panel** is the model's raw output — one batched `update_memory` tool call
+per chunk, never prose, until the very end. The **right panel** is the harness's memory
+after applying those ops deterministically (token caps enforced, malformed or unsafe ops
+refused).
 
 The design bet is what the memory buys: **a later chunk can overturn an earlier
 conclusion.** Map-reduce structurally cannot do that — each window is summarised
@@ -444,7 +518,7 @@ Expect several seconds per chunk on Space CPU; that is the cost of running the r
 
     ev = run_btn.click(
         run_demo,
-        [transcript_box, example_dd],
+        [transcript_box, example_dd, gpu_toggle],
         [
             transcript_html,
             ops_html,
@@ -454,6 +528,7 @@ Expect several seconds per chunk on Space CPU; that is the cost of running the r
             run_btn,
             example_dd,
             stop_btn,
+            gpu_toggle,
         ],
     )
     stop_btn.click(None, None, None, cancels=[ev])

@@ -13,7 +13,10 @@ rendered are all the same code paths `run_agent` uses.
 
 from __future__ import annotations
 
+import json
 import os
+import pathlib
+import tempfile
 import time
 
 import gradio as gr
@@ -283,15 +286,37 @@ _IDLE = (
 )
 
 
-def _run(custom_transcript: str, example_name: str, n_gpu_layers: int):
+def _run(custom_transcript: str, example_name: str, n_gpu_layers: int, log: dict):
+    """`log` is a `gr.State` dict MUTATED IN PLACE.
+
+    In place, and passed as an input rather than yielded as an output, so the export
+    button can read it without widening every one of the generator's yield tuples --
+    they must all stay the same width or Gradio misassigns updates to components.
+    `gr.State` is per-session, so two concurrent users cannot see each other's run.
+    """
     mode = "GPU" if n_gpu_layers != 0 else "CPU"
-    t0 = time.time()
+    # NOT `t0`: the chunk loop below reassigns `t0` for per-step timing, which would make
+    # the progress bar's "elapsed" restart every step instead of tracking the whole run.
+    t_run = time.time()
+    log.clear()
+    log.update({
+        "schema": 1,
+        "model": {"repo": MODEL_REPO, "file": MODEL_FILE, "n_gpu_layers": n_gpu_layers,
+                  "mode": mode, "plain_chatml": True},
+        "harness": {
+            "chunk_tokens": CHUNK_TOKENS, "arc_tokens": ARC_TOKENS,
+            "point_tokens": POINT_TOKENS, "points_cap": POINTS_CAP,
+            "max_tokens_step": MAX_TOKENS_STEP, "max_tokens_synth": MAX_TOKENS_SYNTH,
+            "synth_repeat_penalty": SYNTH_REPEAT_PENALTY,
+        },
+        "example": example_name, "steps": [], "started_at": t_run,
+    })
 
     def _bar(pct: float, label: str) -> str:
         """Named `_bar`, not `prog`: the reading loop already binds a local `prog` to a
         rendered string, and shadowing this closure with it makes the SECOND chunk raise
         `'str' object is not callable`."""
-        return _progress(pct, label, elapsed=time.time() - t0, mode=mode)
+        return _progress(pct, label, elapsed=time.time() - t_run, mode=mode)
 
     text = (custom_transcript or "").strip() or EXAMPLES.get(example_name, "")
     empty = (
@@ -365,8 +390,28 @@ def _run(custom_transcript: str, example_name: str, n_gpu_layers: int):
         elapsed = time.time() - t0
 
         # The real harness: parse, then apply deterministically with every guard and cap.
-        outcome = apply_ops(mem, parse_tool_calls(raw), chunk, consecutive_nops=consecutive_nops)
+        parsed = parse_tool_calls(raw)
+        outcome = apply_ops(mem, parsed, chunk, consecutive_nops=consecutive_nops)
         consecutive_nops = consecutive_nops + 1 if outcome.nop_collapse else 0
+
+        # Per-op verdicts are the point of the export: "the model emitted X and the
+        # harness refused it because Y" is the question a debug log has to answer, and
+        # it is invisible in the UI, which only shows what survived.
+        log["steps"].append({
+            "index": ci,
+            "chunk_tokens": chunk.tokens,
+            "system": sys_step,
+            "prompt": user,
+            "raw": raw,
+            "seconds": round(elapsed, 2),
+            "ops": [
+                {"op": render_op(a.op), "applied": a.applied,
+                 "reason": a.reason, "note": a.note}
+                for a in outcome.results
+            ],
+            "nop_collapse": outcome.nop_collapse,
+            "memory_after": {"arc": mem.arc, "points": [pt.text for pt in mem.points]},
+        })
 
         done = f"{status} ({elapsed:.1f}s)"
         yield (
@@ -409,6 +454,17 @@ def _run(custom_transcript: str, example_name: str, n_gpu_layers: int):
         )
 
     prose = finalize(_cut_at_turn_end(prose_raw), token_len=heuristic_token_len)
+    log["synthesis"] = {
+        "system": synth_system_prompt(),
+        "prompt": build_synth_prompt(mem),
+        "raw": prose_raw,
+        # `finalize` can rewrite or reject prose (SPEC 3's output contract), so the raw
+        # and final forms are both kept -- a mismatch between them IS the bug, when there
+        # is one, and only the final form is visible in the UI.
+        "final": prose.text,
+        "refusals": list(getattr(prose, "refusals", []) or []),
+    }
+    log["total_seconds"] = round(time.time() - t_run, 2)
     yield (
         final_t,
         render_ops_html("reading done", "", False),
@@ -437,26 +493,42 @@ def _run(custom_transcript: str, example_name: str, n_gpu_layers: int):
 # bootable, since ZeroGPU hard-fails at startup unless it detects at least one such
 # function.
 @spaces.GPU(duration=int(os.environ.get("ARCSUM_GPU_DURATION", "180")))
-def _run_gpu(custom_transcript: str, example_name: str):
+def _run_gpu(custom_transcript: str, example_name: str, log: dict):
     """GPU entry point. ZeroGPU attaches a device for the duration of THIS call, so the
     whole agent loop runs inside it and the model is built here (never cached -- the
     device is reclaimed on return, which would invalidate a cached CUDA model)."""
-    yield from _run(custom_transcript, example_name, GPU_LAYERS)
+    yield from _run(custom_transcript, example_name, GPU_LAYERS, log)
 
 
-def _run_cpu(custom_transcript: str, example_name: str):
+def _run_cpu(custom_transcript: str, example_name: str, log: dict):
     """CPU entry point, deliberately NOT decorated. `@spaces.GPU` consumes ZeroGPU quota
     on every call whether or not the device is touched, so routing CPU runs through a
     decorated function would bill GPU time for CPU work. Keeping two entry points is the
     only way to make the toggle free when it is off."""
-    yield from _run(custom_transcript, example_name, 0)
+    yield from _run(custom_transcript, example_name, 0, log)
 
 
-def run_demo(custom_transcript: str, example_name: str, use_gpu: bool):
+def export_log(log: dict):
+    """Write the session's run log to a temp file and hand Gradio the path.
+
+    Returns a DownloadButton update rather than a bare path so the button can also carry
+    a useful filename. Refuses politely when there is nothing to export -- an empty file
+    is a worse debugging experience than a clear message.
+    """
+    if not log or not log.get("steps"):
+        gr.Warning("Nothing to export yet — run a transcript first.")
+        return gr.update()
+    stamp = time.strftime("%Y%m%d-%H%M%S", time.localtime(log.get("started_at", time.time())))
+    path = pathlib.Path(tempfile.gettempdir()) / f"arcsum-debug-{stamp}.json"
+    path.write_text(json.dumps(log, ensure_ascii=False, indent=2), encoding="utf-8")
+    return gr.update(value=str(path))
+
+
+def run_demo(custom_transcript: str, example_name: str, use_gpu: bool, log: dict):
     """Dispatch on the UI toggle. `_run_gpu` is still a real `@spaces.GPU` function, so
     ZeroGPU sees one at startup and the Space boots -- the old no-op stub is no longer
     needed."""
-    yield from (_run_gpu if use_gpu else _run_cpu)(custom_transcript, example_name)
+    yield from (_run_gpu if use_gpu else _run_cpu)(custom_transcript, example_name, log)
 
 
 with gr.Blocks(title="arcsum — live agentic zh-TW meeting summarizer") as demo:
@@ -485,6 +557,11 @@ with gr.Blocks(title="arcsum — live agentic zh-TW meeting summarizer") as demo
         )
         run_btn = gr.Button("▶ Run", variant="primary", scale=1)
         stop_btn = gr.Button("■ Stop", interactive=False, scale=1)
+        export_btn = gr.DownloadButton("⬇ Debug log", scale=1)
+
+    #: Per-session run log, mutated in place by `_run` and read by `export_log`. A
+    #: module-level dict would leak one visitor's transcript into another's download.
+    log_state = gr.State({})
 
     progress_html = gr.HTML(_progress(0, "Pick a transcript and press Run."))
 
@@ -538,7 +615,7 @@ Expect several seconds per chunk on Space CPU; that is the cost of running the r
 
     ev = run_btn.click(
         run_demo,
-        [transcript_box, example_dd, gpu_toggle],
+        [transcript_box, example_dd, gpu_toggle, log_state],
         [
             transcript_html,
             ops_html,
@@ -551,6 +628,7 @@ Expect several seconds per chunk on Space CPU; that is the cost of running the r
             gpu_toggle,
         ],
     )
+    export_btn.click(export_log, [log_state], [export_btn])
     stop_btn.click(None, None, None, cancels=[ev])
 
 # Guarded so `import app` does not start a server. HF Spaces runs this file as

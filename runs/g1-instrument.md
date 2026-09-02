@@ -747,3 +747,27 @@ does**, and the pool is a second-order effect on top of that.
 because the compared artifacts differed in more than one way. The recurring fix is the same
 and I keep not applying it: enumerate EVERY difference between two runs before attributing
 anything, mechanically, from the logs -- not from memory of what was intended.
+
+## The ASR gate catches what the clean-text gates cannot
+
+`diag`-last on `data/ly_phase3_v2` (20 real zh-TW legislative meetings):
+
+| | curated | NOP | mean chars |
+|---|---|---|---|
+| `v5` | **17/20** | 28% | 223 |
+| `diag`-last | **12/20** | **54%** | 161 |
+
+It wins G1 (6/27 vs 3/27), wins G2 (4.0% vs 5.7% per claim) and holds G3 3/3 -- all on
+MeetingBank-derived CLEAN text -- and loses five meetings on the only real-world
+instrument, abstaining on more than half the chunks.
+
+**This is the regression CLAUDE.md was written about**: "v0 regressed from 17/20 to ~7/20
+across three checkpoints and nothing caught it, because every gate since Phase 3 runs on
+clean text." It was one report away from being called a new champion on G1/G2/G3 alone.
+
+Likely cause is training amount, and it matches the night's other findings: `v5` trained
+**3 epochs**, `diag` trained **2**. Higher NOP and shorter output is the under-training
+signature; clean-text gates tolerate it and noisy real ASR does not.
+
+**Standing rule, reaffirmed the hard way: no checkpoint is a candidate until
+`tools/asr_gate.py` has run on it.** The clean-text gates cannot see this failure mode.

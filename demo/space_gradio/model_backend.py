@@ -32,14 +32,17 @@ class ArcsumModel:
     """
 
     def __init__(self, gguf_path: str, n_ctx: int = 8192, n_threads: int = 2,
-                 plain_chatml: bool = True):
+                 plain_chatml: bool = True, n_gpu_layers: int = 0):
         self.llm = Llama(
             model_path=gguf_path,
             n_ctx=n_ctx,
             n_batch=n_ctx,
             n_ubatch=n_ctx,
             n_threads=n_threads,
-            n_gpu_layers=0,
+            # 0 = CPU. >0 offloads that many layers to CUDA; -1 offloads all. The wheel
+            # in requirements.txt is a dynamic-backend cu131 build, so the same artifact
+            # serves both and the backend is chosen at load time by this value.
+            n_gpu_layers=n_gpu_layers,
             verbose=False,
         )
         # MEASURED 2026-09-01, both prompt shapes on 5 held-out meetings + the 27-scenario

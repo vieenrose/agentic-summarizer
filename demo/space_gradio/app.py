@@ -70,19 +70,33 @@ def _cut_at_turn_end(text: str) -> str:
     return text.strip()
 
 
-@spaces.GPU(duration=1)
-def _zerogpu_registration_noop() -> None:
-    """Never called. ZeroGPU Spaces hard-fail at startup unless the `spaces` package
-    detects at least one @spaces.GPU function; all real inference here stays plain CPU
-    code (`n_gpu_layers=0` in ArcsumModel) so it draws zero GPU quota."""
-    return None
+#: Layers to offload to CUDA. **0 (CPU) is the default** -- GPU is opt-in via
+#: `ARCSUM_N_GPU_LAYERS` (-1 offloads every layer). The wheel in requirements.txt is a
+#: dynamic-backend cu131 build, so one artifact serves both and this value alone picks the
+#: backend at load time.
+#:
+#: Off by default deliberately: on ZeroGPU an `@spaces.GPU` call CONSUMES QUOTA whether or
+#: not the model actually uses the device, so a Space that only needs CPU should not carry
+#: the decorator on its hot path. See the conditional wrapping below.
+N_GPU_LAYERS = int(os.environ.get("ARCSUM_N_GPU_LAYERS", "0"))
 
 
 def get_model() -> ArcsumModel:
+    """Build the model, caching only in CPU mode.
+
+    **A CUDA `Llama` must NOT be cached across ZeroGPU calls.** ZeroGPU attaches a device
+    for the duration of an `@spaces.GPU` function and reclaims it on return; a `Llama`
+    holding CUDA buffers from a previous allocation is invalid on the next call. In CPU
+    mode there is no device to reclaim, so the cache is safe and worth keeping -- it
+    avoids re-reading 833 MB per request.
+    """
     global _model
+    if N_GPU_LAYERS != 0:
+        path = hf_hub_download(MODEL_REPO, MODEL_FILE)
+        return ArcsumModel(path, n_gpu_layers=N_GPU_LAYERS)
     if _model is None:
         path = hf_hub_download(MODEL_REPO, MODEL_FILE)
-        _model = ArcsumModel(path)
+        _model = ArcsumModel(path, n_gpu_layers=0)
     return _model
 
 
@@ -333,6 +347,31 @@ def run_demo(custom_transcript: str, example_name: str):
 
 
 # --- UI --------------------------------------------------------------------------------
+
+# --- ZeroGPU wiring --------------------------------------------------------------------
+#
+# ZeroGPU attaches a device only for the duration of an `@spaces.GPU` call, so when GPU is
+# enabled the WHOLE agent loop must sit inside one -- reading steps and synthesis alike.
+# `spaces.GPU` supports generators, which is what keeps the live streaming UI working.
+#
+# `duration` is the wall-clock ceiling for one call; exceeding it kills the request. A
+# meeting is ~15 reading steps plus a synthesis, and `get_model` RELOADS the 833 MB model
+# per call in GPU mode (a CUDA `Llama` cannot outlive its allocation), so the budget must
+# cover that load too.
+#
+# When GPU is OFF the decorator is deliberately NOT applied to `run_demo`: it would consume
+# ZeroGPU quota for a call that never touches the device. A no-op stub keeps the Space
+# bootable, since ZeroGPU hard-fails at startup unless it detects at least one such
+# function.
+if N_GPU_LAYERS != 0:
+    run_demo = spaces.GPU(duration=int(os.environ.get("ARCSUM_GPU_DURATION", "180")))(run_demo)
+else:
+
+    @spaces.GPU(duration=1)
+    def _zerogpu_registration_noop() -> None:
+        """Never called; exists only so ZeroGPU sees a GPU function at startup."""
+        return None
+
 
 with gr.Blocks(title="arcsum — live agentic zh-TW meeting summarizer") as demo:
     gr.HTML(

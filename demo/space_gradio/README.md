@@ -97,3 +97,34 @@ This Space previously demonstrated **CURSOR**, the prior project's protocol
 (`ADD`/`UPD`/`DEL`/`CMP`/`NOP` over a single NOTES state, timestamped transcripts,
 anchored bullets). That is a different, superseded architecture — the URL slug still says
 `cursor-wasm-demo` for continuity, but nothing of CURSOR runs here now.
+
+## Running on GPU (opt-in)
+
+CPU is the default. To enable CUDA offload, set a Space variable:
+
+| variable | default | meaning |
+|---|---|---|
+| `ARCSUM_N_GPU_LAYERS` | `0` | layers offloaded to CUDA. `-1` offloads all; `0` is CPU |
+| `ARCSUM_GPU_DURATION` | `180` | ZeroGPU wall-clock ceiling, seconds, for one full run |
+
+The wheel pinned in `requirements.txt` is a dynamic-backend **cu131** build, so the same
+artifact serves both and `ARCSUM_N_GPU_LAYERS` alone picks the backend at load time.
+
+Two things behave differently when GPU is enabled, both deliberate:
+
+- **The model is reloaded per request.** ZeroGPU attaches a device only for the duration of
+  an `@spaces.GPU` call and reclaims it on return, so a `Llama` holding CUDA buffers from a
+  previous allocation is invalid on the next call. In CPU mode the model is cached, which
+  avoids re-reading 833 MB per request.
+- **`@spaces.GPU` is applied to `run_demo` only when GPU is on.** The decorator consumes
+  ZeroGPU quota whether or not the model touches the device, so in CPU mode it stays off
+  the hot path and a no-op stub satisfies ZeroGPU's startup check instead.
+
+`ARCSUM_GPU_DURATION` must cover a whole meeting — ~15 reading steps plus one synthesis
+call, *plus* the per-request model load above. Exceeding it kills the request.
+
+**Not verified on GPU hardware.** Both code paths were exercised locally and produce
+identical output, but the local llama-cpp-python build reports
+`llama_supports_gpu_offload() == False`, so `-1` fell back to CPU there. The CUDA path
+needs one run on the Space to confirm.
+

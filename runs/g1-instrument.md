@@ -629,3 +629,50 @@ best-by-loss epoch-1 model. That is a far more actionable story than an intrinsi
 **Select checkpoints by the GATES, not by eval loss.** Six separate disagreements between
 loss and gate were recorded tonight; this is the seventh and the most costly, because loss
 was being used as the selection rule rather than merely as a report.
+
+## CONFIRMED, and it yields a checkpoint that beats `v5`
+
+`qwen08b-diag`, LAST epoch (`checkpoint-592`), on the 40 held-out meetings:
+
+| gate | result |
+|---|---|
+| G3 rouge1 | **PASS** 30/10, +0.030, p=0.002 |
+| G3 rouge2 | **PASS** 31/9, +0.037, p=0.001 |
+| G3 rougeL | **PASS** 37/3, +0.052, p=0.000 |
+| independent probe | **6/27** |
+| control | 6/15 |
+
+versus `v5`: probe **3/27**, G3 3/3 PASS. **Double the probe, same three gates, same 0.8B
+size (so G4 is unchanged).** The G3 margins are solid; 6 vs 3 at n=27 is ~1 sigma, so the
+G1 improvement is suggestive rather than established. **G2 has NOT been measured on it and
+is required before it can replace `v5`.**
+
+### The selection rule that falls out
+
+NOT "always take the last epoch" — `lr2e-4`'s loss reached 0.9177 by epoch 4, genuinely
+overfit. The rule is that **eval loss bottoms roughly one epoch BEFORE the gates peak**:
+
+| checkpoint | epochs | selection | G3 |
+|---|---|---|---|
+| `v5` | 3 | last | 3/3 PASS |
+| `qwen08b-diag` | 2 | last | **3/3 PASS** |
+| everything else tonight | 2-6 | best by loss (ep1) | 0/3 or 1/3 |
+
+Train 2-3 epochs, take the LAST checkpoint, validate on the gates. Do not use eval loss to
+select.
+
+### Four wrong theories for one symptom, in order
+
+The sparse-output symptom was explained wrongly three times before this:
+
+1. "the pool's synthesis targets drop detail" — real (46.9%) but not the cause
+2. "training configuration dominates" — the LR horizon was buying effective LR, not the cause
+3. "the training path (unsloth/text-only) degrades summarization" — weights bit-identical
+   after the bf16 load; not the cause
+4. **under-training, selected by best-eval-loss** — confirmed by the same run's two
+   checkpoints differing 0/3 vs 3/3
+
+Each earlier theory was supported by a real measurement and was still wrong, because each
+compared checkpoints that differed in more than one way. The discipline that would have
+caught it sooner: **enumerate every difference between two artifacts before attributing a
+gap to one of them.**

@@ -564,3 +564,68 @@ unsloth CANNOT load the VL repo at all: it routes to the vision processor and fa
 "Incorrect image source ... Got <|im_start|>system". So CLAUDE.md's original
 "unsloth cannot train it" was correct FOR THE VL REPO, and the retraction was correct for
 the text-only weights. Both statements are true; they are about different checkpoints.
+
+---
+
+# CORRECTION: it was never the training path — it is UNDER-TRAINING, and best-by-loss selects it
+
+The section above ("THE TRAINING PATH ITSELF DEGRADES SUMMARIZATION") is **WRONG**. Left in
+place because the reasoning error is the lesson.
+
+## What was actually different
+
+`v5` and `qwen08b-diag` differ in two ways, not one, and I attributed the gap to the wrong one:
+
+| | `v5` | `qwen08b-diag` |
+|---|---|---|
+| path | VL repo + plain Trainer | text-only + unsloth |
+| **checkpoint shipped** | **epoch 3 (LAST)** | **epoch 1 (BEST by eval loss)** |
+
+`v5` shipped its last epoch only because of the `load_best_model_at_end` bug. The
+comparison was a 3-epoch model against a 1-epoch model.
+
+**The weights are exonerated.** The VL repo stores 18 `linear_attn.norm.weight` tensors in
+float32 and the text-only repo in bf16 (max diff 0.00390625 = 2^-8, 0.4% relative). But
+`train_toolcalls.py` loads with `dtype=torch.bfloat16` on BOTH paths, and after that load
+**0 of 24 layers differ**. The stored-precision difference cannot affect training.
+
+## The decisive measurement
+
+Same run, same weights, same path — only the checkpoint differs:
+
+| `qwen08b-diag` checkpoint | prose chars | details | points | G3 |
+|---|---|---|---|---|
+| epoch 1 (BEST by eval loss) | sparse | — | — | **0/3 FAIL**, density -1.319 |
+| **epoch 2 (LAST)** | **387** | **5.0** | **11.20** | (running) |
+| `v5` epoch 3 (LAST), for reference | 338 | 5.8 | 10.40 | 3/3 PASS |
+
+The last-epoch checkpoint of the "bad path" run matches `v5` on content. unsloth is not the
+problem.
+
+## Best-by-eval-loss selects an UNDER-TRAINED model, every time
+
+| checkpoint | selection | G3 |
+|---|---|---|
+| `v5` | **last** epoch of 3 | **3/3 PASS** |
+| `qwen08b-diag` best | epoch 1 of 2 | 0/3 FAIL |
+| `qwen2b-diag` best | epoch 1 | 0/3 FAIL |
+| `vl-lora-lr2e4` best | epoch 1 | 0/3 FAIL |
+| `lr2e-4` best | epoch 1 | 1/3 |
+| `4B` best | epoch 1 | 1/3 |
+
+**Every checkpoint selected by best-eval-loss fails G3. The only one that passes was
+selected by a BUG.** The `load_best_model_at_end` defect recorded earlier tonight was
+LOAD-BEARING, and "fixing" it made every subsequent checkpoint worse.
+
+## What this does to the trade-off curve
+
+The "probe vs G3" curve may largely be **training amount** in disguise: fewer epochs give
+terse, decision-focused output (good probe, bad ROUGE); more epochs give richer content
+(good ROUGE, worse probe). Every high-probe/low-content checkpoint tonight was a
+best-by-loss epoch-1 model. That is a far more actionable story than an intrinsic conflict.
+
+## Standing change
+
+**Select checkpoints by the GATES, not by eval loss.** Six separate disagreements between
+loss and gate were recorded tonight; this is the seventh and the most costly, because loss
+was being used as the selection rule rather than merely as a report.

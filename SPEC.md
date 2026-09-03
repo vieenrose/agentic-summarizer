@@ -1,8 +1,34 @@
 # SPEC — Agentic meeting summarizer (Qwen3.5-0.8B + external memory, zh-TW)
 
-**Version:** 1.0 · **Status:** design + execution plan complete; Phase 0a fully closed,
+**Version:** 1.1 · **Status:** design + execution plan complete; Phase 0a fully closed,
 Phase 0b measured on the actual reference device — §9 phases the remaining work
 cheapest-first with gates; §8 attaches each risk to the phase that tests it
+
+**v1.1 changes — the memory splits into a working set and a journal, because v1.0 LOST to
+its own baseline.** All four changes are normative and each is attached to the measurement
+that forced it (2026-09-03, `runs/PROJECT-REVIEW.md`):
+
+1. **§4.1 memory: one bounded slot → WORKING SET (unchanged, ≤600 tok) + JOURNAL
+   (append-only, model-invisible).** v1.0 shared 480 tokens across every chunk, so its
+   compression ratio grew with meeting length — 21:1 at 4 chunks, **193:1 at 37** — against
+   map-reduce's constant 10:1. Measured: **48–80% of the points the model correctly
+   recorded were evicted before the end.**
+2. **§4.1 `SYNTHESIZE` reads the JOURNAL, not the survivor set.** v1.0 asked the model to
+   write a rich summary from an impoverished input, which is the pressure that produces
+   invention; the corpus then taught it, with **39.9% of synthesis targets asserting things
+   absent from their own memory**.
+3. **§4.1 addressing: text prefix → integer id, and a new atomic `revise` op.** Prefix
+   addressing required the model to reproduce its own earlier phrasing; the resulting
+   `DROP` + near-identical `ADD` churn ran at **28.2% of steps** on real ASR.
+4. **§5.2 adds G5 (retention) and G6 (grounding)** — the two properties that were failing
+   invisibly because no gate looked at them.
+
+**The falsification this version must survive.** v1.0 lost to its own map-reduce baseline
+**0 wins in 25 meetings** (−0.213 rouge1 against reachable references; 3.6 grounded
+specifics per meeting against 8.5). v1.1 exists to fix the mechanism behind that. **If the
+redesigned agent still does not beat the baseline, the agentic memory should be abandoned
+and §5.2's standing "ship the baseline" decision made permanent.** The differentiator is
+now curation plus recorded supersession, and it is worth exactly what it measures.
 
 **v1.0 changes — the agent protocol becomes tool-calling, and the student changes with
 it.** Both are normative and both rest on measurements taken 2026-08-29, recorded inline
@@ -260,19 +286,52 @@ is a property of the control flow, so no amount of fine-tuning recovers it. The 
 still chooses which operations to perform and with what content; what is removed is only
 the round trip that tells it what the harness already guarantees.
 
-**External memory.** Two slots, harness-rendered, capped:
+**External memory — WORKING SET plus JOURNAL (v1.1, normative).**
+
+v1.0 had one memory serving two incompatible jobs: the model's per-step context (wants to
+be small, because it is re-prefilled every step) and the sole carrier of everything the
+meeting produced (wants to be large). v1.1 splits them.
+
+**1. The WORKING SET — what the model sees. Bounded, unchanged from v1.0.**
 
 ```
 ARC: <1–3 sentences: how the meeting has developed so far>
 POINTS:
-- <key point, decision, or commitment>
+[1] <key point, decision, or commitment>
+[2] <…>
 ```
 
-`ARC` ≤ 80 tokens; `POINTS` ≤ 16 entries of ≤ 25 tokens. Total ≤ ~600 tokens by
-construction. `ARC` exists because a flat point list loses the meeting-level
-through-line, and §3's output is connected prose — the prior project needed a separate
-synthesizer stage largely because bullets alone read as fragments. Carrying the arc
-incrementally gives the final synthesis something to build on beyond a list.
+`ARC` ≤ 80 tokens; `POINTS` ≤ 16 entries of ≤ 25 tokens; total ≤ ~600 tokens. This keeps
+every property that made v1.0 learnable at sub-1B: constant per-step context, no
+conversation history, bounded prefill. Points now carry a **stable integer id** (see the
+step grammar).
+
+**2. The JOURNAL — append-only, harness-owned, the model NEVER reads it.**
+
+Every point ever added is appended to the journal with its chunk index. A point leaving
+the working set — whether evicted by cap overflow or superseded by the model — is
+**retired to the journal, never destroyed**, carrying a `superseded_by` link when the
+model replaced it.
+
+**Why this is normative and not an optimisation.** v1.0's single memory forced a
+compression ratio that grows with meeting length, because 480 tokens are shared across
+every chunk:
+
+| chunks | agent budget/chunk | agent ratio | map-reduce ratio |
+|---|---|---|---|
+| 4 | 120 tok | 21:1 | 10:1 |
+| 12 | 40 tok | 62:1 | 10:1 |
+| 37 | **13 tok** | **193:1** | **10:1** |
+
+Measured consequence on the three longest held-out meetings (2026-09-03): the model
+correctly identified 41, 23 and 27 points worth recording and **80%, 65% and 48% of them
+were evicted before the end**. Past ~16 chunks the working set is in permanent overflow —
+every new point destroys an old one. That is the mechanism behind v1.0 losing to its own
+map-reduce baseline **0 wins in 25 meetings** (−0.213 rouge1 against reachable
+references) and recording 3.6 grounded specifics per meeting against the baseline's 8.5.
+
+The journal costs nothing at read time — the model never sees it, so per-step prefill is
+unchanged — and it makes capacity scale with meeting length instead of against it.
 
 **Step grammar.** One call per chunk; zero or more lines:
 
@@ -280,15 +339,30 @@ One `update_memory` tool call, JSON arguments, all fields optional:
 
 ```
 <tool_call>{"name":"update_memory","arguments":{
-  "arc":"<replacement arc note>","add":["<point>",…],"drop":["<prefix>",…]}}</tool_call>
+  "arc":"<replacement arc note>","add":["<point>",…],
+  "revise":[{"id":<int>,"text":"<replacement>"}],"drop":[<int>,…]}}</tool_call>
 ```
 
 | field | semantics |
 |---|---|
-| `add` | append these points |
-| `drop` | remove points whose text starts with each prefix, for content this chunk supersedes |
+| `add` | append these points, each assigned a fresh id |
+| `revise` | **v1.1**: atomically supersede point `id` with `text` — one op, journalled with a `superseded_by` link |
+| `drop` | retire these ids from the working set (content this chunk closes out); the points survive in the journal |
 | `arc` | replace the arc note |
 | *(empty `arguments`)* | nothing worth recording in this chunk — the former `NOP` |
+
+**Addressing is by integer id, not text prefix (v1.1, normative).** v1.0 addressed points
+by a ≥4-token text prefix with ambiguity resolved as refusal, which required the model to
+reproduce a prefix of its own earlier phrasing. Measured consequence: the churn signature
+`DROP «X»` + `ADD «X'»` with X'≈X, at **28.2% of steps** on real ASR — the model
+rewriting what it already had instead of reading forward. Ids remove the failure by
+construction: you cannot mis-address a point you can see numbered in front of you.
+
+**`revise` exists because DROP-then-ADD is what produced churn.** v1.0 had no way to
+express "this point is now wrong, here is the correction" as a single act, so revision was
+two ops that the harness could not distinguish from churn — and `guards.restates_dropped`
+detects that pattern precisely because it fires on both. `revise` makes supersession
+atomic, journalled, and separable from churn in both the training data and the metrics.
 
 **One batched call, not one call per operation.** Both forms are valid Qwen tool calls;
 the choice is measured. For the same three operations: edit lines 36 tokens, **one
@@ -307,19 +381,52 @@ Deliberately small. No multi-point rewrite op: the prior project measured that a
 heaviest op in its grammar and never validated it at ≤1B. Cap overflow is handled
 **deterministically by the harness** (evenly spread, never head-truncated — dropping
 the tail of a time-ordered list drops the end of the meeting, where decisions land),
-never by asking the model to rewrite the list.
+**and in v1.1 the evicted point is retired to the journal rather than deleted**, so
+overflow costs working-set attention but not information.
 
-**Termination.** Transcript exhausted → one final `SYNTHESIZE` call: memory → §3 prose.
+**Termination — `SYNTHESIZE` reads the JOURNAL, not the working set (v1.1, normative).**
+Transcript exhausted → one final call over every point the meeting produced, with
+superseded points marked as such, → §3 prose.
+
+**Why this is the most important change of v1.1.** In v1.0 synthesis saw only the ≤480-token
+survivor set, so anything lost at read time was unrecoverable — and the model was asked to
+write a rich summary from an impoverished input, which is exactly the pressure that
+produces invention. The corpus then institutionalised it: **39.9% of the specific claims in
+`SYNTHESIZE` training targets do not appear in the memory those targets were written from**
+(1,347 of 3,376, across 45% of rows), because §2.2 stage 3 composed the target from the
+whole-meeting gold summary rather than from the input. The student reproduced the rate
+almost exactly: **44% ungrounded on real ASR**. Feeding synthesis the journal removes the
+gap between what the target may assert and what the input contains.
+
+**Journal overflow is folded, not truncated.** If the journal exceeds the synthesis
+context it is reduced in hierarchical passes — the mechanism `baseline.run_map_reduce`
+already implements and which measured **1 fold pass on a 92k-token meeting**, never
+overflowing. Superseded points are folded last so a reversal cannot be lost to batching.
+
+**Revision becomes RECORDED rather than destructive, which is what G1 needs.** In v1.0 a
+reversal required the model to hold both the original decision and its overturning inside
+a 480-token window at synthesis time; G1 measured 3/27 for `qwen-tools-v5` and never
+exceeded 8/27 across five refuted fix attempts and two model families. Under v1.1 the
+harness guarantees the pairing: the journal carries `X, superseded_by Y` regardless of how
+many chunks separate them. **This does not make the model better at noticing reversals —
+it removes the requirement that it remember one.**
 
 **Context budget (4k).**
 
-| | reading step | synthesis step |
+| | reading step | synthesis step (v1.1) |
 |---|---|---|
 | SYS | ~187 (tool schema) | ~250 |
-| memory | ≤600 | ≤600 |
+| memory | ≤600 (working set) | journal, ~25 tok/point |
 | chunk | ~2,500 | — |
 | output | ~190 (one tool call) | <1,000 (prose) |
-| **total** | **~3,477** | **~1,850** |
+| **total** | **~3,477** (unchanged) | **~1,500–2,500 typical** |
+
+**The reading step's budget is deliberately unchanged.** The journal is invisible at read
+time, so v1.1 buys its capacity without touching the per-step cost that G4 is measured
+against — and re-prefilling the working set every step already costs ~19% of the
+transcript again (17,760 tokens over 37 chunks), which is why growing the *visible* memory
+was never an option. Synthesis grows instead, once per meeting: ~40 journalled points is
+~1,000 tokens, well inside the 8k context, and folds hierarchically beyond that.
 
 Chunk size ~2,500 tokens follows from the budget, not preference. **Chunking is
 token-based over the whole transcript, not segment-aligned.** MeetingBank's summarized
@@ -491,10 +598,29 @@ size, same output contract — because a strawman baseline makes the gates meani
 | G2 faithfulness | inversions ≤ baseline, and not worse than baseline on §5.1's judge |
 | G3 quality | beats baseline on ROUGE/BERTScore by more than run-to-run noise. **Coverage/Density are NOT gated** — see below |
 | G4 budget | fits §7's measured envelope on §6's hardware |
+| **G5 retention** (v1.1) | **≥90% of points the model records survive to `SYNTHESIZE`'s input** |
+| **G6 grounding** (v1.1) | **≤10% of the specifics asserted in the summary are absent from the transcript, over ≥20 asserted specifics** |
 
-**Ship the agent only if G1–G4 clear. Otherwise ship the map-reduce baseline** and
+**G5 and G6 exist because v1.0 failed both invisibly.** No gate looked at what the memory
+retained or at whether the summary's specifics were real, so a checkpoint could pass
+G1–G4 while discarding 80% of what it recorded and fabricating a third of its figures —
+which is what shipped. Both are measured by `arcsum-eval` and are reference-free, so
+neither depends on the reference set whose defects §5.2's own G3 was found to inherit.
+
+**G6 must be read with its denominator.** A summary asserting nothing specific scores a
+perfect 0% and is not thereby faithful — it is empty. The **≥20 specifics** floor is the
+gate; a build below it is WITHHELD, never passed. This is not hypothetical: a build that
+filtered its way to 0.0% ungrounded did so by dropping from 26 asserted specifics to 5.
+
+**Ship the agent only if G1–G6 clear. Otherwise ship the map-reduce baseline** and
 record agentic-memory-at-1B as a measured negative result — that is a legitimate
 outcome, not a failure to report.
+
+**As of 2026-09-03 the baseline is winning and this is not close.** v1.0 lost 0/25 on
+ROUGE against reachable references and records 3.6 grounded specifics per meeting against
+the baseline's 8.5. v1.1 is a targeted fix to the mechanism behind that; **it is on
+probation, and if it does not beat the baseline the architecture should be retired rather
+than iterated on again.**
 
 **Coverage and Density are diagnostics, never gates** (normative, clarified
 2026-08-27). §5's metric table already classes them as "token-overlap diagnostics" and

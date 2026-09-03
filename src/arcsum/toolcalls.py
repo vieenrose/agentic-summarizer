@@ -22,7 +22,7 @@ from __future__ import annotations
 import json
 import re
 
-from arcsum.ops import Add, Arc, Drop, Malformed, Nop, Op
+from arcsum.ops import Add, Arc, Drop, Malformed, Nop, Op, Revise
 
 #: Both the fenced form the chat template emits and a bare JSON object, because a
 #: fine-tuned student is trained on the fenced form but a partially-trained one emits the
@@ -89,8 +89,32 @@ def parse_tool_calls(text: str) -> list[Op]:
             continue
 
         # drop BEFORE add: see module docstring — the inversion guard reads emission order.
-        for prefix in _as_list(args.get("drop")):
-            ops.append(Drop(prefix.strip()))
+        # `drop` accepts ids (v1.1) or text prefixes (v0.9/v1.0) in the same field. An int
+        # is unambiguous, so the two cannot be confused; a numeric STRING is treated as an
+        # id too, because a model that emits "drop": ["3"] has expressed the same intent
+        # and refusing it on a quoting detail would be a parser tantrum, not a guard.
+        raw_drop = args.get("drop")
+        drop_items = raw_drop if isinstance(raw_drop, list) else _as_list(raw_drop)
+        for item in drop_items:
+            if isinstance(item, bool):
+                continue
+            if isinstance(item, int):
+                ops.append(Drop(pid=item))
+            elif isinstance(item, str) and item.strip().isdigit():
+                ops.append(Drop(pid=int(item.strip())))
+            elif isinstance(item, str) and item.strip():
+                ops.append(Drop(prefix=item.strip()))
+        # `revise` is applied with the drops, before adds: it supersedes existing content.
+        rev = args.get("revise")
+        for item in rev if isinstance(rev, list) else ([rev] if isinstance(rev, dict) else []):
+            if not isinstance(item, dict):
+                continue
+            pid, text = item.get("id"), item.get("text")
+            ok_id = isinstance(pid, int) and not isinstance(pid, bool)
+            if ok_id and isinstance(text, str) and text.strip():
+                ops.append(Revise(pid, text.strip()))
+            else:
+                ops.append(Malformed(str(item)[:120], "revise needs int id and non-empty text"))
         arc = args.get("arc")
         if isinstance(arc, str) and arc.strip():
             ops.append(Arc(arc.strip()))
@@ -108,11 +132,14 @@ def render_tool_call(ops: list[Op]) -> str:
     """Ops -> the exact text a trained student should emit. Used to build supervision, so
     training targets and the parser above cannot drift apart."""
     args: dict[str, object] = {}
-    drops = [o.prefix for o in ops if isinstance(o, Drop)]
+    drops = [(o.pid if o.pid else o.prefix) for o in ops if isinstance(o, Drop)]
+    revs = [{"id": o.pid, "text": o.text} for o in ops if isinstance(o, Revise)]
     adds = [o.point for o in ops if isinstance(o, Add)]
     arcs = [o.text for o in ops if isinstance(o, Arc)]
     if drops:
         args["drop"] = drops
+    if revs:
+        args["revise"] = revs
     if arcs:
         args["arc"] = arcs[-1]  # only the last ARC can survive; earlier ones are replaced
     if adds:

@@ -20,6 +20,7 @@ from arcsum.agent import (
 from arcsum.chunker import Chunk
 from arcsum.memory import Memory
 from arcsum.ops import Add, Arc, Op
+from arcsum.prompts import TOOLCALL_PROMPT_VERSION
 from arcsum.tokens import heuristic_token_len
 from arcsum.transcript import Utterance
 from conftest import Scripted, saturated_memory
@@ -677,7 +678,8 @@ def test_step_budget_exceeded_is_not_swallowed_by_skip() -> None:
 
 def test_tool_protocol_lands_on_the_same_ops_and_stamps_its_own_version() -> None:
     """SPEC §4.1 v1.0. The step grammar changed; memory, guards and caps did not. A run
-    must also stamp `tools-v1`, because a tool-call trace and an edit-line trace are not
+    must also stamp the tool-call version, because a tool-call trace and an edit-line
+    trace are not
     comparable and mixing them in one eval would be silent."""
     utterances = meeting(60)
     call = (
@@ -687,7 +689,7 @@ def test_tool_protocol_lands_on_the_same_ops_and_stamps_its_own_version() -> Non
 
     trace = run_agent(utterances, lambda _s, _u: call, synthesize=False, protocol="tool")
 
-    assert trace.prompt_version == "tools-v1"
+    assert trace.prompt_version == TOOLCALL_PROMPT_VERSION
     assert trace.memory.arc == "會議脈絡"
     assert any("搬遷案" in p.text for p in trace.memory.points)
 

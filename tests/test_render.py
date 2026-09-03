@@ -16,13 +16,17 @@ def test_render_matches_the_spec_example_byte_for_byte() -> None:
 
     ARC: <1-3 sentences: how the meeting has developed so far>
     POINTS:
-    - <key point, decision, or commitment>
+    [1] <key point, decision, or commitment>
+
+    SPEC §4.1 v1.1 renders a stable id per point, because the model addresses points by
+    id. v1.0 rendered `- ` and addressed by text prefix, which required the model to
+    reproduce a prefix of its own earlier phrasing — measured churn 28.2% of steps.
     """
     m = Memory()
     m.set_arc("會議討論辦公室搬遷，已決定遷至 B 棟。")
     m.add_point("同意搬到 B 棟大樓", chunk=0)
     assert render_memory(m) == (
-        "ARC: 會議討論辦公室搬遷，已決定遷至 B 棟。\nPOINTS:\n- 同意搬到 B 棟大樓\n"
+        "ARC: 會議討論辦公室搬遷，已決定遷至 B 棟。\nPOINTS:\n[1] 同意搬到 B 棟大樓\n"
     )
 
 
@@ -60,7 +64,7 @@ def test_render_applies_caps_by_default() -> None:
     for i in range(20):
         m.add_point(f"第{i}項", chunk=i)
     rendered = render_memory(m)
-    assert rendered.count("\n- ") == 16  # POINTS_CAP
+    assert len([ln for ln in rendered.splitlines() if ln.startswith("[")]) == 16  # POINTS_CAP
 
 
 def test_render_without_enforcing_caps_shows_the_raw_overflow() -> None:
@@ -68,7 +72,7 @@ def test_render_without_enforcing_caps_shows_the_raw_overflow() -> None:
     for i in range(20):
         m.add_point(f"第{i}項", chunk=i)
     rendered = render_memory(m, enforce_caps=False)
-    assert rendered.count("\n- ") == 20
+    assert len([ln for ln in rendered.splitlines() if ln.startswith("[")]) == 20
 
 
 def test_render_does_not_mutate_the_source_memory() -> None:

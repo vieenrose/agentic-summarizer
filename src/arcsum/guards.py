@@ -33,7 +33,7 @@ from dataclasses import dataclass, field
 from arcsum.chunker import CHUNK_TOKENS, Chunk
 from arcsum.lang import MIN_CJK_RATIO_ARC, MIN_CJK_RATIO_POINT, check_zh_tw
 from arcsum.memory import Memory, normalize
-from arcsum.ops import Add, Arc, Drop, Malformed, Nop, Op, render_op
+from arcsum.ops import Add, Arc, Drop, Malformed, Nop, Op, Revise, render_op
 from arcsum.tokens import lexical_tokens
 
 #: K consecutive NOP steps over content-rich chunks flags a coverage gap (SPEC §8 risk 3).
@@ -284,10 +284,30 @@ def apply_ops(
                 outcome.results.append(AppliedOp(op, applied, reason, note))
                 substantive = substantive or applied
 
-            case Drop(prefix):
-                idx = memory.find(prefix)
-                removed = memory.points[idx].text if idx is not None else None
-                reason = memory.drop_point(prefix)
+            case Revise(pid, text):
+                # SPEC §4.1 v1.1. Deliberately NOT fed into `dropped_here`: that list
+                # exists to catch DROP + near-identical re-ADD churn, and a `revise` IS
+                # the sanctioned way to replace a point. Counting it as churn would make
+                # the metric fire on exactly the behaviour the op was added to enable.
+                if lang_check and (bad := check_zh_tw(text, min_cjk_ratio=MIN_CJK_RATIO_POINT)):
+                    outcome.results.append(AppliedOp(op, False, bad))
+                    continue
+                reason = memory.revise_id(pid, text)
+                applied = reason is None
+                hedge = hedge_marker_in(text) if applied else None
+                note = f"unresolved polarity ({hedge})" if hedge else None
+                outcome.results.append(AppliedOp(op, applied, reason, note))
+                substantive = substantive or applied
+
+            case Drop(prefix, pid):
+                if pid:
+                    idx = memory._index_of(pid)
+                    removed = memory.points[idx].text if idx is not None else None
+                    reason = memory.drop_id(pid)
+                else:
+                    idx = memory.find(prefix)
+                    removed = memory.points[idx].text if idx is not None else None
+                    reason = memory.drop_point(prefix)
                 if reason is None and removed is not None:
                     dropped_here.append(removed)
                 outcome.results.append(AppliedOp(op, reason is None, reason))

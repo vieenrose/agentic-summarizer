@@ -48,7 +48,30 @@ class Add:
 
 @dataclass(frozen=True, slots=True)
 class Drop:
-    prefix: str
+    """Retire a point from the working set.
+
+    `prefix` addresses by text (v0.9 / v1.0); `pid` addresses by id (SPEC §4.1 v1.1).
+    Exactly one is set. Both forms are kept because the edit protocol and the existing
+    supervision pool address by text, and dropping that support would invalidate every
+    stored gold trace at once.
+    """
+
+    prefix: str = ""
+    pid: int = 0
+
+
+@dataclass(frozen=True, slots=True)
+class Revise:
+    """Atomically supersede point `pid` with `text` (SPEC §4.1 v1.1).
+
+    Exists because DROP-then-ADD could not be distinguished from churn: v1.0 had no
+    single act meaning "this is now wrong, here is the correction", so
+    `guards.restates_dropped` fires on genuine revision and on a model rewriting what it
+    already had, identically. Measured churn under the two-op form: 28.2% of steps.
+    """
+
+    pid: int
+    text: str
 
 
 @dataclass(frozen=True, slots=True)
@@ -67,7 +90,7 @@ class Malformed:
     reason: str
 
 
-Op = Add | Drop | Arc | Nop | Malformed
+Op = Add | Drop | Revise | Arc | Nop | Malformed
 
 
 def _strip_junk_anchor(text: str) -> str:

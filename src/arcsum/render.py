@@ -33,7 +33,10 @@ def render_memory(memory: Memory, *, enforce_caps: bool = True) -> str:
     lines = [f"ARC: {m.arc or EMPTY}"]
     lines.append("POINTS:")
     if m.points:
-        lines.extend(f"- {p.text}" for p in m.points)
+        # `[id]` rather than `-`: SPEC §4.1 v1.1 addresses points by id, and the model
+        # can only use an id it can see. Text-prefix addressing is what produced the
+        # DROP + near-identical re-ADD churn measured at 28.2% of steps.
+        lines.extend(f"[{p.pid}] {p.text}" for p in m.points)
     else:
         lines.append(EMPTY)
     return "\n".join(lines) + "\n"

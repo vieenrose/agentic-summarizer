@@ -184,3 +184,5 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 "tools/enrich_points.py" = ["RUF001", "RUF002", "RUF003"]
 # Carries the zh-TW composition prompt verbatim.
 "tools/build_reachable_refs.py" = ["RUF001", "RUF002", "RUF003"]
+# zh-TW point text is the data under test.
+"tests/test_journal.py" = ["RUF001", "RUF002", "RUF003"]

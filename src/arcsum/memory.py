@@ -94,10 +94,40 @@ class Point:
     `chunk` is the emitting chunk index — a diagnostic, NEVER rendered into the prompt
     or the product output. It exists to distinguish same-step points (no ordering claim)
     from cross-step ones, feeding `guards.contradiction` and supervision reporting.
+
+    `pid` (SPEC §4.1 v1.1) is a stable integer identity, and unlike `chunk` it IS
+    rendered, because the model addresses points by it. v1.0 addressed by text prefix,
+    which required the model to reproduce a prefix of its own earlier phrasing; the
+    resulting `DROP «X»` + near-identical `ADD «X'»` churn measured 28.2% of steps on
+    real ASR. An id cannot be mis-addressed by a model that can see it numbered.
+    0 means "unassigned" — only `Memory.add_point` mints ids, so a hand-built `Point`
+    in a test cannot silently collide with a real one.
     """
 
     text: str
     chunk: int = -1
+    pid: int = 0
+
+
+@dataclass(frozen=True, slots=True)
+class JournalEntry:
+    """A point that has left the WORKING SET, kept for `SYNTHESIZE` (SPEC §4.1 v1.1).
+
+    **Nothing the model recorded is ever destroyed.** v1.0 deleted evicted and dropped
+    points outright, and measured on the three longest held-out meetings the model
+    correctly recorded 41, 23 and 27 points of which 80%, 65% and 48% were gone before
+    synthesis ran. The journal is the fix, and it is free at read time because the model
+    never sees it — only `SYNTHESIZE` does.
+
+    `reason` distinguishes the three ways a point leaves, which the metrics need kept
+    apart: `evicted` (cap overflow, the harness's choice), `dropped` (the model closed
+    it out), `superseded` (the model replaced it, and `superseded_by` names the pid that
+    replaced it). A reversal is `superseded`, and it is the case G1 exists to measure.
+    """
+
+    point: Point
+    reason: str
+    superseded_by: int = 0
 
 
 @dataclass
@@ -107,10 +137,23 @@ class Memory:
 
     Every mutation returns a reason string on refusal, `None` on success. Never a bool,
     never an exception — the reason is what makes a dropped op explainable in the trace.
+
+    **v1.1 splits the memory in two.** `points` is the WORKING SET: bounded, rendered
+    into every step's prompt, and therefore re-prefilled every step (~19% of the
+    transcript again over 37 chunks — which is why it cannot simply be made bigger).
+    `journal` is append-only, model-invisible, and unbounded; it is what `SYNTHESIZE`
+    reads. The split exists because one slot was serving two jobs with opposite size
+    requirements, and the small one won.
     """
 
     arc: str = ""
     points: list[Point] = field(default_factory=list)
+    #: Append-only record of every point that has left the working set. The model NEVER
+    #: sees this; `render.py` does not touch it and no step prompt includes it.
+    journal: list[JournalEntry] = field(default_factory=list)
+    #: Monotonic id source. Never reused, so a pid in the journal can always be traced
+    #: back even after the point has left the working set.
+    _next_pid: int = 0
     #: The budget instrument. MUST match whatever counter chunked the transcript, or
     #: caps are being measured against the wrong tokenizer. `compare=False`/`repr=False`
     #: because it is an instrument, not part of the memory's logical state.
@@ -168,7 +211,8 @@ class Memory:
         key = normalize(cleaned)
         if any(normalize(p.text) == key for p in self.points):
             return "duplicate point"
-        self.points.append(Point(cleaned, chunk))
+        self._next_pid += 1
+        self.points.append(Point(cleaned, chunk, self._next_pid))
         return None
 
     def find(self, prefix: str) -> int | None:
@@ -184,17 +228,92 @@ class Memory:
         return hits[0] if len(hits) == 1 else None
 
     def drop_point(self, prefix: str) -> str | None:
-        """Remove the point uniquely matched by `prefix`. Refuses if none or ambiguous."""
+        """Remove the point uniquely matched by `prefix`, retiring it to the journal.
+
+        Retained for the v0.9 edit protocol and for tool-call rows that still address by
+        text. New supervision should use `drop_id`/`revise_id` (SPEC §4.1 v1.1).
+        """
         idx = self.find(prefix)
         if idx is None:
             return "prefix did not match exactly one point"
+        self.journal.append(JournalEntry(self.points[idx], "dropped"))
         del self.points[idx]
         return None
 
+    def _index_of(self, pid: int) -> int | None:
+        return next((i for i, p in enumerate(self.points) if p.pid == pid), None)
+
+    def drop_id(self, pid: int) -> str | None:
+        """Retire the point with this id from the working set (SPEC §4.1 v1.1).
+
+        Refusal names the id rather than the text, so a trace shows exactly what the
+        model asked for — an id that never existed and one already retired are
+        different mistakes and read differently in the metrics.
+        """
+        idx = self._index_of(pid)
+        if idx is None:
+            return f"no point with id {pid}"
+        self.journal.append(JournalEntry(self.points[idx], "dropped"))
+        del self.points[idx]
+        return None
+
+    def revise_id(self, pid: int, text: str) -> str | None:
+        """Atomically supersede point `pid` with `text` (SPEC §4.1 v1.1).
+
+        **This op exists because DROP-then-ADD is what produced churn.** v1.0 had no way
+        to say "this point is now wrong, here is the correction" in one act, so revision
+        was two ops the harness could not tell apart from a model rewriting what it
+        already had — `guards.restates_dropped` fires on both by construction. Here the
+        supersession is explicit, journalled with a `superseded_by` link, and therefore
+        separable from churn in the data and in the metrics.
+
+        Validated exactly as `add_point` validates, then applied as one unit: a refused
+        revision leaves the memory untouched, never half-applied (SPEC §4.2).
+        """
+        idx = self._index_of(pid)
+        if idx is None:
+            return f"no point with id {pid}"
+        cleaned = " ".join(text.split())
+        if not cleaned:
+            return "empty point"
+        n = self.token_len(cleaned)
+        if n > POINT_TOKENS:
+            return f"point too long ({n} > {POINT_TOKENS} tokens)"
+        old = self.points[idx]
+        if normalize(cleaned) == normalize(old.text):
+            return "revision unchanged"
+        self._next_pid += 1
+        new = Point(cleaned, old.chunk, self._next_pid)
+        self.journal.append(JournalEntry(old, "superseded", superseded_by=new.pid))
+        self.points[idx] = new
+        return None
+
+    def synthesis_view(self) -> list[JournalEntry]:
+        """Everything the meeting produced, for `SYNTHESIZE` (SPEC §4.1 v1.1).
+
+        Journal entries in the order they left, then the surviving working set as
+        `reason="kept"`. Superseded points are retained WITH their link rather than
+        filtered out: a summary that must report the final state still needs to know a
+        reversal happened, which is precisely what G1 measures.
+        """
+        return list(self.journal) + [JournalEntry(p, "kept") for p in self.points]
+
     def enforce_caps(self) -> None:
-        """Apply the POINTS count cap via `spread()`. Idempotent; safe every step."""
+        """Apply the POINTS count cap via `spread()`, RETIRING the evicted points to the
+        journal rather than deleting them (SPEC §4.1 v1.1). Idempotent; safe every step.
+
+        `spread` still chooses WHICH points stay visible — evenly, never head-truncated,
+        because dropping the tail of a time-ordered list drops the end of the meeting
+        where decisions land. What changes in v1.1 is only that eviction costs
+        working-set attention and not information.
+        """
         if len(self.points) > POINTS_CAP:
-            self.points = spread(self.points, POINTS_CAP)
+            kept = spread(self.points, POINTS_CAP)
+            keep_ids = {id(p) for p in kept}
+            for p in self.points:
+                if id(p) not in keep_ids:
+                    self.journal.append(JournalEntry(p, "evicted"))
+            self.points = kept
 
     def prompt_tokens(self) -> int:
         """Token cost of this memory as it will be rendered into the next prompt."""
@@ -203,5 +322,9 @@ class Memory:
         return self.token_len(render_memory(self))
 
     def clone(self) -> Memory:
-        """A deep-enough copy for speculative mutation (e.g. within `apply_ops`)."""
-        return replace(self, points=list(self.points))
+        """A deep-enough copy for speculative mutation (e.g. within `apply_ops`).
+
+        The journal is copied too: `apply_ops` mutates a clone and keeps it only if the
+        step succeeds, so a speculative eviction must not leak into the real journal.
+        """
+        return replace(self, points=list(self.points), journal=list(self.journal))

@@ -26,9 +26,14 @@ from arcsum.render import render_memory
 #: Bump on ANY change to the text below, or to a constant it interpolates.
 PROMPT_VERSION = "sys-v2"
 
-#: SPEC §4.1 v1.0 tool-call protocol. Separate constant so a v1 run is never confused
+#: SPEC §4.1 tool-call protocol. Separate constant so a v1 run is never confused
 #: with a v0 one in any trace or eval record.
-TOOLCALL_PROMPT_VERSION = "tools-v1"
+#:
+#: `tools-v2` is SPEC §4.1 **v1.1**: points render as `[id] text` and the grammar gains
+#: `revise`. **Every `tools-v1` trace, pool row and eval number is incomparable to a
+#: `tools-v2` one** — the memory the model sees is a different string, and the ops it can
+#: emit are a different set. Regenerate supervision rather than mixing the two.
+TOOLCALL_PROMPT_VERSION = "tools-v2"
 
 _CAPS_LINE = (
     f"ARC 上限 {ARC_TOKENS} 個字；POINTS 最多 {POINTS_CAP} 項，每項上限 {POINT_TOKENS} 個字"
@@ -126,12 +131,13 @@ def position_line(index: int, total: int) -> str:
 #: one of ~14 steps is the difference between fitting §7's budget and missing it.
 _TOOL_STEP_SYS = f"""你是一個會議記錄助手。逐段閱讀會議逐字稿，維護一份精簡的記憶：
 ARC（1到3句會議脈絡，上限 {ARC_TOKENS} 個字）與 POINTS（最多 {POINTS_CAP} 項，每項上限 {POINT_TOKENS} 個字）。
+POINTS 每項前面的 [數字] 是它的編號。
 
 每讀完一段，只回覆一次工具呼叫：
-<tool_call>{{"name":"update_memory","arguments":{{"arc":"…","add":["…"],"drop":["…"]}}}}</tool_call>
+<tool_call>{{"name":"update_memory","arguments":{{"arc":"…","add":["…"],"revise":[{{"id":1,"text":"…"}}],"drop":[2]}}}}</tool_call>
 
-- add：新增重點。drop：移除開頭符合前綴的舊重點（前綴至少 {MIN_PREFIX_TOKENS} 個字）。arc：取代脈絡摘要。三者皆可省略。
-- 若這段推翻了先前的重點，同時給 drop 與 add，不要保留互相矛盾的兩項。
+- add：新增重點。revise：把編號 id 的重點改寫成 text。drop：用編號移除已結束的重點。arc：取代脈絡摘要。皆可省略。
+- 若這段推翻或修正了先前的重點，用 revise 改寫那一項，不要先 drop 再 add 一個幾乎相同的重點。
 - 這段沒有值得記錄的新資訊時，arguments 留空：{{}}。
 - 全部使用繁體中文。"""
 
@@ -170,8 +176,38 @@ def build_step_prompt(memory: Memory, chunk: Chunk, *, total: int | None = None)
 
 
 def build_synth_prompt(memory: Memory) -> str:
-    """The SYNTHESIZE call's user turn: just the final memory, no chunk."""
-    return build_memory_view(memory)
+    """The SYNTHESIZE call's user turn — the JOURNAL, not the working set (§4.1 v1.1).
+
+    **This is the most consequential change of v1.1.** v1.0 synthesised from the ≤480-token
+    survivor set, so anything evicted while reading was unrecoverable — measured at 48-80%
+    of everything the model recorded on the three longest held-out meetings. Writing a rich
+    summary from an impoverished input is precisely the pressure that produces invention,
+    and the corpus then taught it: 39.9% of `SYNTHESIZE` training targets asserted specifics
+    absent from the memory they were written from, and the student reproduced that at 44%
+    ungrounded on real ASR.
+
+    Superseded points are rendered WITH their replacement rather than dropped, because a
+    summary reporting the final state still has to know a reversal happened — that is
+    exactly what G1 measures, and under v1.1 the harness guarantees the pairing instead of
+    requiring the model to have remembered it across an arbitrary number of chunks.
+
+    Falls back to the working-set view when the journal is empty, so short meetings render
+    exactly as they did in v1.0 and existing supervision for them stays valid.
+    """
+    entries = memory.synthesis_view()
+    if not memory.journal:
+        return build_memory_view(memory)
+
+    by_pid = {e.point.pid: e.point.text for e in entries}
+    lines = [f"ARC: {memory.arc or '-'}", "POINTS:"]
+    for e in entries:
+        if e.reason == "superseded":
+            later = by_pid.get(e.superseded_by, "")
+            lines.append(f"- {e.point.text}（後改為：{later}）" if later
+                         else f"- {e.point.text}（後經修正）")
+        else:
+            lines.append(f"- {e.point.text}")
+    return "MEMORY:\n" + "\n".join(lines) + "\n\n"
 
 
 def build_map_prompt(chunk: Chunk) -> str:

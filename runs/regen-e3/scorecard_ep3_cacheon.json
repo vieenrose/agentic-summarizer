@@ -1,0 +1,529 @@
+{
+ "provenance": {
+  "model_path": "runs/regen-e3/gguf_915/model.Q8_0.gguf",
+  "model_sha256": "e1b3ad040be822d47e3659586b1e756cfe8047b30f96f28dde1174291e0a91cc",
+  "protocol": "tool",
+  "prompt_version": "sys-v2",
+  "tokenize_version": "chartok-v1",
+  "generation": {
+   "backend": "llama-server",
+   "cache_prompt": true,
+   "max_tokens_step": 512,
+   "max_tokens_synth": 1000,
+   "raw_completion": true,
+   "repeat_penalty": 1.1,
+   "seed": 0,
+   "temperature": 0.0
+  },
+  "corpora": {
+   "corpus": {
+    "path": "data/asr_eval_v1",
+    "n_files": 21,
+    "content_sha256": "4d55bbb5d51a6b48a4b3631c48d680f3d7cc7fd427eb2e1ad5bb20abe5ba33ee"
+   }
+  },
+  "label": "regen-e3-ep3",
+  "checkpoint": "",
+  "epoch": "epoch 3 (915, last)",
+  "code_revision": "fbd4e5b-dirty"
+ },
+ "comparison_key": "d6b2cae08091d81bdbcc19fa6bafdb813e19037a8220e69bbf211c984918f45d",
+ "generated_at": "2026-09-03T06:54:44+00:00",
+ "checks": [
+  {
+   "name": "clean_meetings",
+   "result": null,
+   "reason": "6/21 with no behaviour flag",
+   "score": 6.0,
+   "n": 21,
+   "artifact": ""
+  },
+  {
+   "name": "churn_rate",
+   "result": null,
+   "reason": "2 events over 45 steps",
+   "score": 0.044444444444444446,
+   "n": 45,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_starved",
+   "result": null,
+   "reason": "memory did not accumulate",
+   "score": 13.0,
+   "n": 21,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_confabulating",
+   "result": null,
+   "reason": "prose asserts far more than memory holds",
+   "score": 1.0,
+   "n": 21,
+   "artifact": ""
+  },
+  {
+   "name": "median_chars_per_point",
+   "result": null,
+   "reason": "summary characters per memory point",
+   "score": 90.0,
+   "n": 21,
+   "artifact": ""
+  },
+  {
+   "name": "ungrounded_rate",
+   "result": null,
+   "reason": "6 of 13 specific claims absent from their transcript",
+   "score": 0.46153846153846156,
+   "n": 13,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_with_ungrounded",
+   "result": null,
+   "reason": "at least one fabricated specific",
+   "score": 5.0,
+   "n": 21,
+   "artifact": ""
+  },
+  {
+   "name": "deployment_match",
+   "result": true,
+   "reason": "measured config matches deployment",
+   "score": null,
+   "n": null,
+   "artifact": ""
+  }
+ ],
+ "details": {
+  "behaviour": [
+   {
+    "meeting": "dram-supply",
+    "chunks": 6,
+    "points": 1,
+    "memory_units": 1,
+    "prose_chars": 216,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 5,
+    "abstained": false,
+    "chars_per_point": 216.0,
+    "flags": [
+     "starved 1pt/6ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17662",
+    "chunks": 2,
+    "points": 0,
+    "memory_units": 0,
+    "prose_chars": 20,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 2,
+    "abstained": true,
+    "chars_per_point": 0.0,
+    "flags": [
+     "abstained (empty memory)",
+     "starved 0pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17663",
+    "chunks": 3,
+    "points": 3,
+    "memory_units": 4,
+    "prose_chars": 334,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 83.5,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17664",
+    "chunks": 2,
+    "points": 2,
+    "memory_units": 3,
+    "prose_chars": 270,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 90.0,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17665",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 2,
+    "prose_chars": 284,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 142.0,
+    "flags": [
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17666",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 1,
+    "prose_chars": 164,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 164.0,
+    "flags": [
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17667",
+    "chunks": 2,
+    "points": 6,
+    "memory_units": 7,
+    "prose_chars": 193,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 27.6,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17668",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 1,
+    "prose_chars": 225,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 225.0,
+    "flags": [
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17669",
+    "chunks": 2,
+    "points": 4,
+    "memory_units": 5,
+    "prose_chars": 410,
+    "churn_events": 0,
+    "arc_frozen_steps": 1,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 82.0,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17673",
+    "chunks": 1,
+    "points": 0,
+    "memory_units": 0,
+    "prose_chars": 20,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 1,
+    "abstained": true,
+    "chars_per_point": 0.0,
+    "flags": [
+     "abstained (empty memory)"
+    ]
+   },
+   {
+    "meeting": "ivod-17675",
+    "chunks": 2,
+    "points": 0,
+    "memory_units": 0,
+    "prose_chars": 20,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 2,
+    "abstained": true,
+    "chars_per_point": 0.0,
+    "flags": [
+     "abstained (empty memory)",
+     "starved 0pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17677",
+    "chunks": 2,
+    "points": 0,
+    "memory_units": 0,
+    "prose_chars": 20,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 2,
+    "abstained": true,
+    "chars_per_point": 0.0,
+    "flags": [
+     "abstained (empty memory)",
+     "starved 0pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17678",
+    "chunks": 2,
+    "points": 6,
+    "memory_units": 7,
+    "prose_chars": 274,
+    "churn_events": 1,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 39.1,
+    "flags": [
+     "churn x1"
+    ]
+   },
+   {
+    "meeting": "ivod-17680",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 1,
+    "prose_chars": 208,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 208.0,
+    "flags": [
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17681",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 2,
+    "prose_chars": 317,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 158.5,
+    "flags": [
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17684",
+    "chunks": 2,
+    "points": 0,
+    "memory_units": 0,
+    "prose_chars": 20,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 2,
+    "abstained": true,
+    "chars_per_point": 0.0,
+    "flags": [
+     "abstained (empty memory)",
+     "starved 0pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17695",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 2,
+    "prose_chars": 200,
+    "churn_events": 1,
+    "arc_frozen_steps": 1,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 100.0,
+    "flags": [
+     "churn x1",
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17697",
+    "chunks": 2,
+    "points": 6,
+    "memory_units": 7,
+    "prose_chars": 348,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 49.7,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17699",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 1,
+    "prose_chars": 346,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 346.0,
+    "flags": [
+     "starved 1pt/2ch",
+     "confabulation 346ch/pt"
+    ]
+   },
+   {
+    "meeting": "ivod-17701",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 1,
+    "prose_chars": 223,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 223.0,
+    "flags": [
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17704",
+    "chunks": 1,
+    "points": 1,
+    "memory_units": 2,
+    "prose_chars": 281,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 140.5,
+    "flags": []
+   }
+  ],
+  "grounding": [
+   {
+    "meeting": "dram-supply",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17662",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17663",
+    "n_checked": 3,
+    "ungrounded": [
+     "think"
+    ]
+   },
+   {
+    "meeting": "ivod-17664",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17665",
+    "n_checked": 1,
+    "ungrounded": [
+     "think"
+    ]
+   },
+   {
+    "meeting": "ivod-17666",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17667",
+    "n_checked": 3,
+    "ungrounded": [
+     "一六",
+     "十二"
+    ]
+   },
+   {
+    "meeting": "ivod-17668",
+    "n_checked": 1,
+    "ungrounded": [
+     "think"
+    ]
+   },
+   {
+    "meeting": "ivod-17669",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17673",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17675",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17677",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17678",
+    "n_checked": 2,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17680",
+    "n_checked": 1,
+    "ungrounded": [
+     "think"
+    ]
+   },
+   {
+    "meeting": "ivod-17681",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17684",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17695",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17697",
+    "n_checked": 2,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17699",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17701",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17704",
+    "n_checked": 0,
+    "ungrounded": []
+   }
+  ]
+ }
+}

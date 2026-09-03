@@ -44,3 +44,7 @@ runs/*/eval*/probe_transcripts/
 demo/space_gradio/examples.py
 demo/space_wasm/examples.js
 demo/space_gradio/arcsum/
+
+# Judge inputs are a one-line derivation from `*_pairs.json` (meeting_id + source +
+# candidate). ~9 MB each and regenerable, so the pairs file is the audit trail, not this.
+runs/*/judge_cases.json

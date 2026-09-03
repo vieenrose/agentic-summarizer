@@ -1,0 +1,97 @@
+{
+ "provenance": {
+  "model_path": "runs/s234-e3/gguf_915/model.Q8_0.gguf",
+  "model_sha256": "90f1865251fa7e33b9b242a81188481894c118eb172a2e515c36c4a0eb14ada7",
+  "protocol": "tool",
+  "prompt_version": "sys-v2",
+  "tokenize_version": "chartok-v1",
+  "generation": {
+   "cache_prompt": false,
+   "max_tokens_step": 512,
+   "max_tokens_synth": 1000,
+   "raw_completion": true,
+   "repeat_penalty": 1.1,
+   "seed": 0,
+   "temperature": 0.0
+  },
+  "corpora": {
+   "corpus": {
+    "path": "data/ly_phase3_v2",
+    "n_files": 20,
+    "content_sha256": "eacfbe6f60e4188cfdbcc444353ff831fba15795650be84690940ccc32a7218c"
+   }
+  },
+  "label": "s234-e3-ep3",
+  "checkpoint": "",
+  "epoch": "epoch 3 (915, last)",
+  "code_revision": "fbd4e5b-dirty"
+ },
+ "comparison_key": "bcb9990ab8ae16d2df0d5f5fe352050d4b07be776b4c40b0ff1226c13b14c077",
+ "generated_at": "2026-09-03T03:48:55+00:00",
+ "checks": [
+  {
+   "name": "clean_meetings",
+   "result": null,
+   "reason": "11/20 with no behaviour flag",
+   "score": 11.0,
+   "n": 20,
+   "artifact": ""
+  },
+  {
+   "name": "churn_rate",
+   "result": null,
+   "reason": "1 events over 39 steps",
+   "score": 0.02564102564102564,
+   "n": 39,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_starved",
+   "result": null,
+   "reason": "memory did not accumulate",
+   "score": 7.0,
+   "n": 20,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_confabulating",
+   "result": null,
+   "reason": "prose asserts far more than memory holds",
+   "score": 0.0,
+   "n": 20,
+   "artifact": ""
+  },
+  {
+   "name": "median_chars_per_point",
+   "result": null,
+   "reason": "summary characters per memory point",
+   "score": 82.0,
+   "n": 20,
+   "artifact": ""
+  },
+  {
+   "name": "ungrounded_rate",
+   "result": null,
+   "reason": "11 of 17 specific claims absent from their transcript",
+   "score": 0.6470588235294118,
+   "n": 17,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_with_ungrounded",
+   "result": null,
+   "reason": "at least one fabricated specific",
+   "score": 4.0,
+   "n": 20,
+   "artifact": ""
+  },
+  {
+   "name": "deployment_match",
+   "result": false,
+   "reason": "cache_prompt: measured False != shipped True",
+   "score": null,
+   "n": null,
+   "artifact": ""
+  }
+ ]
+}

@@ -1,0 +1,11 @@
+{
+ "pool": "data/staging/sft_pool_mixed.jsonl",
+ "out": "data/staging/synth_regen.jsonl",
+ "synthesize_rows": 450,
+ "repaired": 310,
+ "kept_original": 140,
+ "errors": 0,
+ "ungrounded_before": 1347,
+ "ungrounded_after": 786,
+ "max_ungrounded": 0
+}

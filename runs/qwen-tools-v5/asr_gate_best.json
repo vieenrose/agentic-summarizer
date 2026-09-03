@@ -1,0 +1,195 @@
+{
+ "label": "v5-best",
+ "protocol": "tool",
+ "url": "http://127.0.0.1:8081",
+ "generated_at": "2026-09-02T15:16:34+00:00",
+ "corpus": "/home/luigi/agentic-summarizer/data/ly_phase3_v2",
+ "n_meetings": 20,
+ "curated": 16,
+ "empty": 4,
+ "nop_rate": 0.359,
+ "mean_summary_chars": 226.3,
+ "total_failed_steps": 0,
+ "rows": [
+  {
+   "meeting": "ivod-17662",
+   "steps": 2,
+   "nop": 1,
+   "points": 3,
+   "chars": 225,
+   "failed_steps": 0,
+   "valid_op_rate": 1.0
+  },
+  {
+   "meeting": "ivod-17663",
+   "steps": 3,
+   "nop": 2,
+   "points": 7,
+   "chars": 397,
+   "failed_steps": 0,
+   "valid_op_rate": 1.0
+  },
+  {
+   "meeting": "ivod-17664",
+   "steps": 2,
+   "nop": 0,
+   "points": 2,
+   "chars": 204,
+   "failed_steps": 0,
+   "valid_op_rate": 0.8333333333333334
+  },
+  {
+   "meeting": "ivod-17665",
+   "steps": 2,
+   "nop": 2,
+   "points": 0,
+   "chars": 20,
+   "failed_steps": 0,
+   "valid_op_rate": null
+  },
+  {
+   "meeting": "ivod-17666",
+   "steps": 2,
+   "nop": 0,
+   "points": 2,
+   "chars": 130,
+   "failed_steps": 0,
+   "valid_op_rate": 0.75
+  },
+  {
+   "meeting": "ivod-17667",
+   "steps": 2,
+   "nop": 0,
+   "points": 2,
+   "chars": 52,
+   "failed_steps": 0,
+   "valid_op_rate": 0.8571428571428571
+  },
+  {
+   "meeting": "ivod-17668",
+   "steps": 2,
+   "nop": 2,
+   "points": 0,
+   "chars": 20,
+   "failed_steps": 0,
+   "valid_op_rate": null
+  },
+  {
+   "meeting": "ivod-17669",
+   "steps": 2,
+   "nop": 0,
+   "points": 1,
+   "chars": 659,
+   "failed_steps": 0,
+   "valid_op_rate": 1.0
+  },
+  {
+   "meeting": "ivod-17673",
+   "steps": 1,
+   "nop": 1,
+   "points": 0,
+   "chars": 20,
+   "failed_steps": 0,
+   "valid_op_rate": null
+  },
+  {
+   "meeting": "ivod-17675",
+   "steps": 2,
+   "nop": 1,
+   "points": 4,
+   "chars": 335,
+   "failed_steps": 0,
+   "valid_op_rate": 1.0
+  },
+  {
+   "meeting": "ivod-17677",
+   "steps": 2,
+   "nop": 2,
+   "points": 0,
+   "chars": 20,
+   "failed_steps": 0,
+   "valid_op_rate": null
+  },
+  {
+   "meeting": "ivod-17678",
+   "steps": 2,
+   "nop": 0,
+   "points": 4,
+   "chars": 384,
+   "failed_steps": 0,
+   "valid_op_rate": 1.0
+  },
+  {
+   "meeting": "ivod-17680",
+   "steps": 2,
+   "nop": 1,
+   "points": 4,
+   "chars": 309,
+   "failed_steps": 0,
+   "valid_op_rate": 1.0
+  },
+  {
+   "meeting": "ivod-17681",
+   "steps": 2,
+   "nop": 0,
+   "points": 9,
+   "chars": 376,
+   "failed_steps": 0,
+   "valid_op_rate": 0.8461538461538461
+  },
+  {
+   "meeting": "ivod-17684",
+   "steps": 2,
+   "nop": 1,
+   "points": 3,
+   "chars": 212,
+   "failed_steps": 0,
+   "valid_op_rate": 1.0
+  },
+  {
+   "meeting": "ivod-17695",
+   "steps": 2,
+   "nop": 0,
+   "points": 0,
+   "chars": 494,
+   "failed_steps": 0,
+   "valid_op_rate": 0.6666666666666666
+  },
+  {
+   "meeting": "ivod-17697",
+   "steps": 2,
+   "nop": 0,
+   "points": 2,
+   "chars": 208,
+   "failed_steps": 0,
+   "valid_op_rate": 0.875
+  },
+  {
+   "meeting": "ivod-17699",
+   "steps": 2,
+   "nop": 1,
+   "points": 1,
+   "chars": 119,
+   "failed_steps": 0,
+   "valid_op_rate": 1.0
+  },
+  {
+   "meeting": "ivod-17701",
+   "steps": 2,
+   "nop": 0,
+   "points": 2,
+   "chars": 169,
+   "failed_steps": 0,
+   "valid_op_rate": 0.8333333333333334
+  },
+  {
+   "meeting": "ivod-17704",
+   "steps": 1,
+   "nop": 0,
+   "points": 1,
+   "chars": 174,
+   "failed_steps": 0,
+   "valid_op_rate": 1.0
+  }
+ ]
+}

@@ -1,7 +1,7 @@
 """Run and score the INDEPENDENT reversal probe set (`data/reversals_probe`).
 
-    python tools/score_reversals.py --url http://127.0.0.1:8081 \\
-        --corpus data/reversals_probe --out runs/sft-dropv6/revprobe
+    python tools/score_reversals.py --url http://127.0.0.1:8081 --protocol tool \\
+        --corpus data/reversals_probe --out runs/mixed-e3/revprobe
 
 Scores exactly what `arcsum.probe.score_probe` scores, against the planted plan rather
 than a hand-written expectation:
@@ -59,8 +59,15 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--corpus", type=Path, default=REPO / "data/reversals_probe")
     p.add_argument("--out", type=Path, required=True)
     p.add_argument("--label", default="")
-    p.add_argument("--protocol", choices=("edit", "tool"), default="edit",
-                   help="SPEC §4.1 step grammar for the agent arm")
+    # REQUIRED, not defaulted. It used to default to "edit", and on 2026-09-02 that
+    # silently scored a v1.0 TOOL-CALL checkpoint under the edit grammar and returned a
+    # clean-looking 0/27 -- a number indistinguishable from "this model cannot revise"
+    # until the per-case breakdown showed `subject_present=False` on all 27, which no
+    # model producing real prose about the right meeting can do. Re-run with the right
+    # protocol: 8/27. There is no safe default here; every v0.9 checkpoint wants "edit"
+    # and every v1.0 checkpoint wants "tool", so the caller must say which.
+    p.add_argument("--protocol", choices=("edit", "tool"), required=True,
+                   help="SPEC §4.1 step grammar for the agent arm; v0.9=edit, v1.0=tool")
     p.add_argument("--control", action="store_true",
                    help="score the NO-REVERSAL control set: the decision stands, and "
                         "reporting a withdrawal that never happened is the failure")

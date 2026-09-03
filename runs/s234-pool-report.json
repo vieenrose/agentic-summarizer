@@ -1,0 +1,39 @@
+{
+ "pool": "data/staging/sft_pool_mixed.jsonl",
+ "out": "data/staging/sft_pool_s234.jsonl",
+ "max_ungrounded": 2,
+ "max_ungrounded_rate": 1.01,
+ "before": {
+  "total": 4994,
+  "reading": 4540,
+  "synthesis": 454
+ },
+ "after": {
+  "total": 4872,
+  "reading": 4418,
+  "synthesis": 454
+ },
+ "S1_ungrounded_synthesis_dropped": 0,
+ "S2_churn_rows_dropped": 106,
+ "S3_noop_arc_stripped": 323,
+ "S4_reversal_rows_out": 68,
+ "S4_reversal_rows_in": 52,
+ "synthesis_retained_by_occupancy": {
+  "1-5": {
+   "kept": 56,
+   "of": 56
+  },
+  "10-12": {
+   "kept": 55,
+   "of": 55
+  },
+  "13-16": {
+   "kept": 277,
+   "of": 277
+  },
+  "6-9": {
+   "kept": 66,
+   "of": 66
+  }
+ }
+}

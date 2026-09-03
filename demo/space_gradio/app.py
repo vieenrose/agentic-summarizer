@@ -50,6 +50,29 @@ MODEL_REPO = os.environ.get("ARCSUM_MODEL_REPO", "Luigi/qwen35-0.8b-arcsum")
 #: file was withdrawn from the model repo.
 #: Cost: 1.15 GB instead of 688 MB, and slower on Space CPU. `ARCSUM_MODEL_FILE` can
 #: still point elsewhere — but measure any replacement before trusting it.
+#:
+#: **`mixed-e3` was shipped here on 2026-09-02 and ROLLED BACK the same day.** It measured
+#: better on every offline gate — revision probe 3/27 -> 8/27, real-ASR "curated" 17/20 ->
+#: 19/20, all three G3 gates still passing — and then failed visibly in THIS demo on a real
+#: ASR meeting: it kept 1 point where v5 kept 4, emitted 4 `restates dropped` churn events
+#: (DROP the only point, re-ADD a near-identical one, five steps running), and synthesised
+#: 553 characters of confident strategy prose from that single point, asserting competitive
+#: positioning that appears nowhere in the memory.
+#:
+#: **Two eval failures let that through, and both are about CONFIGURATION, not metrics.**
+#:
+#: 1. The gates run on `llama-server` with `cache_prompt: false`; this demo runs
+#:    llama-cpp-python with the KV cache live across calls. The prompt cache is KNOWN to
+#:    change generation (measured: 167 vs 700 characters, same model, same seed,
+#:    temperature 0). Under the GATED config `mixed-e3` handles this same transcript fine —
+#:    4 points, 0 churn. The regression exists only in the config the product actually
+#:    uses, which is the one nothing gates.
+#: 2. `asr_gate.py` scores a meeting "curated" by summary LENGTH. A 553-character
+#:    confabulation built from one churned point passes that test, so the metric that said
+#:    19/20 was rewarding the failure.
+#:
+#: Do not re-promote `mixed-e3` on offline gate numbers alone. It needs a churn-aware and
+#: cache-on measurement first.
 MODEL_FILE = os.environ.get("ARCSUM_MODEL_FILE", "Qwen3.5-0.8B.Q8_0.gguf")
 
 MAX_TOKENS_STEP = 512
@@ -110,11 +133,116 @@ def get_model(n_gpu_layers: int) -> ArcsumModel:
 # --- rendering -------------------------------------------------------------------------
 
 
+#: All colour is expressed through Gradio's own theme variables, so the demo follows the
+#: visitor's light/dark preference instead of assuming a white page. The previous layout
+#: hardcoded GitHub-light hex values (`#d0d7de`, `#ddf4ff`, `#eaeef2`), which render as
+#: near-invisible light-on-light for any visitor whose browser prefers dark.
+CSS = """
+.ax-panel {
+  border: 1px solid var(--border-color-primary);
+  border-radius: 10px;
+  background: var(--background-fill-secondary);
+  display: flex; flex-direction: column;
+  height: 440px; overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+}
+.ax-panel.ax-active {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--color-accent) 18%, transparent);
+}
+.ax-head {
+  display: flex; justify-content: space-between; align-items: center; gap: 8px;
+  padding: 9px 12px; border-bottom: 1px solid var(--border-color-primary);
+  background: var(--background-fill-primary);
+  position: sticky; top: 0;
+}
+.ax-title { font-weight: 600; font-size: .95rem; display: flex; align-items: center; gap: 7px; }
+.ax-step {
+  display: inline-grid; place-items: center; width: 19px; height: 19px;
+  border-radius: 50%; font-size: .72rem; font-weight: 700;
+  background: var(--color-accent); color: var(--button-primary-text-color, #fff);
+}
+.ax-badge { font-size: .8rem; opacity: .65; font-variant-numeric: tabular-nums; }
+.ax-body { padding: 10px 12px; overflow-y: auto; flex: 1; }
+.ax-dim { opacity: .55; font-size: .85em; font-variant-numeric: tabular-nums; }
+
+/* memory */
+.ax-arc {
+  border-left: 3px solid var(--color-accent);
+  background: color-mix(in srgb, var(--color-accent) 10%, transparent);
+  padding: 7px 9px; border-radius: 0 6px 6px 0; margin-bottom: 10px; line-height: 1.5;
+}
+.ax-point {
+  padding: 4px 2px; border-bottom: 1px solid var(--border-color-primary);
+  font-size: .92em; line-height: 1.5;
+}
+.ax-point:last-child { border-bottom: 0; }
+.ax-idx {
+  display: inline-block; min-width: 1.4em; opacity: .45;
+  font-variant-numeric: tabular-nums; font-size: .85em;
+}
+
+/* progress */
+.ax-prog { margin: 2px 0 4px; }
+.ax-track {
+  background: var(--background-fill-secondary); border-radius: 999px; height: 7px;
+  overflow: hidden; border: 1px solid var(--border-color-primary);
+}
+.ax-fill {
+  background: var(--color-accent); height: 100%; border-radius: 999px;
+  transition: width .25s ease;
+}
+.ax-meta {
+  display: flex; gap: 9px; align-items: center; margin-top: 6px;
+  font-size: .87rem; opacity: .8;
+}
+.ax-mode {
+  border-radius: 999px; padding: 1px 8px; font-size: .74rem; font-weight: 600;
+  letter-spacing: .02em; color: #fff;
+}
+.ax-mode-gpu { background: #1a7f37; }
+.ax-mode-cpu { background: #5b6570; }
+
+/* the summary is the product, so it gets the full width and a taller line height */
+#ax-summary .ax-panel { height: auto; min-height: 190px; }
+#ax-summary .ax-body { line-height: 1.85; font-size: 1.03em; }
+
+/* header */
+.ax-hero { padding: 10px 2px 4px; }
+.ax-hero h1 {
+  margin: 0; font-size: 1.5rem; font-weight: 700; letter-spacing: -.015em;
+  display: flex; align-items: baseline; gap: 10px; flex-wrap: wrap;
+}
+.ax-hero h1 span { font-size: .95rem; font-weight: 500; opacity: .6; letter-spacing: 0; }
+.ax-hero p { margin: 7px 0 0; opacity: .78; max-width: 78ch; line-height: 1.6; }
+.ax-flow {
+  display: flex; align-items: center; gap: 7px; flex-wrap: wrap;
+  margin-top: 12px; font-size: .84rem;
+}
+.ax-flow span {
+  display: inline-flex; align-items: center; gap: 6px;
+  border: 1px solid var(--border-color-primary); border-radius: 999px;
+  padding: 3px 11px 3px 5px; background: var(--background-fill-secondary);
+}
+.ax-flow b {
+  display: inline-grid; place-items: center; width: 17px; height: 17px;
+  border-radius: 50%; font-size: .7rem;
+  background: var(--color-accent); color: var(--button-primary-text-color, #fff);
+}
+.ax-flow i { opacity: .4; font-style: normal; }
+
+/* stack the three live panels on narrow screens instead of crushing them */
+@media (max-width: 860px) {
+  .ax-panel { height: 320px; }
+}
+"""
+
 def _esc(text: str) -> str:
     return text.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
 
-def _panel(title: str, status: str, body_html: str, *, active: bool = False) -> str:
+def _panel(title: str, status: str, body_html: str, *, active: bool = False,
+           step_no: str = "") -> str:
     """One of the three live panels.
 
     `active` puts a blue rule on the panel currently doing work. With three panels
@@ -122,22 +250,33 @@ def _panel(title: str, status: str, body_html: str, *, active: bool = False) -> 
     the reading step writes to the middle panel, the applier to the right one, and the
     transcript highlight moves on the left.
 
-    Colours come from `currentColor`/transparent rather than literal white so the panel
-    does not render black-on-white inside a dark-themed Space.
+    **All colour comes from Gradio theme variables, never literal hex.** The panels used
+    hardcoded `#d0d7de` borders and a `#ddf4ff` ARC block, which render as light-on-light
+    inside a dark-themed Space — invisible to roughly half of visitors, since Gradio
+    follows the browser preference by default.
+
+    `step_no` numbers the panel in pipeline order. With four surfaces updating at
+    different rates, the single most common confusion is not knowing which one to read
+    first; the numbers make the dataflow explicit rather than implied by column position.
     """
-    badge = f"<span style='opacity:.6;font-size:.85em'>{_esc(status)}</span>" if status else ""
-    border = "#0969da" if active else "#d0d7de"
+    badge = f"<span class='ax-badge'>{_esc(status)}</span>" if status else ""
+    step = f"<span class='ax-step'>{_esc(step_no)}</span>" if step_no else ""
+    # NOTE: no nested same-type quotes inside the f-string expression. HF Spaces runs
+    # Python 3.10, where PEP 701 does not apply and `f"{" x" if c else ""}"` is a hard
+    # SyntaxError at import — the Space fails to boot. This venv is 3.12 and accepts it,
+    # so the break is invisible locally; `test_demo_app.py` now parses this file at
+    # feature_version (3, 10) to catch the class.
+    active_cls = " ax-active" if active else ""
     return (
-        f"<div style='border:1px solid {border};border-radius:8px;padding:10px;"
-        f"height:460px;overflow:auto;background:transparent'>"
-        f"<div style='display:flex;justify-content:space-between;align-items:baseline;"
-        f"margin-bottom:8px'><b>{_esc(title)}</b>{badge}</div>{body_html}</div>"
+        f"<div class='ax-panel{active_cls}'>"
+        f"<div class='ax-head'><span class='ax-title'>{step}{_esc(title)}</span>"
+        f"{badge}</div><div class='ax-body'>{body_html}</div></div>"
     )
 
 
 def render_transcript_html(utterances: list[Utterance], first: int, last: int) -> str:
     if not utterances:
-        return _panel("Transcript", "", "<i style='opacity:.6'>No transcript loaded.</i>")
+        return _panel("Transcript", "", "<i class='ax-dim'>No transcript loaded.</i>", step_no="1")
     rows = []
     for i, u in enumerate(utterances):
         active = first <= i <= last
@@ -153,7 +292,7 @@ def render_transcript_html(utterances: list[Utterance], first: int, last: int) -
     # En dash is correct typography for a numeric range, and this string is UI copy, not
     # an identifier -- RUF001's ambiguity concern does not apply.
     label = f"chunk lines {first + 1}\u2013{last + 1}" if first >= 0 else ""
-    return _panel("Transcript", label, "".join(rows))
+    return _panel("Transcript", label, "".join(rows), step_no="1")
 
 
 #: One colour per op kind, shared by the live view and the applied-memory view.
@@ -163,7 +302,8 @@ _OP_COLOUR = {"Arc": "#0969da", "Add": "#1a7f37", "Drop": "#cf222e"}
 def render_ops_html(status: str, raw: str, live: bool) -> str:
     """Render the step's raw output.
 
-    **Protocol-aware.** `qwen-tools-v5` emits ONE line -- an `update_memory` tool call
+    **Protocol-aware.** Every v1.0 checkpoint (`qwen-tools-v5` through `mixed-e3`) emits
+    ONE line -- an `update_memory` tool call
     carrying JSON -- not the ADD/DROP/ARC edit lines the previous checkpoint produced. The
     old renderer coloured lines by their leading keyword and fell through to plain grey
     for anything else, so a tool call rendered as a single escaped blob of
@@ -174,7 +314,7 @@ def render_ops_html(status: str, raw: str, live: bool) -> str:
     stripped and let it wrap, so the user still sees tokens arriving.
     """
     if not raw:
-        return _panel("Model output (tool call)", status, "<i style='opacity:.6'>Waiting…</i>",
+        return _panel("Model output", status, "<i class='ax-dim'>Waiting…</i>", step_no="2",
                       active=live)
 
     rows: list[str] = []
@@ -198,24 +338,22 @@ def render_ops_html(status: str, raw: str, live: bool) -> str:
             f"opacity:.85'>{_esc(shown)}</div>"
         )
     body = "".join(rows) + ("<span style='opacity:.5'>▌</span>" if live else "")
-    return _panel("Model output (tool call)", status, body, active=live)
+    return _panel("Model output", status, body, active=live, step_no="2")
 
 
 def render_memory_html(mem: Memory, n_chunks: int, step: int) -> str:
     arc_tok = heuristic_token_len(mem.arc) if mem.arc else 0
     arc = (
-        f"<div style='background:#ddf4ff;border-left:3px solid #0969da;padding:6px 8px;"
-        f"margin-bottom:8px'><b>ARC</b> <span style='opacity:.6;font-size:.85em'>"
+        f"<div class='ax-arc'><b>ARC</b> <span class='ax-dim'>"
         f"{arc_tok}/{ARC_TOKENS} tok</span><br>{_esc(mem.arc)}</div>"
         if mem.arc
         else "<div style='opacity:.5;margin-bottom:8px'><b>ARC</b> — empty</div>"
     )
     pts = (
         "".join(
-            f"<div style='padding:2px 6px;border-bottom:1px solid #eee;font-size:.92em'>"
-            f"<span style='opacity:.45'>{i + 1}.</span> {_esc(p.text)} "
-            f"<span style='opacity:.45;font-size:.85em'>"
-            f"({heuristic_token_len(p.text)}/{POINT_TOKENS})</span></div>"
+            f"<div class='ax-point'>"
+            f"<span class='ax-idx'>{i + 1}</span> {_esc(p.text)} "
+            f"<span class='ax-dim'>({heuristic_token_len(p.text)}/{POINT_TOKENS})</span></div>"
             for i, p in enumerate(mem.points)
         )
         or "<div style='opacity:.5;padding:4px'>no points yet</div>"
@@ -225,7 +363,7 @@ def render_memory_html(mem: Memory, n_chunks: int, step: int) -> str:
         f"{len(mem.points)}/{POINTS_CAP}</span>"
     )
     status = f"step {step}/{n_chunks}" if n_chunks else ""
-    return _panel("External memory", status, arc + head + pts)
+    return _panel("External memory", status, arc + head + pts, step_no="3")
 
 
 def render_prose_html(text: str, live: bool) -> str:
@@ -238,7 +376,8 @@ def render_prose_html(text: str, live: bool) -> str:
             + f"</div><div style='margin-top:10px;opacity:.55;font-size:.85em'>"
             f"{len(text)} characters</div>"
         )
-    return _panel("Final summary (SYNTHESIZE)", "", body, active=live)
+    return _panel("Final summary", "written from the memory alone", body, active=live,
+                  step_no="4")
 
 
 def _progress(pct: float, label: str, *, elapsed: float | None = None,
@@ -251,20 +390,14 @@ def _progress(pct: float, label: str, *, elapsed: float | None = None,
     """
     bits = []
     if mode:
-        colour = "#1a7f37" if mode == "GPU" else "#57606a"
-        bits.append(
-            f"<span style='background:{colour};color:#fff;border-radius:3px;"
-            f"padding:0 5px;font-size:.78em'>{_esc(mode)}</span>"
-        )
+        bits.append(f"<span class='ax-mode ax-mode-{mode.lower()}'>{_esc(mode)}</span>")
     bits.append(f"<span>{_esc(label)}</span>")
     if elapsed is not None:
         bits.append(f"<span style='opacity:.55'>{elapsed:.0f}s</span>")
     return (
-        f"<div style='margin:6px 0'><div style='background:#eaeef2;border-radius:4px;height:8px'>"
-        f"<div style='background:#0969da;height:8px;border-radius:4px;"
-        f"width:{pct:.1f}%;transition:width .2s'></div></div>"
-        f"<div style='opacity:.75;font-size:.88em;margin-top:4px;display:flex;gap:8px;"
-        f"align-items:center'>{''.join(bits)}</div></div>"
+        f"<div class='ax-prog'><div class='ax-track'>"
+        f"<div class='ax-fill' style='width:{pct:.1f}%'></div></div>"
+        f"<div class='ax-meta'>{''.join(bits)}</div></div>"
     )
 
 
@@ -533,31 +666,36 @@ def run_demo(custom_transcript: str, example_name: str, use_gpu: bool, log: dict
 
 with gr.Blocks(title="arcsum — live agentic zh-TW meeting summarizer") as demo:
     gr.HTML(
-        "<div style='padding:14px 4px 6px'>"
-        "<h1 style='margin:0'>arcsum — live agentic meeting summarizer</h1>"
-        "<p style='margin:6px 0 0;opacity:.75'>A 1B model reads a zh-TW transcript in "
-        "~2,500-token chunks, curating a two-slot external memory (<b>ARC</b> + "
-        "<b>POINTS</b>) with <code>ADD</code> / <code>DROP</code> / <code>ARC</code> / "
-        "<code>NOP</code> edit lines. No conversation history crosses steps — the memory "
-        "on the right is the <i>only</i> thing carried forward. A final SYNTHESIZE call "
-        "turns it into prose.</p></div>"
+        "<div class='ax-hero'>"
+        "<h1>arcsum <span>live agentic meeting summarizer</span></h1>"
+        "<p>A 1B model reads a Traditional-Chinese transcript in ~2,500-token chunks, "
+        "curating a two-slot external memory as it goes. <b>No conversation history "
+        "crosses steps</b> — that memory is the only thing carried forward, and the final "
+        "summary is written from it alone.</p>"
+        "<div class='ax-flow'>"
+        "<span><b>1</b> Transcript</span><i>→</i>"
+        "<span><b>2</b> Tool call</span><i>→</i>"
+        "<span><b>3</b> Memory</span><i>→</i>"
+        "<span><b>4</b> Summary</span>"
+        "</div></div>"
     )
     with gr.Row(equal_height=True):
         example_dd = gr.Dropdown(
             choices=list(EXAMPLES.keys()),
             value=(list(EXAMPLES.keys()) or [None])[0],
-            label="transcript",
-            scale=4,
+            label="Transcript",
+            scale=5,
         )
-        gpu_toggle = gr.Checkbox(
-            value=GPU_DEFAULT,
-            label="GPU acceleration",
-            info="ZeroGPU; uses quota. Off = CPU, free but slower.",
-            scale=2,
-        )
-        run_btn = gr.Button("▶ Run", variant="primary", scale=1)
-        stop_btn = gr.Button("■ Stop", interactive=False, scale=1)
-        export_btn = gr.DownloadButton("⬇ Debug log", scale=1)
+        with gr.Column(scale=2, min_width=170):
+            run_btn = gr.Button("▶  Run", variant="primary", size="lg")
+            stop_btn = gr.Button("■  Stop", interactive=False, size="sm")
+        with gr.Column(scale=2, min_width=170):
+            gpu_toggle = gr.Checkbox(
+                value=GPU_DEFAULT,
+                label="GPU acceleration",
+                info="ZeroGPU — uses quota. Off = CPU, free but slower.",
+            )
+            export_btn = gr.DownloadButton("⬇  Debug log", size="sm")
 
     #: Per-session run log, mutated in place by `_run` and read by `export_log`. A
     #: module-level dict would leak one visitor's transcript into another's download.
@@ -572,11 +710,12 @@ with gr.Blocks(title="arcsum — live agentic zh-TW meeting summarizer") as demo
             lines=8, show_label=False, placeholder="S1: 我們開始今天的會議。\nS2: 好的。"
         )
 
-    with gr.Row():
+    with gr.Row(equal_height=True):
         transcript_html = gr.HTML(render_transcript_html([], -1, -1))
         ops_html = gr.HTML(render_ops_html("", "", False))
         memory_html = gr.HTML(render_memory_html(Memory(token_len=heuristic_token_len), 0, 0))
-    prose_html = gr.HTML(render_prose_html("", False))
+    with gr.Row(elem_id="ax-summary"):
+        prose_html = gr.HTML(render_prose_html("", False))
 
     gr.Markdown(
         f"""
@@ -593,18 +732,27 @@ independently, so a decision reversed at minute 90 never reaches the summary of 
 
 ### Honest status
 
-This checkpoint clears **6 of 7** ship gates on **40 held-out meetings** it was never
-trained or tuned on. It beats a fair map-reduce baseline (same model, same chunk size) on
-all three ROUGE metrics — 29/40, 31/40, 33/40 meetings — and on faithfulness by a wide
-margin (**18 inversions vs 109**), while writing summaries ~8x shorter. On long meetings
-(≥400 lines) it wins 9 of 10.
+Running **`qwen-tools-v5`**, measured on **40 held-out meetings** it was never trained or
+tuned on. Against a fair map-reduce baseline — same model, same chunk size — it wins all
+three ROUGE metrics (28/40, 29/40, 35/40) and on faithfulness by 16 inversions vs 58.
 
-It **fails the revision probe (G1)**: given a decision reversed later in the meeting it
-states the reversal but drops the identifying detail. Under an all-or-nothing rule the
-recorded decision is therefore *ship the baseline*. Two further caveats travel with the
-numbers: the on-device latency gate is a **projection, never measured on a phone**, and
-faithfulness per-claim actually favours the baseline (7.3% vs 4.9%) — the agent wins on
-absolute inversions partly because it asserts far less. Full detail:
+It **fails the revision probe: 3 of 27** scenarios. Given a decision reversed later in the
+meeting it may report the superseded decision as if it still stood. Under an all-or-nothing
+rule the recorded decision is *ship the baseline*; revision is not a capability to rely on
+here.
+
+**A newer checkpoint was served here briefly and rolled back**, which is worth stating
+because it is the honest shape of this problem. `mixed-e3` beat v5 on every offline gate —
+including nearly tripling the revision probe — and then, on a real ASR meeting in this very
+demo, kept one memory point where v5 kept four and wrote 553 characters of confident prose
+out of it. The gates missed it because they run with the model's prompt cache disabled
+while this demo runs with it on, and because the real-ASR metric scored summaries by
+LENGTH, which a confabulation passes easily.
+
+Two further caveats: **faithfulness per-claim favours the baseline** — the agent wins on
+absolute inversions partly because it asserts far fewer claims; and on-device latency is
+19.0 min/meeting on an Oppo Reno 7 against a 20-minute ceiling, a 3% margin, with a
+contended run measured at 21.6 min. Full detail:
 [model card](https://hf.co/{MODEL_REPO}).
 
 **This demo runs Q8_0 — the same artifact every number above was measured on.** A smaller
@@ -635,4 +783,8 @@ Expect several seconds per chunk on Space CPU; that is the cost of running the r
 # __main__, so the Space is unaffected -- but without the guard the module cannot be
 # imported by a test or a REPL at all, which is how this demo's smoke test hung.
 if __name__ == "__main__":
-    demo.queue(max_size=8).launch()
+    # Gradio 6 moved `css` off the Blocks constructor onto `launch()`. Passing it to
+    # Blocks only emits a UserWarning and silently drops the stylesheet, which is how a
+    # theme-aware redesign can look like it landed while every panel still renders with
+    # default styling.
+    demo.queue(max_size=8).launch(css=CSS)

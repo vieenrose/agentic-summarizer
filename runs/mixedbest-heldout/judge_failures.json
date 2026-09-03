@@ -1,0 +1,21 @@
+{
+  "baseline/LongBeachCC_04172018": "RemoteDisconnected: Remote end closed connection without response",
+  "baseline/LongBeachCC_06152021": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/LongBeachCC_07052016": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/LongBeachCC_09072021": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/LongBeachCC_09202016": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_02082021": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_02222022": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_02292016": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_03232015": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_04122022": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_04182016": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_05032022": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_08052019": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_09062016": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_09112017": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_09282015": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_09292020": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_10292018": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?",
+  "baseline/SeattleCityCouncil_11022020": "RuntimeError: cannot reach judge at http://127.0.0.1:8090 — is it running?"
+}

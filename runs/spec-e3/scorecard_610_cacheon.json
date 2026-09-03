@@ -1,0 +1,511 @@
+{
+ "provenance": {
+  "model_path": "runs/spec-e3/gguf_610/model.Q8_0.gguf",
+  "model_sha256": "abab46b89824bd837a3599f1975597aeb074a294735b898a8624ad352df8db30",
+  "protocol": "tool",
+  "prompt_version": "sys-v2",
+  "tokenize_version": "chartok-v1",
+  "generation": {
+   "backend": "llama-server",
+   "cache_prompt": true,
+   "max_tokens_step": 512,
+   "max_tokens_synth": 1000,
+   "raw_completion": true,
+   "repeat_penalty": 1.1,
+   "seed": 0,
+   "temperature": 0.0
+  },
+  "corpora": {
+   "corpus": {
+    "path": "data/asr_eval_v1",
+    "n_files": 21,
+    "content_sha256": "4d55bbb5d51a6b48a4b3631c48d680f3d7cc7fd427eb2e1ad5bb20abe5ba33ee"
+   }
+  },
+  "label": "spec-e3-ep2",
+  "checkpoint": "",
+  "epoch": "epoch 610",
+  "code_revision": "fbd4e5b-dirty"
+ },
+ "comparison_key": "d6b2cae08091d81bdbcc19fa6bafdb813e19037a8220e69bbf211c984918f45d",
+ "generated_at": "2026-09-03T08:18:06+00:00",
+ "checks": [
+  {
+   "name": "clean_meetings",
+   "result": null,
+   "reason": "11/21 with no behaviour flag",
+   "score": 11.0,
+   "n": 21,
+   "artifact": ""
+  },
+  {
+   "name": "churn_rate",
+   "result": null,
+   "reason": "0 events over 45 steps",
+   "score": 0.0,
+   "n": 45,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_starved",
+   "result": null,
+   "reason": "memory did not accumulate",
+   "score": 8.0,
+   "n": 21,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_confabulating",
+   "result": null,
+   "reason": "prose asserts far more than memory holds",
+   "score": 0.0,
+   "n": 21,
+   "artifact": ""
+  },
+  {
+   "name": "median_chars_per_point",
+   "result": null,
+   "reason": "summary characters per memory point",
+   "score": 79.25,
+   "n": 21,
+   "artifact": ""
+  },
+  {
+   "name": "ungrounded_rate",
+   "result": null,
+   "reason": "5 of 32 specific claims absent from their transcript",
+   "score": 0.15625,
+   "n": 32,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_with_ungrounded",
+   "result": null,
+   "reason": "at least one fabricated specific",
+   "score": 3.0,
+   "n": 21,
+   "artifact": ""
+  },
+  {
+   "name": "deployment_match",
+   "result": true,
+   "reason": "measured config matches deployment",
+   "score": null,
+   "n": null,
+   "artifact": ""
+  }
+ ],
+ "details": {
+  "behaviour": [
+   {
+    "meeting": "dram-supply",
+    "chunks": 6,
+    "points": 3,
+    "memory_units": 4,
+    "prose_chars": 317,
+    "churn_events": 0,
+    "arc_frozen_steps": 4,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 79.2,
+    "flags": [
+     "starved 3pt/6ch",
+     "arc frozen x4"
+    ]
+   },
+   {
+    "meeting": "ivod-17662",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 2,
+    "prose_chars": 281,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 140.5,
+    "flags": [
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17663",
+    "chunks": 3,
+    "points": 11,
+    "memory_units": 12,
+    "prose_chars": 354,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 29.5,
+    "flags": [
+     "hedge x1"
+    ]
+   },
+   {
+    "meeting": "ivod-17664",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 1,
+    "prose_chars": 119,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 119.0,
+    "flags": [
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17665",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 1,
+    "prose_chars": 121,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 121.0,
+    "flags": [
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17666",
+    "chunks": 2,
+    "points": 2,
+    "memory_units": 2,
+    "prose_chars": 169,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 84.5,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17667",
+    "chunks": 2,
+    "points": 4,
+    "memory_units": 5,
+    "prose_chars": 232,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 46.4,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17668",
+    "chunks": 2,
+    "points": 9,
+    "memory_units": 9,
+    "prose_chars": 325,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 36.1,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17669",
+    "chunks": 2,
+    "points": 3,
+    "memory_units": 4,
+    "prose_chars": 271,
+    "churn_events": 0,
+    "arc_frozen_steps": 1,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 67.8,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17673",
+    "chunks": 1,
+    "points": 0,
+    "memory_units": 0,
+    "prose_chars": 20,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 1,
+    "abstained": true,
+    "chars_per_point": 0.0,
+    "flags": [
+     "abstained (empty memory)"
+    ]
+   },
+   {
+    "meeting": "ivod-17675",
+    "chunks": 2,
+    "points": 2,
+    "memory_units": 3,
+    "prose_chars": 308,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 102.7,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17677",
+    "chunks": 2,
+    "points": 5,
+    "memory_units": 6,
+    "prose_chars": 241,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 40.2,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17678",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 1,
+    "prose_chars": 129,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 129.0,
+    "flags": [
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17680",
+    "chunks": 2,
+    "points": 2,
+    "memory_units": 2,
+    "prose_chars": 251,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 125.5,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17681",
+    "chunks": 2,
+    "points": 5,
+    "memory_units": 5,
+    "prose_chars": 345,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 69.0,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17684",
+    "chunks": 2,
+    "points": 6,
+    "memory_units": 7,
+    "prose_chars": 270,
+    "churn_events": 0,
+    "arc_frozen_steps": 1,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 38.6,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17695",
+    "chunks": 2,
+    "points": 0,
+    "memory_units": 1,
+    "prose_chars": 202,
+    "churn_events": 0,
+    "arc_frozen_steps": 1,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 202.0,
+    "flags": [
+     "starved 0pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17697",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 1,
+    "prose_chars": 188,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 188.0,
+    "flags": [
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17699",
+    "chunks": 2,
+    "points": 1,
+    "memory_units": 2,
+    "prose_chars": 157,
+    "churn_events": 0,
+    "arc_frozen_steps": 1,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 78.5,
+    "flags": [
+     "starved 1pt/2ch"
+    ]
+   },
+   {
+    "meeting": "ivod-17701",
+    "chunks": 2,
+    "points": 2,
+    "memory_units": 2,
+    "prose_chars": 177,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 88.5,
+    "flags": []
+   },
+   {
+    "meeting": "ivod-17704",
+    "chunks": 1,
+    "points": 6,
+    "memory_units": 7,
+    "prose_chars": 268,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 38.3,
+    "flags": []
+   }
+  ],
+  "grounding": [
+   {
+    "meeting": "dram-supply",
+    "n_checked": 7,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17662",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17663",
+    "n_checked": 10,
+    "ungrounded": [
+     "4500"
+    ]
+   },
+   {
+    "meeting": "ivod-17664",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17665",
+    "n_checked": 1,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17666",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17667",
+    "n_checked": 5,
+    "ungrounded": [
+     "36",
+     "56"
+    ]
+   },
+   {
+    "meeting": "ivod-17668",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17669",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17673",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17675",
+    "n_checked": 3,
+    "ungrounded": [
+     "663",
+     "1059"
+    ]
+   },
+   {
+    "meeting": "ivod-17677",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17678",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17680",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17681",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17684",
+    "n_checked": 5,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17695",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17697",
+    "n_checked": 1,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17699",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17701",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "ivod-17704",
+    "n_checked": 0,
+    "ungrounded": []
+   }
+  ]
+ }
+}

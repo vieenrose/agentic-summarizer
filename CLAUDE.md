@@ -199,7 +199,64 @@ confound attributable to a serving flag, not to whatever was being tested. Check
 before trusting any number. Note trap 3 tried `--jinja` for a DIFFERENT reason (MiniCPM5's
 UTF-8 500s) and found it did not help; that is not a licence to leave it on.
 
-### SPEC v1.0: tool-call protocol + Qwen3.5-0.8B — `qwen-tools-v5` is the current best
+### Trap 11, 2026-09-02 — measuring the WRONG THING is this project's most common failure
+
+Not a new mechanism; a class. Four instances in one session, three of which produced a
+plausible number that would have been recorded as a finding. **Every one was caught by an
+implausible value, never by process** — which means the process does not catch them.
+
+1. **A server that failed to bind, answering as the previous model.** Killing the old
+   `llama-server` and starting the new one in one command: the kill had not completed, the
+   new server exited on a port conflict, and the old one served the "new" checkpoint's
+   curve. Caught only because two checkpoints returned BYTE-IDENTICAL numbers.
+   **Fix, now used everywhere: verify `/props`'s `model_path` before every measurement.**
+
+       curl -s http://127.0.0.1:8081/props | python -c 'import sys,json;print(json.load(sys.stdin)["model_path"])'
+
+2. **`tools/score_reversals.py` defaulted to `--protocol edit`** and scored a v1.0
+   tool-call checkpoint under the edit grammar: a clean-looking **0/27**, which reads
+   exactly like "this model cannot revise". Real answer under `--protocol tool`: **8/27**.
+   The tell was `subject_present=False` on all 27 — a model writing real prose about the
+   right meeting cannot miss the subject every time. `--protocol` is now REQUIRED.
+3. **A headline number with no artifact behind it.** The "memory details 10.0 -> 2.8"
+   collapse that motivated an entire retrain came from an inline script, and **does not
+   reproduce** — re-measured, the regression is 10.4 -> 7.8 points, real but a third the
+   size. Likewise `v5`'s `3/27` and `selfdistil`'s `12/27` had no artifacts; on re-run they
+   are 3/27 and **11/27**. This is the same gap `run_probe.py`'s docstring was written to
+   close, reopened by writing a new measurement inline instead of committing it.
+4. **`pkill -f <pattern>` matches the agent's OWN shell** and kills the session (exit 144),
+   three times. `pgrep -f "cli.run_arms"` in an `until` loop likewise never terminates,
+   because the loop's own command line contains the pattern. **Use `pgrep -x llama-server`
+   and filter on `/proc/<pid>/cmdline`** — an exact process-name match cannot match bash.
+
+**The generalisable rule: a measurement that cannot be re-run from a committed script and a
+recorded configuration is not evidence, it is a memory.** When a number decides a retrain,
+commit the tool first. Three of this session's four cost an experiment each.
+
+### SUPERSEDED 2026-09-02: `mixed-e3` BEST-EPOCH is the current best, not `qwen-tools-v5`
+
+Full record in `runs/mixed-e3/RESULT.md`. **Serve `runs/mixed-e3/gguf_best/`** (checkpoint
+626, epoch 2) — NOT `gguf/`, which is the last epoch and measurably worse.
+
+| | `v5` (last-epoch, its best config) | **`mixed-e3` best-epoch** |
+|---|---|---|
+| G1 revision probe (27) | 3/27 | **8/27** |
+| G2 faithfulness | PASS 16 vs 58 | **PASS 24 vs 53**, 40/40, 0 judge failures |
+| G3 rouge1/2/L | PASS, +0.069/+0.041/+0.057 | **PASS**, +0.053/+0.031/+0.039 |
+| real-ASR curated | 17/20, NOP 28% | **19/20, NOP 15%** |
+| G4 | 19.0 min measured (v5 only) | **not measured — do this before shipping** |
+
+Still FAILS G1, so §5.2's all-or-nothing decision is unchanged at "ship the baseline".
+`mixed-e3` wins on the two deployment-facing axes and pays ~30% of the G3 margin and some
+G2 margin (24 vs 16 inversions — it writes longer summaries, so the judge sees more claims).
+
+The pool is `data/staging/sft_pool_mixed.jsonl`: `v5`'s reading rows + 187 TEACHER-memory
+and 263 STUDENT-memory synthesis rows, the student side filtered at `MIN_DET=2` (53 dropped)
+and >=13-point rows 4x oversampled. **The `MIN_DET` filter is load-bearing and was nearly
+dismissed as housekeeping** — see the ablation in `runs/mixed-e3/RESULT.md`: teacher rows
+ALONE recover only 1 of 3 G3 gates and cost revision (11/27 -> 4/27) and ASR doing it.
+
+### History: `qwen-tools-v5`, the previous recommendation
 
 `runs/qwen-v2-heldout/RESULT.md` holds the FULL history in one file: `v2` -> `v3` -> `v4`
 -> `v5`, in build order, each with what it changed and what it cost. Read top to bottom.
@@ -268,6 +325,30 @@ MeetingBank has essentially no within-meeting reversals to learn from (3.4% of g
 match reversal language, all legislative boilerplate about repealing external ordinances,
 never a decision reversed in the same meeting). Stop trying to fix this by retraining on
 more synthetic reversals from the same recipe — the ceiling is the corpus.
+
+**PARTLY SUPERSEDED, 2026-09-02 — a large part of G1's failure was STALE DATA, not the
+corpus.** Read `runs/revfix-e3/RESULT.md`. `tools/loss_map.py` run WITH its control arm
+(decisions taken and never reversed) shows the control arm loses NOTHING between emission
+and memory (73.3% -> 73.3%) while the reversal arm collapses (59.3% -> 14.8%), with zero
+harness refusals. So the reading step can retain an identifying detail perfectly well; it
+is revision that drops it. Cause: the pool's 68 reversal rows carried tool-call targets
+where the replacement `add` had NO key term — **0 of 34 preserving** — while the on-disk
+edit-line gold has been correct since 2026-08-31 and `to_toolcalls.py` converts it
+correctly. The rows were never regenerated after that fix and were carried from `v5`'s pool
+through `selfdistil-e3` into `mixed-e3`. Every v1.0 checkpoint trained on a demonstration
+of lossy revision, on the exact capability G1 measures.
+
+Regenerating them (`data/staging/sft_pool_revfix.jsonl`, 26/26 preserving) moves key_term
+retention **14.8% -> 48.1% at memory and 3.7% -> 33.3% at prose**, closing the
+revision-specific gap from +58.5 to +11.9 points. **It does NOT move the gate** — 8/27 ->
+6/27 — because the bottleneck relocated: subject/key_term present rose 13 -> 20 while
+"states the late outcome" fell 8 -> 6. The replacement point has a fixed budget and now
+spends more of it on the detail. Also refuted there: raising `POINT_TOKENS` 25 -> 32 to
+relieve that budget gives 3/27, worse.
+
+**So the corpus claim above is still right about the CEILING and was wrong about the
+BINDING CONSTRAINT.** Carry the revfix rows into any future pool, and aim the next G1
+attempt at the OUTCOME WORD, checking both columns — they trade against each other.
 
 **§4.1 v1.0's real innovation is single-turn tool calls, not tool calls per se.** A
 conventional observe-the-result agent loop was MEASURED and REJECTED: 2 model invocations
@@ -338,7 +419,101 @@ vs 187 for a hand-written schema prompt).
   `train_toolcalls.py` now copies the best checkpoint's files directly instead of trusting
   the reload. Verify a new build with the mlp-weight comparison; do not trust the log.
 
-### Real-ASR is now a standing gate — `tools/asr_gate.py` — because it silently regressed
+  **Follow-up, 2026-09-02 — do NOT conclude "so always use the best epoch". EVAL LOSS DOES
+  NOT ORDER THESE CHECKPOINTS ON ANYTHING §5.2 GATES.** Measured on three builds; all three
+  respond differently, and the best-by-loss checkpoint is sometimes the WORST artifact:
+
+  | build | best-by-loss | what actually wins |
+  |---|---|---|
+  | `qwen-tools-v5` | ckpt-296 (e2) | **e3 (last)** — e2 is worse: ASR 16/20 vs 17/20, probe 1/27 vs 3/27 |
+  | `mixed-e3` | ckpt-626 (e2) | **e2 (best)** — ASR 19/20 vs 17/20 AND G3 effects all larger |
+  | `selfdistil-e3` | ckpt-306 (e1) | **e2** — e1 has the run's LOWEST loss (0.8318) and NOPs 95% of real meetings, 2/20 curated |
+
+  The `selfdistil-e3` row is the one to remember: its lowest-loss checkpoint is a model that
+  abstains on almost everything. **Export both candidate epochs and MEASURE. Never infer the
+  artifact from the loss curve** — same lesson as `sft-dropv3`'s "stable SHARES did not imply
+  stable BEHAVIOUR", now restated for a stable LOSS.
+
+  Also: `runs/selfdistil-e3/checkpoint-918` is CORRUPTED (truncated safetensors, from a
+  disk-full event mid-save), so that run's `final/` is checkpoint-612 — its recorded numbers
+  are an epoch-2 measurement, not the last-epoch measurement every other build reports.
+
+### `arcsum-eval` SUPERSEDES `asr_gate.py` — 2026-09-03, after a shipped-and-rolled-back build
+
+`src/arcsum/evalkit/` + `arcsum-eval`. Read `runs/next-iteration-plan.md` for the full
+measurement record. **`asr_gate.py`'s `curated` count is now known to reward the failure it
+was meant to catch**: it scores a meeting curated when the summary clears a LENGTH floor, and
+a 553-character confabulation built from ONE churned memory point clears it easily. The
+number that justified shipping `mixed-e3` (19/20) was counting exactly that.
+
+**What happened, because the shape recurs.** `mixed-e3` beat `v5` on every offline gate
+(probe 3/27 -> 8/27, real-ASR "curated" 17/20 -> 19/20, all three G3 gates passing), was
+published to the demo, and churned on the first real meeting a user ran: 6 chunks -> 1
+surviving point, 4 `restates dropped` events, ARC frozen from step 0, then 553 characters of
+confident strategy prose. **Every signal was already being recorded and none was
+aggregated** — `Outcome.churn_points` fired correctly 4 times and no gate ever reduced it to
+a number.
+
+The instruments now exist (`evalkit.behaviour`: churn, starvation, confabulation,
+under-rendering, abstention; `evalkit.grounding`: deterministic reference-free fabrication;
+`evalkit.provenance`: server identity + corpus content hashing + a comparison that REFUSES).
+Measured on 20 real ASR meetings, cache-on:
+
+| build | clean | churn | starved | specifics | ungrounded |
+|---|---|---|---|---|---|
+| `v5` (shipped) | 8/20 | 30.8% | 7 | 23 | 43.5% |
+| `mixed-e3` (rolled back) | **14/20** | 15.4% | **2** | 11 | 18.2% |
+| `s234-e3` ep2 | 12/20 | **0.0%** | 5 | 7 | 28.6% |
+
+**Read `specifics` beside `ungrounded` always.** A build asserting 5 specific claims across
+20 meetings scores a perfect fabrication rate and is not thereby faithful — it has stopped
+saying anything. That is how the S1 grounding FILTER passed while starving the model.
+
+### Three pool defects found by these instruments, with what fixing each did
+
+1. **Churn is LEARNED and removable.** 106 of 4,540 reading rows (2.3%) have an applied
+   `ADD` that merely restates a point `DROP`ped in the same step (verified with the
+   harness's own `guards.restates_dropped`, NOT a proxy — a crude prefix test reports 43%
+   by counting legitimate revision). Deleting them plus 323 no-op ARC ops took churn
+   **28.2% -> 0.0%** (`runs/s234-e3`).
+2. **323 ARC ops the harness refuses 100% of the time.** 16.9% of consecutive ARC emissions
+   re-send the previous step's ARC verbatim; `apply_ops` rejects every one as
+   `arc unchanged`. The pool was spending output budget teaching a rejected op.
+3. **The `SYNTHESIZE` supervision is structurally unfaithful — the big one.** Of 3,376
+   specific claims in the 450 `SYNTHESIZE` targets, **1,347 (39.9%) are absent from the
+   memory the target was written from**, across 45% of rows. §2.2 stage 3 composes the
+   target from the whole-meeting gold summary, not from the memory, so **the target is not a
+   function of its input** — the model is shown 450 times that the right answer to a memory
+   contains things absent from it. `tools/regen_synth.py` repairs this by re-asking the
+   teacher for a summary of the memory ALONE. **Filtering instead of repairing is REFUTED**
+   (`runs/clean-e3`): it removes 37% of synthesis rows, concentrated at high occupancy, and
+   the model stops asserting specifics at all.
+
+**When classifying pool rows, classify precisely.** A SYNTHESIZE row is one whose prompt
+starts `MEMORY:` (`build_synth_prompt` is `build_memory_view`); reading rows carry a CHUNK;
+the baseline's reduce rows start `SUMMARIES:`. Classifying by "no CHUNK" sweeps up the
+baseline's reduce rows — done here, and only harmless because there are 4 of them.
+
+### Local evaluation CANNOT reproduce deployed decoding — measured, 2026-09-03
+
+`arcsum-eval --backend llama-cpp` exists to run the DEPLOYED stack, and it still does not
+reproduce the demo's failure. Same GGUF, same transcript:
+
+    llama-server, GPU, cache on                 -> 4 points, 0 churn
+    llama-cpp-python, CPU, 8 threads, cache on  -> 4 points, 0 churn
+    llama-cpp-python, CPU, 2 threads, cache on  -> 4 points, 0 churn   (the demo's setting)
+    the HF Space demo itself                    -> 1 point,  4 churn   <- NOT REPRODUCED
+
+Greedy decoding at `temperature=0` is deterministic only for a FIXED floating-point
+reduction order, and that order depends on the host CPU and the kernels llama.cpp selects.
+**A local scorecard is necessary and not sufficient.** Production logs are the instrument
+that actually caught this — which is what the demo's debug-export button is for.
+
+`data/asr_eval_v1/` = the 20 ASR meetings PLUS `dram-supply`, the meeting that failed and
+was in NO evaluation corpus. Use it, and re-baseline rather than working around the
+comparability refusal.
+
+### Real-ASR gate history — `tools/asr_gate.py` — kept for the regression it caught
 
 **No §5.2 gate protects against this.** G1-G4 are all measured on MeetingBank-derived
 text: translated, clean, in-distribution for the training corpus. Real ASR is neither.
@@ -511,6 +686,11 @@ it rather than reproducing the format.
 | `repro_pool_v2.py` | re-renders a stored pool's prompts after a `PROMPT_VERSION` bump. **The pool holds FOUR prompt shapes** (reading step / baseline map / baseline reduce / synthesize) sharing step indices; only reading steps take `POSITION`. Chunk counts are recomputed from the transcript, never inferred from the max step index |
 | `run_probe.py` | runs G1 **and records the artifact** with every generation knob. Use this for any G1 claim |
 | `measure_grounding.py` | character-trigram containment of each emitted point in its own chunk, per domain. Distinguishes "invented" from "grounded but badly selected" |
+| `clean_pool.py` | removes the three measured pool defects (churn rows, no-op ARC ops, ungrounded synthesis targets) and swaps in corrected reversal rows. Reports a before/after count per surgery, and retention BY OCCUPANCY — the grounding filter cuts hardest at high occupancy, which is the regime that already fails |
+| `regen_synth.py` | repairs `SYNTHESIZE` targets by re-asking the teacher for a summary of the memory ALONE. **Needs `--jinja` AND `chat_template_kwargs: {enable_thinking: false}`** — without the second the teacher returns its reasoning as the target (measured: 0/20 repaired, 1,483 chars of `我們需要回答使用者：…`) |
+| `enrich_points.py` | puts FIGURES back into gold `ADD` targets. 99% of chunks contain a specific but only 42% of gold ADDs carried one, and the student tracks its supervision (33%) — so vagueness is a DATA ceiling, not a capacity limit. **The cap is not the cause**: ADDs with and without a specific have the same length (17.6 vs 17.7 tokens against a cap of 25). Every added figure must appear in ITS OWN CHUNK — the guard rejected 33 teacher fabrications (`850`, `CSULB`, `300/696`) that would otherwise have taught the model to attach plausible numbers, which is strictly worse than the vagueness it replaces |
+| `measure_memory.py` | what the READING step captured, read off the memory directly. **No §5.2 gate looks at the reading step in isolation** — G2/G3/ASR all see it only through synthesis, which can mask a thinner memory by writing about it more fluently. `numerals` is the column padding cannot inflate |
+| `cliff_curve.py` | synthesis output length vs memory occupancy, against a FIXED point pool. **Always pass `--pool-file`**: on a hand-written clean pool `v5` shows NO cliff, because a clean pool is teacher-shaped and therefore in-distribution. The cliff needs a REAL student-authored memory to appear |
 
 ### The prior project is a different, superseded system — and it lives on `pi-agent`
 

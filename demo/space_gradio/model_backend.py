@@ -52,7 +52,9 @@ class ArcsumModel:
         #   trained prompt (closed think) probe 2/27   356 chars   3.6 details
         #
         # So v5's train/serve prompt mismatch is harmless. Do not "fix" it by switching to
-        # the template without re-measuring.
+        # the template without re-measuring. The same holds for `mixed-e3`, which replaced
+        # v5 here on 2026-09-02: it was trained and gated under the identical plain-ChatML
+        # configuration, so this branch is correct for it unchanged.
         #
         # `plain_chatml` renders `<|im_start|>role\n...<|im_end|>` directly instead of
         # running the GGUF's embedded jinja template. This is NOT a shortcut -- it is the

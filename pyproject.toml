@@ -66,6 +66,7 @@ arcsum-probe        = "arcsum.cli.probe:main"
 arcsum-judge        = "arcsum.cli.judge:main"
 arcsum-score        = "arcsum.cli.score:main"
 arcsum-report       = "arcsum.cli.report:main"
+arcsum-eval         = "arcsum.cli.eval_all:main"
 arcsum-train-sft    = "arcsum.cli.train_sft:main"
 arcsum-trace-report = "arcsum.cli.trace_report:main"
 
@@ -132,6 +133,7 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 "tools/gen_deliberation.py" = ["RUF001", "RUF002", "RUF003"]
 "tools/gen_hedge_synth.py" = ["RUF001", "RUF002", "RUF003"]
 "tools/gen_detail_synth.py" = ["RUF001", "RUF002", "RUF003"]
+"tools/gen_selfdistil_synth.py" = ["RUF001", "RUF002", "RUF003"]
 # Carries zh-TW tool descriptions and instructions verbatim.
 "tools/to_toolcalls.py" = ["RUF001", "RUF002", "RUF003"]
 # Emits the zh-TW reviewer instructions and questionnaire verbatim.
@@ -163,3 +165,22 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 "tests/test_cli_run_arms.py" = ["RUF001", "RUF002", "RUF003"]
 "src/arcsum/supervision/teacher.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_supervision_teacher.py" = ["RUF001", "RUF002", "RUF003"]
+# The cliff probe's fixed point pool is zh-TW by construction — it exists to be fed to a
+# zh-TW model, so fullwidth punctuation is the correct form, not a confusable hazard.
+"tools/cliff_curve.py" = ["RUF001", "RUF002", "RUF003"]
+# The evalkit modules quote zh-TW model output verbatim — the churn failure they exist to
+# catch IS the confusable text, and the grounding matcher's character class is fullwidth
+# punctuation by specification.
+"src/arcsum/evalkit/behaviour.py" = ["RUF001", "RUF002", "RUF003"]
+"src/arcsum/evalkit/grounding.py" = ["RUF001", "RUF002", "RUF003"]
+"tests/test_evalkit.py" = ["RUF001", "RUF002", "RUF003"]
+# zh-TW fixture transcript: fullwidth punctuation is the input format under test.
+"tests/test_cli_eval_all.py" = ["RUF001", "RUF002", "RUF003"]
+# zh-TW fixture text and the demo html it asserts on.
+"tests/test_demo_app.py" = ["RUF001", "RUF002", "RUF003"]
+# Quotes the zh-TW teacher output that motivated the thinking-suppression fix.
+"tools/regen_synth.py" = ["RUF001", "RUF002", "RUF003"]
+# Carries the zh-TW rewrite instruction verbatim.
+"tools/enrich_points.py" = ["RUF001", "RUF002", "RUF003"]
+# Carries the zh-TW composition prompt verbatim.
+"tools/build_reachable_refs.py" = ["RUF001", "RUF002", "RUF003"]

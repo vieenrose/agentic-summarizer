@@ -1,8 +1,51 @@
 # SPEC — Agentic meeting summarizer (Qwen3.5-0.8B + external memory, zh-TW)
 
-**Version:** 1.1 · **Status:** design + execution plan complete; Phase 0a fully closed,
+**Version:** 1.2 · **Status:** design + execution plan complete; Phase 0a fully closed,
 Phase 0b measured on the actual reference device — §9 phases the remaining work
 cheapest-first with gates; §8 attaches each risk to the phase that tests it
+
+**v1.2 changes — the MEASUREMENTS were wrong, and the gates now defend against how.** v1.1's
+architecture is unchanged; what changes is what counts as evidence for a gate. Every item is
+attached to the measurement that forced it (2026-09-03,
+`runs/journal-synthesis-outcome.md`, `runs/grounding-refold.md`, `runs/v12-e3/RESULT.md`):
+
+1. **§5.2.1 replication is part of the gate.** Retraining at a second seed moves churn by up
+   to **27 percentage points** at fixed data — larger than any effect this project has
+   attributed to a data change. Behavioural gates now require ≥2 seeds and are scored on the
+   WORSE one; a paired sign test over meetings explicitly does NOT satisfy this, and one was
+   quoted at p = 2.2e-07 for a comparison whose run-to-run term exceeded the effect.
+2. **§5.2.2 G5 is gated jointly with the new G7 (churn).** Churned re-`ADD`s become points, so
+   they inflate retention, inflate `recorded_points` and reduce `starved` — `v12` improved
+   every one of those *because* it churned. A metric a known defect can improve must be gated
+   with the detector for that defect.
+3. **§5.2.3 a gate corpus must exercise the mechanism it gates.** `data/asr_eval_v1` has a
+   median of 1 chunk against a 16-point working set, so the journal never fills and the
+   v1.0 code path runs. A full v1.1-vs-v1.2 comparison was completed on it before this was
+   noticed, and it produced plausible numbers throughout.
+4. **§5.0 instrument validity.** Three measurement defects in one session, all flattering the
+   model, none caught by a failing test: an "accepted false positive" that was really a bias
+   scaling with output quality; a protocol change whose consumers were never re-validated; and
+   a validation set left on a superseded prompt version, invalidating every best-epoch claim.
+5. **§5.2 the probation verdict must be RE-DERIVED before it is acted on.** The 0/25 result
+   that put the architecture on probation was scored against references that are 46.5%
+   unreachable, using a grounding instrument that understated the agent's faithfulness by up
+   to 15 points. Retirement is one-way; it needs a comparison that is not.
+6. **§4.1 two protocol clarifications**: supervision must express a revision as `revise` (118
+   genuine revisions were being taught as drop-then-add, the surface form of churn), and
+   `synthesis_view()` collapses near-duplicates — with numerals and superseded entries exempt,
+   and with the honest note that this did NOT reduce churn.
+7. **§1 and §5.2 corrected**: both still named MiniCPM5-1B as the student and the baseline
+   model. v1.0 changed it to Qwen3.5-0.8B.
+8. **§5.2.3 the G3 reference set may not correlate with meeting length — currently it does,
+   perfectly.** The 25 meetings carrying reachable references contain **zero** above
+   `POINTS_CAP` chunks; the 15 excluded contain **10 of them**, because the reference builder
+   skips whatever exceeds the teacher's context. So every agent-vs-baseline number to date was
+   measured in the one regime where the journal never fills and the agent runs the v1.0 code
+   path. A route to references for long meetings (the corpus's own per-item gold minutes,
+   reachability-filtered) is specified; hierarchical teacher composition stays forbidden.
+9. **§7 the journal's G4 cost is measured and bounded**: +250 tokens / +4.2 s worst case on
+   one call per meeting, against a ~36 s margin. Reading-step prefill is unchanged, so §7's
+   constant-size argument survives intact.
 
 **v1.1 changes — the memory splits into a working set and a journal, because v1.0 LOST to
 its own baseline.** All four changes are normative and each is attached to the measurement
@@ -86,7 +129,7 @@ measured result.
 
 ## 1. Goal
 
-**Fine-tune MiniCPM5-1B (Q8, 4k context) to drive a lightweight ("smol") agent
+**Fine-tune Qwen3.5-0.8B (Q8, 4k context) to drive a lightweight ("smol") agent
 framework — built in this repo — that produces a zh-TW meeting summary (§3) from a
 zh-TW transcript (§2) too long to fit in one 4k-token pass.** Whole-meeting
 transcripts average ~28k tokens in the source material, far beyond a single 4k
@@ -364,6 +407,38 @@ two ops that the harness could not distinguish from churn — and `guards.restat
 detects that pattern precisely because it fires on both. `revise` makes supersession
 atomic, journalled, and separable from churn in both the training data and the metrics.
 
+**Supervision must express a revision AS `revise` (v1.2, normative).** A gold step that drops
+a point and adds a reworded version of it demonstrates the two-op form, which is the surface
+shape of churn, on exactly the occasions the atomic op exists to cover. Measured on the v1.3
+pool: 118 single-drop-single-add steps are genuine revisions (`第158號宣告支援…` →
+`支援…宣告`; `法案將東斯皮爾大道123號列為歷史地標` → `法案將第10選區東斯皮爾大道123號列為歷史
+地標`) that the migration left unconverted because its text-prefix relatedness test missed
+them. Conversion is by content similarity, and the three-way split is unchanged and still
+load-bearing: **near-identical → churn, drop the row; related-but-changed → `revise`;
+unrelated → genuinely separate `drop` + `add`.** Converting indiscriminately would launder
+churn into a sanctioned op.
+
+**The synthesis view collapses near-duplicates (v1.2, normative).** `apply_ops` refuses only
+EXACT duplicate points, and before v1.1 eviction destroyed most near-duplicates; now nothing
+removes them, so the journal accumulates the same point said twice. Measured: near-duplicate
+entries rose **5.6% → 11.2%** when the synthesis view became journal-shaped. `synthesis_view()`
+therefore merges entries above a high character-trigram similarity, keeping the later phrasing.
+
+Two constraints on that merge, both normative because both were found by measurement:
+
+* **Points carrying different numerals are never merged.** `第1項決議` and `第11項決議` score
+  0.667 similarity and would have collapsed; this corpus is full of agenda items, ordinance
+  numbers and dollar amounts distinguished by exactly one figure, and merging those loses a
+  distinct decision.
+* **Superseded entries are exempt.** A revision's two halves are near-duplicates by
+  construction — that is what a revision is — and collapsing them would delete precisely the
+  evidence G1 measures.
+
+**Honest scope: this did not reduce churn.** It was built as a churn fix and, measured at two
+seeds, is not one (`v13` mean 23.0% against `v12`'s 23.4%). It is retained because it makes the
+synthesis input truthful and produced the most stable retention measured (0.936 at both seeds).
+A mechanism measured in the data is not thereby a demonstrated cause in the model.
+
 **One batched call, not one call per operation.** Both forms are valid Qwen tool calls;
 the choice is measured. For the same three operations: edit lines 36 tokens, **one
 batched call with JSON arguments 45 (1.25x)**, one batched call with XML parameters 71
@@ -560,6 +635,39 @@ zh-TW:
 | summary length | keep, in characters and in MiniCPM5 tokens |
 | QAEval | **dropped** — needs Chinese QG+QA models, no supported zh path. Replaced by the faithfulness judge below, not left unmeasured. |
 
+### 5.0 Instrument validity (v1.2, normative)
+
+Three measurement defects were found in a single session (2026-09-03), each producing
+plausible numbers for weeks, and none caught by a failing test. They share one shape: the
+code still ran and still returned something readable. Three rules follow.
+
+**1. A documented false positive must be MEASURED and BOUNDED, never merely acknowledged.**
+`evalkit/grounding.py` declared numeral-system reformatting an "accepted false positive". It
+was not a constant background rate — it fired hardest on the best-written summaries, because
+the corpus writes figures in Arabic and fluent zh-TW writes them in CJK. The correction was
+~6 points for the crudest checkpoint and ~15 for the best. **When an instrument documents a
+known false positive, measure whether it correlates with the property being measured; if it
+does, it is a bias, not noise, and results cannot be compared across it.**
+
+**2. A protocol change requires re-validating every consumer of every term whose meaning
+changed.** v1.1 split `Memory.points` (the ≤16 working set) from everything recorded.
+`evalkit/behaviour.py` kept reading `points`, so three metrics silently changed meaning —
+`starved` began firing on the best-accumulating meetings, `chars_per_point` could no longer
+detect under-rendering, and G5 had no numerator at all. **All three shifted in the direction
+of flattering the model.** When a version bump changes what a noun denotes, grep for every
+consumer of that noun before reporting anything.
+
+**3. Train/serve artifacts must agree on version, and the check must be enforced, not
+assumed.** The training pool's `prompt_version` was validated while the VALIDATION set's was
+not, so every v1.1 build computed `eval_loss` — the basis of every "best epoch" claim —
+against the superseded `tools-v1` format, whose synthesis rows actively penalise v1.1
+behaviour. Any artifact participating in a reported number carries its version, and mismatches
+are refused loudly rather than tolerated.
+
+**Corollary, normative: `eval_loss` does not select checkpoints here.** Measured across three
+builds, the best-by-loss checkpoint has been the best artifact, the worst artifact, and
+neither. Export the candidate epochs and measure them behaviourally.
+
 ### 5.1 Faithfulness (normative)
 
 A fluent summary that inverts a decision is the failure that matters most, and it is
@@ -567,10 +675,79 @@ the one ROUGE cannot see. It is measured, by two means:
 
 - **Third-family LLM judge.** The contamination rule constrains *which* model, not
   whether to use one: the judge must be neither **Qwen-family** (authored the reference
-  summaries, §2.2) nor **Gemma-family** (translated all corpus text). Any third family —
-  Llama, Mistral, DeepSeek locally, or an API model — is uncontaminated by this
-  pipeline and is permitted. Per claim in the summary: SUPPORTED / CONTRADICTED /
-  UNSUPPORTED against retrieved transcript spans.
+  summaries, §2.2 — and, as of v1.2, the supervision) nor **Gemma-family** (translated all
+  corpus text, and now authors the span references). Any third family — Llama, Mistral,
+  DeepSeek, GLM, Kimi, locally or via API — is uncontaminated by this pipeline and is
+  permitted. Per claim in the summary: SUPPORTED / CONTRADICTED / UNSUPPORTED against
+  retrieved transcript spans.
+
+  **TWO independent third-family judges, with agreement reported (v1.2, normative).** One
+  judge cannot detect its own failure mode, and this project has already paid for that: the
+  single local judge (`gpt-oss-20b`) spent its whole budget in the reasoning channel and
+  returned empty `content` on **21 of 40** meetings, systematically on the LONGEST summaries
+  (median 5,087 chars vs 562) — so G2 silently compared only the control arm's shortest
+  outputs and reported "14 vs 11, FAIL" for what was really 18 vs 109. That is the identical
+  argument §5.0 makes for the grounding instrument: a failure correlated with the property
+  being measured is invisible from inside.
+
+  **FIVE judges from five different third families**, scored by MAJORITY per claim, with the
+  per-claim agreement rate reported.
+
+  **Why an ODD panel.** A verdict needs 3 of 5; there is no tie to break. The panel passed
+  through four while it was being assembled, and four is the one size to avoid: an even panel
+  deadlocks 2-2, and any tiebreaker (seniority, cost, "the fastest one") smuggles an unmeasured
+  preference into the gate. Odd panels resolve on their own.
+
+  **Why five and not two.** Two was the first rule here and is strictly weaker: a disagreement
+  can only be escalated, never resolved, so every split becomes manual work and one flaky judge
+  vetoes a comparison. A larger panel makes the common case self-resolving, survives a judge
+  degrading without collapsing to a bare pair, and — most importantly — makes judge reliability
+  MEASURABLE. Unanimity rate is a property of the panel that a pair cannot report about itself,
+  and the failure this whole rule exists to prevent was exactly a judge failing invisibly:
+  `gpt-oss-20b` returned empty content on 21 of 40 meetings, systematically on the longest
+  summaries, and nothing detected it.
+
+  **An INVERSION is claimed only on unanimity.** A contradicted decision is the failure §5.1
+  exists to catch and the one that most damages a user, so it is held to the strictest
+  standard; any split on an inversion goes to the human slice. Majority is sufficient for
+  SUPPORTED/UNSUPPORTED, which are gradations rather than product defects.
+
+  **Panel disagreement is reported as a result, not smoothed away.** A claim that five
+  independent families cannot agree on is evidence about the CLAIM — usually that the summary
+  is ambiguous rather than wrong — and that is worth surfacing to a human, not averaging into
+  a rate.
+
+  **Cost is part of the choice, and picking on quality alone was wrong.** A G2 pass is
+  ~2,400 calls (40 meetings x 2 arms x ~10 claims x 3 votes). Measured against the provider's
+  published allowances, the first two judges selected here — `glm-5.3` (1,080 calls/month) and
+  `kimi-k3` (~490) — would each consume MONTHS of quota in a single run. Verified working,
+  correct on planted inversions, and affordable:
+
+  | judge | family | calls/month | note |
+  |---|---|---|---|
+  | `opencode:muse-spark-1.3-contributor` | Muse | **226,600** | needs the `/responses` endpoint |
+  | `opencode:mimo-v2.5` | Xiaomi MiMo | 150,400 | reasoning-heavy; needs the capped retry |
+  | `opencode:longcat-2.0` | Meituan | 57,200 | |
+  | `opencode:deepseek-v4-flash` | DeepSeek | 37,800 | fastest, clean bare JSON |
+  | `opencode:hy3` | Tencent Hunyuan | 21,500 | reasoning-heavy; needs the capped retry |
+
+  `glm-5.3-flash` (Zhipu, 7,900) is verified working and held as a substitute if one degrades.
+  Each judge draws on its OWN allowance, so a 5-judge pass costs ~800 calls per judge, not
+  4,000 from one budget — panel size is cheap here; picking an expensive model is not.
+  **Avoid `glm-5.3` (1,080/month) and `kimi-k3` (~490).** Both were chosen here first, on
+  answer quality alone, before their allowances were checked: a single G2 pass is ~2,400 calls,
+  so either would consume months of quota in one run. Judge selection is a cost decision as
+  well as a contamination one.
+
+  **The provider's models do not share one protocol or one output budget**, and both failures
+  masquerade as outages: a `/responses`-only model posted to `/chat/completions` returns an
+  opaque `HTTP 500`, and a reasoning-heavy judge given a 600-token ceiling returns EMPTY
+  content after spending 828 of 860 tokens on reasoning. Both are handled in
+  `judge/client.py`; neither is discoverable from `/v1/models`.
+
+  **A hosted judge is not reproducible** — a provider may change a model behind a stable
+  name — so the model id is recorded with every result and hosted numbers are never compared
+  across dates. Prefer a clean third-family LOCAL judge when one exists.
 - **Human review on a 30-meeting slice.** Given that judge noise runs ±0.4–0.5 on this
   kind of scale, small-n human evaluation is competitive with a large automated run,
   and it is the only check not downstream of some model in this pipeline.
@@ -584,7 +761,7 @@ decision is a product defect, not a fractional score penalty.
 complexity against a strictly simpler system using the same model and the same token
 budget:
 
-**Baseline — map-reduce, no learned memory.** Same MiniCPM5-1B, same ~2.5k chunking:
+**Baseline — map-reduce, no learned memory.** Same Qwen3.5-0.8B, same ~2.5k chunking:
 summarize each chunk independently, concatenate the chunk summaries, one final compress
 pass to §3's form. No state carried across steps, no training beyond what the same
 fine-tune provides. This is deliberately a *fair* opponent — same model, same chunk
@@ -598,8 +775,234 @@ size, same output contract — because a strawman baseline makes the gates meani
 | G2 faithfulness | inversions ≤ baseline, and not worse than baseline on §5.1's judge |
 | G3 quality | beats baseline on ROUGE/BERTScore by more than run-to-run noise. **Coverage/Density are NOT gated** — see below |
 | G4 budget | fits §7's measured envelope on §6's hardware |
-| **G5 retention** (v1.1) | **≥90% of points the model records survive to `SYNTHESIZE`'s input** |
+| **G5 retention** (v1.1) | **≥90% of recorded points reach `SYNTHESIZE`'s input AND are rendered in the summary, with churn no worse than the comparison arm** (v1.2 — see "G5 is inflatable") |
 | **G6 grounding** (v1.1) | **≤10% of the specifics asserted in the summary are absent from the transcript, over ≥20 asserted specifics** |
+| **G7 stability** (v1.2) | **churn ≤ 10% of steps and no meeting with the ARC frozen from step 0**, on the worse of two seeds |
+
+### 5.2.1 Replication is part of the gate (v1.2, normative)
+
+**A behavioural claim from a single training run is not evidence, and this is measured, not
+cautionary.** Three pools were retrained at two seeds each and evaluated on the same 40
+meetings (`runs/journal-synthesis-outcome.md`):
+
+| pool | churn seed 0 | churn seed 1 | spread | retention s0/s1 |
+|---|---|---|---|---|
+| `v11` | 3.5% (13/40 clean) | 13.3% (5/40) | 9.8 pp | 0.837 / 0.836 |
+| `v12` | 29.8% (4/40) | 17.0% (6/40) | 12.9 pp | 0.921 / 0.937 |
+| `v13` | 36.7% (1/40) | 9.2% (6/40) | **27.4 pp** | 0.936 / 0.936 |
+
+Changing only the seed moves churn by up to **27 percentage points** and the clean-meeting
+count by 12 of 40 — larger than any effect this project has ever attributed to a data change.
+
+Therefore, normatively:
+
+1. **Every gate whose criterion is behavioural (G1, G5, G6, G7) is measured at a FIXED
+   THREE seeds and scored on the MEDIAN, with the full spread reported.**
+
+   *(Superseded rule, kept because the correction matters: this said "at least two seeds,
+   scored on the WORSE seed". Worse-of-n is not a fixed standard — it gets harsher as n
+   grows, so a pool is penalised for being replicated more, and two pools measured at
+   different n are not comparable at all. It produced a live misreading: `v18` measured
+   3.6 / 30.8 / 3.9 churn at three seeds and `v17` measured 6.2 / 5.3 / 8.3. Worse-of-n
+   ranks `v17` ahead (8.3 vs 30.8) while the median ranks `v18` ahead (3.9 vs 6.2) — and
+   `v18` is below EVERY `v17` seed on two of its three runs. The worse-seed rule was
+   answering "how bad can one draw be", which is a real question, but it is the OUTLIER
+   RATE question below, not the central-tendency one.)*
+
+   The median is the ship-relevant statistic because it is what a typical training run
+   produces; the spread and the outlier rate carry the risk.
+
+2. **An outlier rate is reported alongside, and a pool with any catastrophic seed is
+   flagged, not silently averaged.** A run is catastrophic when it exceeds G7's churn
+   ceiling by more than 2x. `v18` has one such seed in three on identical data — an
+   optimisation defect, not a supervision one, and it must be fixed or bounded rather than
+   absorbed into an average. A pool may not ship on a good median if its catastrophic rate
+   is non-zero and unexplained.
+
+3. **Three seeds is a floor set by cost, not by statistics.** At ~35 minutes per run it is
+   affordable; it is NOT enough to estimate an outlier rate (one event in three bounds it
+   only very loosely). Report it as "1 of 3", never as "33%".
+4. **Every seed's value is reported, never just the summary**, so a reader can see whether
+   an effect exceeds run-to-run noise and whether the distribution is bimodal.
+5. **A paired sign test over meetings does NOT satisfy this.** It measures whether a
+   difference is consistent across meetings for one pair of checkpoints and is silent on
+   whether a retrained pair reproduces it. A p-value of 2.2e-07 was produced for a
+   comparison whose run-to-run term was larger than the effect.
+6. **Effects smaller than the measured spread are reported as UNRESOLVED, never as a
+   result.** Measured spreads on this setup reach 27 points of churn within one pool.
+7. **Two pools are compared at the SAME seed count**, and a pool measured at fewer seeds
+   than another is reported as such rather than ranked against it.
+
+Training a 0.8B full fine-tune on this pool costs ~35 minutes, so this is affordable.
+
+### 5.2.2 G5 is inflatable by the defect G7 detects (v1.2, normative)
+
+Churned re-`ADD`s become points. They therefore **inflate `recorded_points`, inflate
+retention (duplicated content is trivially easy to render), and reduce `starved`** — so a
+checkpoint can improve every retention-adjacent number *because* it is churning. Measured on
+`v12`: retention 0.837 → 0.921 and starved 12 → 6, alongside churn 3.5% → 29.8%.
+
+**G5 and G7 are therefore gated jointly and reported as a pair.** A retention gain accompanied
+by a churn increase is not a pass. The general rule, which applies beyond these two: **a metric
+that a known defect can improve must be gated together with the detector for that defect.**
+
+### 5.2.3 A gate corpus must exercise the mechanism it gates (v1.2, normative)
+
+`data/asr_eval_v1` has 21 meetings with a **median of 1 chunk and a maximum of 5**, against a
+16-point working set. No meeting in it ever overflows, so the journal never fills, nothing is
+ever retired, and `build_synth_prompt` falls back to the plain working-set view — the exact
+v1.0 code path. An entire v1.1-vs-v1.2 comparison was run on it before this was noticed, and it
+produced plausible aggregate numbers throughout.
+
+**Any gate that depends on the journal (G5, and G1 whenever the reversal spans an eviction)
+must be measured on a corpus where at least 25% of meetings exceed `POINTS_CAP` chunks.**
+`data/heldout_zh` qualifies (10 of 40 exceed 16 chunks); `data/asr_eval_v1` does not and is
+valid only for short-meeting behaviour, which is a different question.
+
+**The G3 reference set must not correlate with meeting length (v1.2, normative).** This rule
+exists because the current one does, perfectly:
+
+| reference set | n | median chunks | max | meetings over `POINTS_CAP` |
+|---|---|---|---|---|
+| `data/heldout_refs_reachable.json` | 25 | 7 | 14 | **0** |
+| the 15 meetings it excludes | 15 | 23 | 37 | **10** |
+
+The exclusion is structural, not incidental: `build_reachable_refs.py` composes a reference by
+reading the WHOLE transcript in one teacher pass — deliberately, so the reference is not a
+map-reduce artifact — and therefore skips every meeting above the teacher's context. Those are
+precisely the meetings in which the working set overflows and the journal does any work.
+
+**Consequence: every agent-vs-baseline result to date was measured where the agent's
+differentiator is switched off by construction.** At ≤14 chunks nothing is ever retired,
+`build_synth_prompt` falls back to the working-set view, and the agent is a more expensive way
+to run the v1.0 code path. Map-reduce's constant 10:1 compression is entirely adequate there.
+The comparison is not wrong, it is *narrow* — and it has been read as a verdict on the
+architecture.
+
+Therefore: a G3 result is reported with the chunk-length distribution of the meetings it was
+computed over, and **the ship decision may not rest on a reference set containing no meeting
+above `POINTS_CAP` chunks.**
+
+**Composing references for long meetings (v1.2, normative).** Hierarchical teacher composition
+stays forbidden — it is the baseline's own algorithm and would tilt the comparison.
+
+**The obvious route is REFUTED by measurement, and is recorded here so it is not retried.**
+Composing from the corpus's own per-item gold minutes (`itemInfo[].Summary`) looks ideal —
+human-authored, present for every meeting regardless of length, independent of both arms. It
+does not work: measured against the transcripts they summarise, the gold item summaries are
+**55.6% ungrounded (499 of 898 specifics)**, worse than the references they would replace
+(38.3%) and far worse than the one-pass teacher route (2.2%). MeetingBank's item summaries are
+written from the minutes documents, so they carry ordinance numbers, dollar figures and
+department codes (`（財務部門2410）`) that are never spoken aloud.
+
+**The permitted route is SPAN-LOCAL rewriting.** `itemInfo` aligns every item to a
+`startTime`/`endTime` in the transcript, and the spans are small — median 366 s (~900 zh
+tokens), 95th percentile ~8k tokens — so each item fits a teacher's context regardless of how
+long the meeting is. For each item the teacher rewrites its gold minute using ONLY the
+transcript span it is aligned to, dropping whatever is not said there; the rewritten items are
+then concatenated in time order and smoothed into §3's prose form.
+
+**Why this is not the baseline's shape**, which is the objection that forbids hierarchical
+composition: map-reduce *chooses what is salient* in each window, and that choice is the thing
+under test. Here the selection is fixed in advance by the human-authored item list, and the
+model is only permitted to REMOVE unreachable detail. The per-window structure is shared; the
+editorial judgement, which is what would tilt the comparison, is not.
+
+Reachability is measured and reported per meeting, exactly as `build_reachable_refs.py` does,
+and a reference set is only usable if its ungrounded rate is comparable to the one-pass route's.
+
+### 5.2.5 Retention is limited by DENSITY, not by the output budget (v1.2, normative)
+
+**Do not relax §3's output cap hoping to raise G5 retention — the cap is not binding, and this
+is measured.** Rendering 90% of everything recorded, at the full `POINT_TOKENS` (25) per point,
+costs a median of **292 tokens and a maximum of 698** across the 40 held-out meetings against a
+**1,000-token** ceiling. **Zero of 40 meetings are budget-limited.** Meanwhile the model emits
+252–432 characters — about one third of what it is allowed — and is terser than its own
+supervision (targets ~505 characters, student 378 and 252).
+
+Six pools across two teachers and two composition modes reproduce one pattern: **churn and
+retention are two faces of a single disposition — how much the model commits to saying per
+recorded point — and every lever tried moves them together in opposite directions.**
+
+| pool | churn (worse seed) | retention (worse seed) | recorded |
+|---|---|---|---|
+| `v13` gemma-3, full replace | 36.7% | **0.936** | 327 |
+| `v14` + `revise` | 17.4% | 0.902 | 398 |
+| `v16` Qwen3.8, full replace | 8.6% | 0.848 | 369 |
+| `v17` Qwen3.8, **additive** | **6.2%** | 0.801 | **423** |
+
+The two axes separate cleanly: **the TEACHER sets the restraint level** (Qwen3.8 covers more
+memory in fewer characters than gemma-3 — 0.991 coverage at 28.9 ch/entry vs 0.955 at 34.6 —
+and the student inherits the compactness), while **the COMPOSITION MODE sets stability**
+(additive beats full-replace on churn for both teachers: 36.7→21.7 and 8.6→6.2).
+
+Therefore, normatively:
+
+1. **Synthesis supervision specifies a per-entry RENDERING DENSITY, not only coverage.** A
+   target that merely mentions a point satisfies coverage and fails retention.
+2. **The coverage gate's containment threshold is recorded with every target set, and a
+   threshold low enough to accept a bare mention is not a coverage gate.** At 0.30 a passing
+   target may say almost nothing about an entry; density gates belong above it.
+3. **A retention figure is only comparable to another at the SAME containment threshold.**
+   Report the threshold with the number.
+
+### 5.2.4 G3 must be decomposed and length-controlled (v1.2, normative)
+
+**ROUGE-F1 against an uncontrolled reference measures length matching, not quality**, and this
+project has now published a conclusion in each direction from that artifact alone. Measured on
+40 held-out meetings, `v14-s1` against its own map-reduce baseline, span references (median 273
+characters) — agent output 310 characters, baseline 874:
+
+| metric | agent wins | baseline wins | mean Δ |
+|---|---|---|---|
+| rouge1 **precision** | **37** | 3 | **+0.151** |
+| rouge1 **recall** | 5 | **35** | **−0.230** |
+| rouge1 **F1** | 32 | 8 | +0.083 |
+
+The agent is more PRECISE (what it says is in the reference); the baseline is more COMPLETE
+(it covers more of the reference). F1 then reports whichever the reference's length favours:
+
+* against the ~870-character one-pass references, the verbose baseline wins — this produced
+  the **"0 wins in 25 meetings"** that put the architecture on probation;
+* against the 273-character span references, the terse agent wins **32/8** — the mirror image,
+  from the same two systems.
+
+Therefore, normatively:
+
+1. **G3 reports precision, recall and F1 separately.** A single F1 number is not a G3 result.
+2. **The candidate/reference length ratio is reported with every G3 result**, per arm. A gate
+   claim is void if the two arms' ratios differ by more than 2x, because at that point F1 is
+   dominated by length.
+3. **A G3 conclusion must be stable across at least two reference sets of materially different
+   length.** A result that reverses between them is a measurement of the references.
+4. **Reference length should match §3's output contract.** A reference far shorter than the
+   product's target length makes terseness look like quality; one far longer does the reverse.
+
+**The reversal is now DEMONSTRATED, not predicted (2026-09-04, `runs/probation-v17/`).** The
+same checkpoint against its own baseline, the same 40 meetings, both reference sets reachable
+(0% ungrounded) and both containing 25% meetings above `POINTS_CAP`:
+
+| references | median chars | agent wins | mean Δ rouge1 | verdict |
+|---|---|---|---|---|
+| verbose span | 702 | 7 / 33 | **−0.103** (p = 0.000) | G3 all **FAIL** |
+| terse span | 273 | 29 / 11 | **+0.049** (p = 0.006) | G3 all **PASS** |
+
+Decomposed, precision and recall are STABLE across both sets (agent 38/2 on precision, baseline
+~36/4 on recall, every p = 0.0000); only F1 flips, because the length ratios move from
+0.55x/1.30x to 1.41x/3.35x. **The agent is consistently more precise and the baseline
+consistently more complete** — a design tradeoff, not a ranking.
+
+**Therefore G3 is WITHHELD for the ship decision, and §5.2's retirement clause cannot be
+executed on G3 evidence.** Retirement is one-way; the gate that would trigger it is not
+decidable as written. Use the reference-free instruments (G5 retention, G6 grounding, G7 churn),
+which do not depend on a reference's length, plus §5.1's human slice.
+
+**Neither existing reference set satisfies (4).** §3 targets flowing prose under 1,000 tokens;
+the span references are ~273 characters and the one-pass references ~870. The span set is
+REACHABLE (0.0% ungrounded) but too terse; the one-pass set is better-sized but 2.2% ungrounded
+and, more seriously, excludes every long meeting (§5.2.3). Building a reference set that is
+both reachable and length-appropriate is a prerequisite for any G3-based ship decision, and
+until one exists **G3 is WITHHELD rather than passed or failed**.
 
 **G5 and G6 exist because v1.0 failed both invisibly.** No gate looked at what the memory
 retained or at whether the summary's specifics were real, so a checkpoint could pass
@@ -616,11 +1019,38 @@ filtered its way to 0.0% ungrounded did so by dropping from 26 asserted specific
 record agentic-memory-at-1B as a measured negative result — that is a legitimate
 outcome, not a failure to report.
 
-**As of 2026-09-03 the baseline is winning and this is not close.** v1.0 lost 0/25 on
-ROUGE against reachable references and records 3.6 grounded specifics per meeting against
-the baseline's 8.5. v1.1 is a targeted fix to the mechanism behind that; **it is on
-probation, and if it does not beat the baseline the architecture should be retired rather
-than iterated on again.**
+**As of 2026-09-03 the baseline is winning.** v1.0 lost 0/25 on ROUGE against reachable
+references and records 3.6 grounded specifics per meeting against the baseline's 8.5. v1.1 is
+a targeted fix to the mechanism behind that; **it is on probation, and if it does not beat the
+baseline the architecture should be retired rather than iterated on again.**
+
+**The probation verdict must be RE-DERIVED before it is acted on (v1.2, normative).** The
+comparison that put the architecture on probation was measured with two instruments since
+found defective, both biased against the agent:
+
+* **G3's references are ~46.5% unreachable** — 211 of 454 specific claims do not appear in the
+  transcript being summarised, because §2.2 stage 3 composed them from MeetingBank's minutes
+  documents. A faithful agent cannot reach them, and surface overlap with such a reference is
+  best achieved by a model that invents in the same style. Only 25 of 40 meetings currently
+  have reachable references (`tools/build_reachable_refs.py`).
+* **The grounding instrument penalised fluent zh-TW.** It compared numerals literally, so a
+  correct `六十` against a source `60` counted as fabricated. The corpus writes Arabic and
+  fluent zh-TW writes CJK, so the bias scaled with output quality: correcting it moved v1.1
+  from 21.2% ungrounded to **6.1%**, and `spec-e3` from 15.6% to **3.1%**, while moving the
+  much cruder `qwen-tools-v5` only 33.3% → 27.3% (`runs/grounding-refold.md`).
+
+* **The 25 meetings it was scored on contain ZERO meetings above `POINTS_CAP` chunks**, while
+  the 15 excluded contain 10 of them (§5.2.3). The verdict was therefore measured entirely in
+  the regime where the journal never fills and the agent executes the v1.0 code path — the one
+  regime in which the architecture is expected to buy nothing.
+
+**A bias that scales with the quality of the thing being measured cannot be subtracted out.**
+Retiring the architecture is a one-way decision; it may only be taken on a comparison that is
+(a) scored against reachable references, (b) measured with the corrected grounding fold,
+(c) replicated per §5.2.1, and (d) computed over a reference set that includes meetings above
+`POINTS_CAP` chunks. Until that comparison exists, the standing decision remains "ship the
+baseline" — which is a shipping decision, not a verdict on the architecture. **"Not measured"
+must not be recorded as "lost."**
 
 **Coverage and Density are diagnostics, never gates** (normative, clarified
 2026-08-27). §5's metric table already classes them as "token-overlap diagnostics" and
@@ -705,6 +1135,20 @@ now an open re-projection item (§9 Phase 0b), not yet recomputed at the correct
 The design's efficiency argument is that memory is capped, so per-step context is
 **constant-size regardless of meeting length** — a 3-hour meeting costs more steps, not
 bigger steps, and never exceeds the context window.
+
+**The v1.1 journal does not threaten this, and the number is recorded so it is not
+re-litigated (v1.2).** The journal is invisible to the READING steps, so per-step prefill is
+unchanged and the constant-size property holds exactly as stated. It enlarges only the single
+`SYNTHESIZE` call, whose input grows from ≤16 working-set entries to everything recorded.
+Measured on the 40 held-out meetings: median 10 entries, **maximum 26** — so the synthesis
+prompt goes from ~480 to at most ~730 tokens, i.e. **+250 tokens on one call per meeting,
++4.2 s at the measured 59.23 t/s prefill**, against a ceiling whose measured margin is ~36 s.
+
+**But it is bounded only by the meeting, not by the protocol**, which is the part worth
+watching: a meeting recording 100 points would produce a ~2.6k-token synthesis prompt. That
+still fits 4k context, and the reading steps — not synthesis — remain the binding constraint.
+**G4 must be re-measured whenever the synthesis input's growth law changes**, not merely when
+the per-step cost does.
 
 **Kill criterion — cleared, conditionally.** Measured wall-clock per meeting is ~12.9 min
 at the all-cores configuration, under the ~20-minute ceiling; the design is shippable as
@@ -881,6 +1325,54 @@ taking a trapezoidal average over SPEC §4.1's ~11-step reading phase (depth ram
 |---|---|---|
 | big-only (`0xC0`) | ~122.7 s | **~22.5 min** — already over the ~20 min gate, before synthesis |
 | all cores (`0xFF`) | ~70.4 s | **~12.9 min** — comfortably under, with headroom for synthesis |
+
+#### CORRECTION (v1.2, 2026-09-05, normative): there is no depth ramp, and G4 must be computed from a measured profile
+
+**The trapezoidal model above contradicts §4.1 and must not be used.** It averages over a
+KV depth "ramping ~linearly from 0 toward ~4k" across the reading phase. That is the cost
+shape of a conversational agent whose history accumulates — and §4.1 states the opposite
+property as a design invariant: **no conversation history crosses steps.** The harness
+re-renders memory into a fresh prompt every step, so depth does not ramp. Every reading
+step has the *same* cost: prefill from empty, then decode at the depth its own prompt
+created. The correct model is therefore a constant, not an integral, which is both simpler
+and less forgiving.
+
+Two measurement rules follow, and getting either wrong has already produced a wrong verdict:
+
+1. **Prefill is measured at depth 0; decode is measured at the PROMPT's depth.** They are
+   not the same depth and it matters: on the reference device decode runs 12.57 t/s at depth
+   0 and 9.87 t/s at depth 3400 — **26% slower where the system actually runs**. The recorded
+   19.0 min figure used the depth-0 rate for decode and that single substitution is the
+   difference between passing and failing.
+2. **Decode LENGTH is a property of the checkpoint, not of the device**, so it must come from
+   the run being scored. It was inherited from `qwen-tools-v5` (~190 tokens/step) and reused
+   for every later checkpoint; the RAFT pool's targets run **1.45×** longer, which alone
+   costs ~2 minutes. **A checkpoint can therefore fail G4 purely by recording more** — which
+   is exactly what fixing starvation does, so G5/G7 and G4 pull against each other and must
+   be read together.
+
+**Measured profile of the deployed configuration** (40 held-out meetings, `iter_chunks` at
+the production budget, prompt rendered through `build_step_prompt` against a SATURATED
+memory — the mid-meeting case, not the empty one the model starts with):
+
+| chunk budget | full prompt (mean) | steps/meeting (mean) |
+|---|---|---|
+| 2,500 | **3,018 tok** | **16.50** |
+| 6,400 | 6,398 tok | 6.08 |
+
+Both differ from the values G4 was previously computed with (3,400 tokens, 15.2 steps).
+
+`arcsum.evalkit.latency` is the normative implementation: it holds the device constants
+*with the depth each was measured at* and projects from a run's own measured token profile,
+which `BehaviourReport.prefill_tokens` / `decode_tokens` now carry off `Trace.usage`. **A G4
+claim not produced by that path is not evidence.**
+
+**G4's ceiling applies to a TYPICAL meeting, not the longest one.** The held-out set's
+longest meeting is 48 chunks against a mean of 16.5, and no configuration brings it near 20
+minutes — at any chunk budget it exceeds 55 minutes. That is a property of the corpus's
+length distribution, not a regression, and a per-meeting universal ceiling would be
+unsatisfiable by construction. Report the mean and the distribution; do not quietly gate on
+the worst case, and do not quietly gate on the best.
 
 **Peak RSS at 4k context, `--no-mmap` (the honest private-storage number, not
 page-cache-backed)**, one real 2,500-token completion:

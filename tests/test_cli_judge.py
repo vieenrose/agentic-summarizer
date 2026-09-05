@@ -262,3 +262,86 @@ def test_max_tokens_flag_reaches_the_client(monkeypatch: pytest.MonkeyPatch, tmp
 
     assert captured, "no request was made"
     assert json.loads(captured[0].data)["max_tokens"] == 9000
+
+
+def _case(mid: str, system: str = "agent") -> dict:
+    return {"meeting_id": mid, "system": system, "transcript": TRANSCRIPT, "prose": PROSE}
+
+
+def test_records_reach_disk_as_they_are_produced_not_at_exit(
+    monkeypatch: pytest.MonkeyPatch, tmp_path
+) -> None:
+    """Durability at the PROCESS boundary, not just the case boundary.
+
+    `judge_cases` already isolates a failing case so one bad claim cannot discard the
+    batch. That left the identical hole one level up: the batch lived in memory until
+    the run ended, so a kill at case 79 of 80 discarded 79 completed judgements. The
+    five-judge panel of 2026-09-05 ran >3 hours per judge, which is long enough that
+    this is the expected case, not the unlucky one. Asserted by observing the file
+    MID-RUN -- checking it only after `judge_cases` returns cannot distinguish
+    streaming from a single write at the end, which is the whole point.
+    """
+    _stub(monkeypatch, "SUPPORTED")
+    out = tmp_path / "scores.jsonl"
+    seen: list[int] = []
+
+    with out.open("w", encoding="utf-8", buffering=1) as f:
+
+        def sink(rec: dict) -> None:
+            f.write(json.dumps(rec, ensure_ascii=False) + "\n")
+            seen.append(len(out.read_text(encoding="utf-8").splitlines()))
+
+        judge_cases(
+            [_case("m1"), _case("m2"), _case("m3")],
+            JudgeClient(),
+            model="local:8080/judge",
+            sink=sink,
+        )
+
+    assert seen == [1, 2, 3], "each record must be on disk before the next case starts"
+
+
+def test_resume_skips_completed_cases_and_appends(
+    monkeypatch: pytest.MonkeyPatch, tmp_path
+) -> None:
+    """`--resume` must not re-spend budget on work already on disk.
+
+    A hosted reasoning judge costs real money per case, so recomputing 79 of 80 cases
+    after an interruption is a budget bug as much as a time one.
+    """
+    _stub(monkeypatch, "SUPPORTED")
+    out = tmp_path / "scores.jsonl"
+    cases = tmp_path / "cases.json"
+    cases.write_text(
+        json.dumps([_case("m1"), _case("m2"), _case("m3")], ensure_ascii=False), encoding="utf-8"
+    )
+
+    argv = [str(cases), "--model", "local:8080/judge", "--votes", "1", "--out", str(out)]
+    main([*argv[:1], *argv[1:]])
+    assert len(out.read_text(encoding="utf-8").splitlines()) == 3
+
+    # Truncate to two records, as an interrupted run would leave it.
+    lines = out.read_text(encoding="utf-8").splitlines()[:2]
+    out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+
+    calls = _stub(monkeypatch, "SUPPORTED")
+    main([*argv, "--resume"])
+    ids = [json.loads(ln)["meeting_id"] for ln in out.read_text(encoding="utf-8").splitlines()]
+    assert ids == ["m1", "m2", "m3"], "resume must append only the missing case"
+    # The saving is the point, so assert the SIZE of the work, not just its result:
+    # three cases at one call each would mean resume skipped nothing.
+    assert len(calls) == 1, f"resume must judge only the 1 missing case, sent {len(calls)}"
+
+
+def test_completed_keys_tolerates_a_truncated_final_line(tmp_path) -> None:
+    """A process killed mid-write leaves a partial JSON line. Refusing to resume on it
+    would defeat resuming exactly when it is most needed.
+    """
+    from arcsum.cli.judge import completed_keys
+
+    out = tmp_path / "scores.jsonl"
+    out.write_text(
+        json.dumps({"meeting_id": "m1", "system": "agent"}) + "\n" + '{"meeting_id": "m2", "sys',
+        encoding="utf-8",
+    )
+    assert completed_keys(out) == {"agent/m1"}

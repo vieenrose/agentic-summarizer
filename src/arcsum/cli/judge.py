@@ -15,6 +15,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from collections.abc import Callable
 from pathlib import Path
 
 from arcsum.judge.client import JudgeClient
@@ -35,8 +36,19 @@ def judge_case(case: dict, client: JudgeClient, *, model: str, votes: int = 3) -
     }
 
 
+def case_key(case: dict) -> str:
+    """The identity a record is resumed on. One definition, used by writer and reader."""
+    return f"{case.get('system')}/{case.get('meeting_id')}"
+
+
 def judge_cases(
-    cases: list[dict], client: JudgeClient, *, model: str, votes: int = 3
+    cases: list[dict],
+    client: JudgeClient,
+    *,
+    model: str,
+    votes: int = 3,
+    sink: Callable[[dict], None] | None = None,
+    fail_sink: Callable[[str, str], None] | None = None,
 ) -> tuple[list[dict], dict[str, str]]:
     """Judge every case, isolating per-case failures. Returns `(records, failures)`,
     where `failures` maps `"<system>/<meeting_id>"` to the exception text.
@@ -53,16 +65,52 @@ def judge_cases(
     evaluate is missing evidence, and silently counting it as clean would bias G2
     toward passing -- the same defect `gate_g2_faithfulness` withholds on when no
     records exist at all.
+
+    **`sink` closes the same hole at the PROCESS boundary, where it reopened.** Isolating
+    per case stopped one claim from discarding the batch, but the batch still lived only
+    in memory until the run ended -- so anything that killed the process discarded it just
+    as completely. That is not hypothetical here: the five-judge panel of 2026-09-05 ran
+    hosted reasoning models at ~2.3 minutes per case, i.e. **over three hours per judge**,
+    entirely uninspectable, with every completed case one `kill` away from being lost. A
+    sink writes each record as it is produced, which buys durability and progress at once
+    -- an on-disk line count is the only way to tell a slow judge from a wedged one.
     """
     records: list[dict] = []
     failures: dict[str, str] = {}
     for case in cases:
-        key = f"{case.get('system')}/{case.get('meeting_id')}"
+        key = case_key(case)
         try:
-            records.append(judge_case(case, client, model=model, votes=votes))
+            record = judge_case(case, client, model=model, votes=votes)
         except Exception as exc:  # any judge failure is per-case data, not fatal
             failures[key] = f"{type(exc).__name__}: {exc}"
+            if fail_sink is not None:
+                fail_sink(key, failures[key])
+            continue
+        records.append(record)
+        if sink is not None:
+            sink(record)
     return records, failures
+
+
+def completed_keys(path: Path) -> set[str]:
+    """Keys already scored in an existing JSONL output, for `--resume`.
+
+    Tolerates a truncated final line: a run killed mid-write leaves a partial record, and
+    refusing to resume because of it would defeat the point of resuming at all.
+    """
+    if not path.exists():
+        return set()
+    keys: set[str] = set()
+    for line in path.read_text(encoding="utf-8").splitlines():
+        line = line.strip()
+        if not line:
+            continue
+        try:
+            rec = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        keys.add(f"{rec.get('system')}/{rec.get('meeting_id')}")
+    return keys
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -90,6 +138,13 @@ def build_parser() -> argparse.ArgumentParser:
     p.add_argument(
         "--out-failures", type=Path, default=None, help="optional: write per-case failures here"
     )
+    p.add_argument(
+        "--resume",
+        action="store_true",
+        help="skip cases already present in --out and APPEND. A hosted reasoning judge runs "
+        "~2.3 min/case, so an 80-case panel is a 3-hour job; without this, any interruption "
+        "re-spends the whole budget to recompute what is already on disk.",
+    )
     return p
 
 
@@ -97,12 +152,35 @@ def main(argv: list[str] | None = None) -> int:
     args = build_parser().parse_args(argv)
     cases = json.loads(args.cases.read_text(encoding="utf-8"))
 
-    client = JudgeClient(budget_usd=args.budget_usd, max_tokens=args.max_tokens)
-    records, failures = judge_cases(cases, client, model=args.model, votes=args.votes)
+    done = completed_keys(args.out) if args.resume else set()
+    if done:
+        cases = [c for c in cases if case_key(c) not in done]
+        print(f"[judge] resuming: {len(done)} already scored, {len(cases)} to go", file=sys.stderr)
 
-    with args.out.open("w", encoding="utf-8") as f:
-        for record in records:
-            f.write(json.dumps(record, ensure_ascii=False) + "\n")
+    client = JudgeClient(budget_usd=args.budget_usd, max_tokens=args.max_tokens)
+    failures_so_far: dict[str, str] = {}
+
+    def write_failures(key: str, err: str) -> None:
+        # Rewritten whole each time: it is a small dict, and a failure file that only
+        # appears at exit is exactly the durability hole `sink` exists to close.
+        failures_so_far[key] = err
+        if args.out_failures is not None:
+            args.out_failures.write_text(
+                json.dumps(failures_so_far, ensure_ascii=False, indent=2), encoding="utf-8"
+            )
+
+    # Line-buffered append: each record is on disk before the next case starts, so the
+    # file is both a crash-safe log and a live progress meter (`wc -l`).
+    with args.out.open("a" if done else "w", encoding="utf-8", buffering=1) as f:
+        records, failures = judge_cases(
+            cases,
+            client,
+            model=args.model,
+            votes=args.votes,
+            sink=lambda r: f.write(json.dumps(r, ensure_ascii=False) + "\n"),
+            fail_sink=write_failures,
+        )
+
     if args.out_failures is not None:
         args.out_failures.write_text(
             json.dumps(failures, ensure_ascii=False, indent=2), encoding="utf-8"

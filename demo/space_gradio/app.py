@@ -73,7 +73,29 @@ MODEL_REPO = os.environ.get("ARCSUM_MODEL_REPO", "Luigi/qwen35-0.8b-arcsum")
 #:
 #: Do not re-promote `mixed-e3` on offline gate numbers alone. It needs a churn-aware and
 #: cache-on measurement first.
-MODEL_FILE = os.environ.get("ARCSUM_MODEL_FILE", "Qwen3.5-0.8B.Q8_0.gguf")
+#:
+#: **Now serving `rl-v3` (2026-09-05), and it was promoted under exactly that discipline.**
+#: It is a GRPO policy trained on the SYNTHESIZE step from the `v18-e3` SFT init, against the
+#: harness's own deterministic reward — retention as the objective, grounding/markup/language/
+#: length as HARD constraints, so coverage can never be bought with fabrication. Measured on
+#: 40 held-out meetings across three training seeds:
+#:
+#:   churn 2.9 / 3.5 / 3.0%   retention 0.929   ungrounded 2.5%   clean 13/40
+#:
+#: Every SFT pool before it traded churn against retention; this is the first checkpoint to
+#: improve churn, retention AND faithfulness at once, and its seed spread is 0.6 points where
+#: SFT pools reached 27.
+#:
+#: **It is deployed for HUMAN EVALUATION, not as a shipped product.** SPEC §5.2 is
+#: all-or-nothing and rl-v3 does not clear it: G1 is 16/27 (a project best, not a pass), G3 is
+#: WITHHELD because it reverses with reference length, G2 was still running at deploy time and
+#: G4 has never been measured on device for v1.1+. §5.1's human slice has never once been run,
+#: and that is what this deployment is for.
+#:
+#: Verified on THIS code path before promotion (llama-cpp, 2 threads, the Space's own config)
+#: against `dram-supply` — the meeting that exposed `mixed-e3`: 6 chunks, 0 churn events, no
+#: `<think>` leak, no language flags, 234 characters of coherent zh-TW.
+MODEL_FILE = os.environ.get("ARCSUM_MODEL_FILE", "rl-v3.Q8_0.gguf")
 
 MAX_TOKENS_STEP = 512
 MAX_TOKENS_SYNTH = 1000
@@ -349,21 +371,75 @@ def render_memory_html(mem: Memory, n_chunks: int, step: int) -> str:
         if mem.arc
         else "<div style='opacity:.5;margin-bottom:8px'><b>ARC</b> — empty</div>"
     )
+    # The id shown is the STABLE pid, not the row position. Under SPEC §4.1 v1.1 the model
+    # addresses points by pid (`drop: [3]`, `revise: [{id: 3}]`), so numbering the display
+    # 1..n would show the reader a different id from the one the model is reasoning about —
+    # and make a correct `drop: [7]` look like it targeted the wrong line.
     pts = (
         "".join(
             f"<div class='ax-point'>"
-            f"<span class='ax-idx'>{i + 1}</span> {_esc(p.text)} "
+            f"<span class='ax-idx'>{p.pid}</span> {_esc(p.text)} "
             f"<span class='ax-dim'>({heuristic_token_len(p.text)}/{POINT_TOKENS})</span></div>"
-            for i, p in enumerate(mem.points)
+            for p in mem.points
         )
         or "<div style='opacity:.5;padding:4px'>no points yet</div>"
     )
     head = (
-        f"<b>POINTS</b> <span style='opacity:.6;font-size:.85em'>"
-        f"{len(mem.points)}/{POINTS_CAP}</span>"
+        f"<b>WORKING SET</b> <span style='opacity:.6;font-size:.85em'>"
+        f"{len(mem.points)}/{POINTS_CAP} — what the model sees each step</span>"
     )
     status = f"step {step}/{n_chunks}" if n_chunks else ""
-    return _panel("External memory", status, arc + head + pts, step_no="3")
+    return _panel("External memory", status, arc + head + pts + render_journal_html(mem),
+                  step_no="3")
+
+
+#: How each journal entry left the working set, in the reader's terms.
+_JOURNAL_REASON = {
+    "evicted": ("退場", "#8b7355", "cap overflow — the working set was full"),
+    "dropped": ("結案", "#5a7d8c", "the model closed this item out"),
+    "superseded": ("後改為", "#8c5a7d", "the model revised this item"),
+}
+
+
+def render_journal_html(mem: Memory) -> str:
+    """The JOURNAL — everything recorded that has left the working set.
+
+    **This is the architecture's whole differentiator, and it was invisible.** Under v1.0 a
+    point evicted by cap overflow was destroyed: on the three longest held-out meetings the
+    model correctly recorded 41, 23 and 27 points and 80%, 65% and 48% were gone before the
+    summary was written. v1.1 retires them here instead, and `SYNTHESIZE` reads THIS, not the
+    16-point working set above.
+
+    A reader judging the summary cannot tell a faithful summary from a lucky one without
+    seeing what it was written from — so for human evaluation (SPEC §5.1) the journal is not a
+    debug view, it is the evidence.
+    """
+    entries = [e for e in mem.journal]
+    if not entries:
+        return (
+            "<div style='margin-top:14px;opacity:.5;font-size:.9em'><b>JOURNAL</b> — empty; "
+            "nothing has left the working set yet</div>"
+        )
+    by_pid = {p.pid: p.text for p in mem.points}
+    rows = []
+    for e in entries:
+        label, colour, _why = _JOURNAL_REASON.get(e.reason, (e.reason, "#777", ""))
+        tail = ""
+        if e.reason == "superseded" and e.superseded_by in by_pid:
+            tail = (f" <span class='ax-dim'>→</span> "
+                    f"{_esc(by_pid[e.superseded_by])}")
+        rows.append(
+            f"<div class='ax-point' style='opacity:.85'>"
+            f"<span class='ax-idx' style='background:{colour}'>{e.point.pid}</span> "
+            f"<span style='color:{colour};font-size:.8em;margin-right:6px'>{label}</span>"
+            f"{_esc(e.point.text)}{tail}</div>"
+        )
+    return (
+        f"<div style='margin-top:14px'><b>JOURNAL</b> "
+        f"<span style='opacity:.6;font-size:.85em'>{len(entries)} retired — invisible to the "
+        f"model, but the summary is written from working set + journal</span>"
+        + "".join(rows) + "</div>"
+    )
 
 
 def render_prose_html(text: str, live: bool) -> str:

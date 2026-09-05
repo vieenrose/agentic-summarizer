@@ -141,7 +141,20 @@ def main(argv: list[str] | None = None) -> int:
     )
     p.add_argument("--max-steps", type=int, default=0, help="cap steps per meeting; 0 = all")
     p.add_argument("--report", type=Path, default=None)
+    p.add_argument(
+        "--save-candidates",
+        type=Path,
+        default=None,
+        help="persist EVERY scored candidate, not just the winner. Sampling is the expensive "
+        "half of RAFT (hours of served inference) and the reward is the cheap half, so "
+        "discarding the losers makes every reward change cost a full re-sample. It cost one: "
+        "DECODE_TOKEN_COST and NEAR_DUPLICATE_PENALTY were added after auditing the kept "
+        "rows, and could not be applied to the samples that had already been drawn. With this "
+        "file a new reward is a re-scoring pass over stored candidates.",
+    )
     args = p.parse_args(argv)
+
+    cand_sink = args.save_candidates.open("w", encoding="utf-8") if args.save_candidates else None
 
     rows = [
         json.loads(ln) for ln in args.pool.read_text(encoding="utf-8").splitlines() if ln.strip()
@@ -218,6 +231,24 @@ def main(argv: list[str] | None = None) -> int:
                 stats["policy_refused"] += detail.get("refused", 0)
                 stats["policy_ops"] += detail.get("applied", 0) + detail.get("refused", 0)
                 cands.append((sc, detail, ops, raw))
+                if cand_sink is not None:
+                    cand_sink.write(
+                        json.dumps(
+                            {
+                                "meeting": meeting,
+                                "step": int(row["step"]),
+                                "sample": k,
+                                "system": system,
+                                "prompt": prompt,
+                                "chunk_text": chunk_text,
+                                "completion": raw,
+                                "score": sc,
+                                **detail,
+                            },
+                            ensure_ascii=False,
+                        )
+                        + "\n"
+                    )
 
             scores = [c[0] for c in cands if c[0] != float("-inf")]
             if not cands:
@@ -289,6 +320,10 @@ def main(argv: list[str] | None = None) -> int:
     if args.report:
         args.report.parent.mkdir(parents=True, exist_ok=True)
         args.report.write_text(json.dumps(report, ensure_ascii=False, indent=1), encoding="utf-8")
+    if cand_sink is not None:
+        cand_sink.close()
+        print(f"[raft] candidates -> {args.save_candidates}", file=sys.stderr)
+
     return 0
 
 

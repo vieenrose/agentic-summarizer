@@ -345,3 +345,37 @@ def test_completed_keys_tolerates_a_truncated_final_line(tmp_path) -> None:
         encoding="utf-8",
     )
     assert completed_keys(out) == {"agent/m1"}
+
+
+def test_single_vote_warns_because_the_gate_is_a_majority_verdict(
+    monkeypatch: pytest.MonkeyPatch, tmp_path, capsys
+) -> None:
+    """`--votes 1` silently weakens G2 and nothing objected when it happened.
+
+    `judge_meeting` defaults to 3 because a judge was measured returning
+    SUPPORTED/UNSUPPORTED/SUPPORTED on identical input. The 2026-09-05 five-judge panel ran
+    with `--votes 1`; two of its judges then agreed on only 28-40% of meetings. The gate's
+    DIRECTION survived, but its absolute rate is not a rate.
+    """
+    _stub(monkeypatch, "SUPPORTED")
+    cases = tmp_path / "cases.json"
+    cases.write_text(json.dumps([_case("m1")], ensure_ascii=False), encoding="utf-8")
+    main(
+        [
+            str(cases),
+            "--model",
+            "local:8080/judge",
+            "--votes",
+            "1",
+            "--out",
+            str(tmp_path / "s.jsonl"),
+        ]
+    )
+    assert "WARNING" in capsys.readouterr().err
+
+
+def test_the_default_vote_count_is_not_quietly_lowered(monkeypatch: pytest.MonkeyPatch) -> None:
+    """A regression guard on the default itself, since the warning above only fires when
+    someone passes the flag explicitly."""
+    args = build_parser().parse_args(["c.json", "--model", "local:8080/j", "--out", "o.jsonl"])
+    assert args.votes >= 3

@@ -157,6 +157,19 @@ def main(argv: list[str] | None = None) -> int:
         cases = [c for c in cases if case_key(c) not in done]
         print(f"[judge] resuming: {len(done)} already scored, {len(cases)} to go", file=sys.stderr)
 
+    if args.votes < 3:
+        # Not a style preference. `judge_meeting` defaults to 3 because the prior project
+        # measured a judge returning SUPPORTED / UNSUPPORTED / SUPPORTED on IDENTICAL input,
+        # and concluded a 0%-inversion gate cannot rest on one stochastic call. The 2026-09-05
+        # five-judge panel was launched with `--votes 1` and nothing objected; two independent
+        # judges then agreed on only 28-40% of meetings (`runs/g2-panel-instrument.md`).
+        print(
+            f"[judge] WARNING: --votes {args.votes} — G2's inversion count is a MAJORITY "
+            "verdict by design, and a single call has been measured flipping on identical "
+            "input. Use this for exploration, not for a gate.",
+            file=sys.stderr,
+        )
+
     client = JudgeClient(budget_usd=args.budget_usd, max_tokens=args.max_tokens)
     failures_so_far: dict[str, str] = {}
 

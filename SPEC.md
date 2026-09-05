@@ -308,7 +308,10 @@ is TranslateGemma's and the *composition* is Qwen's. So this is not a fully synt
 reference — but no human has ever read the zh-TW text that ends up as the training
 target, which is what §4's human-validation stage exists to fix, and why it is
 non-optional. Token counts also shift under translation; the ~28k figure is English,
-and the zh-TW count under MiniCPM5's tokenizer must be measured, not assumed (§7, §8).
+and the zh-TW count under the STUDENT's tokenizer must be measured, not assumed (§7, §8).
+(Historic note: this ratio was first measured under MiniCPM5-1B, the v0.9 student; the student
+is Qwen3.5-0.8B since v1.0, whose 248k vocab tokenises zh-TW differently — 1.577 ch/tok
+measured. Any figure derived from the old tokenizer is not comparable.)
 
 ---
 
@@ -694,7 +697,7 @@ zh-TW:
 | BERTScore | keep, with a Chinese or multilingual encoder |
 | MoverScore | keep — monolingual-English only by default, but the implementation accepts a multilingual BERT, so it survives an encoder swap |
 | Coverage / Density | keep — token-overlap diagnostics, language-agnostic once tokenization is fixed (reuse the character-level tokenization above) |
-| summary length | keep, in characters and in MiniCPM5 tokens |
+| summary length | keep, in characters and in `tokens.char_tokens` (normative); the STUDENT's tokenizer for budget estimates only |
 | QAEval | **dropped** — needs Chinese QG+QA models, no supported zh path. Replaced by the faithfulness judge below, not left unmeasured. |
 
 ### 5.0 Instrument validity (v1.2, normative)
@@ -829,7 +832,9 @@ pass to §3's form. No state carried across steps, no training beyond what the s
 fine-tune provides. This is deliberately a *fair* opponent — same model, same chunk
 size, same output contract — because a strawman baseline makes the gates meaningless.
 
-**Ship gates**, all measured on the same meetings with the same metrics:
+**Ship gates.** G1-G9 are measured on the same held-out meetings with the same metrics, so
+that arms are comparable; **G10 re-measures G5-G9 on a second, real-ASR corpus** (§5.2.8),
+because comparability within one distribution says nothing about the one the product serves.
 
 | gate | criterion |
 |---|---|
@@ -975,41 +980,6 @@ editorial judgement, which is what would tilt the comparison, is not.
 
 Reachability is measured and reported per meeting, exactly as `build_reachable_refs.py` does,
 and a reference set is only usable if its ungrounded rate is comparable to the one-pass route's.
-
-### 5.2.5 Retention is limited by DENSITY, not by the output budget (v1.2, normative)
-
-**Do not relax §3's output cap hoping to raise G5 retention — the cap is not binding, and this
-is measured.** Rendering 90% of everything recorded, at the full `POINT_TOKENS` (25) per point,
-costs a median of **292 tokens and a maximum of 698** across the 40 held-out meetings against a
-**1,000-token** ceiling. **Zero of 40 meetings are budget-limited.** Meanwhile the model emits
-252–432 characters — about one third of what it is allowed — and is terser than its own
-supervision (targets ~505 characters, student 378 and 252).
-
-Six pools across two teachers and two composition modes reproduce one pattern: **churn and
-retention are two faces of a single disposition — how much the model commits to saying per
-recorded point — and every lever tried moves them together in opposite directions.**
-
-| pool | churn (worse seed) | retention (worse seed) | recorded |
-|---|---|---|---|
-| `v13` gemma-3, full replace | 36.7% | **0.936** | 327 |
-| `v14` + `revise` | 17.4% | 0.902 | 398 |
-| `v16` Qwen3.8, full replace | 8.6% | 0.848 | 369 |
-| `v17` Qwen3.8, **additive** | **6.2%** | 0.801 | **423** |
-
-The two axes separate cleanly: **the TEACHER sets the restraint level** (Qwen3.8 covers more
-memory in fewer characters than gemma-3 — 0.991 coverage at 28.9 ch/entry vs 0.955 at 34.6 —
-and the student inherits the compactness), while **the COMPOSITION MODE sets stability**
-(additive beats full-replace on churn for both teachers: 36.7→21.7 and 8.6→6.2).
-
-Therefore, normatively:
-
-1. **Synthesis supervision specifies a per-entry RENDERING DENSITY, not only coverage.** A
-   target that merely mentions a point satisfies coverage and fails retention.
-2. **The coverage gate's containment threshold is recorded with every target set, and a
-   threshold low enough to accept a bare mention is not a coverage gate.** At 0.30 a passing
-   target may say almost nothing about an entry; density gates belong above it.
-3. **A retention figure is only comparable to another at the SAME containment threshold.**
-   Report the threshold with the number.
 
 ### 5.2.4 G3 must be decomposed and length-controlled (v1.2, normative)
 
@@ -1194,6 +1164,41 @@ decision tests a bar no model trained per §4.2 could clear without contradictin
 same training — confirmed directly (2026-08) by running an early, decision-shaped-
 distractor probe against the unfine-tuned teacher itself, which reproduced the same
 "failure" as the fine-tuned student.
+
+### 5.2.5 Retention is limited by DENSITY, not by the output budget (v1.2, normative)
+
+**Do not relax §3's output cap hoping to raise G5 retention — the cap is not binding, and this
+is measured.** Rendering 90% of everything recorded, at the full `POINT_TOKENS` (25) per point,
+costs a median of **292 tokens and a maximum of 698** across the 40 held-out meetings against a
+**1,000-token** ceiling. **Zero of 40 meetings are budget-limited.** Meanwhile the model emits
+252–432 characters — about one third of what it is allowed — and is terser than its own
+supervision (targets ~505 characters, student 378 and 252).
+
+Six pools across two teachers and two composition modes reproduce one pattern: **churn and
+retention are two faces of a single disposition — how much the model commits to saying per
+recorded point — and every lever tried moves them together in opposite directions.**
+
+| pool | churn (worse seed) | retention (worse seed) | recorded |
+|---|---|---|---|
+| `v13` gemma-3, full replace | 36.7% | **0.936** | 327 |
+| `v14` + `revise` | 17.4% | 0.902 | 398 |
+| `v16` Qwen3.8, full replace | 8.6% | 0.848 | 369 |
+| `v17` Qwen3.8, **additive** | **6.2%** | 0.801 | **423** |
+
+The two axes separate cleanly: **the TEACHER sets the restraint level** (Qwen3.8 covers more
+memory in fewer characters than gemma-3 — 0.991 coverage at 28.9 ch/entry vs 0.955 at 34.6 —
+and the student inherits the compactness), while **the COMPOSITION MODE sets stability**
+(additive beats full-replace on churn for both teachers: 36.7→21.7 and 8.6→6.2).
+
+Therefore, normatively:
+
+1. **Synthesis supervision specifies a per-entry RENDERING DENSITY, not only coverage.** A
+   target that merely mentions a point satisfies coverage and fails retention.
+2. **The coverage gate's containment threshold is recorded with every target set, and a
+   threshold low enough to accept a bare mention is not a coverage gate.** At 0.30 a passing
+   target may say almost nothing about an entry; density gates belong above it.
+3. **A retention figure is only comparable to another at the SAME containment threshold.**
+   Report the threshold with the number.
 
 ### 5.2.6 G8: the gate set rewarded saying almost nothing (v1.3, normative)
 
@@ -1411,6 +1416,75 @@ domain (§5.2.8). That is a corpus decision, not a training one, and §8 risk 8 
 
 ---
 
+### 5.3 Conformance status — which normative requirements have EVIDENCE (v1.4, normative)
+
+A specification that states requirements without recording whether they were met produces
+exactly the failure §5.0 exists to prevent, one level up: everything still reads correctly and
+nothing is checkable. **This section is the register. It must be updated whenever a normative
+requirement is executed, and a build may not cite a requirement listed here as unmet.**
+
+#### The panel-aggregation gap: G2 as SPECIFIED has never been measured
+
+§5.1 requires five judges scored by **MAJORITY per claim**, with an **INVERSION claimed only
+on unanimity**, at **3 votes** per claim. What has actually been run (2026-09-05,
+`runs/g2-panel-instrument.md`) is five judges scored **independently at 1 vote each**, then
+aggregated by counting how many judges pass the gate — a different procedure with a different
+error profile, and a weaker one.
+
+The obstacle is structural, not an oversight to argue about: `cli/judge.py::judge_case`
+persists per-meeting COUNTS (`inversions`, `unsupported`, `claims`) and discards the per-claim
+verdicts. **Panel aggregation is therefore impossible from the stored artifacts**, at any vote
+count, because the object it must aggregate is thrown away.
+
+**Consequence: the "4/4 judges PASS" result is evidence of the ORDERING and is not a G2
+verdict.** It is a legitimate reading — the agent has fewer absolute inversions than the
+baseline under every judge, on identical claim sets — and it is not the gate. To close this,
+`judge_case` must persist per-claim verdicts keyed by claim, and the panel aggregation must be
+computed over them.
+
+**Note the direction of the error.** Unanimity is STRICTER than any single judge, so the
+specified G2 would report FEWER inversions for both arms; whether the comparison survives is
+unknown, which is precisely why it must be measured rather than assumed to be conservative.
+
+#### Human-in-the-loop requirements: six required, zero with artifacts
+
+| § | requirement | status |
+|---|---|---|
+| §2.2 stage 4 / §4 | human validation of **every** composed summary before it enters the corpus, called "non-optional" | **NOT DONE** |
+| §4.2 step 2 | sample and hand-check the uncovered-span classification at the Phase-1 gate | **NOT DONE** |
+| §4.3 | human read of 3 full transcripts (translation gate) | **NOT DONE** |
+| §4.3 | blind human preference on synthesis ordering, 20 meetings | **NOT DONE** |
+| §5.1 | human review on a 30-meeting slice | **NOT DONE** |
+| §5.2.7 | G9 human utility, 12 meetings, ≥2 reviewers | **NOT DONE** (added v1.4) |
+
+**Every checkpoint to date was therefore trained on a corpus that does not satisfy its own
+construction spec**, and every reported quality number is downstream of a model at every stage:
+Gemma translated it, Qwen composed it, Qwen distilled it, and LLM judges scored it. §5.1's own
+sentence — human review "is the only check not downstream of some model in this pipeline" —
+describes something that has never happened.
+
+**Two rules follow, both normative.**
+
+1. **§2.2 stage 4 is rescoped, because as written it is unbounded and that is why it was
+   skipped.** Validating 1,250 machine-composed zh-TW summaries is an annotation project that
+   was never costed. It is replaced by: **a random sample of 30, validated before each corpus
+   tranche, with the defect rate reported.** If the sampled defect rate exceeds 10%, the
+   tranche is rejected. A requirement that cannot be met is not a safeguard; it is a comment.
+2. **G9 is the one human requirement that gates.** The others inform; G9 blocks. This is
+   deliberate: five advisory human requirements produced zero artifacts in the project's
+   entire history, so a sixth advisory one would produce zero too. If G9 cannot be resourced,
+   **the honest state of the project is that its central quality claim is unverified**, and
+   §5.2.10's outcome 3 (ship the baseline) is the default rather than the fallback.
+
+#### Other normative requirements without recorded results
+
+| § | requirement | status |
+|---|---|---|
+| §4.2 step 3 | the **ARC ablation** — agent with `ARC` vs `POINTS` only — required in Phase 2, "drop the slot rather than shipping an ungrounded one" | `runs/ablate-e3/` exists with **no `RESULT.md`**; the conclusion was never recorded, so the slot ships unvalidated |
+| §4.2 | report and monitor the edit/`NOP` split; downsample if `NOP` > ~35% of curation targets | partially — `build_sft` reports shares, but the serving NOP rate (46.2%) was never checked against this threshold until §5.2.6 |
+
+---
+
 ## 6. Reference hardware (normative)
 
 - **Target/reference inference device: Oppo Reno 7 5G (model CPH2371), CPU-only
@@ -1429,18 +1503,31 @@ domain (§5.2.8). That is a corpus decision, not a training one, and §8 risk 8 
 Derived from §4.1's protocol. **Step count and token figures now rest on the measured
 en→zh-TW token ratio** (1.215, §9 Phase 0a, 2026-08-21) rather than an English
 projection; **wall-clock and peak RSS are measured** on the actual Reno 7 (§9 Phase 0b,
-2026-08-21), at the all-8-cores configuration the measurement itself selected — but the
-reading-phase wall-clock TOTAL below was integrated over the old 11-step count and is
-now an open re-projection item (§9 Phase 0b), not yet recomputed at the corrected ~14.
+2026-08-21), at the all-8-cores configuration the measurement itself selected. The
+reading-phase total is no longer a projection at all: it is measured per-meeting from each
+run's own token profile (v1.4, and see §9's correction — the old trapezoidal basis is void).
+
+**SUPERSEDED FIGURES REMOVED (v1.4).** Every projected quantity below was replaced by a
+measurement on 2026-09-05; the table previously carried the trapezoidal depth-ramp basis that
+§9's correction retired, and disagreed with it by up to 2.4x. **A budget table that contradicts
+the gate it feeds is worse than no table.** All values are now measured on `rl-v3` over the 40
+held-out meetings via `arcsum-eval`'s persisted token profile, projected by `evalkit.latency`:
 
 | quantity | value | basis |
 |---|---|---|
-| calls per meeting | ~15 (≈14 reading + 1 synthesis) | 28.4k en × 1.215 measured ratio ≈ 34.5k zh-TW tokens ÷ 2.5k chunk (§4.1, §9 Phase 0a) |
-| prefill per meeting | ~50k tokens | ~3.5k × 14 reading steps + ~0.9k synthesis |
-| decode per meeting | ~3.1k tokens | ~150 × 14 edit-line steps + <1,000 prose |
-| wall-clock, reading phase (all cores, `-C 0xFF`) | **~12.9 min, measured at 11 steps — OPEN: needs re-projection at ~14** | 11-step trapezoidal projection from measured per-step depth scaling (§9 Phase 0b); computed before the token-ratio measurement above, so the total (not the per-step figures it is built from) is stale by ~+27% steps |
-| wall-clock, reading phase (big-cores-only, `-C 0xC0`) | **~22.5 min, measured at 11 steps — FAILS the gate, and only gets worse at ~14 steps** | same method and same re-projection caveat; this was the prior project's serving convention and must not be reused here regardless |
+| calls per meeting | **16.5 reading + 1 synthesis** (was: ~15) | `iter_chunks` at the production budget over `data/heldout_zh`, measured |
+| prefill per reading step | **2,811 tokens** (was: ~3,500) | SYS + MEMORY + CHUNK rendered by `build_step_prompt` against a SATURATED memory |
+| decode per reading step | **80.3 tokens** (was: ~150) | `Trace.usage`, measured — **and this is checkpoint-specific, not a device constant** (§9 correction) |
+| prefill per meeting | ~46.4k tokens | 2,811 × 16.5 + ~1k synthesis |
+| decode per meeting | **~1.3k tokens** (was: ~3.1k) | 80.3 × 16.5 + ~250 prose |
+| **wall-clock per meeting, all cores (`-C 0xFF`)** | **16.24 min — MEASURED, PASSES the 20.00 ceiling with +18.8% margin** | prefill at depth 0 (58.15 t/s) + decode at depth 3400 (9.87 t/s); median 14.59, p90 34.54; 30/40 meetings under the ceiling |
+| same, for an UNSTARVED checkpoint | **18.51 min — PASSES, +7.4%** | `raft-s0-e1`, NOP 7.9%, decode 154.3 tok/step. Recording properly costs 2.3 min |
+| wall-clock, big-cores-only (`-C 0xC0`) | **over the ceiling** | the prior project's serving convention; must not be reused regardless |
 | peak RSS, `--no-mmap`, 4k ctx | **829 MiB (Q4_0) – 1.34 GiB (Q8_0), measured** | one real 2,500-token completion, `VmHWM` + `smaps_rollup` `Pss` (§9 Phase 0b) — per-completion, not step-count-dependent |
+
+**`rl-v3` is cheap BECAUSE IT STARVES**, and the budget must be read with §5.2.6 in hand: 80
+tokens per step is what NOPing 46.2% of chunks costs in decode. The unstarved row is the honest
+figure for a build that passes G8.
 
 The design's efficiency argument is that memory is capped, so per-step context is
 **constant-size regardless of meeting length** — a 3-hour meeting costs more steps, not
@@ -1460,11 +1547,16 @@ still fits 4k context, and the reading steps — not synthesis — remain the bi
 **G4 must be re-measured whenever the synthesis input's growth law changes**, not merely when
 the per-step cost does.
 
-**Kill criterion — cleared, conditionally.** Measured wall-clock per meeting is ~12.9 min
-at the all-cores configuration, under the ~20-minute ceiling; the design is shippable as
-specified **only if the on-device serving path is built to use all 8 cores**, not the
-big-cores-only convention the prior project used, which independently measured **over**
-the ceiling on this same hardware. This is Phase 0b in §9, completed without a corpus.
+**Kill criterion — cleared.** Measured wall-clock per meeting is **16.24 min** for `rl-v3`
+and **18.51 min** for an unstarved checkpoint, both under the 20.00-minute ceiling, at the
+all-cores configuration. The design is shippable as specified **only if the on-device serving
+path uses all 8 cores**, not the big-cores-only convention the prior project used, which
+independently measured **over** the ceiling on this same hardware.
+
+**The margin narrows to 7% once G8 is satisfied**, which matters against the transient decode
+stalls measured over 29.5 minutes of continuous load (2 of 14 rounds losing 13-37% of decode,
+with prefill unaffected). Thermal throttling is NOT the risk at 0.8B/Q8 — process contention
+is. A build that records more than `raft-s0-e1` must re-measure rather than interpolate.
 
 ---
 
@@ -1636,7 +1728,7 @@ taking a trapezoidal average over SPEC §4.1's ~11-step reading phase (depth ram
 | big-only (`0xC0`) | ~122.7 s | **~22.5 min** — already over the ~20 min gate, before synthesis |
 | all cores (`0xFF`) | ~70.4 s | **~12.9 min** — comfortably under, with headroom for synthesis |
 
-#### CORRECTION (v1.2, 2026-09-05, normative): there is no depth ramp, and G4 must be computed from a measured profile
+#### CORRECTION (v1.4, 2026-09-05, normative): there is no depth ramp, and G4 must be computed from a measured profile
 
 **The trapezoidal model above contradicts §4.1 and must not be used.** It averages over a
 KV depth "ramping ~linearly from 0 toward ~4k" across the reading phase. That is the cost

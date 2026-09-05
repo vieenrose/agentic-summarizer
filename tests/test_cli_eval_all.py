@@ -230,3 +230,51 @@ def test_every_behaviour_field_a_gate_consumes_is_serialized() -> None:
         if f.name not in ("meeting",) and f'"{f.name}"' not in persisted
     ]
     assert not missing, f"BehaviourReport fields never written to the scorecard: {missing}"
+
+
+def test_g8_fails_a_checkpoint_that_says_almost_nothing() -> None:
+    """SPEC §5.2.6. The gate set rewarded abstention on five of seven gates.
+
+    Every quality gate here is a RATE over what the model chose to say, so shrinking the
+    denominator improves all of them at once. Measured on `rl-v3`, which NOPs 46.2% of chunks
+    and starves 17/40 while passing G2/G4/G5/G6/G7: its STARVED meetings score BETTER than its
+    healthy ones on both gated metrics — retention 0.955 vs 0.915, 4 churn events vs 15.
+
+    Asserted on the real numbers, so the gate is pinned to the case that motivated it.
+    """
+    from arcsum.cli.eval_all import (
+        MAX_STARVED_FRACTION,
+        MAX_UNGROUNDED_RATE,
+    )
+
+    # rl-v3, measured: 17/40 starved, 2.5% ungrounded, 0.55 points/chunk.
+    starved_frac = 17 / 40
+    assert starved_frac > MAX_STARVED_FRACTION, "rl-v3 must FAIL G8's coverage half"
+    assert MAX_UNGROUNDED_RATE >= 0.025, "...while passing G6, which is the whole point"
+
+    # The anti-starvation checkpoint, measured: 5/40 starved.
+    assert MAX_STARVED_FRACTION >= 5 / 40, "raft-s0-e1 must PASS the coverage half"
+
+
+def test_g8_is_joint_with_grounding_because_each_half_alone_is_gameable() -> None:
+    """Coverage alone is satisfiable by FABRICATING; grounding alone by SILENCE. A build has
+    to clear both, which is §5.2.2's rule ("a metric a known defect can improve must be gated
+    with the detector for that defect") applied in the opposite direction."""
+    import inspect
+    import pathlib
+
+    from arcsum.cli import eval_all
+
+    src = pathlib.Path(inspect.getsourcefile(eval_all)).read_text(encoding="utf-8")
+    block = src.partition('"g8_coverage"')[2].partition(")\n    )")[0]
+    assert "grounding_ok" in block, "G8 must include the grounding term, not just coverage"
+    assert "coverage_ok" in block and "density_ok" in block
+
+
+def test_g8_density_floor_reuses_the_reporting_flags_definition() -> None:
+    """The gate and the `starved` flag must not drift apart — restating the threshold is how
+    a gate and the instrument it reads stop meaning the same thing."""
+    from arcsum.cli.eval_all import MIN_POINTS_PER_CHUNK
+    from arcsum.evalkit.behaviour import STARVED_POINTS_PER_CHUNK
+
+    assert MIN_POINTS_PER_CHUNK == STARVED_POINTS_PER_CHUNK

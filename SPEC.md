@@ -778,6 +778,7 @@ size, same output contract — because a strawman baseline makes the gates meani
 | **G5 retention** (v1.1) | **≥90% of recorded points reach `SYNTHESIZE`'s input AND are rendered in the summary, with churn no worse than the comparison arm** (v1.2 — see "G5 is inflatable") |
 | **G6 grounding** (v1.1) | **≤10% of the specifics asserted in the summary are absent from the transcript, over ≥20 asserted specifics** |
 | **G7 stability** (v1.2) | **churn ≤ 10% of steps and no meeting with the ARC frozen from step 0**, on the worse of two seeds |
+| **G8 coverage** (v1.3) | **≤ 25% of meetings flagged `starved`, and ≥ 0.5 recorded points per chunk in aggregate** — gated jointly with G6, see 5.2.6 |
 
 ### 5.2.1 Replication is part of the gate (v1.2, normative)
 
@@ -1098,6 +1099,54 @@ decision tests a bar no model trained per §4.2 could clear without contradictin
 same training — confirmed directly (2026-08) by running an early, decision-shaped-
 distractor probe against the unfine-tuned teacher itself, which reproduced the same
 "failure" as the fine-tuned student.
+
+### 5.2.6 G8: the gate set rewarded saying almost nothing (v1.3, normative)
+
+§5.2.2 established that a metric a known defect can improve must be gated together with the
+detector for that defect, and applied it to churn inflating retention. **The mirror image was
+left open, and a shipped-candidate checkpoint is sitting in it.**
+
+Abstention improves *five of seven gates at once*, because every one of them is a rate over
+what the model chose to say:
+
+| gate | what abstaining does to it |
+|---|---|
+| G2 faithfulness | fewer claims → fewer ABSOLUTE inversions → passes more easily |
+| G4 budget | fewer ops → less decode → more headroom |
+| G5 retention | a handful of points is trivially rendered in full |
+| G6 grounding | few specifics asserted → few that can be ungrounded |
+| G7 stability | almost nothing recorded → almost nothing to churn |
+
+This is measured, not hypothetical. `rl-v3` NOPs **46.2%** of chunks and starves **17 of 40**
+held-out meetings, and passes G2, G4, G5, G6 and G7. Splitting its own meetings by the
+`starved` flag:
+
+| | n | recorded points | retention | churn events |
+|---|---|---|---|---|
+| starved | 17 | 132 | **0.955** | **4** |
+| healthy | 23 | 234 | 0.915 | 15 |
+
+**Its starved meetings score BETTER on both gated metrics.** And the cost is not merely
+coverage: across four independent judges the agent is less faithful *per claim* than the
+baseline (by 0.4 to 9.1 points) while asserting ~2.4x fewer claims of near-identical length,
+and on every judge the starved meetings invert more per claim than the healthy ones. A model
+with an impoverished memory, still asked for a summary, fills the gap — which is the same
+mechanism §4.1 v1.1 cites for why the journal exists.
+
+**G8 gates coverage, jointly with G6.** Neither is meaningful alone: coverage alone is
+satisfiable by fabricating, and grounding alone is satisfiable by silence. A build must clear
+both, and its `specifics` count must always be reported beside its `ungrounded` rate —
+a checkpoint asserting 5 specific claims across 20 meetings has a perfect fabrication rate and
+is not thereby faithful.
+
+Thresholds are set from the observed range rather than chosen: `STARVED_POINTS_PER_CHUNK`
+(0.5) is already the reporting flag's definition, and 25% is loose enough to admit genuinely
+sparse meetings — procedural sessions where little is decided — while excluding `rl-v3`'s
+42.5%. **The point of G8 is to close a direction the gate set could not see, not to be tight.**
+
+**Generalisation of §5.2.2's rule, and the reason both are stated normatively:** *every*
+quality rate here has a denominator the model controls. Gate the numerator too, or the
+degenerate solution is to shrink the denominator.
 
 ---
 

@@ -40,6 +40,15 @@ from arcsum.evalkit.provenance import capture
 from arcsum.evalkit.scorecard import Check, Scorecard
 from arcsum.transcript import parse_transcript
 
+#: SPEC §5.2.6 G8. Loose on purpose: the point is to close a direction the gate set could not
+#: see, not to be tight. 25% admits genuinely sparse procedural sessions while excluding
+#: `rl-v3`'s 42.5%; the density floor is `behaviour.STARVED_POINTS_PER_CHUNK`, reused rather
+#: than restated so the gate and the reporting flag cannot drift apart.
+MAX_STARVED_FRACTION = 0.25
+MIN_POINTS_PER_CHUNK = behaviour.STARVED_POINTS_PER_CHUNK
+#: SPEC §5.2 G6.
+MAX_UNGROUNDED_RATE = 0.10
+
 
 def _reference_checks(report_path: Path) -> list[Check]:
     """Lift already-computed gate verdicts out of a `cli.report` artifact.
@@ -314,6 +323,32 @@ def main(argv: list[str] | None = None) -> int:
             "at least one fabricated specific",
             score=float(gs.meetings_with_any),
             n=gs.n_meetings,
+        )
+    )
+    # --- G8 (SPEC 5.2.6): coverage, gated JOINTLY with G6 ---------------------------------
+    # Abstention improves FIVE of seven gates at once, because every one is a rate over what
+    # the model chose to say. Measured on `rl-v3`, which NOPs 46.2% of chunks and starves 17
+    # of 40 meetings while passing G2/G4/G5/G6/G7: its STARVED meetings score BETTER than its
+    # healthy ones on both gated metrics -- retention 0.955 vs 0.915, 4 churn events vs 15.
+    # So the gate set as it stood rewarded saying almost nothing, and this closes that
+    # direction. Neither half is meaningful alone: coverage alone is satisfiable by
+    # fabricating, grounding alone by silence.
+    starved_frac = bs.meetings_starved / bs.n_meetings if bs.n_meetings else 0.0
+    coverage_ok = starved_frac <= MAX_STARVED_FRACTION
+    density_ok = bs.mean_points_per_chunk >= MIN_POINTS_PER_CHUNK
+    grounding_ok = gs.ungrounded_rate <= MAX_UNGROUNDED_RATE
+    card.add(
+        Check(
+            "g8_coverage",
+            coverage_ok and density_ok and grounding_ok,
+            f"{bs.meetings_starved}/{bs.n_meetings} starved "
+            f"({starved_frac:.1%}, ceiling {MAX_STARVED_FRACTION:.0%}); "
+            f"{bs.mean_points_per_chunk:.2f} points/chunk (floor {MIN_POINTS_PER_CHUNK}); "
+            f"ungrounded {gs.ungrounded_rate:.1%} of {gs.total_checked} "
+            f"(ceiling {MAX_UNGROUNDED_RATE:.0%}) "
+            f"-- joint with G6, since grounding alone is satisfiable by silence",
+            score=starved_frac,
+            n=bs.n_meetings,
         )
     )
 

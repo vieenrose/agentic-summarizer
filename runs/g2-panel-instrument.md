@@ -1,33 +1,60 @@
-# G2's inversion count is instrument-dominated — measured 2026-09-05
+# G2 passes, and the agent is nonetheless LESS faithful per claim — 2026-09-05
 
-Five-judge panel on `rl-v3` vs the map-reduce baseline, 40 held-out meetings each arm
-(`runs/g2-rlv3/`). Two judges complete at the time of writing; three still running.
+Five-judge panel on `rl-v3` vs the map-reduce baseline, 40 held-out meetings per arm
+(`runs/g2-rlv3/`). Three judges complete; two still running. **Paired** over meetings both
+arms have, since judge coverage differs:
 
-| judge | agent inversions / claims | baseline inversions / claims |
+| judge | paired n | absolute inversions (the gate) | per-claim rate | meetings agent fewer / more |
+|---|---|---|---|---|
+| `deepseek-v4-flash` | 39 | 50 vs 119 — **PASS** | 16.8% vs 16.4% | 28 / 5 |
+| `hy3` | 40 | 68 vs 125 — **PASS** | 21.7% vs 16.8% | 27 / 6 |
+| `longcat-2.0` | 33 | 57 vs 81 — **PASS** | 23.0% vs 13.9% | 15 / 8 |
+
+**The gate passes decisively** on all three judges, on the absolute count it is defined over
+and on a paired sign test across meetings.
+
+**And on all three judges the agent is WORSE per claim**, by 0.4, 4.9 and 9.1 points. The
+absolute win is a volume effect: the agent asserts ~2.4x fewer claims (298-314 vs 724-745)
+and writes summaries a third as long (350 vs 943 median characters).
+
+*(An earlier draft of this file read the flat `deepseek` rate as a per-claim noise floor
+common to both arms. With three judges that reading is wrong: the rates are not flat, they
+are ordered, and the ordering is the same every time.)*
+
+## The obvious confound is ruled out
+
+A shorter summary could be made of DENSER claims, each carrying more assertions and so
+easier to contradict — which would make the per-claim comparison meaningless. Measured with
+the judge's own `split_claims` over both arms' prose:
+
+| | median claim length | mean | claims/meeting | prose chars |
+|---|---|---|---|---|
+| agent | 43.0 | 45.4 | 7.0 | 350 |
+| baseline | 46.0 | 47.7 | 19.5 | 943 |
+
+The agent's claims are marginally **shorter**, not denser. The per-claim rates are
+comparable, and the deficit is real.
+
+## It tracks starvation, which is the mechanism SPEC already names
+
+Splitting the agent's own meetings by whether `evalkit.behaviour` flagged them starved:
+
+| judge | starved meetings | healthy meetings |
 |---|---|---|
-| `deepseek-v4-flash` | 53 / 314 (**16.9%**) | 119 / 724 (**16.4%**) |
-| `hy3` | 68 / 314 (21.7%) | 125 / 745 (16.8%) |
+| `deepseek-v4-flash` | 21/116 = **18.1%** (n=17) | 32/198 = 16.2% (n=23) |
+| `hy3` | 30/116 = **25.9%** (n=17) | 38/198 = 19.2% (n=23) |
+| `longcat-2.0` | 34/109 = **31.2%** (n=16) | 45/198 = 22.7% (n=23) |
 
-**The gate PASSES** — its criterion is `inversions ≤ baseline`, and the agent is well under
-on both judges. The direction is trustworthy: both arms are scored by the same instrument
-over claim sets that match exactly (0 claim-count mismatches between judges, so both saw
-identical text).
+Starved meetings invert more per claim on every judge (+1.9, +6.7, +8.5 points). Small n and
+a modest effect, so this is directional evidence rather than proof — but it is the mechanism
+§4.1 v1.1 already states in its own words: an impoverished input is "the pressure that
+produces invention". A model that records 6 points across 37 chunks and is then asked for a
+summary has to fill the gap from somewhere.
 
-**The absolute rate is NOT trustworthy, and should never be quoted as "17% of the agent's
-claims are contradicted."** Three reasons, in order of confidence.
+**Consequence for the work queue: starvation is not only a coverage defect, it is plausibly
+a faithfulness defect too**, and the RAFT reading-step work targets the root of both.
 
-## 1. The per-claim rate is flat across arms
-
-Under `deepseek-v4-flash` the two arms land within half a point of each other — 16.9% vs
-16.4% — despite failing in completely different ways (the agent starves and under-renders;
-the baseline over-asserts from independent per-chunk summaries with no shared memory). Two
-systems with different failure modes measuring the same per-claim rate is the signature of a
-**noise floor**, not of two independent readings of faithfulness.
-
-It also explains the headline: the agent wins the absolute count because it asserts 314
-claims against 724. **It says less.** That is a real property worth reporting — it is the
-same caveat recorded for `sft-dropv7`, where the per-claim rate favoured the baseline 4.9%
-to 7.3% — but it is not the same thing as being more faithful.
+## The absolute RATE is still not trustworthy, even though the ORDERING is
 
 ## 2. The panel ran `--votes 1`, against the design
 

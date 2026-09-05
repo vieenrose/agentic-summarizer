@@ -24,6 +24,7 @@ diverge — the exact bug class this design exists to prevent.
 
 from __future__ import annotations
 
+import re
 from collections.abc import Callable
 from dataclasses import dataclass, field, replace
 
@@ -39,6 +40,48 @@ POINTS_CAP = 16
 #: unlike the prior project's `MIN_PREFIX = 6` latin chars, which was ~one weak word in
 #: en but a highly specific phrase in zh. Ambiguity, not length, is what `find()` guards.
 MIN_PREFIX_TOKENS = 4
+
+#: Character-trigram containment at which two points are "the same point said twice", for
+#: `synthesis_view`'s presentation-level dedup only. Chosen high: this collapses a rendering,
+#: and merging two genuinely distinct decisions would lose content, which is the more
+#: expensive error. At 0.6 the measured near-duplicate rate in the journal-shaped supervision
+#: slice is 11.2% against 5.6% in the pre-journal one.
+NEAR_DUPLICATE_CONTAINMENT = 0.6
+
+
+def _trigrams(text: str) -> set[str]:
+    s = normalize(text)
+    return {s[i : i + 3] for i in range(len(s) - 2)} if len(s) >= 3 else ({s} if s else set())
+
+
+#: Numerals are the one thing that must never be folded away by a similarity test. Kept as a
+#: local pattern rather than importing `evalkit.grounding`: `memory` is harness core and the
+#: evaluation package depends on it, never the reverse.
+_NUMERAL = re.compile(r"\d+|[零〇一二兩三四五六七八九十百千萬億兆]{1,}")
+
+
+def _near_duplicate(a: str, b: str) -> bool:
+    """Symmetric near-duplicate test.
+
+    Symmetric on purpose — containment alone is directional, so a short point fully contained
+    in a longer one scores 1.0 in one direction and much less in the other. Taking the MAX
+    treats "同意搬到 B 棟" and "同意搬到 B 棟大樓並於三月完成" as the same point, which for a
+    summary's purposes they are.
+
+    **Points carrying different numerals are never duplicates, however similar the rest.**
+    Measured while calibrating this: `第1項決議` and `第11項決議` score 0.667 and would have
+    merged, and this corpus is full of agenda items, ordinance numbers and dollar amounts
+    that differ in exactly one figure. Collapsing those loses a distinct decision — the
+    expensive error — while failing to collapse a true duplicate merely leaves the redundancy
+    this function is trying to reduce.
+    """
+    if set(_NUMERAL.findall(normalize(a))) != set(_NUMERAL.findall(normalize(b))):
+        return False
+    ta, tb = _trigrams(a), _trigrams(b)
+    if not ta or not tb:
+        return ta == tb
+    inter = len(ta & tb)
+    return max(inter / len(ta), inter / len(tb)) >= NEAR_DUPLICATE_CONTAINMENT
 
 
 def normalize(text: str) -> str:
@@ -289,14 +332,47 @@ class Memory:
         return None
 
     def synthesis_view(self) -> list[JournalEntry]:
-        """Everything the meeting produced, for `SYNTHESIZE` (SPEC §4.1 v1.1).
+        """Everything the meeting produced, for `SYNTHESIZE` (SPEC §4.1 v1.1), with
+        near-duplicates collapsed.
 
         Journal entries in the order they left, then the surviving working set as
         `reason="kept"`. Superseded points are retained WITH their link rather than
         filtered out: a summary that must report the final state still needs to know a
         reversal happened, which is precisely what G1 measures.
+
+        **The dedup is not tidying — it repairs a measured regression.** `apply_ops` refuses
+        only EXACT duplicate points, so near-duplicates accumulate; before v1.1 eviction hid
+        most of them, and now nothing removes them because retiring a point no longer destroys
+        it. Measured on the supervision slices: near-duplicate entries went **5.6% -> 11.2%**
+        when the view became journal-shaped. `runs/v12-e3` then trained a coverage-gated
+        teacher on that view, which dutifully restated both halves of every pair, and the
+        student generalised "redundancy is correct output" into the reading step —
+        **churn 3.5% -> 29.8%, 23 -> 197 events, paired p = 2.2e-07**.
+
+        Collapsing at PRESENTATION rather than tightening the reading step's duplicate guard
+        is deliberate: the guard would have to refuse an `ADD` at write time, when it cannot
+        yet know whether the two points diverge later, and a wrongly refused `ADD` loses
+        content permanently. Here nothing is lost — the journal still holds every point, and
+        only the rendering merges them.
+
+        A LATER entry wins over an earlier near-duplicate, because the later phrasing reflects
+        the more complete reading of the meeting; superseded entries are exempt, since their
+        whole purpose is to sit beside the text that replaced them.
         """
-        return list(self.journal) + [JournalEntry(p, "kept") for p in self.points]
+        entries = list(self.journal) + [JournalEntry(p, "kept") for p in self.points]
+        out: list[JournalEntry] = []
+        for e in entries:
+            if e.reason == "superseded":
+                out.append(e)
+                continue
+            dup = next((i for i, k in enumerate(out)
+                        if k.reason != "superseded"
+                        and _near_duplicate(k.point.text, e.point.text)), None)
+            if dup is None:
+                out.append(e)
+            else:
+                out[dup] = e
+        return out
 
     def enforce_caps(self) -> None:
         """Apply the POINTS count cap via `spread()`, RETIRING the evicted points to the

@@ -176,3 +176,26 @@ def test_render_malformed_returns_the_raw_text() -> None:
 
 def test_empty_text_yields_no_ops() -> None:
     assert parse_ops("") == []
+
+
+def test_render_op_handles_every_op_type_including_revise():
+    """`Revise` landed with SPEC §4.1 v1.1 and `render_op` was not updated, so it raised
+    "unhandled op type" the first time a checkpoint emitted one — during the G1 REVISION
+    probe, the very gate the op exists to serve. This asserts EXHAUSTIVENESS rather than
+    spot-checking one case, so the next op added cannot repeat it."""
+    from arcsum.ops import Add, Arc, Drop, Malformed, Nop, Revise, render_op
+
+    every = [
+        Add("同意搬到 B 棟大樓"),
+        Drop(prefix="同意搬到"),
+        Drop(pid=3),
+        Revise(1, "改為撤回"),
+        Arc("會議討論搬遷案"),
+        Nop(),
+        Malformed("garbage", "unparseable"),
+    ]
+    for op in every:
+        assert render_op(op), f"render_op produced nothing for {op!r}"
+
+    assert render_op(Drop(pid=3)) == "DROP #3"
+    assert render_op(Revise(1, "改為撤回")) == "REVISE #1 - 改為撤回"

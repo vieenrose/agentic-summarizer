@@ -29,12 +29,21 @@ RELEVANT, whether a relation between two grounded entities is invented, or wheth
 omission distorts. Those need a judge. This is the floor, not the ceiling: a summary can
 score perfectly here and still be badly unfaithful. Report it beside G2, never instead.
 
-**Known false positives, accepted.** A legitimately-present value reformatted between
-source and summary (`兩百萬` -> `2000000`) reads as ungrounded, because grounding is a
-literal containment test rather than a parse. `normalise_for_match` folds width and
-punctuation, which removes the largest class of these, but not reformatting across numeral
-systems. The rate is reported (`n_checked`) alongside the count so a reader can judge
-whether a given delta is signal.
+**The numeral-system false positive is FIXED, and it was not cosmetic.** This module used to
+accept that a value reformatted between numeral systems (`兩百萬` vs `2000000`) read as
+ungrounded. That looked like a rounding error and was not: the corpus writes figures in
+Arabic while fluent zh-TW output writes them in CJK, so the mismatch fired SYSTEMATICALLY on
+exactly the well-written summaries. Measured while building journal synthesis supervision, it
+rejected 3 of 6 faithful teacher outputs — `六十` against a source `60`, `十二` against `12`,
+`九十萬` against `90萬`. `cjk_to_int` + `numeral_forms` now fold both directions.
+
+**Consequence for previously reported numbers**: the change is strictly more permissive, so
+every ungrounded rate measured before it is an UPPER BOUND and is not comparable to one
+measured after. Re-measure rather than compare across the boundary.
+
+**Remaining false positives, accepted.** Approximations (`約五千多` against `5,200`) and
+values that are computed rather than quoted still read as ungrounded. The rate is reported
+(`n_checked`) alongside the count so a reader can judge whether a given delta is signal.
 
 **Known false negatives, also accepted.** The claim token is the NUMERAL alone; units are
 not part of it. So a summary asserting `十五萬美元` against a source that says `十五萬人`
@@ -61,7 +70,12 @@ ARABIC_NUMBER = re.compile(r"\d[\d,.]*\d")
 
 #: CJK numerals, the class `prose.ungrounded_numbers` states it cannot see. Requires two
 #: characters so that a bare 一 or 十 inside ordinary prose is not treated as a claim.
-CJK_NUMBER = re.compile(r"[零一二三四五六七八九十百千萬億兆壹貳參肆伍陸柒捌玖拾佰仟]{2,}")
+#:
+#: `兩` and `〇` were missing until the numeral fold was built, and their absence silently
+#: MIS-VALUED claims rather than merely missing them: `兩百萬` matched as `百萬`, which reads
+#: as 1,000,000 — so a correct figure was compared against half its own value. Any character
+#: `cjk_to_int` understands must appear here, or the two disagree about where a numeral starts.
+CJK_NUMBER = re.compile(r"[零〇一二兩三四五六七八九十百千萬億兆壹貳參肆伍陸柒捌玖拾佰仟]{2,}")
 
 #: Latin/alphanumeric identifiers: case numbers, ordinance ids, model names. These are
 #: high-value because they are exactly what a model invents when it pattern-matches a
@@ -92,6 +106,77 @@ class GroundingReport:
         return self.n_ungrounded / self.n_checked if self.n_checked else 0.0
 
 
+#: CJK numeral characters, split by the role they play in a numeral. `兩` is included as a
+#: digit because `兩百萬` is ordinary zh-TW for 2,000,000.
+_CJK_DIGIT = {
+    "零": 0,
+    "〇": 0,
+    "一": 1,
+    "二": 2,
+    "兩": 2,
+    "三": 3,
+    "四": 4,
+    "五": 5,
+    "六": 6,
+    "七": 7,
+    "八": 8,
+    "九": 9,
+    "壹": 1,
+    "貳": 2,
+    "參": 3,
+    "肆": 4,
+    "伍": 5,
+    "陸": 6,
+    "柒": 7,
+    "捌": 8,
+    "玖": 9,
+}
+_CJK_UNIT = {"十": 10, "百": 100, "千": 1000, "拾": 10, "佰": 100, "仟": 1000}
+_CJK_BIG = {"萬": 10**4, "億": 10**8, "兆": 10**12}
+
+
+def cjk_to_int(token: str) -> int | None:
+    """The integer a CJK numeral denotes, or `None` if it is not one.
+
+    Handles both ways zh writes numbers, because both occur in this corpus: MULTIPLICATIVE
+    (`六十` = 60, `九十萬` = 900,000) whenever a unit character is present, and POSITIONAL
+    (`二零一六` = 2016, how years are written) when the token is bare digits.
+    """
+    if not token:
+        return None
+    if any(c in _CJK_UNIT or c in _CJK_BIG for c in token):
+        total = section = number = 0
+        for ch in token:
+            if ch in _CJK_DIGIT:
+                number = _CJK_DIGIT[ch]
+            elif ch in _CJK_UNIT:
+                section += (number or 1) * _CJK_UNIT[ch]
+                number = 0
+            elif ch in _CJK_BIG:
+                total += (section + number or 1) * _CJK_BIG[ch]
+                section = number = 0
+            else:
+                return None
+        return total + section + number
+    if all(c in _CJK_DIGIT for c in token):
+        return int("".join(str(_CJK_DIGIT[c]) for c in token))
+    return None
+
+
+def numeral_forms(value: int) -> set[str]:
+    """The written forms a value plausibly takes, as normalised match keys.
+
+    Beyond the plain integer this emits the MIXED forms zh actually uses — `900000` is
+    written `90萬` far more often than in full — because grounding is a containment test
+    and `90萬` does not contain `900000`.
+    """
+    forms = {str(value)}
+    for ch, mag in _CJK_BIG.items():
+        if value >= mag and value % mag == 0:
+            forms.add(f"{value // mag}{ch}")
+    return forms
+
+
 def normalise_for_match(text: str) -> str:
     """Fold the differences that are formatting rather than fact.
 
@@ -102,6 +187,43 @@ def normalise_for_match(text: str) -> str:
     """
     folded = normalise(text)
     return re.sub(r"[\s,，、.。·\-–—]", "", folded)
+
+
+def _haystack(source: str) -> str:
+    """The source, plus an Arabic rendering of every CJK numeral it contains.
+
+    **This is what makes the numeral test symmetric**, and it corrects a false-positive class
+    the module previously documented as accepted. The corpus writes figures in Arabic
+    (`60天`, `12個月`) while fluent zh-TW output writes them in CJK (`六十天`, `十二個月`), so
+    a literal containment test called correct prose a fabrication. Measured while building
+    journal synthesis supervision: this alone rejected 3 of 6 teacher outputs, every one of
+    them faithful — `六十` against a source `60`, `十二` against `12`, `九十萬` against `90萬`.
+
+    Appending the converted forms handles BOTH directions with one mechanism: a CJK claim is
+    checked against its own Arabic variant here, and an Arabic claim matches the rendering
+    appended for a CJK source. Doing it on the haystack rather than per claim keeps `check`
+    a single containment test.
+
+    Note this makes the instrument STRICTLY MORE PERMISSIVE — it can only turn a reported
+    fabrication into a pass, never the reverse. Rates measured before this change are
+    therefore upper bounds, not comparable point estimates.
+    """
+    base = normalise_for_match(source)
+    extra = set()
+    for m in CJK_NUMBER.findall(source):
+        v = cjk_to_int(normalise_for_match(m))
+        if v is not None:
+            extra |= numeral_forms(v)
+    return base + ("\n" + "\n".join(sorted(extra)) if extra else "")
+
+
+def _claim_forms(claim: str) -> set[str]:
+    """A claim plus the alternate numeral renderings that denote the same value."""
+    forms = {claim}
+    v = cjk_to_int(claim)
+    if v is not None:
+        forms |= numeral_forms(v)
+    return forms
 
 
 def claims_in(text: str) -> tuple[str, ...]:
@@ -120,13 +242,17 @@ def claims_in(text: str) -> tuple[str, ...]:
 
 
 def check(meeting: str, summary: str, source: str) -> GroundingReport:
-    """Grounding of one summary against the transcript it was built from."""
-    haystack = normalise_for_match(source)
+    """Grounding of one summary against the transcript it was built from.
+
+    A claim counts as grounded when ANY of its equivalent numeral renderings appears; see
+    `_haystack` for why the numeral-system fold is required rather than cosmetic.
+    """
+    haystack = _haystack(source)
     claims = claims_in(summary)
     return GroundingReport(
         meeting=meeting,
         n_checked=len(claims),
-        ungrounded=tuple(c for c in claims if c not in haystack),
+        ungrounded=tuple(c for c in claims if not any(f in haystack for f in _claim_forms(c))),
     )
 
 

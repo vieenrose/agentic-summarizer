@@ -210,8 +210,13 @@ def test_empty_content_retry_doubles_the_token_budget(monkeypatch: pytest.Monkey
     assert second > first
 
 
-def test_non_local_model_is_rejected_with_a_clear_message(monkeypatch: pytest.MonkeyPatch) -> None:
-    with pytest.raises(ValueError, match="no hosted provider"):
+def test_an_unrecognised_scheme_is_rejected_with_a_clear_message(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """A bare provider/model string names no transport this client implements. The message
+    lists BOTH supported schemes, because the previous wording ("no hosted provider is
+    configured") became false once the third-family hosted judge landed."""
+    with pytest.raises(ValueError, match="neither local:"):
         JudgeClient()("openai/gpt-4", "sys", "user")
 
 
@@ -431,3 +436,74 @@ def test_retry_caps_reasoning_effort_after_an_empty_response(
     assert len(bodies) == 2
     assert "chat_template_kwargs" not in bodies[0]
     assert bodies[1]["chat_template_kwargs"] == {"reasoning_effort": "low"}
+
+
+# --- hosted third-family judge (SPEC 5.1) -------------------------------------------
+
+def test_hosted_scheme_resolves_and_local_is_unaffected():
+    from arcsum.judge.client import resolve_hosted_model, resolve_local_url
+    assert resolve_hosted_model("opencode:glm-5.3") == "glm-5.3"
+    assert resolve_hosted_model("local:8081/gpt-oss") is None
+    assert resolve_local_url("opencode:glm-5.3") is None
+
+
+def test_hosted_judge_still_refuses_a_contaminated_family():
+    """The provider offers `qwen3.8-flash`. The contamination rule is about the MODEL,
+    not the transport, so routing through a hosted endpoint must not launder it."""
+    from arcsum.judge.client import ContaminatedJudgeError, JudgeClient
+    with pytest.raises(ContaminatedJudgeError, match="qwen"):
+        JudgeClient()("opencode:qwen3.8-flash", "s", "u")
+
+
+def test_hosted_judge_requires_a_credential_from_the_environment(monkeypatch):
+    from arcsum.judge.client import HOSTED_KEY_ENV, JudgeClient
+    monkeypatch.delenv(HOSTED_KEY_ENV, raising=False)
+    with pytest.raises(RuntimeError, match=HOSTED_KEY_ENV):
+        JudgeClient()("opencode:glm-5.3", "s", "u")
+
+
+def test_a_200_carrying_an_error_body_is_raised_not_scored(monkeypatch):
+    """The provider returns quota and data-policy refusals as HTTP 200 with an `error`
+    key. Parsing that as an empty verdict would silently score every claim UNSUPPORTED
+    and depress whichever system happened to be judged during the outage."""
+    import json as _json
+
+    from arcsum.judge import client as C
+
+    monkeypatch.setenv(C.HOSTED_KEY_ENV, "sk-test")
+
+    class _R:
+        def read(self):
+            return _json.dumps({"error": {"type": "GoUsageLimitError",
+                                          "message": "Monthly usage limit reached"}}).encode()
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+
+    monkeypatch.setattr(C.request, "urlopen", lambda *a, **k: _R())
+    with pytest.raises(RuntimeError, match="refused"):
+        C.JudgeClient()("opencode:glm-5.3", "s", "u")
+
+
+def test_hosted_request_carries_a_user_agent(monkeypatch):
+    """Measured 2026-09-04: without one the edge returns 403/1010, which reads exactly
+    like a bad key. `/v1/models` succeeds without it, so the obvious check misses this."""
+    import json as _json
+
+    from arcsum.judge import client as C
+
+    monkeypatch.setenv(C.HOSTED_KEY_ENV, "sk-test")
+    seen = {}
+
+    class _R:
+        def read(self):
+            return _json.dumps({"choices": [{"message": {"content": "SUPPORTED"}}]}).encode()
+        def __enter__(self): return self
+        def __exit__(self, *a): return False
+
+    def fake(req, timeout=None):
+        seen.update(req.headers)
+        return _R()
+
+    monkeypatch.setattr(C.request, "urlopen", fake)
+    assert C.JudgeClient()("opencode:glm-5.3", "s", "u") == "SUPPORTED"
+    assert any(k.lower() == "user-agent" for k in seen), seen

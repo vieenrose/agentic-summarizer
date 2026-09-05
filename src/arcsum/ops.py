@@ -151,12 +151,23 @@ def render_op(op: Op) -> str:
     match op:
         case Add(point):
             return f"ADD - {point}"
-        case Drop(prefix):
+        # v1.1 addresses points by integer id; the text-prefix form is v1.0's and still
+        # appears in stored traces, so both render.
+        case Drop(prefix, pid) if pid:
+            return f"DROP #{pid}"
+        case Drop(prefix, _):
             return f"DROP «{prefix}»"
+        case Revise(pid, text):
+            return f"REVISE #{pid} - {text}"
         case Arc(text):
             return f"ARC: {text}"
         case Nop():
             return "NOP"
         case Malformed(raw, _reason):
             return raw
-    raise TypeError(f"unhandled op type: {op!r}")  # pragma: no cover — exhaustive match
+    # NOT unreachable, and it has fired: `Revise` landed with SPEC §4.1 v1.1 and this
+    # function was not updated, so `score_reversals.py` crashed with "unhandled op type"
+    # the first time a checkpoint actually emitted one — on the G1 REVISION probe, i.e. the
+    # exact gate the op exists to serve. Same shape as CLAUDE.md trap 13: a protocol change
+    # landed and a consumer was never told.
+    raise TypeError(f"unhandled op type: {op!r}")

@@ -36,6 +36,25 @@ _LABEL_LINE = re.compile(
 _JUNK_ANCHOR = re.compile(r"\s*[\[［]\s*\d+\s*[:：]\s*\d{2}(?:[:：]\d{2})?\s*[\]］]\s*")
 #: Markdown emphasis/code markers, stripped rather than preserved — the product is prose.
 _MD_EMPHASIS = re.compile(r"[*_`]{1,3}")
+
+#: Reasoning markup, stripped WITH its contents when closed, and as a bare tag when not.
+#:
+#: **This is a product defect, not a tidiness issue.** Qwen3.5 carries a strong prior to open
+#: `<think>` after the assistant turn — its own chat template does so unconditionally — and
+#: `--no-jinja` only removes the tag from the TEMPLATE, not the model's habit of emitting one.
+#: So the tag reaches the user-visible summary, and the demo would render it verbatim.
+#:
+#: Measured across builds on 40 held-out meetings, as a share of tokens the grounding
+#: instrument flagged as fabricated: v11 0%, v13-e3 21%, v14-e3 9%, **v16 54% and 77%**. That
+#: last one inflated v16's reported ungrounded rate from a real ~8.8%/4.2% to 19.3%/18.1% and
+#: would have been recorded as a faithfulness regression caused by its teacher. The leak grew
+#: silently across four builds because nothing looked at WHICH tokens were flagged.
+#:
+#: An unclosed `<think>` is stripped as a tag rather than swallowing the rest of the output:
+#: the prose after it is the actual summary, and discarding it would turn a cosmetic leak into
+#: an empty result.
+_THINK_BLOCK = re.compile(r"<think>.*?</think>", re.S | re.I)
+_THINK_TAG = re.compile(r"</?think>", re.I)
 #: Arabic-digit spans (dates, dollar figures, street numbers, ...).
 _NUMBER = re.compile(r"\d[\d,]*(?:\.\d+)?")
 
@@ -58,7 +77,12 @@ def finalize(raw: str, *, token_len: Callable[[str], int]) -> Prose:
     flowing block, measure, and language-check. Never raises."""
     had_markup = bool(
         _BULLET_LINE.search(raw) or _HEADING_LINE.search(raw) or _LABEL_LINE.search(raw)
+        or _THINK_TAG.search(raw)
     )
+
+    # Before any line-wise work: a think block legitimately spans lines, so removing it per
+    # line would leave its contents behind as prose.
+    raw = _THINK_TAG.sub("", _THINK_BLOCK.sub(" ", raw))
 
     lines = []
     for line in raw.splitlines():

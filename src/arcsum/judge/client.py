@@ -1,11 +1,22 @@
 """Stdlib-only judge HTTP client, contamination refusal, and spend tracking (SPEC
 §5.1).
 
-**Local judges only, for now.** A hosted API judge needs a concrete provider contract
-(auth scheme, pricing table, endpoint shape) that no key is configured for in this
-environment — adding an untested integration for a provider nobody has credentials for
-would be speculative, not useful. The `local:<port>/<name>` scheme (any local
-`llama-server`-compatible endpoint) is what the harness actually needs and can test.
+**Two schemes: `local:<port>/<name>` and `opencode:<model>`.** Local (any
+`llama-server`-compatible endpoint) is the default and the reproducible one. The hosted
+scheme exists because SPEC §5.1 needs a judge from a THIRD family — neither Qwen nor
+Gemma — and the local shelf offers only `gpt-oss-20b`, whose measured failure mode
+(spending its whole budget in the reasoning channel, returning empty `content`) once cost
+21 of 40 meetings and did so systematically on the longest summaries.
+
+**A hosted judge is NOT reproducible and its results carry that caveat**: a provider can
+change a hosted model behind a stable name without notice, silently invalidating every
+prior comparison. Record the model id with the result, never compare a hosted number across
+dates, and prefer local weights whenever a clean third-family local judge exists.
+
+**The hosted transport needs a `User-Agent`.** Measured 2026-09-04: `urllib`'s default UA is
+rejected by the provider's edge with an opaque `HTTP 403: error code: 1010` — a Cloudflare
+block, not an auth failure, and indistinguishable from a bad key unless you read the body.
+`/v1/models` succeeds without one, so the obvious "my key works" check does NOT catch it.
 
 **Contamination is refused BEFORE any spend**, via `check_judge`, called at the top of
 every judge call. SPEC §5.1's rule constrains WHICH model, not whether to judge at
@@ -83,6 +94,41 @@ class Spend:
 
 
 _LOCAL_PREFIX = "local:"
+_HOSTED_PREFIX = "opencode:"
+
+#: OpenAI-compatible endpoint for the hosted third-family judges.
+HOSTED_BASE_URL = "https://opencode.ai/zen/go/v1"
+
+#: Required — see the module docstring. Any value works; its absence does not.
+HOSTED_USER_AGENT = "arcsum-judge/1.0"
+
+#: The environment variable carrying the hosted key. Read at call time and never stored,
+#: logged, or written into an artifact: a judged run's provenance records the MODEL, not
+#: the credential.
+HOSTED_KEY_ENV = "OPENCODE_API_KEY"
+
+#: **The provider's models do NOT all speak one protocol**, and the failure is silent-ish:
+#: posting a `/responses`-only model to `/chat/completions` returns an opaque
+#: `HTTP 500 Internal server error` that looks like an outage. Measured 2026-09-04 —
+#: `muse-spark-1.3-contributor` 500s on `/chat/completions` and answers correctly on
+#: `/responses`. Anything absent from this map uses the OpenAI-compatible default.
+HOSTED_ENDPOINTS: dict[str, str] = {
+    "muse-spark-1.3-contributor": "responses",
+    "muse-spark-1.2-contributor": "responses",
+}
+
+#: Reasoning models spend most of their output allowance before writing an answer:
+#: `muse-spark-1.3-contributor` used **828 of 860** output tokens on reasoning for a
+#: three-claim judgement, so a 600-token ceiling produced an EMPTY response that reads
+#: exactly like a model failure. Reasoning-heavy judges get a raised floor.
+HOSTED_MIN_OUTPUT_TOKENS = 2000
+
+
+def resolve_hosted_model(model: str) -> str | None:
+    """`opencode:<model>` -> `<model>`; `None` if not the hosted scheme."""
+    if not model.startswith(_HOSTED_PREFIX):
+        return None
+    return model[len(_HOSTED_PREFIX) :] or None
 
 
 def resolve_local_url(model: str) -> tuple[str, str] | None:
@@ -117,16 +163,158 @@ class JudgeClient:
                 f"judge budget exhausted: ${self.spend.usd:.2f} >= ${self.budget_usd:.2f}"
             )
 
+        hosted = resolve_hosted_model(model)
+        if hosted is not None:
+            content = self._post_hosted(hosted, system, user)
+            # Metered by the provider, not priced here: no pricing table is configured, so
+            # recording a fabricated cost would be worse than recording none. The budget
+            # guard above still bounds the CALL COUNT, which is the runaway risk.
+            self.spend.add(model, 0, 0, usd=0.0)
+            return content
+
         resolved = resolve_local_url(model)
         if resolved is None:
             raise ValueError(
-                f"{model!r} is not a local:<port>/<name> judge — no hosted provider is configured"
+                f"{model!r} is neither local:<port>/<name> nor opencode:<model>"
             )
         base_url, _name = resolved
 
         content = self._post_with_retry(base_url, system, user)
         # Local judges are free by construction: frozen weights, no metered API.
         self.spend.add(model, 0, 0, usd=0.0)
+        return content
+
+    def _post_responses(
+        self, model: str, system: str, user: str, key: str, budget: int, *, attempt: int = 0
+    ) -> str:
+        """OpenAI **Responses** shape: `instructions` + `input`, and the answer arrives in
+        `output[]` as a `message` entry ALONGSIDE a `reasoning` entry. Reading only
+        `output_text` yields an empty string on these models, which is why this walks the
+        `output` list rather than trusting the convenience field."""
+        body = {
+            "model": model,
+            "instructions": system,
+            "input": user,
+            "temperature": 0.0,
+            "max_output_tokens": budget,
+        }
+        req = request.Request(
+            f"{HOSTED_BASE_URL}/responses",
+            data=json.dumps(body).encode("utf-8"),
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {key}",
+                "User-Agent": HOSTED_USER_AGENT,
+            },
+            method="POST",
+        )
+        try:
+            with request.urlopen(req, timeout=self.timeout) as resp:
+                response = json.loads(resp.read().decode("utf-8"))
+        except error.HTTPError as exc:
+            body_text = exc.read().decode("utf-8", errors="replace")[:400]
+            raise RuntimeError(f"hosted judge {exc.code}: {body_text}") from exc
+        except error.URLError as exc:
+            raise RuntimeError(f"cannot reach hosted judge: {exc}") from exc
+
+        if response.get("error"):
+            raise RuntimeError(f"hosted judge refused: {json.dumps(response['error'])[:300]}")
+        parts: list[str] = []
+        for entry in response.get("output", []):
+            if entry.get("type") != "message":
+                continue  # skip the `reasoning` entry
+            for chunk in entry.get("content") or []:
+                if chunk.get("text"):
+                    parts.append(chunk["text"])
+        content = "".join(parts).strip() or (response.get("output_text") or "").strip()
+        if not content:
+            incomplete = response.get("incomplete_details") or {}
+            # **A reasoning judge can spend the WHOLE budget thinking and emit nothing.**
+            # Measured on this provider: `muse-spark-1.3-contributor` failed 53 of 80 real
+            # judging cases with `incomplete: {'reason': 'max_output_tokens'}` at a 2,000-token
+            # ceiling — it had used 828 of 860 tokens on reasoning even for a trivial
+            # three-claim probe. The `/chat/completions` path already retried with reasoning
+            # capped; this path did not, which is why the failure only appeared at scale.
+            #
+            # Retrying with a much LARGER budget (not a smaller one) is the fix here: the
+            # answer is short, the reasoning is not, so the ceiling has to clear the reasoning
+            # before the answer can be written at all.
+            if attempt < 1 and incomplete.get("reason") == "max_output_tokens":
+                return self._post_responses(model, system, user, key, budget * 4,
+                                            attempt=attempt + 1)
+            raise RuntimeError(
+                f"empty content from hosted judge {model!r} (incomplete: {incomplete})"
+            )
+        return content
+
+    def _post_hosted(self, model: str, system: str, user: str, *, attempt: int = 0) -> str:
+        import os
+
+        key = os.environ.get(HOSTED_KEY_ENV)
+        if not key:
+            raise RuntimeError(
+                f"{HOSTED_KEY_ENV} is not set — a hosted judge needs a credential, and this "
+                f"harness never embeds one"
+            )
+        shape = HOSTED_ENDPOINTS.get(model, "chat")
+        budget = max(self.max_tokens * (attempt + 1), HOSTED_MIN_OUTPUT_TOKENS)
+        if shape == "responses":
+            return self._post_responses(model, system, user, key, budget)
+
+        body = {
+            "model": model,
+            "messages": [
+                {"role": "system", "content": system},
+                {"role": "user", "content": user},
+            ],
+            "temperature": 0.0,
+            "max_tokens": budget,
+        }
+        if attempt >= 1:
+            # Same failure, same fix as the local path: a REASONING judge can spend its
+            # entire budget in the reasoning channel and return empty `content`. Measured
+            # 2026-09-04 on this provider: `mimo-v2.5` and `hy3` both returned empty content
+            # on the first attempt while `deepseek-v4-flash` and `longcat-2.0` answered
+            # normally. Re-asking a temperature=0 model unchanged reproduces the failure by
+            # construction, so the retry must actually differ — cap the reasoning and raise
+            # the ceiling.
+            body["chat_template_kwargs"] = {"reasoning_effort": "low"}
+            body["reasoning_effort"] = "low"
+        req = request.Request(
+            f"{HOSTED_BASE_URL}/chat/completions",
+            data=json.dumps(body).encode("utf-8"),
+            headers={
+                "Content-Type": "application/json",
+                "Authorization": f"Bearer {key}",
+                # Absence of this header is a 403/1010 at the edge, not an auth error.
+                "User-Agent": HOSTED_USER_AGENT,
+            },
+            method="POST",
+        )
+        try:
+            with request.urlopen(req, timeout=self.timeout) as resp:
+                response = json.loads(resp.read().decode("utf-8"))
+        except error.HTTPError as exc:
+            body_text = exc.read().decode("utf-8", errors="replace")[:400]
+            raise RuntimeError(f"hosted judge {exc.code}: {body_text}") from exc
+        except error.URLError as exc:
+            raise RuntimeError(f"cannot reach hosted judge: {exc}") from exc
+
+        # The provider reports quota and data-policy refusals as a 200 with an error body.
+        # Treating that as an empty verdict would silently score the meeting as UNSUPPORTED.
+        if "error" in response:
+            raise RuntimeError(f"hosted judge refused: {json.dumps(response['error'])[:300]}")
+        message = response["choices"][0]["message"]
+        content = (message.get("content") or "").strip()
+        if not content:
+            if attempt >= 1:
+                # Fail loud rather than scoring the meeting as an empty verdict: doing the
+                # latter silently depresses whichever system drew the flaky call, and that
+                # is exactly how G2 once reported "14 vs 11" for a real 18 vs 109.
+                raise RuntimeError(
+                    f"empty content from hosted judge {model!r} after a reasoning-capped retry"
+                )
+            return self._post_hosted(model, system, user, attempt=attempt + 1)
         return content
 
     def _post_with_retry(self, base_url: str, system: str, user: str, *, attempt: int = 0) -> str:

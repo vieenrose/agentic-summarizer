@@ -159,3 +159,34 @@ def test_returned_spans_are_deduplicated_and_sorted() -> None:
     flagged = ungrounded_numbers(text, grounding)
     assert flagged == tuple(sorted(set(flagged)))
     assert flagged.count("500") == 1
+
+
+# --- reasoning markup must never reach the product summary --------------------------
+
+def test_a_closed_think_block_is_removed_with_its_contents():
+    """Qwen3.5 opens `<think>` after the assistant turn by habit; `--no-jinja` removes the
+    tag from the TEMPLATE, not from the model. Measured on 40 held-out meetings, the leaked
+    token was 54% and 77% of everything the grounding instrument flagged as fabricated in
+    `v16`, inflating its ungrounded rate from ~8.8% to 19.3%."""
+    out = finalize("<think>\n盤點一下重點\n</think>\n本次會議通過預算案。", token_len=len)
+    assert "think" not in out.text
+    assert "盤點一下重點" not in out.text
+    assert out.text.startswith("本次會議通過預算案")
+
+
+def test_an_unclosed_think_tag_is_stripped_without_eating_the_summary():
+    """The prose after a dangling tag IS the summary. Swallowing it would turn a cosmetic
+    leak into an empty result, which is the more expensive failure."""
+    out = finalize("<think>\n本次會議通過預算案，並核准增設職位。", token_len=len)
+    assert "think" not in out.text
+    assert "本次會議通過預算案" in out.text
+
+
+def test_an_empty_think_block_leaves_the_prose_intact():
+    out = finalize("<think>\n</think>本次會議通過預算案。", token_len=len)
+    assert out.text == "本次會議通過預算案。"
+
+
+def test_think_markup_is_reported_as_markup():
+    """`had_markup` is the drift signal; a model emitting reasoning tags has drifted."""
+    assert finalize("<think>x</think>會議通過。", token_len=len).had_markup

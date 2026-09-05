@@ -184,3 +184,52 @@ def test_clone_does_not_leak_speculative_journal_entries():
     c = m.clone()
     c.enforce_caps()
     assert c.journal and not m.journal
+
+
+# --- near-duplicate collapse at synthesis (repairs runs/v12-e3) ----------------------
+
+def test_synthesis_view_collapses_near_duplicates():
+    """`runs/v12-e3`'s root cause. `apply_ops` refuses only EXACT duplicates, so
+    near-duplicates accumulate; eviction used to hide them and the journal no longer does.
+    A coverage-gated teacher then restated both halves of every pair and the student
+    generalised redundancy into the reading step: churn 3.5% -> 29.8%, paired p = 2.2e-07."""
+    m = _mem()
+    m.add_point("電力局介紹修正第19-4條地下管線政策", chunk=0)
+    m.add_point("電力局介紹修正第19-4條地下管線區域政策", chunk=1)
+    m.add_point("公開招標建造消防隊第三分隊", chunk=2)
+    view = m.synthesis_view()
+    assert len(view) == 2, [e.point.text for e in view]
+    # The LATER phrasing survives: it reflects the more complete reading.
+    assert view[0].point.text == "電力局介紹修正第19-4條地下管線區域政策"
+
+
+def test_distinct_points_are_never_merged():
+    """Negative control. Collapsing two real decisions would lose content permanently,
+    which is the more expensive error and why the threshold is high."""
+    m = _mem()
+    m.add_point("同意搬到 B 棟大樓", chunk=0)
+    m.add_point("核准增設休閒助理職位", chunk=1)
+    m.add_point("延後表決公車路線調整案", chunk=2)
+    assert len(m.synthesis_view()) == 3
+
+
+def test_a_superseded_point_is_never_collapsed_into_its_replacement():
+    """A revision's two halves are near-duplicates BY CONSTRUCTION — that is what a
+    revision is. Collapsing them would delete exactly the evidence G1 measures."""
+    m = _mem()
+    m.add_point("公車路線調整案通過", chunk=0)
+    m.revise_id(1, "公車路線調整案改為取消")
+    view = m.synthesis_view()
+    assert len(view) == 2
+    assert any(e.reason == "superseded" for e in view)
+    prompt = build_synth_prompt(m)
+    assert "後改為" in prompt
+
+
+def test_nothing_is_lost_from_the_journal_itself():
+    """Dedup is PRESENTATION only; the record must still hold every point."""
+    m = _mem()
+    m.add_point("批准六十年租賃與進出許可案", chunk=0)
+    m.add_point("批准六十年租賃及臨時進出許可案", chunk=1)
+    assert len(m.synthesis_view()) == 1
+    assert len(m.points) == 2, "the memory still holds both"

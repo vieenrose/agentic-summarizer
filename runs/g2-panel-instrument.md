@@ -9,11 +9,13 @@ arms have, since judge coverage differs:
 | `deepseek-v4-flash` | 39 | 50 vs 119 — **PASS** | 16.8% vs 16.4% | 28 / 5 |
 | `hy3` | 40 | 68 vs 125 — **PASS** | 21.7% vs 16.8% | 27 / 6 |
 | `longcat-2.0` | 33 | 57 vs 81 — **PASS** | 23.0% vs 13.9% | 15 / 8 |
+| `muse-spark-1.3-contributor` | 40 | 62 vs 79 — **PASS** | 19.7% vs 10.6% | — |
 
-**The gate passes decisively** on all three judges, on the absolute count it is defined over
-and on a paired sign test across meetings.
+**G2 PASSES: 4 of 4 judges**, already a majority under §5.1's 3-of-5 rule with the fifth
+(`mimo-v2.5`) still running. It passes on the absolute count the gate is defined over and on
+a paired sign test across meetings.
 
-**And on all three judges the agent is WORSE per claim**, by 0.4, 4.9 and 9.1 points. The
+**And on every judge the agent is WORSE per claim**, by 0.4, 4.9, 9.1 and 9.1 points. The
 absolute win is a volume effect: the agent asserts ~2.4x fewer claims (298-314 vs 724-745)
 and writes summaries a third as long (350 vs 943 median characters).
 

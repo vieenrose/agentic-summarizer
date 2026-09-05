@@ -75,6 +75,17 @@ def main(argv: list[str] | None = None) -> int:
     p.add_argument("--grad-accum", type=int, default=8)
     p.add_argument("--max-len", type=int, default=4096)
     p.add_argument("--seed", type=int, default=0)
+    p.add_argument(
+        "--warmup-ratio",
+        type=float,
+        default=0.03,
+        help="LR warmup fraction. **Default kept at 0.03 so every pool trained before "
+             "2026-09-04 stays reproducible**, but 0.03 of 921 steps is only 28 steps, and "
+             "this setup has a measured seed-dependent blowup: `sft_pool_v18` trained at "
+             "three seeds gave churn 3.6%%, **30.8%%**, 3.9%% on identical data. A longer "
+             "warmup is the standard mitigation for a divergence that depends on "
+             "initialisation rather than on data.",
+    )
     # Default matches the 0.8B v1.0 builds exactly, so their results stay reproducible.
     # `adamw_8bit` exists for larger students: AdamW keeps two fp32 moments per parameter,
     # so a 2B model spends 16 GB on optimizer state alone (2e9 x 8 B) before a single
@@ -171,10 +182,31 @@ def main(argv: list[str] | None = None) -> int:
     if len(versions) != 1:
         print(f"[train] REFUSED: mixed prompt versions {versions}", file=sys.stderr)
         return 1
-    print(f"[train] {len(train_rows)} rows, prompt_version={versions.pop()}", file=sys.stderr)
+    train_version = versions.pop()
+    print(f"[train] {len(train_rows)} rows, prompt_version={train_version}", file=sys.stderr)
+
+    valid_rows = load(args.valid) if args.valid else None
+    # **The VALIDATION set's prompt version was never checked, and it silently drifted.**
+    # Found 2026-09-03: `data/staging/valid_tools.jsonl` was still `tools-v1` while every
+    # SPEC v1.1 pool was `tools-v2`, so eval_loss — the signal `load_best_model_at_end` and
+    # every "best epoch" claim rest on — was scoring fit to the SUPERSEDED protocol. The
+    # train-side check above existed and passed, which is exactly why nobody looked.
+    #
+    # This is not cosmetic: a v1.1 model addresses points by id and can emit `revise`, and a
+    # v1.0 validation row rewards the text-prefix form it was trained away from. Worse, the
+    # v1.0 synthesis rows cap at 16 entries and contain no `後改為`, so they penalise the
+    # journal-shaped behaviour the pool is built to teach.
+    if valid_rows:
+        vversions = {r.get("prompt_version") for r in valid_rows}
+        if vversions != {train_version}:
+            print(f"[train] REFUSED: valid set is {vversions} but train is "
+                  f"{{{train_version!r}}}. Migrate it (tools/migrate_pool_v11.py) rather "
+                  f"than scoring best-epoch against a superseded prompt format.",
+                  file=sys.stderr)
+            return 1
 
     train_ds = build_examples(train_rows, tok, args.max_len)
-    valid_ds = build_examples(load(args.valid), tok, args.max_len) if args.valid else None
+    valid_ds = build_examples(valid_rows, tok, args.max_len) if valid_rows else None
     print(f"[train] {len(train_ds)} usable train examples"
           f"{f', {len(valid_ds)} valid' if valid_ds else ''}", file=sys.stderr)
 
@@ -200,7 +232,7 @@ def main(argv: list[str] | None = None) -> int:
         output_dir=str(args.out), num_train_epochs=args.epochs,
         per_device_train_batch_size=args.batch_size,
         gradient_accumulation_steps=args.grad_accum,
-        learning_rate=args.lr, warmup_ratio=0.03, lr_scheduler_type="cosine",
+        learning_rate=args.lr, warmup_ratio=args.warmup_ratio, lr_scheduler_type="cosine",
         logging_steps=10, bf16=True, seed=args.seed, optim=args.optim,
         fsdp=args.fsdp,
         save_only_model=args.save_only_model,

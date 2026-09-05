@@ -64,6 +64,24 @@ CONFABULATION_CHARS_PER_POINT = 250.0
 #: the complaint that preceded it.
 UNDER_RENDERING_CHARS_PER_POINT = 20.0
 
+#: Character-trigram containment at which a recorded point counts as RENDERED in the prose.
+#: Trigrams rather than exact match because a summary legitimately rewrites a point into
+#: running prose; requiring the literal string would score good writing as a miss.
+RENDERED_CONTAINMENT = 0.30
+
+
+def trigrams(text: str) -> set[str]:
+    s = "".join(text.split())
+    return {s[i : i + 3] for i in range(len(s) - 2)} if len(s) >= 3 else ({s} if s else set())
+
+
+def containment(needle: str, haystack: str) -> float:
+    """Fraction of `needle`'s character trigrams present in `haystack`."""
+    a = trigrams(needle)
+    if not a:
+        return 1.0
+    return len(a & trigrams(haystack)) / len(a)
+
 
 @dataclass(frozen=True)
 class BehaviourReport:
@@ -94,6 +112,24 @@ class BehaviourReport:
     #: 173-character summary built from the arc alone), and dividing prose by POINTS alone
     #: reported that as infinite confabulation. `chars_per_memory_unit` counts it.
     has_arc: bool = False
+    #: Everything the meeting RECORDED — the working set plus the journal (SPEC §4.1 v1.1).
+    #:
+    #: **`points` alone stopped meaning "what was recorded" when v1.1 landed**, and this
+    #: module was not updated with it, so three things were quietly wrong: `starved` fired on
+    #: long meetings whose points had merely been retired, `chars_per_point` divided by a
+    #: denominator too small to reveal under-rendering, and G5 retention could not be computed
+    #: at all. Measured on the pool's own replays, eviction moves 9.6% of points out of
+    #: `points` and into the journal, concentrated in the 28% of meetings that overflow.
+    #:
+    #: Defaults to 0 so pre-v1.1 reports deserialize; `recorded_units` falls back to the
+    #: working set when it is unset, which is the correct reading for a v1.0 trace where the
+    #: two were the same thing.
+    recorded_points: int = 0
+    #: Recorded points whose text is actually rendered in the prose, by `RENDERED_CONTAINMENT`.
+    #: This is G5's numerator: the journal guarantees a point SURVIVES to synthesis, and this
+    #: measures whether synthesis then USED it — which is the different, and now binding,
+    #: question.
+    rendered_points: int = 0
     #: The model was never called for synthesis because memory was empty, and `prose_chars`
     #: counts the harness's fixed `EMPTY_MEMORY_PROSE` string. `Synthesis` carries this flag
     #: precisely so scoring can tell "declined to invent content" from "produced a summary",
@@ -101,6 +137,18 @@ class BehaviourReport:
     #: a genuinely noisy meeting (`ivod-17673`, stutter-repeated ASR where NOP is the right
     #: answer) as infinite confabulation. Abstention is a SUCCESS of the empty-memory guard.
     abstained: bool = False
+    #: Tokens the READING steps prefilled and decoded, straight off `Trace.usage`.
+    #:
+    #: **G4 is the only gate whose inputs were not artifacts.** Its per-meeting wall clock was
+    #: reconstructed by hand from a device benchmark plus a decode length inherited from
+    #: `qwen-tools-v5` (~190 tokens/step) and then applied to every later checkpoint. Decode
+    #: length is NOT a device constant — it is a property of the checkpoint, and the first
+    #: RAFT pool's targets run 1.45x longer, enough on its own to move a meeting from 20.3 to
+    #: 22.5 minutes against a 20.00 ceiling. So a checkpoint can fail G4 purely by recording
+    #: more, which is exactly what the anti-starvation work does. Carrying the profile here
+    #: lets `evalkit.latency` project from the run being scored instead of from memory.
+    prefill_tokens: int = 0
+    decode_tokens: int = 0
 
     @property
     def churn_rate(self) -> float:
@@ -109,17 +157,41 @@ class BehaviourReport:
 
     @property
     def points_per_chunk(self) -> float:
-        return self.points / self.chunks if self.chunks else 0.0
+        """Accumulation rate over everything RECORDED, not just what survived in the working
+        set — a long meeting that recorded 40 points and retired 24 of them was accumulating
+        fine, and counting only survivors reported it as starved."""
+        base = self.recorded_points or self.points
+        return base / self.chunks if self.chunks else 0.0
+
+    @property
+    def recorded_units(self) -> int:
+        """Everything recorded, plus the ARC when set — the denominator SYNTHESIZE actually
+        faces under v1.1. Falls back to the working set for pre-v1.1 reports, where the
+        journal did not exist and the two counts were identical."""
+        base = self.recorded_points or self.points
+        return base + (1 if self.has_arc else 0)
+
+    @property
+    def retention(self) -> float:
+        """SPEC G5: the fraction of recorded points the summary actually renders.
+
+        The journal made SURVIVAL to synthesis automatic, which moved the failure one step
+        later: a point can reach the prompt and still not reach the prose. That is the
+        deficit v1.1 still shows (~40 entries in, 346 characters out), so it needs its own
+        number rather than being inferred from a ratio."""
+        if not self.recorded_points:
+            return 1.0 if self.abstained else 0.0
+        return self.rendered_points / self.recorded_points
 
     @property
     def memory_units(self) -> int:
         """POINTS plus the ARC when set. SPEC §4.1's memory is two slots, and the ratio
         below is only honest if the denominator is the whole memory."""
-        return self.points + (1 if self.has_arc else 0)
+        return self.recorded_units
 
     @property
     def chars_per_point(self) -> float:
-        """Summary characters per surviving MEMORY UNIT (points, plus the arc when set).
+        """Summary characters per RECORDED memory unit (everything recorded, plus the arc).
         `inf` only when prose was generated from a genuinely empty memory — the extreme of
         the failure, not a division error to be swallowed as 0.0."""
         if self.memory_units:
@@ -129,6 +201,15 @@ class BehaviourReport:
         if self.abstained:
             return 0.0
         return float("inf") if self.prose_chars else 0.0
+
+    @property
+    def decode_tokens_per_step(self) -> float:
+        """Decode tokens per reading step — the G4 term that varies BY CHECKPOINT."""
+        return self.decode_tokens / self.steps if self.steps else 0.0
+
+    @property
+    def prefill_tokens_per_step(self) -> float:
+        return self.prefill_tokens / self.steps if self.steps else 0.0
 
     @property
     def starved(self) -> bool:
@@ -193,7 +274,13 @@ def from_trace(meeting: str, trace: Trace) -> BehaviourReport:
                 if (r.reason or "") == "arc unchanged":
                     arc_frozen += 1
 
+    usage = getattr(trace, "usage", None)
     syn = trace.synthesis
+    # `synthesis_view()` is the exact list `build_synth_prompt` renders, so the denominator
+    # here and the model's actual input cannot drift apart.
+    view = trace.memory.synthesis_view()
+    prose = syn.prose.text if syn and not syn.skipped_empty_memory else ""
+    rendered = sum(1 for e in view if containment(e.point.text, prose) >= RENDERED_CONTAINMENT)
     return BehaviourReport(
         meeting=meeting,
         chunks=len(trace.steps) + len(trace.failed_steps),
@@ -209,7 +296,14 @@ def from_trace(meeting: str, trace: Trace) -> BehaviourReport:
         hedge_points=hedge,
         ungrounded_numbers=len(syn.ungrounded_numbers) if syn else 0,
         has_arc=bool(trace.memory.arc),
+        recorded_points=len(view),
+        rendered_points=rendered,
         abstained=bool(syn and syn.skipped_empty_memory),
+        # Tolerate a trace without `usage`: this module is deliberately testable against
+        # lightweight stubs, and a missing token profile must degrade to "unknown" (0), never
+        # to an exception — the behaviour counts do not depend on it.
+        prefill_tokens=getattr(usage, "prefill_tokens", 0),
+        decode_tokens=getattr(usage, "decode_tokens", 0),
     )
 
 
@@ -224,6 +318,40 @@ class BehaviourSummary:
     mean_points_per_chunk: float
     median_chars_per_point: float
     per_meeting: tuple[BehaviourReport, ...]
+    #: SPEC G5's numerator and denominator, summed over meetings rather than averaged over
+    #: rates — a per-meeting mean would weight a 3-point meeting like a 40-point one, and the
+    #: long meetings are the entire question.
+    total_recorded: int = 0
+    total_rendered: int = 0
+    total_prefill_tokens: int = 0
+    total_decode_tokens: int = 0
+
+    @property
+    def mean_steps(self) -> float:
+        return self.total_steps / self.n_meetings if self.n_meetings else 0.0
+
+    @property
+    def decode_tokens_per_step(self) -> float:
+        """Summed, not averaged over per-meeting rates: G4 is a per-MEETING wall clock and
+        the long meetings dominate it, so weighting a 3-step meeting like a 48-step one
+        would understate exactly the case that fails."""
+        return self.total_decode_tokens / self.total_steps if self.total_steps else 0.0
+
+    @property
+    def prefill_tokens_per_step(self) -> float:
+        return self.total_prefill_tokens / self.total_steps if self.total_steps else 0.0
+
+    @property
+    def retention(self) -> float:
+        """Fraction of everything recorded that the summaries actually rendered (SPEC G5).
+
+        The journal made survival to synthesis automatic; this measures whether synthesis
+        then USED what survived, which is where the remaining coverage deficit lives."""
+        return self.total_rendered / self.total_recorded if self.total_recorded else 0.0
+
+    @property
+    def meetings_under_rendering(self) -> int:
+        return sum(1 for r in self.per_meeting if r.under_rendering)
 
     @property
     def churn_rate(self) -> float:
@@ -251,4 +379,8 @@ def summarise(reports: list[BehaviourReport]) -> BehaviourSummary:
         mean_points_per_chunk=(sum(r.points_per_chunk for r in reports) / n) if n else 0.0,
         median_chars_per_point=median,
         per_meeting=tuple(reports),
+        total_recorded=sum(r.recorded_points for r in reports),
+        total_rendered=sum(r.rendered_points for r in reports),
+        total_prefill_tokens=sum(r.prefill_tokens for r in reports),
+        total_decode_tokens=sum(r.decode_tokens for r in reports),
     )

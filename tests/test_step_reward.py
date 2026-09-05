@@ -13,7 +13,7 @@ from __future__ import annotations
 from arcsum.chunker import Chunk
 from arcsum.guards import apply_ops
 from arcsum.memory import Memory
-from arcsum.ops import Add, Arc, Nop
+from arcsum.ops import Add, Arc, Drop, Nop, Revise
 from arcsum.rl.step_reward import score_step
 from arcsum.tokens import heuristic_token_len
 from arcsum.transcript import Utterance
@@ -136,3 +136,48 @@ def test_the_grounding_term_catches_invented_SPECIFICS_and_not_invented_TOPICS()
     invented_figure = _score([Add("市議會通過搬遷案，預算八千九百萬元")])
     assert invented_topic.ungrounded == 0, "documented limit: topics are not checkable"
     assert invented_figure.ungrounded >= 1, "specifics ARE checked"
+
+
+def test_a_bare_DROP_is_not_paid_for() -> None:
+    """The defect that produced `runs/raft-s0-e1`.
+
+    Crediting every applied op at +1 made DISCARDING a point count as work, so the cheapest
+    way to score well was to edit at high volume. Trained, that fixed starvation exactly as
+    designed (17/40 -> 5/40 starved, NOP 46.2% -> 7.9%) and took churn from 2.9% to **44.7%**,
+    four times over G7's ceiling. The memory shape is the tell, not the churn counter:
+    recorded points rose 366 -> 604 while SURVIVING points stayed flat at ~345, so
+    retirements went 18 -> 259. It recorded more and threw almost all of it away.
+    """
+    mem = Memory(token_len=heuristic_token_len)
+    mem.add_point("市議會通過搬遷案，預算三十萬元", chunk=0)
+    pid = mem.points[0].pid
+    dropped = _score([Drop(pid=pid)], memory=mem)
+    idle = _score([Nop()], memory=mem)
+    assert dropped.applied >= 1, "the harness still APPLIES it — this is about credit, not refusal"
+    assert dropped.score <= idle.score, "dropping must not out-earn doing nothing"
+
+
+def test_dropping_is_free_rather_than_punished() -> None:
+    """The counterweight. Retiring a point that turned out irrelevant is legitimate, so a
+    drop must stay FREE — penalising it would teach hoarding, which is how the working set
+    fills with stale points and `revise` never fires."""
+    mem = Memory(token_len=heuristic_token_len)
+    mem.add_point("市議會通過搬遷案，預算三十萬元", chunk=0)
+    pid = mem.points[0].pid
+    drop_and_record = _score([Drop(pid=pid), Add("委員提出交通改善計畫")], memory=mem)
+    record_only = _score([Add("委員提出交通改善計畫")], memory=mem)
+    # The drop costs only its decode tokens, never a credit penalty.
+    assert drop_and_record.score < record_only.score
+    assert record_only.score - drop_and_record.score < 1.0
+
+
+def test_revise_is_still_credited_because_it_carries_replacement_content() -> None:
+    """`revise` is the sanctioned form of what DROP+ADD does badly (SPEC §4.1 v1.1). Making
+    DROP free must not accidentally make revision free too, or G1's capability loses its
+    incentive."""
+    mem = Memory(token_len=heuristic_token_len)
+    mem.add_point("市議會擬通過搬遷案", chunk=0)
+    pid = mem.points[0].pid
+    revised = _score([Revise(pid=pid, text="市議會通過搬遷案，預算三十萬元")], memory=mem)
+    dropped = _score([Drop(pid=pid)], memory=mem)
+    assert revised.score > dropped.score

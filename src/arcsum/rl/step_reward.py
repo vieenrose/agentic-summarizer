@@ -147,14 +147,37 @@ def score_step(
     if chunk_text:
         for text in asserted:
             ungrounded += grounding.check("", text, chunk_text).n_ungrounded
-    idle = sum(1 for r in outcome.results if isinstance(r.op, Nop)) if chunk_has_content else 0
+    # `credited` is what the step CONTRIBUTED: applied ops carrying content. A `Drop` removes
+    # information and a `Nop` adds none, so neither counts. Computed before `idle`, which is
+    # defined in terms of it.
+    credited = sum(1 for r in outcome.results if r.applied and not isinstance(r.op, Drop | Nop))
+    # **Idle means the step RECORDED NOTHING, not that it emitted `Nop`.** Keying the penalty
+    # on the op kind left a hole big enough to drive the whole `raft-s0-e1` regression through:
+    # once a bare `Drop` stopped being credited it was still strictly better than `Nop`,
+    # because `Nop` was penalised and dropping was free. A step that only discards a point is
+    # an abstention with extra decode tokens, and it has to be scored as one.
+    idle = 1 if (chunk_has_content and credited == 0) else 0
 
     # **A churn pair earns NO applied credit.** Both of its ops "apply" successfully — the
     # DROP removes a point and the ADD puts an equivalent one back — so counting them as work
     # exactly cancels the churn penalty: measured, a drop+restate scored 0.0, meaning a model
     # could churn indefinitely at zero cost and rejection sampling would never deselect it.
     # Neither op advanced the meeting, so neither is credited, and the penalty then bites.
-    score = float(applied - 2 * churn)
+    #
+    # **A bare DROP earns no credit either, and that omission cost a whole training round.**
+    # Crediting every applied op at +1 makes DISCARDING a point count as work, so the cheapest
+    # way to score is to edit at high volume. `runs/raft-s0-e1` is what that trains: against
+    # `rl-v3` it fixed starvation exactly as intended (17/40 -> 5/40 starved, NOP 46.2% ->
+    # 7.9%, specifics +31%) and took churn from **2.9% to 44.7%**, four times over G7's
+    # ceiling. The tell is the memory shape, not the churn counter: recorded points rose
+    # 366 -> 604 while SURVIVING points stayed flat at ~345, so retirements went **18 -> 259**.
+    # The model recorded more and threw almost all of it away.
+    #
+    # A drop is neutral, not penalised: retiring a point that turned out irrelevant is
+    # legitimate and must stay free. It simply must not be PAID for. `revise` remains the
+    # sanctioned way to say "this is now wrong, here is the correction", and it is credited,
+    # because it carries replacement content.
+    score = float(credited - 2 * churn)
     score -= REFUSED_PENALTY * refused
     score -= CHURN_PENALTY * churn
     # A malformed op is a protocol failure, not a judgement call: it cannot be applied and it

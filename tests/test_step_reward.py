@@ -181,3 +181,26 @@ def test_revise_is_still_credited_because_it_carries_replacement_content() -> No
     revised = _score([Revise(pid=pid, text="市議會通過搬遷案，預算三十萬元")], memory=mem)
     dropped = _score([Drop(pid=pid)], memory=mem)
     assert revised.score > dropped.score
+
+
+def test_rewriting_the_ARC_does_not_outrank_recording_a_POINT() -> None:
+    """The third instance of one pattern, after DROP.
+
+    `ARC` replaces a single slot; `ADD` accumulates. Credited equally, rewriting the arc is
+    the cheapest guaranteed credit on the board -- restate the gist, build no memory. The
+    pressure is measured: the first RAFT pool carries 1.56x gold's ARC ops, and its trained
+    checkpoints emit an ARC on nearly every step with **~48%** refused as `arc unchanged`,
+    against `rl-v3`'s 22.9%.
+    """
+    arc = _score([Arc("市議會今日審議搬遷案與交通改善計畫")])
+    point = _score([Add("市議會通過搬遷案，預算三十萬元")])
+    assert arc.score < point.score
+
+
+def test_the_arc_is_still_worth_setting() -> None:
+    """Counterweight: halved, not zeroed. The arc is real work when the meeting's through-line
+    moves -- SPEC §4.1 calls it the design's differentiator -- so an accepted rewrite must
+    still beat doing nothing, or the slot goes permanently unused."""
+    arc = _score([Arc("市議會今日審議搬遷案與交通改善計畫")])
+    nothing = _score([Nop()])
+    assert arc.score > nothing.score

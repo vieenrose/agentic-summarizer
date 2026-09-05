@@ -95,6 +95,21 @@ DECODE_TOKEN_COST = 0.01
 #: waste, not fabrication, and should not outrank an ungrounded claim.
 NEAR_DUPLICATE_PENALTY = 1.0
 
+#: **`ARC` REPLACES a single slot; `ADD` ACCUMULATES.** Crediting them equally makes rewriting
+#: the arc the cheapest point on the board — one guaranteed credit per step for restating the
+#: meeting's gist, with no memory built. The pressure is already measurable: the first RAFT
+#: pool carries 1.56x gold's `ARC` ops, and the trained checkpoints emit an `ARC` on nearly
+#: every step, with the harness refusing **~48%** of them as `arc unchanged` against `rl-v3`'s
+#: 22.9%. That is thrash, not narrative tracking.
+#:
+#: Halved rather than zeroed, because the arc is real work when the meeting's through-line
+#: genuinely moves — SPEC §4.1 calls it the design's differentiator — and the reward cannot
+#: tell a better arc from a different one. At 0.5 an accepted rewrite nets ~+0.2 after decode
+#: cost while an unchanged one loses 0.5 to refusal, so it pays only when the arc actually
+#: moved. This is the THIRD instance of one pattern (`DROP`, then `ARC`): whatever op is
+#: cheapest to emit for full credit becomes the policy. Price by what an op CONTRIBUTES.
+ARC_CREDIT = 0.5
+
 
 @dataclass(frozen=True)
 class StepScore:
@@ -150,13 +165,17 @@ def score_step(
     # `credited` is what the step CONTRIBUTED: applied ops carrying content. A `Drop` removes
     # information and a `Nop` adds none, so neither counts. Computed before `idle`, which is
     # defined in terms of it.
-    credited = sum(1 for r in outcome.results if r.applied and not isinstance(r.op, Drop | Nop))
+    credited = sum(
+        ARC_CREDIT if isinstance(r.op, Arc) else 1.0
+        for r in outcome.results
+        if r.applied and not isinstance(r.op, Drop | Nop)
+    )
     # **Idle means the step RECORDED NOTHING, not that it emitted `Nop`.** Keying the penalty
     # on the op kind left a hole big enough to drive the whole `raft-s0-e1` regression through:
     # once a bare `Drop` stopped being credited it was still strictly better than `Nop`,
     # because `Nop` was penalised and dropping was free. A step that only discards a point is
     # an abstention with extra decode tokens, and it has to be scored as one.
-    idle = 1 if (chunk_has_content and credited == 0) else 0
+    idle = 1 if (chunk_has_content and credited <= 0.0) else 0
 
     # **A churn pair earns NO applied credit.** Both of its ops "apply" successfully — the
     # DROP removes a point and the ADD puts an equivalent one back — so counting them as work

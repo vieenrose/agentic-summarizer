@@ -24,6 +24,10 @@ tokenizer = ["transformers>=5.5"]
 # tokenizer is Latin-hardcoded and would contradict §5's normative char-level
 # tokenization. Kept light so it can run in CI.
 metrics = ["sacrebleu>=2.4"]
+
+# SPEC-adjacent: Simplified-internal operation (arcsum/simplified.py). Optional because the
+# suite must run with no extra installed; `converter()` degrades to identity without it.
+script = ["opencc-python-reimplemented>=0.1.7"]
 metrics-neural = ["bert-score>=0.3.13", "torch>=2.6", "transformers>=5.5"]
 # Isolated on purpose: moverscore is effectively unmaintained and pins old pyemd/BERT.
 metrics-mover = ["moverscore>=1.0.3", "pyemd>=1.0.0"]
@@ -115,6 +119,8 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 "tests/test_prompts.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_guards.py" = ["RUF001", "RUF002", "RUF003"]
 "tests/test_agent.py" = ["RUF001", "RUF002", "RUF003"]
+# The reward is ranked on zh-TW ops; the near-duplicate and grounding cases ARE the text.
+"tests/test_step_reward.py" = ["RUF001", "RUF002", "RUF003"]
 # Same rule, same reason: this parser's job is the zh-TW gazette's fullwidth delimiters,
 # so the confusable characters in its regexes and docs ARE the specification.
 "tools/ly_odt_to_v2.py" = ["RUF001", "RUF002", "RUF003"]
@@ -173,6 +179,10 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 # punctuation by specification.
 "src/arcsum/evalkit/behaviour.py" = ["RUF001", "RUF002", "RUF003"]
 "src/arcsum/evalkit/grounding.py" = ["RUF001", "RUF002", "RUF003"]
+"src/arcsum/rl/reward.py" = ["RUF001", "RUF002", "RUF003"]
+"src/arcsum/rl/step_reward.py" = ["RUF001", "RUF002", "RUF003"]
+"tools/raft_reading.py" = ["RUF001", "RUF002", "RUF003"]
+"tools/grpo_synth.py" = ["RUF001", "RUF002", "RUF003", "E402"]
 "tests/test_evalkit.py" = ["RUF001", "RUF002", "RUF003"]
 # zh-TW fixture transcript: fullwidth punctuation is the input format under test.
 "tests/test_cli_eval_all.py" = ["RUF001", "RUF002", "RUF003"]
@@ -186,3 +196,8 @@ select = ["E", "F", "I", "UP", "B", "SIM", "RUF"]
 "tools/build_reachable_refs.py" = ["RUF001", "RUF002", "RUF003"]
 # zh-TW point text is the data under test.
 "tests/test_journal.py" = ["RUF001", "RUF002", "RUF003"]
+"tools/gen_journal_synth.py" = ["RUF001", "RUF002", "RUF003"]
+"tools/onepass_probe.py" = ["RUF001", "RUF002", "RUF003"]
+"src/arcsum/simplified.py" = ["RUF001", "RUF002", "RUF003"]
+"tools/promote_revisions.py" = ["RUF001", "RUF002", "RUF003"]
+"tools/build_span_refs.py" = ["RUF001", "RUF002", "RUF003"]

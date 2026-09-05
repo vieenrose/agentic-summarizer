@@ -1,8 +1,43 @@
 # SPEC — Agentic meeting summarizer (Qwen3.5-0.8B + external memory, zh-TW)
 
-**Version:** 1.2 · **Status:** design + execution plan complete; Phase 0a fully closed,
+**Version:** 1.4 · **Status:** design + execution plan complete; Phase 0a fully closed,
 Phase 0b measured on the actual reference device — §9 phases the remaining work
 cheapest-first with gates; §8 attaches each risk to the phase that tests it
+
+**v1.4 changes — the gate set defended against regression and never asked for VALUE.** v1.2
+and v1.3 each hardened the gates after an instrument was found wrong, seven times in three
+days. That was right, and it had a cumulative side effect nobody chose: **every gate became a
+guard-rail, and a set made entirely of guard-rails converges on the most cautious model, not
+the best one.** With G3 withheld (§5.2.4), *nothing left in the set asked whether the summary
+is any good* — a bland, faithful, well-covered, stable, fast summary passes all of G1–G8.
+Since §1's objective is a summary **a person reads**, that is a hole at the centre.
+
+Seven rectifications, each attached to the defect it closes:
+
+1. **§5.2.7 — G9 human utility, GATED.** The only instrument in the whole set that cannot be
+   satisfied by saying less. Designed to be cheap enough to actually run (12 meetings, 2
+   reviewers, forced-choice), because a gate that is too expensive to run is not a gate.
+2. **§5.2.8 — G10 domain transfer, GATED.** Every gate ran on translated MeetingBank; the
+   product reads real zh-TW ASR. A 17/20 → 7/20 regression on real ASR went undetected across
+   three checkpoints because no gate looked there.
+3. **§5.2.4 — G3 is RETIRED, not merely withheld.** Its references are composed by a **Qwen**
+   teacher from **Gemma**-translated text. §5.1's contamination rule correctly bars judges of
+   those families, but ROUGE and BERTScore are not judges — they compare directly against the
+   contaminated reference. Repaired, G3 would measure *teacher imitation*.
+4. **§5.2.9 — a threshold gate must state what it can detect.** Seed alone moves churn by 27
+   points; a fixed threshold read off one training run is not evidence. A gate whose
+   between-seed spread exceeds its margin to the threshold is now WITHHELD, never passed.
+5. **§5.2.10 — the ship decision admits ROUTING.** v1.2's all-or-nothing choice forecloses the
+   one design the measurements actually support. It also now states, for the first time, what
+   the agent must beat the baseline on to earn its complexity.
+6. **§5.2.11 — G1 is corpus-limited and says so.** MeetingBank has essentially no
+   within-meeting reversals, so G1's evidence must be synthesized — and synthetic probes have
+   been pattern-matched repeatedly. A gate whose evidence is fabricated is a memorisation
+   test. G1 now requires an independent probe AND a control arm, and WITHHOLDS when it cannot
+   discriminate.
+7. **§4.1.1 — constants are labelled DERIVED or CONVENTION.** The memory caps are stated
+   normatively and are not the binding constraint: cap-overflow refusals are **0.6%** of ops
+   while **~22%** of output is repetition. The spec was precise about what does not bite.
 
 **v1.2 changes — the MEASUREMENTS were wrong, and the gates now defend against how.** v1.1's
 architecture is unchanged; what changes is what counts as evidence for a gate. Every item is
@@ -348,6 +383,33 @@ POINTS:
 every property that made v1.0 learnable at sub-1B: constant per-step context, no
 conversation history, bounded prefill. Points now carry a **stable integer id** (see the
 step grammar).
+
+#### 4.1.1 These caps are CONVENTIONS, not constraints (v1.4, normative)
+
+Stating a number normatively implies it is doing work. **Measured, these are not.** Of 384
+attempted ops at the production budget, 24.5% are refused — and `point too long` plus
+`arc too long` together are **0.6%**. The caps almost never bite. What consumes the step's
+output is repetition: `duplicate point` 14.8% plus `arc unchanged` 7.0%, i.e. **~22% of every
+step re-emits already-recorded content**, which on-device is latency spent against G4.
+
+So the spec was precise about what does not matter and silent about what does. Two rules
+follow, and they apply to every numeric constant in this document:
+
+- **A constant is labelled DERIVED or CONVENTION.** *Derived* means a measurement fixes it and
+  it must be re-derived when its inputs change (`CHUNK_TOKENS` against the device's context
+  window; G4's device throughput constants, which carry the depth each was measured at).
+  *Convention* means the value is arbitrary within a wide band and is fixed only so numbers
+  stay comparable across builds. **`ARC`, `POINTS_CAP` and `POINT_TOKENS` are CONVENTIONS.**
+- **A convention may not be cited as an explanation.** "The model lost detail because of
+  `POINT_TOKENS`" was checked and is false — every point in the G1 probe fits the cap — and
+  raising it 25 → 32 to relieve the pressure made the gate *worse* (8/27 → 3/27). Do not raise
+  a cap hoping to recover content; the content is being spent on repetition, not truncated.
+
+**The real constraint is unnamed and ungated**, and this is where a future version should act:
+nothing in the protocol prices re-emitting what memory already holds. The harness refuses such
+ops after they are decoded, so the tokens are already paid for. `guards` detects it, G7 gates
+the churn subset of it, and the remaining ~15% of duplicate-point output is neither priced nor
+gated.
 
 **2. The JOURNAL — append-only, harness-owned, the model NEVER reads it.**
 
@@ -771,14 +833,16 @@ size, same output contract — because a strawman baseline makes the gates meani
 
 | gate | criterion |
 |---|---|
-| G1 revision | passes the revision probe below |
-| G2 faithfulness | inversions ≤ baseline, and not worse than baseline on §5.1's judge |
-| G3 quality | beats baseline on ROUGE/BERTScore by more than run-to-run noise. **Coverage/Density are NOT gated** — see below |
-| G4 budget | fits §7's measured envelope on §6's hardware |
+| G1 revision | passes the independent revision probe **with its control arm**; WITHHELD when the probe cannot discriminate (v1.4 — see 5.2.11) |
+| G2 faithfulness | inversions ≤ baseline, and not worse than baseline on §5.1's judge panel |
+| ~~G3 quality~~ | **RETIRED v1.4** — its references are Qwen-authored from Gemma-translated text, so it measures teacher imitation, not quality. ROUGE/BERTScore remain DESCRIPTIVE. Quality is gated by G2 + G9. See 5.2.4 |
+| G4 budget | fits §7's measured envelope on §6's hardware, projected by `evalkit.latency` from the run's OWN token profile |
 | **G5 retention** (v1.1) | **≥90% of recorded points reach `SYNTHESIZE`'s input AND are rendered in the summary, with churn no worse than the comparison arm** (v1.2 — see "G5 is inflatable") |
 | **G6 grounding** (v1.1) | **≤10% of the specifics asserted in the summary are absent from the transcript, over ≥20 asserted specifics** |
 | **G7 stability** (v1.2) | **churn ≤ 10% of steps and no meeting with the ARC frozen from step 0**, on the worse of two seeds |
 | **G8 coverage** (v1.3) | **≤ 25% of meetings flagged `starved`, and ≥ 0.5 recorded points per chunk in aggregate** — gated jointly with G6, see 5.2.6 |
+| **G9 human utility** (v1.4) | **the only POSITIVE gate.** ≥ 2 reviewers over a fixed 12-meeting sample: agent preferred-or-tied vs baseline on ≥ 8/12, AND ≥ 9/12 rated *usable without consulting the transcript*. See 5.2.7 |
+| **G10 domain transfer** (v1.4) | **G5–G9 re-measured on real zh-TW ASR** (`data/asr_eval_v1`), not only on translated MeetingBank; no gate may degrade by more than its stated allowance. See 5.2.8 |
 
 ### 5.2.1 Replication is part of the gate (v1.2, normative)
 
@@ -993,17 +1057,48 @@ Decomposed, precision and recall are STABLE across both sets (agent 38/2 on prec
 0.55x/1.30x to 1.41x/3.35x. **The agent is consistently more precise and the baseline
 consistently more complete** — a design tradeoff, not a ranking.
 
-**Therefore G3 is WITHHELD for the ship decision, and §5.2's retirement clause cannot be
-executed on G3 evidence.** Retirement is one-way; the gate that would trigger it is not
-decidable as written. Use the reference-free instruments (G5 retention, G6 grounding, G7 churn),
-which do not depend on a reference's length, plus §5.1's human slice.
+**Therefore G3 was WITHHELD in v1.2** — superseded by the retirement below, which is a
+stronger finding: the gate is not merely undecidable as written, it would measure the wrong
+thing even if decided. Use the reference-free instruments (G5 retention, G6 grounding, G7
+churn, G8 coverage) plus G9's human slice.
 
 **Neither existing reference set satisfies (4).** §3 targets flowing prose under 1,000 tokens;
 the span references are ~273 characters and the one-pass references ~870. The span set is
 REACHABLE (0.0% ungrounded) but too terse; the one-pass set is better-sized but 2.2% ungrounded
-and, more seriously, excludes every long meeting (§5.2.3). Building a reference set that is
-both reachable and length-appropriate is a prerequisite for any G3-based ship decision, and
-until one exists **G3 is WITHHELD rather than passed or failed**.
+and, more seriously, excludes every long meeting (§5.2.3).
+
+#### G3 is RETIRED as a gate (v1.4, normative) — the references are contaminated at the source
+
+v1.2 withheld G3 pending a reference set that is both reachable and correctly sized. **Building
+one would not fix it, because the defect is not the length — it is the authorship.**
+
+§2.2 composes every reference with a **Qwen** teacher from text translated by **Gemma**. §5.1's
+contamination rule bars judges from both families for exactly that reason. But ROUGE, BERTScore
+and MoverScore **are not judges** — they compare the student's output *directly against the
+contaminated reference*, so the contamination rule never applied to them. The student is
+Qwen3.5-0.8B, distilled from a Qwen teacher, scored on n-gram overlap with that teacher's own
+prose. **A high G3 means the student imitates its teacher's style**, which is not the objective
+in §1 and is not what a reader wants.
+
+This was hiding behind the length problem: the length flip made G3 undecidable, so nobody asked
+whether a decidable G3 would have measured the right thing.
+
+**Consequences, all normative:**
+
+- **G3 is retired**, not withheld. Retirement is one-way (§5.2), and this is a defect of
+  construction rather than of calibration.
+- **ROUGE / BERTScore / SacreBLEU / MoverScore remain REQUIRED and DESCRIPTIVE.** They are
+  reported for continuity with every prior measurement and are useful for detecting gross
+  content loss between builds of the same lineage. They decide nothing.
+- **Quality is gated by G2 (is it false?) and G9 (is it worth reading?)**, both reference-free
+  and neither Qwen-authored.
+- **G3 could return only with a reference set authored independently of the student's family**
+  — human-written zh-TW summaries of held-out meetings, sized to §3. That is a corpus purchase,
+  not a metric fix, and it is out of scope until G9 shows the product is worth the spend.
+
+**The transferable rule: a contamination policy must cover every path from the contaminated
+artifact to the score, not only the paths that look like models.** A reference set is as much a
+model output here as a judge's verdict is.
 
 **G5 and G6 exist because v1.0 failed both invisibly.** No gate looked at what the memory
 retained or at whether the summary's specifics were real, so a checkpoint could pass
@@ -1147,6 +1242,172 @@ sparse meetings — procedural sessions where little is decided — while exclud
 **Generalisation of §5.2.2's rule, and the reason both are stated normatively:** *every*
 quality rate here has a denominator the model controls. Gate the numerator too, or the
 degenerate solution is to shrink the denominator.
+
+### 5.2.7 G9: human utility, the only positive gate (v1.4, normative)
+
+**Why this must exist.** With G3 retired (§5.2.4), G1–G8 are entirely composed of
+defect-absence, budget, and one isolated capability. **None of them asks whether the summary
+is good.** A bland, generic, faithful, well-covered, stable, fast summary passes all eight.
+§1's objective is a summary *a person reads*, so the set was gating everything except its own
+purpose. G9 is also the only instrument here that **cannot be satisfied by saying less** —
+§5.2.6 showed that abstention improves five gates at once, and G8 only forces enough to be
+*recorded*, not enough to be *useful*.
+
+**Protocol, fixed so it is cheap enough to actually run.** A gate nobody runs is not a gate,
+and this project has a tool (`asr_gate.py`) that was meant to run every time and did not.
+
+- **Sample: 12 meetings**, drawn once from the held-out set, stratified 6 long (≥ 20 chunks)
+  / 6 short, and **frozen** — the same 12 for every build, so builds are comparable and the
+  sample cannot be re-drawn until a build looks good.
+- **Reviewers: ≥ 2**, reading zh-TW natively, who did not author the build.
+- **Blind and order-randomised.** Reviewers see two summaries per meeting, unlabelled, with
+  the transcript available. Arm order is randomised per meeting.
+- **Two questions per meeting**, and both are gated:
+  1. *Forced choice with ties allowed*: which summary would you rather receive? →
+     **agent preferred-or-tied on ≥ 8/12.**
+  2. *Absolute*: could you act on this summary without reading the transcript? →
+     **≥ 9/12 yes for the agent arm.**
+
+Question 2 is the one that resists the degenerate solution: a summary can win a pairwise
+comparison by being marginally less bad while still being useless, and this project has
+already shipped a build on a comparative win (`mixed-e3`, 19/20 "curated") that churned on the
+first real meeting a user ran.
+
+**Reviewer disagreement is reported, never averaged away.** Two reviewers disagreeing on a
+meeting is evidence about the instrument, exactly as the 26–44% inter-judge agreement in
+`runs/g2-panel-instrument.md` is. If reviewers agree on fewer than 8/12 meetings, **G9 is
+WITHHELD** and the disagreement is the finding.
+
+**G9 does not replace the judge panel; it bounds it.** §5.1's five LLM judges scale and are
+reproducible; they also agree with each other on only 26–44% of meetings per meeting, and
+they measure claim-level contradiction, which is not the same as usefulness. G2 answers *is it
+false?*; G9 answers *is it worth reading?* Both are required.
+
+### 5.2.8 G10: the gates must run on the DEPLOYMENT distribution (v1.4, normative)
+
+Every gate in v1.3 ran on MeetingBank-derived text: clean, professionally transcribed,
+machine-translated, and in-distribution for the training corpus. **The product reads real
+zh-TW ASR** from the on-device pipeline of §2 — noisy, disfluent, stutter-repeated, with
+diarization errors.
+
+The cost of not gating this is on the record: real-ASR curation fell **17/20 → 7/20 across
+three checkpoints and nothing caught it**, because every gate since Phase 3 ran on clean text.
+It was found by a tool that had to be remembered, not by a criterion. `tools/asr_gate.py` is
+additionally now known to have rewarded the failure it was meant to catch, scoring a
+553-character confabulation as "curated" because it cleared a length floor.
+
+**G10: G5, G6, G7, G8 and G9 are re-measured on `data/asr_eval_v1`** — the 20 real zh-TW ASR
+meetings plus `dram-supply`, the meeting that failed in production and was in no evaluation
+corpus. Allowances, stated rather than left to judgement:
+
+| gate | clean-corpus criterion | allowance on real ASR |
+|---|---|---|
+| G6 grounding | ≤ 10% ungrounded | ≤ 15% |
+| G7 churn | ≤ 10% of steps | ≤ 15% |
+| G8 starved | ≤ 25% of meetings | ≤ 35% |
+| G5 retention | ≥ 90% | ≥ 85% |
+| G9 utility | 8/12 and 9/12 | 6/12 and 7/12, on its own 12-meeting ASR sample |
+
+**The allowances are deliberately generous and are not a licence to degrade.** Their purpose
+is to make the *direction* gateable at all: a build may be worse on noisy input without that
+being a defect, but it may not be **unusable**, and until v1.4 nothing said where that line
+was. A build failing G10 while passing G1–G9 has been trained on the wrong distribution, which
+is a finding about the corpus (§8 risk 5), not a rounding error.
+
+**This is domain shift, not noise.** Read directly, the NOP'd real-ASR transcripts show the
+model requires an explicit *stated outcome* and treats open-ended debate, interpellation and
+in-progress Q&A as NOP-worthy — correct for MeetingBank's resolved-agenda-item format and
+wrong for legislative proceedings, where much of the value IS the deliberation. Closing that
+needs supervision, not a threshold.
+
+### 5.2.9 A threshold gate must state what it can detect (v1.4, normative)
+
+§5.2.1 made replication part of the gate, which makes a *comparison* admissible. It does not
+make a *threshold* reliable, and most of G4–G10 are thresholds.
+
+Measured: seed alone moves churn by up to **27 percentage points** and the clean-meeting count
+by 12 of 40 — larger than the effect any A/B in this project has ever attributed to data. A
+fixed criterion like "churn ≤ 10%" read off one training run is therefore a coin flip in the
+region that matters.
+
+**Three requirements, all cheap:**
+
+1. **Every threshold gate reports the between-seed spread** alongside its value, from the ≥ 2
+   seeds §5.2.1 already requires.
+2. **A gate whose between-seed spread exceeds its margin to the threshold is WITHHELD, not
+   passed.** Example: churn 8% against a 10% ceiling with a 9-point spread is not a pass; it
+   is an unresolved measurement. This is the same withholding logic §5.2.4 applies to G3 and
+   `min_n` applies to the paired comparisons, applied to thresholds.
+3. **Each gate states the effect it can detect at the sample size used.** n = 40 meetings for
+   the behavioural gates, n = 12 for G9. A criterion nobody can meet or fail at that n should
+   be reported as descriptive rather than dressed as a gate.
+
+**Which metric a claim rests on decides whether n = 2 seeds is enough**, and only the
+replicate answers it: `retention` moved +0.10 between pools with a within-pool spread of
+0.000–0.016 and reproduced at both seeds — real. `churn` differences of the same nominal size
+at n = 1 were pure noise. Both were measured in the same experiment.
+
+### 5.2.10 The ship decision admits ROUTING, and states what the agent must earn (v1.4, normative)
+
+v1.2's decision was binary: ship the agent if all gates pass, otherwise ship the baseline and
+record the negative result. **That forecloses by construction the one design the measurements
+support**, and it never said what would make the agent worth its complexity.
+
+What the measurements actually show: the agent wins on long meetings and loses on short ones;
+it has fewer absolute inversions than the baseline and a *worse* per-claim rate on 4 of 4
+judges; it fits G4 with margin while the baseline's cost at scale is unmeasured.
+
+**The decision is now over three outcomes, not two:**
+
+1. **Ship the agent** — all gates pass on the whole eval corpus.
+2. **Ship a ROUTED system** — the agent serves the slice it is gated on, the baseline serves
+   the rest. Admissible only if: (a) the routing key is computable **before** inference from
+   the transcript alone (length in tokens is the only such key currently justified); (b) the
+   full gate set passes **on the agent's slice**, measured separately, not on the average; and
+   (c) the baseline arm is itself gated on its slice. Routing on anything the model produces
+   is forbidden — that selects on the measurement.
+3. **Ship the baseline** — and record the negative result.
+
+**The agent's minimum value proposition, stated for the first time.** §1 justifies this
+architecture by "learning to use external memory well". The architecture therefore has to
+demonstrate something map-reduce cannot do by construction, and only two candidates are
+available: **revision** (a later chunk correcting an earlier one — map-reduce cannot, its map
+calls see no shared state) and **long-meeting coherence** (a single through-line across ~48
+chunks, where map-reduce's compression ratio is constant but its cross-chunk consistency is
+not). **A build that passes every gate while beating the baseline on neither has not earned
+its complexity, and outcome 3 applies even to a clean sweep.** Absent that, the honest
+conclusion is that a simpler system does the job.
+
+### 5.2.11 G1 is corpus-limited, and says so rather than pattern-matching (v1.4, normative)
+
+MeetingBank contains essentially no within-meeting reversals: **3.4%** of gold items match
+reversal language and those are legislative boilerplate repealing *external* ordinances, never
+a decision reversed within the same meeting. So G1's evidence must be synthesized — and
+synthetic reversals have been pattern-matched repeatedly, across two model families, two
+protocols and six checkpoints, with the independent probe never moving more than noise.
+
+**A gate whose evidence is fabricated by the same process that trains for it is a
+memorisation test.** G1 is therefore constrained:
+
+1. **The probe must be independent**: no subject term, entity or figure shared with any
+   training reversal. Enforced when the probe set is built, not asserted afterwards.
+2. **A control arm is mandatory**: the same probe over decisions taken and *never* reversed.
+   Without it the loss cannot be located. With it, `tools/loss_map.py` showed the control arm
+   loses nothing between emission and memory (73.3% → 73.3%) while the reversal arm collapses
+   (59.3% → 14.8%) — which is what proved the reading step *can* retain an identifying detail
+   and that revision specifically drops it.
+3. **Both columns are reported**: whether the subject/key term survives, AND whether the late
+   outcome is stated. They trade against each other — a fix moved term retention 13 → 20 while
+   "states the late outcome" fell 8 → 6, leaving the gate unmoved. One column alone reads as
+   progress.
+4. **G1 is WITHHELD, not FAILED, when the probe cannot discriminate** — when the control arm
+   does not separate from the reversal arm, or when n is below `min_n`. A corpus that cannot
+   pose the question cannot answer it, and recording that honestly is worth more than a
+   verdict manufactured from synthetic data.
+
+**Route out, if the capability is judged essential**: obtain a corpus that contains natural
+within-meeting reversals — legislative committee proceedings do, which is also the deployment
+domain (§5.2.8). That is a corpus decision, not a training one, and §8 risk 8 owns it.
 
 ---
 
@@ -1486,12 +1747,14 @@ validators accept the composed summaries; `NOP` share within bounds.
 ### Phase 2 — pilot fine-tune, baseline, and probe
 
 Fine-tune on the pilot corpus. Build the map-reduce baseline (§5.2). Run the revision
-probe (G1) and the full gate set G1–G4 against the baseline.
+probe (G1) and the full gate set G1–G10 against the baseline.
 
-**Gate:** G1 passes and the agent beats baseline (G2/G3) at Phase-1 scale. Fail → either
-the architecture doesn't earn its complexity (ship the baseline, record the negative
-result) or the deficit is diagnosably data-volume-bound, which is the only justification
-for Phase 4's spend.
+**Gate (v1.4):** G1 is not WITHHELD (§5.2.11) and the agent beats the baseline at Phase-1
+scale on **G2 plus at least one of §5.2.10's two value propositions** — revision, or
+long-meeting coherence. G3 is retired and cannot be cited here (§5.2.4). Fail → either the
+architecture doesn't earn its complexity (§5.2.10 outcome 2 or 3: route, or ship the
+baseline and record the negative result) or the deficit is diagnosably data-volume-bound,
+which is the only justification for Phase 4's spend.
 
 ### Phase 3 — in-domain zh-TW reality check
 
@@ -1508,5 +1771,5 @@ of additional MeetingBank data fixes that.
 
 ### Phase 4 — full corpus
 
-Only now translate the remaining ~1,050 meetings, retrain, re-run G1–G4 and Phase 3's
+Only now translate the remaining ~1,050 meetings, retrain, re-run G1–G10 and Phase 3's
 slice. Full spend is justified only by a Phase-2 result that was gated on volume.

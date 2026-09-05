@@ -45,6 +45,52 @@ Against the measured step profile (15.2 steps/meeting, 340-char synthesis):
 | synthesis | 37.5 s |
 | **full meeting** | **19.0 min** (ceiling 20.00) |
 
+## CORRECTION, 2026-09-05: decode was benchmarked at the WRONG DEPTH, and G4 fails
+
+**The 19.0 min above is optimistic. The honest nominal figure is 20.4 min, over the 20.00
+ceiling.** The error is entirely in the decode term and it is a measurement-shape error,
+not a modelling one.
+
+`tg190` with no `-d` measures decode starting from an EMPTY cache, averaging over depths
+0-190. A reading step does not decode there. Its prompt is SYS + MEMORY + CHUNK ≈ 3,400
+tokens, so every one of its ~190 decoded tokens attends over 3,400+ tokens of KV. Decode on
+this device is strongly depth-sensitive, which the original run never swept:
+
+```
+tg190 @ d0     12.57 t/s
+tg190 @ d1000  11.83
+tg190 @ d2000  10.90
+tg190 @ d3000   9.99
+tg190 @ d3400   9.87   <- where a reading step actually decodes
+```
+
+Decode is **26% slower** at the depth the system runs at than at the depth it was measured
+at. Prefill is unaffected: a step's prompt IS built from empty (SPEC §4.1 — no conversation
+history crosses steps), so `pp3400 @ d0` was always the right prefill measure.
+
+Re-measured on `rl-v3` Q8_0, same device, same flags:
+
+| | recorded | corrected |
+|---|---|---|
+| prefill per step (3400 @ d0, 58.15 t/s) | 57.4 s | 58.5 s |
+| decode per step (190 @ **d3400**, 9.87 t/s) | 15.3 s | **19.3 s** |
+| **per reading step** | 72.7 s | **77.7 s** |
+| **full meeting** (15.2 steps + synthesis) | 19.0 min | **20.4 min** |
+
+So the margin was never 3% in the other direction — nominal is already ~2% OVER, and the
+steady-state and worst-case rows below inherit the same correction. **G4 FAILS as
+configured.**
+
+**This is CLAUDE.md trap 11 again — measuring the wrong thing, caught by an implausible
+value rather than by process.** The tell was the `-d` sweep in a routine re-run: a decode
+rate that falls 21% across a depth range shorter than one prompt cannot also be the rate
+that applies after that prompt. Nothing in the original run was wrong except which number
+was multiplied by 15.2.
+
+**Do not "correct" the mitigation table below by the same ratio.** The 8k/6400-token
+projection was computed from depth-0 decode too, and its decode happens deeper still
+(~6,400 tokens), so its error is LARGER, not equal. It has to be measured, not scaled.
+
 ## The Pi-ratio projection was wrong by 17%, and why
 
 Earlier tonight both models were benched on a Raspberry Pi 4, a cross-model ratio of 0.740

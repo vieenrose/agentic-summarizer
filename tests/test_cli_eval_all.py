@@ -44,8 +44,7 @@ def _stub(model_path="/served/model.gguf", completion="NOP"):
             return _Resp({"model_path": model_path})
         if url.endswith("/apply-template"):
             return _Resp({"prompt": "PROMPT"})
-        return _Resp({"content": completion,
-                      "usage": {"prompt_tokens": 1, "completion_tokens": 1}})
+        return _Resp({"content": completion, "usage": {"prompt_tokens": 1, "completion_tokens": 1}})
 
     return opener
 
@@ -67,8 +66,18 @@ def test_refuses_when_the_server_cannot_be_identified(tmp_path, corpus, monkeypa
 
     monkeypatch.setattr("urllib.request.urlopen", dead)
     with pytest.raises(RuntimeError, match="Refusing to record"):
-        eval_all.main(["--url", "http://x:8081", "--protocol", "tool",
-                       "--corpus", str(corpus), "--out", str(tmp_path / "s.json")])
+        eval_all.main(
+            [
+                "--url",
+                "http://x:8081",
+                "--protocol",
+                "tool",
+                "--corpus",
+                str(corpus),
+                "--out",
+                str(tmp_path / "s.json"),
+            ]
+        )
 
 
 def test_protocol_is_required(tmp_path, corpus):
@@ -82,15 +91,23 @@ def test_refuses_an_empty_corpus(tmp_path, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", _stub())
     empty = tmp_path / "empty"
     empty.mkdir()
-    assert eval_all.main(["--protocol", "tool", "--corpus", str(empty),
-                          "--out", str(tmp_path / "s.json")]) == 1
+    assert (
+        eval_all.main(
+            ["--protocol", "tool", "--corpus", str(empty), "--out", str(tmp_path / "s.json")]
+        )
+        == 1
+    )
 
 
 def test_scorecard_records_the_model_that_answered(tmp_path, corpus, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", _stub(model_path="/served/actual.gguf"))
     out = tmp_path / "s.json"
-    assert eval_all.main(["--protocol", "tool", "--corpus", str(corpus),
-                          "--label", "t", "--out", str(out)]) == 0
+    assert (
+        eval_all.main(
+            ["--protocol", "tool", "--corpus", str(corpus), "--label", "t", "--out", str(out)]
+        )
+        == 0
+    )
     blob = json.loads(out.read_text(encoding="utf-8"))
     assert blob["provenance"]["model_path"] == "/served/actual.gguf"
     assert blob["comparison_key"]
@@ -103,8 +120,18 @@ def test_deployment_mismatch_is_a_failed_check_not_a_note(tmp_path, corpus, monk
     must surface as a FAIL, because that exact divergence hid a shipped regression."""
     monkeypatch.setattr("urllib.request.urlopen", _stub())
     out = tmp_path / "s.json"
-    eval_all.main(["--protocol", "tool", "--corpus", str(corpus),
-                   "--deployed-cache-prompt", "true", "--out", str(out)])
+    eval_all.main(
+        [
+            "--protocol",
+            "tool",
+            "--corpus",
+            str(corpus),
+            "--deployed-cache-prompt",
+            "true",
+            "--out",
+            str(out),
+        ]
+    )
     blob = json.loads(out.read_text(encoding="utf-8"))
     check = next(c for c in blob["checks"] if c["name"] == "deployment_match")
     assert check["result"] is False and "cache_prompt" in check["reason"]
@@ -113,8 +140,18 @@ def test_deployment_mismatch_is_a_failed_check_not_a_note(tmp_path, corpus, monk
 def test_deployment_match_passes_when_configs_agree(tmp_path, corpus, monkeypatch):
     monkeypatch.setattr("urllib.request.urlopen", _stub())
     out = tmp_path / "s.json"
-    eval_all.main(["--protocol", "tool", "--corpus", str(corpus),
-                   "--deployed-cache-prompt", "false", "--out", str(out)])
+    eval_all.main(
+        [
+            "--protocol",
+            "tool",
+            "--corpus",
+            str(corpus),
+            "--deployed-cache-prompt",
+            "false",
+            "--out",
+            str(out),
+        ]
+    )
     blob = json.loads(out.read_text(encoding="utf-8"))
     assert next(c for c in blob["checks"] if c["name"] == "deployment_match")["result"] is True
 
@@ -124,17 +161,72 @@ def test_reference_gates_are_read_not_recomputed(tmp_path, corpus, monkeypatch):
     command must not become a second answer to that question."""
     monkeypatch.setattr("urllib.request.urlopen", _stub())
     report = tmp_path / "report.json"
-    report.write_text(json.dumps({
-        "gates": [{"gate": "G3_rouge1", "passed": True, "detail": "mean_delta=+0.05"},
-                  {"gate": "G4_budget", "passed": None, "detail": "withheld: no device"}],
-        "comparisons": [{"metric": "rouge1", "n": 40, "wins": 28, "losses": 12,
-                         "mean_delta": 0.047, "p_value": 0.017}],
-    }), encoding="utf-8")
+    report.write_text(
+        json.dumps(
+            {
+                "gates": [
+                    {"gate": "G3_rouge1", "passed": True, "detail": "mean_delta=+0.05"},
+                    {"gate": "G4_budget", "passed": None, "detail": "withheld: no device"},
+                ],
+                "comparisons": [
+                    {
+                        "metric": "rouge1",
+                        "n": 40,
+                        "wins": 28,
+                        "losses": 12,
+                        "mean_delta": 0.047,
+                        "p_value": 0.017,
+                    }
+                ],
+            }
+        ),
+        encoding="utf-8",
+    )
     out = tmp_path / "s.json"
-    eval_all.main(["--protocol", "tool", "--corpus", str(corpus),
-                   "--report", str(report), "--out", str(out)])
+    eval_all.main(
+        ["--protocol", "tool", "--corpus", str(corpus), "--report", str(report), "--out", str(out)]
+    )
     checks = {c["name"]: c for c in json.loads(out.read_text(encoding="utf-8"))["checks"]}
     assert checks["G3_rouge1"]["result"] is True
     # Withheld stays withheld — never promoted to a pass by passing through this layer.
     assert checks["G4_budget"]["result"] is None
     assert checks["delta_rouge1"]["score"] == pytest.approx(0.047)
+
+
+def test_every_behaviour_field_a_gate_consumes_is_serialized() -> None:
+    """The persisted rows must carry what the gates are computed FROM, not a subset.
+
+    Two things were added to `BehaviourReport` and not to the serializer, and both failed
+    silently rather than loudly:
+
+    * `steps` — the denominator every per-step rate is over. Without it consumers substitute
+      `chunks`, which differs whenever a step FAILED, so rates are wrong on exactly the runs
+      where something went wrong.
+    * `prefill_tokens` / `decode_tokens` — G4's inputs. `evalkit.latency` projects wall clock
+      from a run's MEASURED token profile precisely because decode length belongs to the
+      checkpoint and not the device. The first four RAFT scorecards report 0 for these and
+      cannot support a G4 claim.
+
+    Asserted against the dataclass rather than a hand-written list, so a field added to
+    `BehaviourReport` in future fails here instead of silently vanishing from disk.
+    """
+    import dataclasses
+    import inspect
+    import pathlib
+
+    from arcsum.cli import eval_all
+    from arcsum.evalkit.behaviour import BehaviourReport
+
+    # Read the whole module rather than slicing one call: the earlier version partitioned
+    # `main`'s source and silently produced an EMPTY haystack when the formatter moved a
+    # bracket, which reported every field as missing. A test whose failure mode is "flags
+    # everything" is as useless as one that flags nothing.
+    persisted = pathlib.Path(inspect.getsourcefile(eval_all)).read_text(encoding="utf-8")
+    # Derived properties are recomputed by consumers; raw COUNTS are the ground truth and
+    # cannot be recovered once dropped.
+    missing = [
+        f.name
+        for f in dataclasses.fields(BehaviourReport)
+        if f.name not in ("meeting",) and f'"{f.name}"' not in persisted
+    ]
+    assert not missing, f"BehaviourReport fields never written to the scorecard: {missing}"

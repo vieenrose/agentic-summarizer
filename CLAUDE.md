@@ -233,6 +233,286 @@ implausible value, never by process** — which means the process does not catch
 recorded configuration is not evidence, it is a memory.** When a number decides a retrain,
 commit the tool first. Three of this session's four cost an experiment each.
 
+### Trap 14, 2026-09-05 — a reward pays for what it CREDITS, and the cheapest credit becomes the policy
+
+RAFT on the reading step. Three ops were exploited in turn, each because it was the cheapest
+way to collect full credit, and each exploit was invisible in the metric it damaged until a
+different column was read. Full record: `runs/raft-reading-outcome.md`.
+
+| op | why it paid | what it produced |
+|---|---|---|
+| near-duplicate `ADD` | clears the exact-match refusal, so it APPLIES | one step scored 6.75 emitting the same point 3x |
+| bare `DROP` | every applied op earned +1, so discarding counted as work | **churn 2.9% → 44.7%**, 4x over G7 |
+| `ARC` | replaces one slot but was credited like an accumulating `ADD` | ARC emitted nearly every step, ~48% refused `arc unchanged` |
+
+**The generalisable rule: price an op by what it CONTRIBUTES, not by whether the harness
+accepted it.** The harness accepts anything well-formed; acceptance is not achievement.
+
+**The diagnosis was NOT in the churn counter — it was in the memory shape.** Recorded points
+rose 366 → 604 while SURVIVING points stayed flat at ~345, so retirements went **18 → 259**.
+The model recorded more and threw nearly all of it away. When a behavioural metric moves,
+check the conservation quantity beside it.
+
+Two second-order lessons, both of which cost something:
+
+- **Fixing `DROP` credit was not enough, because `idle` keyed off the OP KIND.** With `DROP`
+  merely uncredited it was still strictly better than `NOP` (−0.06 vs −0.27), since `NOP` was
+  penalised and dropping was free. Caught only because the new test failed. `idle` now means
+  **recorded nothing**.
+- **The defect was in the POOL before it was in the checkpoint, in a column nobody read.**
+  Round 1's pool was audited for grounding (6.4% vs gold's 45.1%) and abstention (NOP 22.4%
+  vs 48.2%) — both excellent — while carrying 0.65 drops per add against gold's 0.37.
+  `tools/audit_candidates.py` now reports how SELECTION moves each statistic relative to the
+  candidate pool; the direction of the move is the reward's signature. Run it before training.
+- `raft_reading.py --save-candidates` persists every scored candidate. Sampling is the
+  expensive half (~3.5 h) and the reward is the cheap half; all three fixes above cost a full
+  re-sample because the losers had been discarded.
+
+**The genuine finding underneath: starvation IS fixable, and it replicates.** Starved
+meetings 17/40 → 5/40, NOP 46.2% → 7.9%, specifics +21-44%, on both seeds. Three previous
+checkpoints never moved this. It is worth a second round.
+
+### Trap 15, 2026-09-05 — G4 gave THREE different verdicts from one benchmark, all from remembered inputs
+
+`runs/g4-device-measured.md`. In one day: **19.0 min PASS → 20.4 min FAIL → 16.24 min PASS**,
+same device, same benchmark. Nothing was wrong except which numbers were remembered.
+
+1. **Decode was benchmarked at DEPTH 0.** A reading step decodes after its own ~3,400-token
+   prompt, where the device gives 9.87 t/s against 12.57 at depth 0 — **26% slower where the
+   system runs**. Prefill at depth 0 was always right, because SPEC §4.1 lets no history cross
+   steps. That single term flipped PASS to FAIL.
+2. **Decode LENGTH was inherited from `qwen-tools-v5` (~190 tok/step) and reused for every
+   later checkpoint.** Measured on `rl-v3`: **80.3**. Less than half. That flipped it back.
+
+**Decode length is a property of the CHECKPOINT, not the device**, and `rl-v3` is cheap
+*because it starves* — 80 tokens/step is what NOPing 46.2% of chunks costs. Measured both ways:
+
+| build | NOP | decode/step | meeting | G4 |
+|---|---|---|---|---|
+| `rl-v3` | 46.2% | 80.3 tok | **16.24 min** | PASS +18.8% |
+| `raft-s0-e1` (unstarved) | 7.9% | 154.3 tok | **18.51 min** | PASS +7.4% |
+
+So recording properly nearly doubles decode, costs 2.3 min, and **still fits. G4 is not the
+blocker; churn is.** This also corrects an overstatement of mine from the same day — that
+starvation and G4 were in direct tension — which was scaled off the wrong 190-token base and
+was roughly 3x too large.
+
+**`arcsum.evalkit.latency` is now normative**: it holds the device constants WITH the depth
+each was measured at, and projects from a run's own profile. A G4 claim not produced by that
+path is not evidence. Also fixed: `arcsum-eval` was serializing a hand-picked SUBSET of
+`BehaviourReport`, so `decode_tokens` and `hedge_points` (the polarity-inversion guard that
+must be checked before shipping) never reached disk. Coverage is now asserted against the
+dataclass.
+
+**SPEC §7's own latency model was wrong and contradicted §4.1**: it averaged over a KV depth
+"ramping ~linearly from 0 toward ~4k" and integrated trapezoidally. That is a conversational
+agent's cost shape. Here every step rebuilds the same prompt, so cost is CONSTANT, not an
+integral. Corrected in SPEC v1.2, along with the measured profile — 3,018-token prompt and
+16.50 steps/meeting, against the 3,400/15.2 the gate had been computed from.
+
+### G2 PASSES 4/4 judges — and the agent is LESS faithful PER CLAIM — 2026-09-05
+
+`runs/g2-panel-instrument.md`. Paired over meetings both arms have:
+
+| judge | absolute (the gate) | per-claim | agent fewer/more |
+|---|---|---|---|
+| `deepseek-v4-flash` | 50 vs 119 PASS | 16.8% vs 16.4% | 28 / 5 |
+| `hy3` | 68 vs 125 PASS | 21.7% vs 16.8% | 27 / 6 |
+| `longcat-2.0` | 57 vs 81 PASS | 23.0% vs 13.9% | 15 / 8 |
+| `muse-spark-1.3` | 62 vs 79 PASS | 19.7% vs 10.6% | — |
+
+**The gate passes; the rate does not flatter.** The agent wins the absolute count because it
+asserts ~2.4x fewer claims (298-314 vs 724-745) in summaries a third as long. The obvious
+confound is RULED OUT, not waved at: measured with the judge's own `split_claims`, the
+agent's claims are 43.0 median characters against 46.0 — marginally SHORTER, not denser.
+
+**It tracks starvation on every judge** — starved meetings invert more per claim (18.1 vs
+16.2, 25.9 vs 19.2, 31.2 vs 22.7). Small n, so directional rather than proof, but it is the
+mechanism §4.1 v1.1 already names: an impoverished input is the pressure that produces
+invention. **So starvation is plausibly a FAITHFULNESS defect, not only a coverage one.**
+
+**The absolute RATE is still not trustworthy** — the panel ran `--votes 1` against a design
+that requires a majority (a judge was measured flipping on identical input), inter-judge
+per-meeting agreement is 26-44%, and the judge sees only `top_k=6` retrieved utterances, so a
+retrieval miss is indistinguishable from an absent fact. `cli/judge.py` now warns on
+`--votes 1`. The ORDERING is solid; the rate is not evidence of a rate.
+
+### Trap 12, 2026-09-03 — the grounding instrument penalised FLUENT zh, and the bias was not common-mode
+
+`evalkit/grounding.py` compared numerals literally, so a claim written `六十` against a source
+written `60` counted as FABRICATED. The module's own docstring called this an accepted false
+positive, which made it sound like noise. It was systematic: **the corpus writes figures in
+Arabic and fluent zh-TW output writes them in CJK**, so the check fired hardest on the
+best-written summaries. Found only because it rejected 3 of the first 6 teacher outputs while
+building journal synthesis supervision — every one of them faithful.
+
+Re-scored deterministically from the stored per-meeting flagged tokens (`runs/grounding-refold.md`):
+
+| checkpoint | reported | actual |
+|---|---|---|
+| `qwen-tools-v5` | 33.3% | 27.3% |
+| `spec-e3` ep2 | 15.6% | **3.1%** |
+| `v11-e3` (SPEC v1.1) | 21.2% | **6.1%** |
+| `s234-e3` | 28.6% | **0.0%** |
+
+**The ordering never changed, so no comparison-based conclusion was wrong.** What was wrong is
+every ABSOLUTE rate, and unevenly: the correction is ~6 points for `v5` and ~15 for `v11-e3`,
+because a model emitting more natural zh trips the bug more often. **A bias that scales with
+output quality cannot be subtracted out** — `PROJECT-REVIEW.md`'s agent-vs-baseline-vs-teacher
+comparison must be re-measured, not adjusted.
+
+A second defect rode along: `兩` and `〇` were missing from `CJK_NUMBER`, so `兩百萬` matched as
+`百萬` and was valued at **1,000,000** — half its real value. That silently compares a correct
+figure against the wrong number rather than failing to detect it. A test now asserts every
+character `cjk_to_int` parses is one `CJK_NUMBER` detects.
+
+**The transferable part: when an instrument documents a known false positive, check whether it
+correlates with the thing being measured.** "Accepted limitation" was doing the work of
+"measured and bounded", and it never had been.
+
+### Trap 13, 2026-09-03 — v1.1 changed what "recorded" MEANS, and two instruments were not told
+
+The journal split `Memory.points` (the ≤16 working set the model sees) from
+`synthesis_view()` (everything ever recorded). `evalkit/behaviour.py` kept reading `points`,
+so three metrics silently changed meaning the day v1.1 landed — **all three in the direction
+of flattering the model**:
+
+| metric | what broke |
+|---|---|
+| `starved` | a meeting that recorded 40 points and retired 24 reads as 16/40 chunks = 0.4/chunk, under the 0.5 floor — the best-accumulating meetings get flagged |
+| `chars_per_point` | denominator too small, so **under-rendering could not fire**: 346 chars over 40 recorded is 8.7 ch/pt (fails), but over 16 survivors is 21.6 (passes) |
+| G5 retention | had no numerator at all; there was no way to ask whether synthesis USED what reached it |
+
+Fixed with `recorded_points` / `rendered_points` / `retention`, wired into `arcsum-eval`.
+Pre-v1.1 reports deserialize unchanged because `recorded_units` falls back to the working set,
+which is the correct reading for a trace where the two were the same thing.
+
+**The pattern is now twice in one day** (trap 12 was the other): a protocol change lands, the
+measurement code still compiles and still produces plausible numbers, and nothing fails. Both
+were found by chasing a number that looked *too good* — 52.6 median chars/point for a model
+known to emit 346 characters from a 40-point memory. **When a protocol changes what a noun
+means, grep for every consumer of that noun.**
+
+**Third instance, same day: the VALIDATION set was still `tools-v1`.** `train_toolcalls.py`
+refuses mixed prompt versions in the TRAIN set and never checked the valid set, so every SPEC
+v1.1 build computed `eval_loss` — the signal every "best epoch" claim rests on — against the
+superseded protocol. A v1.1 model addresses points by id and can emit `revise`; a v1.0
+validation row rewards the text-prefix form it was trained away from. The 20 synthesis rows
+are worse still: capped at 16 entries with no `後改為`, they actively penalise journal-shaped
+behaviour. **`runs/v12-e3`'s epoch losses were scored this way and its best-epoch pick is not
+trustworthy — measure both epochs behaviourally.** Now refused loudly; migrate with
+`tools/migrate_pool_v11.py` (`data/staging/valid_tools_v2.jsonl`, 411 rows). Note the migrated
+valid set's SYNTHESIS rows are still v1.0-SHAPED — migration rewrites reading rows only — so
+`eval_loss` still under-rewards journal synthesis and remains a weak checkpoint selector.
+
+### The synthesis supervision hole that v1.1 left open — fixed 2026-09-03
+
+v1.1 rebuilt the reading step around the journal and left `SYNTHESIZE` reading a v1.0 world.
+Measured on `sft_pool_v11.jsonl`, all 450 synthesis rows: prompts hold a **median of 13 points
+and never more than 16** (exactly `POINTS_CAP`), **0 rows contain `後改為`** (the journal's
+supersession rendering, i.e. the one behaviour `revise` exists to produce had no synthesis
+supervision anywhere), and targets sit at a near-constant ~470 characters. Replaying the
+pool's own gold ops through the real harness (88.3% applied) puts **51% of meetings above 16
+entries, up to 57** — so more than half the serving distribution was absent from training and
+output length was never conditioned on input size.
+
+`tools/gen_journal_synth.py` rebuilds the slice by replay; `tools/swap_synth_slice.py` merges
+it, replacing a synthesis row **only** when a journal-shaped row exists for that meeting —
+149 of the 324 synthesis meetings are synthetic capability rows (`hedge-*`, reversals,
+deliberation) with no transcript to replay, and the 12 hedge rows among them are what fixed
+`v4`'s polarity inversion. Result: 174 rows, **0 ungrounded across 2,015 specifics** (the old
+pool was 39.9% ungrounded), 113 rows above 16 entries, 69 carrying supersession markup.
+
+**Two things the generation caught that would otherwise have shipped, and both argue for
+gates in PAIRS:**
+
+1. **Asking for coverage makes the teacher fabricate.** It summed three separate `30萬` memory
+   items into `九十萬`. A coverage gate alone would have trained that in; the grounding gate
+   caught it. An explicit "do not sum, compute or estimate" clause fixed the 29+ bucket from
+   1/3 kept to 3/3.
+2. **The teacher copies the harness's `（後改為：…）` markup verbatim into prose ~1 time in 3**,
+   on exactly the rows carrying G1's revision capability. Rejected on the literal markup, never
+   on the phrase `後改為`, which is ordinary Chinese and correct for a summary to say.
+
+### A SINGLE-SEED A/B IS NOT EVIDENCE HERE — measured 2026-09-03
+
+Three pools x two seeds, all six evaluated on `data/heldout_zh`. Full record in
+`runs/journal-synthesis-outcome.md`.
+
+| pool | churn s0 | churn s1 | **spread** | retention s0/s1 |
+|---|---|---|---|---|
+| `v11` pre-journal | 3.5% (13/40 clean) | 13.3% (5/40) | 9.8 pp | 0.837 / 0.836 |
+| `v12` journal | 29.8% (4/40) | 17.0% (6/40) | 12.9 pp | 0.921 / 0.937 |
+| `v13` journal+dedup | 36.7% (1/40) | 9.2% (6/40) | **27.4 pp** | 0.936 / 0.936 |
+
+**Seed alone moves churn by up to 27 percentage points and the clean count by 12 of 40** —
+larger than the effect any of this project's A/Bs has ever attributed to data. `v11-e3`'s
+much-quoted 3.5% is the lucky seed; its own replicate is 13.3%.
+
+**The contrast inside this table is the lesson.** `retention` moves +0.10 between pools with a
+within-pool spread of 0.000-0.016 and reproduces at both seeds — that is a real effect. `churn`
+differences of the same nominal size are pure noise at n=2. **Which metric a claim rests on
+decides whether n=2 is enough**, and the only way to know is to run the replicate.
+
+Two claims from that session are RETRACTED: that `v12` was a decisive churn regression
+(p = 2.2e-07 came from comparing ONE run of each), and that near-duplicate redundancy caused
+the churn (the mechanism is real in the DATA — 5.6% -> 11.2% — but removing it, 7.2% -> 2.1%,
+did not reduce churn: `v13` 23.0% vs `v12` 23.4%). **A measured mechanism in the data is not a
+demonstrated cause in the model.**
+
+**A paired sign test over meetings does NOT protect against this.** It measures whether a
+difference is consistent across meetings for ONE pair of checkpoints; it is silent on whether
+a retrained pair reproduces it. `runs/v12-e3` produced p = 2.2e-07 for a comparison whose
+run-to-run term is larger than the effect. Treating one training run as the population is the
+error, and it is invisible in the statistics.
+
+**Training costs ~35 minutes** on this setup (921 steps, batch 1 x accum 16, 0.8B full
+fine-tune) — not the ~4 h implied elsewhere in this file. Replicates are affordable. Run two
+seeds per arm before believing any behavioural delta.
+
+### zh-TW costs real tokens — measured 2026-09-03, `src/arcsum/simplified.py`
+
+Over 16 meetings / 354,995 characters, the same content in Simplified tokenises cheaper:
+
+| tokenizer | zh-TW | zh-CN | saving |
+|---|---|---|---|
+| Qwen3.5-0.8B (student, 248k vocab) | 1.577 ch/tok | 1.761 ch/tok | **10.5%** |
+| Granite (100k vocab) | 0.727 ch/tok | 0.909 ch/tok | **20.0%** |
+
+Chunking is token-based, so this is ~10.5% fewer reading steps: **19.0 -> ~17 min against
+G4's 20.00 ceiling**, whose measured margin is 3%. Round-tripping TW->CN->TW alters **0.288%**
+of characters (aligned with `difflib`; a positional diff wrongly reports 23.5% because one
+inserted character shifts everything after it), almost all benign variants — `畫/劃`, `裡/里`,
+`台/臺`, `週/周`.
+
+**Use `tw2sp` going in and `s2tw` — NOT `s2twp` — coming back.** The `p` phrase table performs
+vocabulary localisation, not script conversion: it rewrote `發布` to `釋出` and `藉` to `借`.
+That is fine for making text tokenise well on the way in and unacceptable in a summary that is
+supposed to report what was said.
+
+Not yet trained: this is a train/serve change (the pool is zh-TW throughout, and the stored
+`system` field must be converted with it or the fine-tune sees an unseen prompt — trap 10's
+failure mode). `tools/convert_pool_zhcn.py` refuses to run without opencc rather than writing
+an unconverted pool under a converted name, and verifies numerals survive.
+
+### One-pass long-doc summarisation is CLOSED for the Granite hybrid family — 2026-09-03
+
+`runs/onepass-htiny.md`. `granite-4.0-h-tiny` bf16 (7B total / 1B active), swept 5k->80k
+heuristic tokens on a real 91.8k-token meeting: **specifics wander between 1 and 8 with no
+trend across a 16x input range**, output pinned at 550-590 chars, and it returns **2 specifics
+from an 80k-token meeting** — against 8.5 for the 0.8B map-reduce baseline and 20.1 for the
+27B teacher. It also fabricates at mid lengths, unlike `3b-a800m`. At 13.9 GB bf16 it is 5.6x
+over SPEC §6's 2.5 GB ceiling; Q4 is still 1.8x over.
+
+Same "faithful but thin" shape now measured at 350m, 1b, 3b-a800m and 7b-a1b, so it is not a
+capacity problem that scale fixes within this family. **`PROJECT-REVIEW.md` §4's open question
+is answered: there is no viable single-pass alternative, so the agent's real control arm
+remains map-reduce.**
+
+Also: **quote Granite context budgets in GRANITE tokens.** 80,000 heuristic tokens rendered as
+125,054 granite tokens (1.56x), so a "128k context" Granite holds only ~82k heuristic tokens of
+zh-TW and cannot read this corpus's longest meetings in one pass at all.
+
 ### SUPERSEDED 2026-09-02: `mixed-e3` BEST-EPOCH is the current best, not `qwen-tools-v5`
 
 Full record in `runs/mixed-e3/RESULT.md`. **Serve `runs/mixed-e3/gguf_best/`** (checkpoint

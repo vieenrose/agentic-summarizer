@@ -1,0 +1,46 @@
+[eval] serving runs/rl-v3/gguf_final/model.Q8_0.gguf
+[eval] comparison_key 667d89753a3c4d97
+[eval] AlamedaCC_04162019: 6pt 57ch/pt starved 6pt/37ch, arc frozen x5
+[eval] AlamedaCC_11052019: 8pt 48ch/pt churn x1, starved 8pt/19ch, arc frozen x2
+[eval] BostonCC_03022022: 7pt 40ch/pt starved 7pt/19ch, arc frozen x7
+[eval] BostonCC_05182022: 4pt 44ch/pt churn x1, starved 4pt/19ch, arc frozen x6
+[eval] DenverCityCouncil_03282017: 4pt 50ch/pt clean
+[eval] DenverCityCouncil_04062020: 1pt 30ch/pt starved 1pt/3ch
+[eval] DenverCityCouncil_04112022: 5pt 24ch/pt clean
+[eval] DenverCityCouncil_06112018: 11pt 29ch/pt starved 11pt/36ch, arc frozen x22
+[eval] DenverCityCouncil_06152015: 3pt 20ch/pt clean
+[eval] DenverCityCouncil_08312015: 5pt 26ch/pt churn x4, arc frozen x6
+[eval] DenverCityCouncil_10192015: 16pt 28ch/pt arc frozen x5
+[eval] DenverCityCouncil_10292018: 2pt 35ch/pt churn x1, starved 2pt/17ch, arc frozen x2
+[eval] DenverCityCouncil_11182019: 11pt 32ch/pt churn x1, arc frozen x7
+[eval] KingCountyCC_03172021: 16pt 19ch/pt under-rendered 19ch/pt x16pt, arc frozen x9, ungrounded-numbers x1
+[eval] KingCountyCC_06162021: 7pt 15ch/pt starved 7pt/19ch, under-rendered 15ch/pt x7pt, arc frozen x2
+[eval] KingCountyCC_10202021: 4pt 38ch/pt starved 4pt/13ch
+[eval] LongBeachCC_02052019: 6pt 25ch/pt starved 6pt/39ch
+[eval] LongBeachCC_03172020: 8pt 54ch/pt starved 8pt/21ch, arc frozen x3
+[eval] LongBeachCC_03182014: 5pt 44ch/pt clean
+[eval] LongBeachCC_04032018: 4pt 53ch/pt starved 4pt/14ch, arc frozen x3
+[eval] LongBeachCC_04072015: 9pt 36ch/pt starved 9pt/32ch, arc frozen x6
+[eval] LongBeachCC_04172018: 16pt 53ch/pt churn x1, starved 16pt/48ch, arc frozen x9
+[eval] LongBeachCC_06152021: 15pt 22ch/pt starved 15pt/36ch, arc frozen x17
+[eval] LongBeachCC_07052016: 13pt 20ch/pt starved 13pt/29ch, under-rendered 20ch/pt x13pt
+[eval] LongBeachCC_09072021: 13pt 31ch/pt arc frozen x13
+[eval] LongBeachCC_09202016: 16pt 31ch/pt churn x8, arc frozen x6, ungrounded-numbers x3
+[eval] SeattleCityCouncil_02082021: 5pt 76ch/pt clean
+[eval] SeattleCityCouncil_02222022: 8pt 61ch/pt starved 8pt/19ch, arc frozen x4
+[eval] SeattleCityCouncil_02292016: 7pt 47ch/pt clean
+[eval] SeattleCityCouncil_03232015: 7pt 62ch/pt clean
+[eval] SeattleCityCouncil_04122022: 8pt 48ch/pt clean
+[eval] SeattleCityCouncil_04182016: 4pt 26ch/pt clean
+[eval] SeattleCityCouncil_05032022: 7pt 67ch/pt clean
+[eval] SeattleCityCouncil_08052019: 14pt 42ch/pt clean
+[eval] SeattleCityCouncil_09062016: 16pt 16ch/pt under-rendered 16ch/pt x16pt, ungrounded-numbers x3
+[eval] SeattleCityCouncil_09112017: 15pt 35ch/pt clean
+[eval] SeattleCityCouncil_09282015: 12pt 32ch/pt churn x1
+[eval] SeattleCityCouncil_09292020: 9pt 32ch/pt churn x1, arc frozen x5
+[eval] SeattleCityCouncil_10292018: 8pt 31ch/pt arc frozen x4
+[eval] SeattleCityCouncil_11022020: 13pt 30ch/pt clean
+
+[eval] rl-v3-g4
+[eval]   clean 13/40 | churn 2.9% | median 35ch/pt | ungrounded 2.5% of 204
+[eval] wrote runs/rl-v3-g4/scorecard_heldout.json

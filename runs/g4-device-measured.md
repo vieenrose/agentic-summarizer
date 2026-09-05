@@ -91,6 +91,70 @@ was multiplied by 15.2.
 projection was computed from depth-0 decode too, and its decode happens deeper still
 (~6,400 tokens), so its error is LARGER, not equal. It has to be measured, not scaled.
 
+### The 20.4 min above is ALSO wrong, in the other direction — `rl-v3` PASSES at 16.24 min
+
+Both figures above still carry one assumed input: **190 decode tokens per step, inherited
+from `qwen-tools-v5`.** Measured on `rl-v3` itself over the 40 held-out meetings, through
+`arcsum-eval` with the token profile now persisted:
+
+| | assumed | **measured (`rl-v3`)** |
+|---|---|---|
+| prefill per step | 3,400 tok | **2,811 tok** |
+| decode per step | 190 tok | **80.3 tok** |
+| steps per meeting | 15.2 | **16.50** |
+
+Decode is **less than half** what was assumed. The projection:
+
+| | |
+|---|---|
+| prefill per step | 48.3 s |
+| decode per step | **8.1 s** |
+| per reading step | **56.5 s** |
+| synthesis | 42.5 s |
+| **full meeting (mean)** | **16.24 min — PASS, +18.8% margin** |
+| median / p90 / max | 14.59 / 34.54 / 48.18 min |
+| meetings under the ceiling | 30/40 |
+
+**So G4 PASSES for `rl-v3`, and every previous verdict on it — the 19.0 min PASS, the 20.4
+min FAIL — was computed from another checkpoint's decode length.** Three different answers
+from one benchmark, all differing only in which numbers were remembered rather than measured.
+
+**Read this beside the starvation result, because they are the same fact.** `rl-v3` decodes
+only 80 tokens per step *because it NOPs 46.2% of chunks*. Its G4 margin is paid for by the
+memory it fails to build. A checkpoint that records properly emits more, and the honest
+question is whether it still fits — which is measured in the next section, not scaled.
+
+**Correction to the claim that starvation and G4 are in direct tension.** That was argued
+from the RAFT pool's TARGETS running 1.45x gold's length, applied to the assumed 190-token
+base to give 22.5 min. On the real 80.3-token base the same 1.45x lands near 17 min. The
+tension is real in direction and was overstated in size, because it was scaled off a number
+that did not belong to this model.
+
+### Measured both ways: fixing starvation costs 2.3 minutes and still PASSES
+
+`raft-s0-e1` is the anti-starvation checkpoint (NOP 46.2% → 7.9%, starved 17/40 → 5/40).
+Same corpus, same device constants, both token profiles measured rather than assumed:
+
+| build | NOP rate | decode/step | prefill/step | per step | full meeting | G4 |
+|---|---|---|---|---|---|---|
+| `rl-v3` | 46.2% | 80.3 tok | 2,811 tok | 56.5 s | **16.24 min** | PASS, +18.8% |
+| `raft-s0-e1` | **7.9%** | **154.3 tok** | 2,855 tok | 64.7 s | **18.51 min** | **PASS, +7.4%** |
+
+Recording properly **nearly doubles decode** — 80.3 → 154.3 tokens per step, which is the
+direct cost of no longer abstaining on half the transcript — and buys it for 2.3 minutes of
+the budget. Prefill is unchanged, as it must be: the prompt is the same size either way.
+
+**So G4 is not the blocker, and the trade-off is affordable.** The margin narrows from 19% to
+7%, which matters against the transient decode stalls recorded above (2 of 14 rounds losing
+13-37% of decode), so a future checkpoint that records still more should re-measure rather
+than assume. But the thing standing between this architecture and shipping is **churn**, not
+wall clock.
+
+**Method note.** Every number in this section came from `arcsum-eval`'s persisted token
+profile, which existed for none of the four earlier verdicts. Three different G4 answers were
+produced from ONE benchmark — 19.0 min PASS, 20.4 min FAIL, 16.24 min PASS — differing only
+in which inputs were remembered instead of measured.
+
 ## The Pi-ratio projection was wrong by 17%, and why
 
 Earlier tonight both models were benched on a Raspberry Pi 4, a cross-model ratio of 0.740

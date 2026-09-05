@@ -1,0 +1,46 @@
+[eval] serving runs/raft-s0/gguf_e1/model.Q8_0.gguf
+[eval] comparison_key 549b55a41f800fd3
+[eval] AlamedaCC_04162019: 14pt 48ch/pt churn x10, starved 14pt/37ch, arc frozen x28
+[eval] AlamedaCC_11052019: 14pt 32ch/pt churn x8, arc frozen x7
+[eval] BostonCC_03022022: 8pt 20ch/pt churn x7, arc frozen x7, ungrounded-numbers x5
+[eval] BostonCC_05182022: 8pt 37ch/pt churn x4, arc frozen x12, ungrounded-numbers x5
+[eval] DenverCityCouncil_03282017: 2pt 95ch/pt clean
+[eval] DenverCityCouncil_04062020: 10pt 39ch/pt clean
+[eval] DenverCityCouncil_04112022: 9pt 22ch/pt clean
+[eval] DenverCityCouncil_06112018: 7pt 31ch/pt churn x43, starved 7pt/36ch, arc frozen x26
+[eval] DenverCityCouncil_06152015: 6pt 44ch/pt clean
+[eval] DenverCityCouncil_08312015: 11pt 31ch/pt churn x1, arc frozen x6
+[eval] DenverCityCouncil_10192015: 12pt 30ch/pt arc frozen x4
+[eval] DenverCityCouncil_10292018: 7pt 51ch/pt churn x18, starved 7pt/17ch, arc frozen x13
+[eval] DenverCityCouncil_11182019: 10pt 38ch/pt churn x12, arc frozen x10
+[eval] KingCountyCC_03172021: 11pt 29ch/pt churn x8, arc frozen x6, ungrounded-numbers x5
+[eval] KingCountyCC_06162021: 16pt 25ch/pt churn x1, arc frozen x8
+[eval] KingCountyCC_10202021: 9pt 32ch/pt churn x4, arc frozen x7, ungrounded-numbers x1
+[eval] LongBeachCC_02052019: 8pt 13ch/pt churn x42, under-rendered 13ch/pt x8pt, arc frozen x15, ungrounded-numbers x4
+[eval] LongBeachCC_03172020: 7pt 28ch/pt churn x30, arc frozen x13, ungrounded-numbers x5
+[eval] LongBeachCC_03182014: 12pt 27ch/pt arc frozen x3, ungrounded-numbers x3
+[eval] LongBeachCC_04032018: 1pt 26ch/pt arc frozen x7, ungrounded-numbers x4
+[eval] LongBeachCC_04072015: 11pt 24ch/pt starved 11pt/32ch, arc frozen x10
+[eval] LongBeachCC_04172018: 6pt 25ch/pt churn x29, arc frozen x35, ungrounded-numbers x3
+[eval] LongBeachCC_06152021: 3pt 36ch/pt churn x9, starved 3pt/36ch, arc frozen x23, ungrounded-numbers x2
+[eval] LongBeachCC_07052016: 9pt 20ch/pt churn x21, arc frozen x17, ungrounded-numbers x2
+[eval] LongBeachCC_09072021: 9pt 27ch/pt churn x6, arc frozen x10, ungrounded-numbers x15
+[eval] LongBeachCC_09202016: 2pt 23ch/pt churn x5, arc frozen x15, ungrounded-numbers x2
+[eval] SeattleCityCouncil_02082021: 7pt 40ch/pt clean
+[eval] SeattleCityCouncil_02222022: 5pt 20ch/pt churn x6, under-rendered 20ch/pt x5pt, arc frozen x8, ungrounded-numbers x4
+[eval] SeattleCityCouncil_02292016: 6pt 27ch/pt churn x3
+[eval] SeattleCityCouncil_03232015: 10pt 25ch/pt arc frozen x3
+[eval] SeattleCityCouncil_04122022: 6pt 32ch/pt clean
+[eval] SeattleCityCouncil_04182016: 6pt 31ch/pt clean
+[eval] SeattleCityCouncil_05032022: 11pt 29ch/pt arc frozen x3
+[eval] SeattleCityCouncil_08052019: 16pt 43ch/pt churn x3, ungrounded-numbers x6
+[eval] SeattleCityCouncil_09062016: 16pt 27ch/pt arc frozen x8, ungrounded-numbers x1
+[eval] SeattleCityCouncil_09112017: 9pt 29ch/pt churn x7, arc frozen x3, ungrounded-numbers x3
+[eval] SeattleCityCouncil_09282015: 3pt 28ch/pt churn x3, arc frozen x4, ungrounded-numbers x4
+[eval] SeattleCityCouncil_09292020: 4pt 12ch/pt churn x14, under-rendered 12ch/pt x4pt, arc frozen x6, ungrounded-numbers x5
+[eval] SeattleCityCouncil_10292018: 8pt 55ch/pt churn x1, arc frozen x5
+[eval] SeattleCityCouncil_11022020: 16pt 32ch/pt arc frozen x3, ungrounded-numbers x3
+
+[eval] raft-s0-e1-g4
+[eval]   clean 7/40 | churn 44.7% | median 29ch/pt | ungrounded 1.5% of 268
+[eval] wrote runs/raft-s0-e1/scorecard_g4.json

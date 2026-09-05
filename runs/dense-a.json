@@ -1,0 +1,68 @@
+{
+ "pool": "data/staging/sft_pool_v11.jsonl",
+ "out": "data/staging/synth_dense_a.jsonl",
+ "teacher_url": "http://127.0.0.1:8087",
+ "meetings": 123,
+ "kept": 64,
+ "min_coverage": 0.75,
+ "containment_floor": 0.45,
+ "mean_coverage": 0.9735,
+ "mean_chars": 551.2,
+ "median_entries": 15.0,
+ "max_entries": 45,
+ "chars_per_entry": 36.99,
+ "ungrounded": 0,
+ "specifics": 676,
+ "ungrounded_rate": 0.0,
+ "by_bucket": {
+  "00-08": {
+   "tried": 50,
+   "kept": 19,
+   "empty": 0,
+   "off_language": 0,
+   "markup_leak": 0,
+   "fabricated": 0,
+   "thin": 1,
+   "too_sparse": 0,
+   "error": 0,
+   "retried": 1
+  },
+  "09-16": {
+   "tried": 24,
+   "kept": 15,
+   "empty": 0,
+   "off_language": 0,
+   "markup_leak": 0,
+   "fabricated": 1,
+   "thin": 1,
+   "too_sparse": 7,
+   "error": 0,
+   "retried": 9
+  },
+  "17-28": {
+   "tried": 36,
+   "kept": 24,
+   "empty": 0,
+   "off_language": 1,
+   "markup_leak": 0,
+   "fabricated": 2,
+   "thin": 0,
+   "too_sparse": 9,
+   "error": 0,
+   "retried": 12
+  },
+  "29+": {
+   "tried": 13,
+   "kept": 6,
+   "empty": 0,
+   "off_language": 0,
+   "markup_leak": 0,
+   "fabricated": 2,
+   "thin": 0,
+   "too_sparse": 5,
+   "error": 0,
+   "retried": 7
+  }
+ },
+ "prompt_version": "tools-v2"
+}

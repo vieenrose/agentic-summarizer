@@ -1,0 +1,14 @@
+{
+ "reading_in": 399,
+ "reading_out": 391,
+ "revise_created": 7,
+ "churn_dropped": 8,
+ "map_rows_passed": 0,
+ "id_drops": 225,
+ "prefix_unmatched": 0,
+ "non_reading_rows": 20,
+ "total_out": 411,
+ "pool": "data/staging/valid_tools.jsonl",
+ "out": "data/staging/valid_tools_v2.jsonl",
+ "prompt_version": "tools-v2"
+}

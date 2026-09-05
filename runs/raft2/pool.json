@@ -1,0 +1,37 @@
+{
+ "in_rows": 3422,
+ "out_rows": 3329,
+ "kinds_in": {
+  "reading": 2655,
+  "baseline_map": 284,
+  "baseline_reduce": 4,
+  "synthesize": 479
+ },
+ "kinds_out": {
+  "reading": 2655,
+  "baseline_map": 284,
+  "baseline_reduce": 4,
+  "synthesize": 386
+ },
+ "dropped": {
+  "synthesize_ungrounded": 93
+ },
+ "synthesis_retention_by_occupancy": {
+  "00-08": {
+   "rows": 106,
+   "kept": 79
+  },
+  "09-16": {
+   "rows": 285,
+   "kept": 219
+  },
+  "17-28": {
+   "rows": 64,
+   "kept": 64
+  },
+  "29+": {
+   "rows": 24,
+   "kept": 24
+  }
+ }
+}

@@ -1,0 +1,38 @@
+{
+ "pool": "data/staging/sft_pool_v18.jsonl",
+ "out": "data/staging/raft2.jsonl",
+ "url": "http://127.0.0.1:8089",
+ "samples": 6,
+ "temperature": 0.8,
+ "steps": 2655,
+ "gold_churn": 4,
+ "gold_refused": 957,
+ "gold_ops": 5147,
+ "policy_churn": 1003,
+ "policy_ungrounded": 6626,
+ "policy_refused": 3538,
+ "policy_ops": 27253,
+ "improved": 1886,
+ "churn_removed": 4,
+ "gold_kept": 769,
+ "improved_rate": 0.7104,
+ "gold_refusal_rate": 0.1859,
+ "policy_refusal_rate": 0.1298,
+ "zero_variance_rate": 0.0,
+ "op_shape_gold": {
+  "add": 2635,
+  "drop": 1208,
+  "revise": 233,
+  "arc": 1071,
+  "nop": 1191,
+  "malformed": 0
+ },
+ "op_shape_kept": {
+  "add": 3658,
+  "drop": 1368,
+  "revise": 365,
+  "arc": 1259,
+  "nop": 747,
+  "malformed": 0
+ }
+}

@@ -1,0 +1,333 @@
+{
+ "corpus": "data/heldout_zh",
+ "items": "data/heldout_items_zh.json",
+ "out": "data/heldout_refs_span_long.json",
+ "composed": 40,
+ "skipped": 0,
+ "specifics": 247,
+ "ungrounded": 0,
+ "ungrounded_rate": 0.0,
+ "rows": [
+  {
+   "meeting": "AlamedaCC_04162019",
+   "chars": 1548,
+   "items_kept": 9,
+   "items_dropped": 0,
+   "specifics": 13,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "AlamedaCC_11052019",
+   "chars": 1133,
+   "items_kept": 8,
+   "items_dropped": 0,
+   "specifics": 8,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "BostonCC_03022022",
+   "chars": 1560,
+   "items_kept": 10,
+   "items_dropped": 0,
+   "specifics": 7,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "BostonCC_05182022",
+   "chars": 1894,
+   "items_kept": 12,
+   "items_dropped": 0,
+   "specifics": 7,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "DenverCityCouncil_03282017",
+   "chars": 308,
+   "items_kept": 2,
+   "items_dropped": 0,
+   "specifics": 2,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "DenverCityCouncil_04062020",
+   "chars": 158,
+   "items_kept": 1,
+   "items_dropped": 1,
+   "specifics": 1,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "DenverCityCouncil_04112022",
+   "chars": 276,
+   "items_kept": 2,
+   "items_dropped": 0,
+   "specifics": 2,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "DenverCityCouncil_06112018",
+   "chars": 1075,
+   "items_kept": 6,
+   "items_dropped": 0,
+   "specifics": 7,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "DenverCityCouncil_06152015",
+   "chars": 285,
+   "items_kept": 2,
+   "items_dropped": 0,
+   "specifics": 0,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "DenverCityCouncil_08312015",
+   "chars": 424,
+   "items_kept": 3,
+   "items_dropped": 0,
+   "specifics": 6,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "DenverCityCouncil_10192015",
+   "chars": 616,
+   "items_kept": 4,
+   "items_dropped": 0,
+   "specifics": 5,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "DenverCityCouncil_10292018",
+   "chars": 503,
+   "items_kept": 3,
+   "items_dropped": 0,
+   "specifics": 0,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "DenverCityCouncil_11182019",
+   "chars": 1116,
+   "items_kept": 7,
+   "items_dropped": 0,
+   "specifics": 12,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "KingCountyCC_03172021",
+   "chars": 313,
+   "items_kept": 2,
+   "items_dropped": 1,
+   "specifics": 1,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "KingCountyCC_06162021",
+   "chars": 149,
+   "items_kept": 1,
+   "items_dropped": 0,
+   "specifics": 2,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "KingCountyCC_10202021",
+   "chars": 450,
+   "items_kept": 3,
+   "items_dropped": 0,
+   "specifics": 4,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "LongBeachCC_02052019",
+   "chars": 1123,
+   "items_kept": 7,
+   "items_dropped": 0,
+   "specifics": 14,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "LongBeachCC_03172020",
+   "chars": 1726,
+   "items_kept": 12,
+   "items_dropped": 0,
+   "specifics": 16,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "LongBeachCC_03182014",
+   "chars": 334,
+   "items_kept": 2,
+   "items_dropped": 0,
+   "specifics": 0,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "LongBeachCC_04032018",
+   "chars": 750,
+   "items_kept": 5,
+   "items_dropped": 0,
+   "specifics": 5,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "LongBeachCC_04072015",
+   "chars": 1896,
+   "items_kept": 12,
+   "items_dropped": 0,
+   "specifics": 15,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "LongBeachCC_04172018",
+   "chars": 2102,
+   "items_kept": 12,
+   "items_dropped": 1,
+   "specifics": 20,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "LongBeachCC_06152021",
+   "chars": 2015,
+   "items_kept": 13,
+   "items_dropped": 0,
+   "specifics": 11,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "LongBeachCC_07052016",
+   "chars": 938,
+   "items_kept": 5,
+   "items_dropped": 0,
+   "specifics": 6,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "LongBeachCC_09072021",
+   "chars": 1387,
+   "items_kept": 10,
+   "items_dropped": 0,
+   "specifics": 6,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "LongBeachCC_09202016",
+   "chars": 1874,
+   "items_kept": 13,
+   "items_dropped": 1,
+   "specifics": 12,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_02082021",
+   "chars": 152,
+   "items_kept": 1,
+   "items_dropped": 0,
+   "specifics": 1,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_02222022",
+   "chars": 423,
+   "items_kept": 3,
+   "items_dropped": 0,
+   "specifics": 5,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_02292016",
+   "chars": 319,
+   "items_kept": 2,
+   "items_dropped": 0,
+   "specifics": 4,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_03232015",
+   "chars": 488,
+   "items_kept": 3,
+   "items_dropped": 0,
+   "specifics": 1,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_04122022",
+   "chars": 506,
+   "items_kept": 4,
+   "items_dropped": 0,
+   "specifics": 2,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_04182016",
+   "chars": 145,
+   "items_kept": 1,
+   "items_dropped": 0,
+   "specifics": 1,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_05032022",
+   "chars": 281,
+   "items_kept": 2,
+   "items_dropped": 0,
+   "specifics": 1,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_08052019",
+   "chars": 1671,
+   "items_kept": 10,
+   "items_dropped": 0,
+   "specifics": 18,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_09062016",
+   "chars": 1377,
+   "items_kept": 8,
+   "items_dropped": 0,
+   "specifics": 6,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_09112017",
+   "chars": 897,
+   "items_kept": 5,
+   "items_dropped": 0,
+   "specifics": 7,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_09282015",
+   "chars": 882,
+   "items_kept": 6,
+   "items_dropped": 1,
+   "specifics": 4,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_09292020",
+   "chars": 1638,
+   "items_kept": 10,
+   "items_dropped": 0,
+   "specifics": 7,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_10292018",
+   "chars": 653,
+   "items_kept": 4,
+   "items_dropped": 0,
+   "specifics": 3,
+   "ungrounded": 0
+  },
+  {
+   "meeting": "SeattleCityCouncil_11022020",
+   "chars": 365,
+   "items_kept": 2,
+   "items_dropped": 0,
+   "specifics": 5,
+   "ungrounded": 0
+  }
+ ],
+ "skipped_detail": []
+}

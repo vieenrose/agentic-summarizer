@@ -1,0 +1,28 @@
+{
+ "label": "granite-4.0-h-tiny bf16 (long)",
+ "model_path": "/tmp/claude-1001/-home-luigi-agentic-summarizer/ff6202a2-5ccd-4b7f-8464-f099bc70b8f2/scratchpad/small/granite-4.0-h-tiny-bf16.gguf",
+ "transcript": "data/heldout_zh/LongBeachCC_04172018.txt",
+ "transcript_tokens": 91802,
+ "max_tokens": 1200,
+ "repeat_penalty": 1.1,
+ "seed": 0,
+ "cache_prompt": false,
+ "rows": [
+  {
+   "budget": 80000,
+   "input_tokens": 79515,
+   "chars": 551,
+   "specifics": 2,
+   "ungrounded": 0,
+   "ungrounded_rate": 0.0,
+   "lang_flags": [],
+   "seconds": 24.8,
+   "text": "在一場市議會會議上，各位市議員和來賓討論了多項重要議題，包括對特定區域的停車計費器的建議、公共工程部門的報告以及其他社群發展計畫。市長加西亞首先開會，隨後由各位市議員和來賓進行討論。 首先，公共工程部門的報告指出了對特定區域（第31號和32號）停車錶的建議。詳細說明了計畫中包括設置停車錶、改善公共服務等內容，並強調這將有助於提高特定區域的經濟活動和商業發展。然而，也有來自居民和企業主的反饋，指出停車計費器可能對他們造成不便，並提出了改善建議。 隨後，討論了公共工程部門的報告，包括對特定區域的停車計費器的建議。這些措施旨在提高該地區的經濟活動和商業發展，但也引起了居民和企業主的質疑，認為可能對他們造成不便。市議會成員呼籲更多考慮這些影響，並建議在討論停車計費器之前，先進行一次研究會議來評估其對社群的影響。 最後，市長加西亞呼籲各位在討論停車計費器時，要充分考慮到這項措施可能對不同居民和企業主的影響。他強調了公共工程部門在處理此類問題上的努力，並呼籲大家一起為長灘市的發展做出貢獻。 整場會議涵蓋了多個重要議題，包括公共工程計畫、社群發展以及對特定區域停車問題的應對策略。各位參與者通過建議和討論，表達了他們對這些議題的看法和期望，並希望能夠找到一種平衡點，既能促進社群發展，又不影響居民生活。"
+  },
+  {
+   "budget": 91000,
+   "input_tokens": 90715,
+   "error": "llama-server 400: {\"error\":{\"code\":400,\"message\":\"request (142479 tokens) exceeds the available context size (131072 tokens), try increasing it\",\"type\":\"exceed_context_size_error\",\"n_prompt_tokens\":142479,\"n_ctx\":131072}}"
+  }
+ ]
+}

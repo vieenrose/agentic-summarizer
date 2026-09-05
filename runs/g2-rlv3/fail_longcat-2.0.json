@@ -1,0 +1,9 @@
+{
+  "agent/AlamedaCC_04162019": "RuntimeError: hosted judge 503: {\"error\":{\"type\":\"server_error\",\"message\":\"Error from provider (Console Go): Upstream request failed: Endpoint is unavailable.\"}}",
+  "baseline/DenverCityCouncil_06152015": "RuntimeError: hosted judge 503: {\"error\":{\"type\":\"server_error\",\"message\":\"Error from provider (Console Go): Upstream request failed: Endpoint is unavailable.\"}}",
+  "baseline/DenverCityCouncil_11182019": "RuntimeError: hosted judge 503: {\"error\":{\"type\":\"server_error\",\"message\":\"Error from provider (Console Go): Upstream request failed: Endpoint is unavailable.\"}}",
+  "baseline/LongBeachCC_04172018": "RuntimeError: hosted judge 503: {\"error\":{\"type\":\"server_error\",\"message\":\"Error from provider (Console Go): Upstream request failed: Endpoint is unavailable.\"}}",
+  "baseline/LongBeachCC_09072021": "RuntimeError: hosted judge 503: {\"error\":{\"type\":\"server_error\",\"message\":\"Error from provider (Console Go): Upstream request failed: Endpoint is unavailable.\"}}",
+  "baseline/SeattleCityCouncil_02082021": "RuntimeError: hosted judge 503: {\"error\":{\"type\":\"server_error\",\"message\":\"Error from provider (Console Go): Upstream request failed: Endpoint is unavailable.\"}}",
+  "baseline/SeattleCityCouncil_04122022": "RuntimeError: hosted judge 503: {\"error\":{\"type\":\"server_error\",\"message\":\"Error from provider (Console Go): Upstream request failed: Endpoint is unavailable.\"}}"
+}

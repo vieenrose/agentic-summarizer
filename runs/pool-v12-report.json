@@ -1,0 +1,28 @@
+{
+ "pool": "data/staging/sft_pool_v11.jsonl",
+ "synth": "data/staging/synth_journal.jsonl",
+ "out": "data/staging/sft_pool_v12.jsonl",
+ "rows_before": 4879,
+ "rows_after": 4909,
+ "synthesis_before": 450,
+ "synthesis_after": 480,
+ "synthesis_dropped": 144,
+ "journal_rows_added": 174,
+ "meetings_gaining_synthesis": 30,
+ "synthetic_rows_preserved": 306,
+ "preserved_meeting_prefixes": [
+  "AlamedaCC_03012016",
+  "AlamedaCC_04022019",
+  "AlamedaCC_07192016",
+  "AlamedaCC_12212021",
+  "DenverCityCouncil_01022019",
+  "DenverCityCouncil_04192021",
+  "DenverCityCouncil_05312016",
+  "DenverCityCouncil_07082019",
+  "DenverCityCouncil_08142017",
+  "DenverCityCouncil_09272021",
+  "DenverCityCouncil_10312016",
+  "DenverCityCouncil_11162020"
+ ],
+ "prompt_version": "tools-v2"
+}

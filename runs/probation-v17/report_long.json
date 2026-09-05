@@ -1,0 +1,86 @@
+{
+  "treatment": "agent",
+  "control": "baseline",
+  "paired_count": 40,
+  "g1_passed": false,
+  "comparisons": [
+    {
+      "metric": "rouge1",
+      "n": 40,
+      "wins": 7,
+      "losses": 33,
+      "ties": 0,
+      "mean_delta": -0.103485585987886,
+      "stderr": 0.018724822526483383,
+      "p_value": 4.2277022657799534e-05
+    },
+    {
+      "metric": "rouge2",
+      "n": 40,
+      "wins": 8,
+      "losses": 32,
+      "ties": 0,
+      "mean_delta": -0.0456691531428385,
+      "stderr": 0.008704397955481074,
+      "p_value": 0.0001821658297558315
+    },
+    {
+      "metric": "rougeL",
+      "n": 40,
+      "wins": 10,
+      "losses": 30,
+      "ties": 0,
+      "mean_delta": -0.02193137067728838,
+      "stderr": 0.007092612802224824,
+      "p_value": 0.0022214337732293643
+    },
+    {
+      "metric": "coverage",
+      "n": 40,
+      "wins": 10,
+      "losses": 27,
+      "ties": 3,
+      "mean_delta": -0.006979194987109383,
+      "stderr": 0.002444600319772702,
+      "p_value": 0.007632078602910042
+    },
+    {
+      "metric": "density",
+      "n": 40,
+      "wins": 16,
+      "losses": 24,
+      "ties": 0,
+      "mean_delta": -0.34554287689896324,
+      "stderr": 0.24854329672545356,
+      "p_value": 0.26818725105476915
+    }
+  ],
+  "gates": [
+    {
+      "gate": "G2_faithfulness",
+      "passed": null,
+      "detail": "withheld: no judge records"
+    },
+    {
+      "gate": "G3_rouge1",
+      "passed": false,
+      "detail": "mean_delta=-0.103 SE=0.019 lower_bound=-0.122 p=0.000"
+    },
+    {
+      "gate": "G3_rouge2",
+      "passed": false,
+      "detail": "mean_delta=-0.046 SE=0.009 lower_bound=-0.054 p=0.000"
+    },
+    {
+      "gate": "G3_rougeL",
+      "passed": false,
+      "detail": "mean_delta=-0.022 SE=0.007 lower_bound=-0.029 p=0.002"
+    },
+    {
+      "gate": "G4_budget",
+      "passed": null,
+      "detail": "withheld: no device measurement provided"
+    }
+  ],
+  "decision": "ship the baseline"
+}

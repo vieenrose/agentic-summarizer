@@ -48,3 +48,14 @@ demo/space_gradio/arcsum/
 # Judge inputs are a one-line derivation from `*_pairs.json` (meeting_id + source +
 # candidate). ~9 MB each and regenerable, so the pairs file is the audit trail, not this.
 runs/*/judge_cases.json
+
+# Run artifacts that are BULK, not evidence. The decision-bearing files -- RESULT.md,
+# scorecard*.json, report*.json, scores_*.jsonl -- are committed; these are the raw
+# intermediates they were computed from, and they run to tens of MB per experiment.
+# Anything a claim rests on must be small enough to commit, which is a useful constraint.
+runs/**/*.log
+runs/*/server*.log
+runs/**/cases.json
+runs/**/agent*.json
+runs/**/baseline*.json
+runs/**/*_pairs.json

@@ -1,0 +1,28 @@
+{
+ "pool": "data/staging/sft_pool_v11.jsonl",
+ "synth": "data/staging/synth_journal_q38.jsonl",
+ "out": "data/staging/sft_pool_v16_pre.jsonl",
+ "rows_before": 4879,
+ "rows_after": 4911,
+ "synthesis_before": 450,
+ "synthesis_after": 482,
+ "synthesis_dropped": 153,
+ "journal_rows_added": 185,
+ "meetings_gaining_synthesis": 32,
+ "synthetic_rows_preserved": 297,
+ "preserved_meeting_prefixes": [
+  "AlamedaCC_07192016",
+  "DenverCityCouncil_01022019",
+  "DenverCityCouncil_04192021",
+  "DenverCityCouncil_05312016",
+  "DenverCityCouncil_06252018",
+  "DenverCityCouncil_09272021",
+  "DenverCityCouncil_10312016",
+  "DenverCityCouncil_12102018",
+  "KingCountyCC_03032021",
+  "LongBeachCC_01132015",
+  "LongBeachCC_04112017",
+  "LongBeachCC_11022020"
+ ],
+ "prompt_version": "tools-v2"
+}

@@ -1,0 +1,1108 @@
+{
+ "provenance": {
+  "model_path": "runs/v18-s1/gguf_614/model.Q8_0.gguf",
+  "model_sha256": "179178ddd6a20cbece4fb4e9956a6bd498b61040ee78361a32d7cbca57a4b043",
+  "protocol": "tool",
+  "prompt_version": "sys-v2",
+  "tokenize_version": "chartok-v1",
+  "generation": {
+   "backend": "llama-server",
+   "cache_prompt": true,
+   "max_tokens_step": 512,
+   "max_tokens_synth": 1000,
+   "raw_completion": true,
+   "repeat_penalty": 1.1,
+   "seed": 0,
+   "temperature": 0.0
+  },
+  "corpora": {
+   "corpus": {
+    "path": "data/heldout_zh",
+    "n_files": 40,
+    "content_sha256": "432b8c9361920552c32a415cea19a927e60b42861b9341e892e9b72bcf3fc5bb"
+   }
+  },
+  "label": "v18-s1-ep2",
+  "checkpoint": "",
+  "epoch": "epoch 2 (614) seed 1",
+  "code_revision": "cc2f20a-dirty"
+ },
+ "comparison_key": "60f02c739e5c1369456946c5efb4317d3c8d77e28eacdefd66775bd7b7e47c7e",
+ "generated_at": "2026-09-04T07:54:03+00:00",
+ "checks": [
+  {
+   "name": "clean_meetings",
+   "result": null,
+   "reason": "2/40 with no behaviour flag",
+   "score": 2.0,
+   "n": 40,
+   "artifact": ""
+  },
+  {
+   "name": "churn_rate",
+   "result": null,
+   "reason": "203 events over 660 steps",
+   "score": 0.30757575757575756,
+   "n": 660,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_starved",
+   "result": null,
+   "reason": "memory did not accumulate",
+   "score": 13.0,
+   "n": 40,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_confabulating",
+   "result": null,
+   "reason": "prose asserts far more than memory holds",
+   "score": 0.0,
+   "n": 40,
+   "artifact": ""
+  },
+  {
+   "name": "median_chars_per_point",
+   "result": null,
+   "reason": "summary characters per RECORDED memory unit (working set + journal)",
+   "score": 33.42857142857143,
+   "n": 40,
+   "artifact": ""
+  },
+  {
+   "name": "retention",
+   "result": null,
+   "reason": "360 of 411 recorded points reach the summary",
+   "score": 0.8759124087591241,
+   "n": 411,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_under_rendering",
+   "result": null,
+   "reason": "memory was built and then largely not rendered",
+   "score": 4.0,
+   "n": 40,
+   "artifact": ""
+  },
+  {
+   "name": "ungrounded_rate",
+   "result": null,
+   "reason": "15 of 190 specific claims absent from their transcript",
+   "score": 0.07894736842105263,
+   "n": 190,
+   "artifact": ""
+  },
+  {
+   "name": "meetings_with_ungrounded",
+   "result": null,
+   "reason": "at least one fabricated specific",
+   "score": 9.0,
+   "n": 40,
+   "artifact": ""
+  },
+  {
+   "name": "deployment_match",
+   "result": true,
+   "reason": "measured config matches deployment",
+   "score": null,
+   "n": null,
+   "artifact": ""
+  }
+ ],
+ "details": {
+  "behaviour": [
+   {
+    "meeting": "AlamedaCC_04162019",
+    "chunks": 37,
+    "points": 11,
+    "recorded_points": 9,
+    "rendered_points": 9,
+    "retention": 1.0,
+    "memory_units": 10,
+    "prose_chars": 282,
+    "churn_events": 2,
+    "arc_frozen_steps": 7,
+    "nop_steps": 23,
+    "abstained": false,
+    "chars_per_point": 28.2,
+    "flags": [
+     "churn x2",
+     "starved 11pt/37ch",
+     "arc frozen x7"
+    ]
+   },
+   {
+    "meeting": "AlamedaCC_11052019",
+    "chunks": 19,
+    "points": 8,
+    "recorded_points": 13,
+    "rendered_points": 12,
+    "retention": 0.923,
+    "memory_units": 14,
+    "prose_chars": 389,
+    "churn_events": 6,
+    "arc_frozen_steps": 10,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 27.8,
+    "flags": [
+     "churn x6",
+     "arc frozen x10",
+     "ungrounded-numbers x1"
+    ]
+   },
+   {
+    "meeting": "BostonCC_03022022",
+    "chunks": 19,
+    "points": 4,
+    "recorded_points": 7,
+    "rendered_points": 7,
+    "retention": 1.0,
+    "memory_units": 8,
+    "prose_chars": 330,
+    "churn_events": 8,
+    "arc_frozen_steps": 6,
+    "nop_steps": 4,
+    "abstained": false,
+    "chars_per_point": 41.2,
+    "flags": [
+     "churn x8",
+     "starved 4pt/19ch",
+     "arc frozen x6",
+     "ungrounded-numbers x1"
+    ]
+   },
+   {
+    "meeting": "BostonCC_05182022",
+    "chunks": 19,
+    "points": 7,
+    "recorded_points": 11,
+    "rendered_points": 11,
+    "retention": 1.0,
+    "memory_units": 12,
+    "prose_chars": 400,
+    "churn_events": 7,
+    "arc_frozen_steps": 3,
+    "nop_steps": 4,
+    "abstained": false,
+    "chars_per_point": 33.3,
+    "flags": [
+     "churn x7",
+     "arc frozen x3"
+    ]
+   },
+   {
+    "meeting": "DenverCityCouncil_03282017",
+    "chunks": 3,
+    "points": 8,
+    "recorded_points": 6,
+    "rendered_points": 6,
+    "retention": 1.0,
+    "memory_units": 7,
+    "prose_chars": 208,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 29.7,
+    "flags": []
+   },
+   {
+    "meeting": "DenverCityCouncil_04062020",
+    "chunks": 3,
+    "points": 2,
+    "recorded_points": 2,
+    "rendered_points": 2,
+    "retention": 1.0,
+    "memory_units": 3,
+    "prose_chars": 250,
+    "churn_events": 0,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 83.3,
+    "flags": []
+   },
+   {
+    "meeting": "DenverCityCouncil_04112022",
+    "chunks": 6,
+    "points": 9,
+    "recorded_points": 11,
+    "rendered_points": 11,
+    "retention": 1.0,
+    "memory_units": 12,
+    "prose_chars": 275,
+    "churn_events": 4,
+    "arc_frozen_steps": 2,
+    "nop_steps": 2,
+    "abstained": false,
+    "chars_per_point": 22.9,
+    "flags": [
+     "churn x4",
+     "arc frozen x2"
+    ]
+   },
+   {
+    "meeting": "DenverCityCouncil_06112018",
+    "chunks": 36,
+    "points": 9,
+    "recorded_points": 17,
+    "rendered_points": 17,
+    "retention": 1.0,
+    "memory_units": 18,
+    "prose_chars": 301,
+    "churn_events": 10,
+    "arc_frozen_steps": 0,
+    "nop_steps": 29,
+    "abstained": false,
+    "chars_per_point": 16.7,
+    "flags": [
+     "churn x10",
+     "starved 9pt/36ch",
+     "under-rendered 17ch/pt x9pt",
+     "ungrounded-numbers x5"
+    ]
+   },
+   {
+    "meeting": "DenverCityCouncil_06152015",
+    "chunks": 4,
+    "points": 1,
+    "recorded_points": 1,
+    "rendered_points": 1,
+    "retention": 1.0,
+    "memory_units": 2,
+    "prose_chars": 173,
+    "churn_events": 2,
+    "arc_frozen_steps": 1,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 86.5,
+    "flags": [
+     "churn x2",
+     "starved 1pt/4ch"
+    ]
+   },
+   {
+    "meeting": "DenverCityCouncil_08312015",
+    "chunks": 11,
+    "points": 8,
+    "recorded_points": 11,
+    "rendered_points": 10,
+    "retention": 0.909,
+    "memory_units": 12,
+    "prose_chars": 425,
+    "churn_events": 9,
+    "arc_frozen_steps": 5,
+    "nop_steps": 2,
+    "abstained": false,
+    "chars_per_point": 35.4,
+    "flags": [
+     "churn x9",
+     "arc frozen x5",
+     "ungrounded-numbers x3"
+    ]
+   },
+   {
+    "meeting": "DenverCityCouncil_10192015",
+    "chunks": 9,
+    "points": 10,
+    "recorded_points": 10,
+    "rendered_points": 10,
+    "retention": 1.0,
+    "memory_units": 11,
+    "prose_chars": 297,
+    "churn_events": 1,
+    "arc_frozen_steps": 1,
+    "nop_steps": 5,
+    "abstained": false,
+    "chars_per_point": 27.0,
+    "flags": [
+     "churn x1"
+    ]
+   },
+   {
+    "meeting": "DenverCityCouncil_10292018",
+    "chunks": 17,
+    "points": 8,
+    "recorded_points": 8,
+    "rendered_points": 8,
+    "retention": 1.0,
+    "memory_units": 9,
+    "prose_chars": 296,
+    "churn_events": 0,
+    "arc_frozen_steps": 1,
+    "nop_steps": 12,
+    "abstained": false,
+    "chars_per_point": 32.9,
+    "flags": [
+     "starved 8pt/17ch",
+     "ungrounded-numbers x1"
+    ]
+   },
+   {
+    "meeting": "DenverCityCouncil_11182019",
+    "chunks": 15,
+    "points": 9,
+    "recorded_points": 16,
+    "rendered_points": 16,
+    "retention": 1.0,
+    "memory_units": 17,
+    "prose_chars": 437,
+    "churn_events": 19,
+    "arc_frozen_steps": 2,
+    "nop_steps": 2,
+    "abstained": false,
+    "chars_per_point": 25.7,
+    "flags": [
+     "churn x19",
+     "arc frozen x2",
+     "ungrounded-numbers x1"
+    ]
+   },
+   {
+    "meeting": "KingCountyCC_03172021",
+    "chunks": 19,
+    "points": 5,
+    "recorded_points": 8,
+    "rendered_points": 8,
+    "retention": 1.0,
+    "memory_units": 9,
+    "prose_chars": 218,
+    "churn_events": 4,
+    "arc_frozen_steps": 4,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 24.2,
+    "flags": [
+     "churn x4",
+     "starved 5pt/19ch",
+     "arc frozen x4"
+    ]
+   },
+   {
+    "meeting": "KingCountyCC_06162021",
+    "chunks": 19,
+    "points": 14,
+    "recorded_points": 22,
+    "rendered_points": 16,
+    "retention": 0.727,
+    "memory_units": 23,
+    "prose_chars": 420,
+    "churn_events": 2,
+    "arc_frozen_steps": 0,
+    "nop_steps": 4,
+    "abstained": false,
+    "chars_per_point": 18.3,
+    "flags": [
+     "churn x2",
+     "under-rendered 18ch/pt x14pt"
+    ]
+   },
+   {
+    "meeting": "KingCountyCC_10202021",
+    "chunks": 13,
+    "points": 3,
+    "recorded_points": 3,
+    "rendered_points": 3,
+    "retention": 1.0,
+    "memory_units": 4,
+    "prose_chars": 120,
+    "churn_events": 3,
+    "arc_frozen_steps": 1,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 30.0,
+    "flags": [
+     "churn x3",
+     "starved 3pt/13ch"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_02052019",
+    "chunks": 39,
+    "points": 6,
+    "recorded_points": 10,
+    "rendered_points": 9,
+    "retention": 0.9,
+    "memory_units": 11,
+    "prose_chars": 403,
+    "churn_events": 4,
+    "arc_frozen_steps": 1,
+    "nop_steps": 26,
+    "abstained": false,
+    "chars_per_point": 36.6,
+    "flags": [
+     "churn x4",
+     "starved 6pt/39ch",
+     "ungrounded-numbers x2"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_03172020",
+    "chunks": 21,
+    "points": 6,
+    "recorded_points": 8,
+    "rendered_points": 7,
+    "retention": 0.875,
+    "memory_units": 9,
+    "prose_chars": 342,
+    "churn_events": 5,
+    "arc_frozen_steps": 4,
+    "nop_steps": 12,
+    "abstained": false,
+    "chars_per_point": 38.0,
+    "flags": [
+     "churn x5",
+     "starved 6pt/21ch",
+     "arc frozen x4"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_03182014",
+    "chunks": 7,
+    "points": 5,
+    "recorded_points": 6,
+    "rendered_points": 6,
+    "retention": 1.0,
+    "memory_units": 7,
+    "prose_chars": 442,
+    "churn_events": 1,
+    "arc_frozen_steps": 0,
+    "nop_steps": 3,
+    "abstained": false,
+    "chars_per_point": 63.1,
+    "flags": [
+     "churn x1"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_04032018",
+    "chunks": 14,
+    "points": 6,
+    "recorded_points": 8,
+    "rendered_points": 8,
+    "retention": 1.0,
+    "memory_units": 9,
+    "prose_chars": 331,
+    "churn_events": 3,
+    "arc_frozen_steps": 0,
+    "nop_steps": 9,
+    "abstained": false,
+    "chars_per_point": 36.8,
+    "flags": [
+     "churn x3"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_04072015",
+    "chunks": 32,
+    "points": 9,
+    "recorded_points": 8,
+    "rendered_points": 8,
+    "retention": 1.0,
+    "memory_units": 9,
+    "prose_chars": 249,
+    "churn_events": 9,
+    "arc_frozen_steps": 3,
+    "nop_steps": 23,
+    "abstained": false,
+    "chars_per_point": 27.7,
+    "flags": [
+     "churn x9",
+     "starved 9pt/32ch",
+     "arc frozen x3"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_04172018",
+    "chunks": 48,
+    "points": 6,
+    "recorded_points": 11,
+    "rendered_points": 10,
+    "retention": 0.909,
+    "memory_units": 12,
+    "prose_chars": 407,
+    "churn_events": 11,
+    "arc_frozen_steps": 9,
+    "nop_steps": 20,
+    "abstained": false,
+    "chars_per_point": 33.9,
+    "flags": [
+     "churn x11",
+     "starved 6pt/48ch",
+     "arc frozen x9"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_06152021",
+    "chunks": 36,
+    "points": 10,
+    "recorded_points": 19,
+    "rendered_points": 11,
+    "retention": 0.579,
+    "memory_units": 20,
+    "prose_chars": 1544,
+    "churn_events": 15,
+    "arc_frozen_steps": 6,
+    "nop_steps": 16,
+    "abstained": false,
+    "chars_per_point": 77.2,
+    "flags": [
+     "churn x15",
+     "arc frozen x6"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_07052016",
+    "chunks": 29,
+    "points": 8,
+    "recorded_points": 10,
+    "rendered_points": 8,
+    "retention": 0.8,
+    "memory_units": 11,
+    "prose_chars": 416,
+    "churn_events": 0,
+    "arc_frozen_steps": 2,
+    "nop_steps": 20,
+    "abstained": false,
+    "chars_per_point": 37.8,
+    "flags": [
+     "starved 8pt/29ch",
+     "arc frozen x2"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_09072021",
+    "chunks": 22,
+    "points": 10,
+    "recorded_points": 12,
+    "rendered_points": 8,
+    "retention": 0.667,
+    "memory_units": 13,
+    "prose_chars": 431,
+    "churn_events": 21,
+    "arc_frozen_steps": 8,
+    "nop_steps": 6,
+    "abstained": false,
+    "chars_per_point": 33.2,
+    "flags": [
+     "churn x21",
+     "arc frozen x8"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_09202016",
+    "chunks": 29,
+    "points": 13,
+    "recorded_points": 26,
+    "rendered_points": 21,
+    "retention": 0.808,
+    "memory_units": 27,
+    "prose_chars": 447,
+    "churn_events": 7,
+    "arc_frozen_steps": 6,
+    "nop_steps": 14,
+    "abstained": false,
+    "chars_per_point": 16.6,
+    "flags": [
+     "churn x7",
+     "under-rendered 17ch/pt x13pt",
+     "arc frozen x6",
+     "ungrounded-numbers x4"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_02082021",
+    "chunks": 4,
+    "points": 3,
+    "recorded_points": 3,
+    "rendered_points": 3,
+    "retention": 1.0,
+    "memory_units": 4,
+    "prose_chars": 267,
+    "churn_events": 1,
+    "arc_frozen_steps": 0,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 66.8,
+    "flags": [
+     "churn x1"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_02222022",
+    "chunks": 19,
+    "points": 4,
+    "recorded_points": 6,
+    "rendered_points": 5,
+    "retention": 0.833,
+    "memory_units": 7,
+    "prose_chars": 342,
+    "churn_events": 2,
+    "arc_frozen_steps": 4,
+    "nop_steps": 8,
+    "abstained": false,
+    "chars_per_point": 48.9,
+    "flags": [
+     "churn x2",
+     "starved 4pt/19ch",
+     "arc frozen x4"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_02292016",
+    "chunks": 5,
+    "points": 9,
+    "recorded_points": 11,
+    "rendered_points": 11,
+    "retention": 1.0,
+    "memory_units": 12,
+    "prose_chars": 302,
+    "churn_events": 2,
+    "arc_frozen_steps": 0,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 25.2,
+    "flags": [
+     "churn x2",
+     "ungrounded-numbers x1"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_03232015",
+    "chunks": 7,
+    "points": 2,
+    "recorded_points": 4,
+    "rendered_points": 3,
+    "retention": 0.75,
+    "memory_units": 5,
+    "prose_chars": 202,
+    "churn_events": 2,
+    "arc_frozen_steps": 0,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 40.4,
+    "flags": [
+     "churn x2"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_04122022",
+    "chunks": 5,
+    "points": 5,
+    "recorded_points": 6,
+    "rendered_points": 5,
+    "retention": 0.833,
+    "memory_units": 7,
+    "prose_chars": 234,
+    "churn_events": 1,
+    "arc_frozen_steps": 1,
+    "nop_steps": 1,
+    "abstained": false,
+    "chars_per_point": 33.4,
+    "flags": [
+     "churn x1"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_04182016",
+    "chunks": 2,
+    "points": 6,
+    "recorded_points": 6,
+    "rendered_points": 6,
+    "retention": 1.0,
+    "memory_units": 7,
+    "prose_chars": 472,
+    "churn_events": 1,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 67.4,
+    "flags": [
+     "churn x1"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_05032022",
+    "chunks": 11,
+    "points": 4,
+    "recorded_points": 7,
+    "rendered_points": 7,
+    "retention": 1.0,
+    "memory_units": 8,
+    "prose_chars": 356,
+    "churn_events": 3,
+    "arc_frozen_steps": 2,
+    "nop_steps": 4,
+    "abstained": false,
+    "chars_per_point": 44.5,
+    "flags": [
+     "churn x3",
+     "arc frozen x2",
+     "ungrounded-numbers x2"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_08052019",
+    "chunks": 7,
+    "points": 9,
+    "recorded_points": 10,
+    "rendered_points": 10,
+    "retention": 1.0,
+    "memory_units": 11,
+    "prose_chars": 405,
+    "churn_events": 3,
+    "arc_frozen_steps": 1,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 36.8,
+    "flags": [
+     "churn x3"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_09062016",
+    "chunks": 16,
+    "points": 8,
+    "recorded_points": 10,
+    "rendered_points": 7,
+    "retention": 0.7,
+    "memory_units": 11,
+    "prose_chars": 414,
+    "churn_events": 2,
+    "arc_frozen_steps": 0,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 37.6,
+    "flags": [
+     "churn x2"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_09112017",
+    "chunks": 11,
+    "points": 16,
+    "recorded_points": 25,
+    "rendered_points": 17,
+    "retention": 0.68,
+    "memory_units": 26,
+    "prose_chars": 535,
+    "churn_events": 0,
+    "arc_frozen_steps": 2,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 20.6,
+    "flags": [
+     "arc frozen x2"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_09282015",
+    "chunks": 14,
+    "points": 11,
+    "recorded_points": 11,
+    "rendered_points": 11,
+    "retention": 1.0,
+    "memory_units": 12,
+    "prose_chars": 547,
+    "churn_events": 11,
+    "arc_frozen_steps": 2,
+    "nop_steps": 7,
+    "abstained": false,
+    "chars_per_point": 45.6,
+    "flags": [
+     "churn x11",
+     "arc frozen x2",
+     "ungrounded-numbers x2"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_09292020",
+    "chunks": 16,
+    "points": 13,
+    "recorded_points": 20,
+    "rendered_points": 13,
+    "retention": 0.65,
+    "memory_units": 21,
+    "prose_chars": 373,
+    "churn_events": 4,
+    "arc_frozen_steps": 2,
+    "nop_steps": 4,
+    "abstained": false,
+    "chars_per_point": 17.8,
+    "flags": [
+     "churn x4",
+     "under-rendered 18ch/pt x13pt",
+     "arc frozen x2",
+     "ungrounded-numbers x2"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_10292018",
+    "chunks": 9,
+    "points": 9,
+    "recorded_points": 8,
+    "rendered_points": 8,
+    "retention": 1.0,
+    "memory_units": 9,
+    "prose_chars": 291,
+    "churn_events": 15,
+    "arc_frozen_steps": 2,
+    "nop_steps": 2,
+    "abstained": false,
+    "chars_per_point": 32.3,
+    "flags": [
+     "churn x15",
+     "arc frozen x2"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_11022020",
+    "chunks": 8,
+    "points": 12,
+    "recorded_points": 11,
+    "rendered_points": 11,
+    "retention": 1.0,
+    "memory_units": 12,
+    "prose_chars": 372,
+    "churn_events": 3,
+    "arc_frozen_steps": 2,
+    "nop_steps": 0,
+    "abstained": false,
+    "chars_per_point": 31.0,
+    "flags": [
+     "churn x3",
+     "arc frozen x2"
+    ]
+   }
+  ],
+  "grounding": [
+   {
+    "meeting": "AlamedaCC_04162019",
+    "n_checked": 3,
+    "ungrounded": []
+   },
+   {
+    "meeting": "AlamedaCC_11052019",
+    "n_checked": 5,
+    "ungrounded": []
+   },
+   {
+    "meeting": "BostonCC_03022022",
+    "n_checked": 5,
+    "ungrounded": []
+   },
+   {
+    "meeting": "BostonCC_05182022",
+    "n_checked": 7,
+    "ungrounded": []
+   },
+   {
+    "meeting": "DenverCityCouncil_03282017",
+    "n_checked": 4,
+    "ungrounded": [
+     "1200",
+     "2022"
+    ]
+   },
+   {
+    "meeting": "DenverCityCouncil_04062020",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "DenverCityCouncil_04112022",
+    "n_checked": 7,
+    "ungrounded": []
+   },
+   {
+    "meeting": "DenverCityCouncil_06112018",
+    "n_checked": 10,
+    "ungrounded": [
+     "1200000",
+     "2026",
+     "2022"
+    ]
+   },
+   {
+    "meeting": "DenverCityCouncil_06152015",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "DenverCityCouncil_08312015",
+    "n_checked": 8,
+    "ungrounded": [
+     "千五百零二"
+    ]
+   },
+   {
+    "meeting": "DenverCityCouncil_10192015",
+    "n_checked": 10,
+    "ungrounded": []
+   },
+   {
+    "meeting": "DenverCityCouncil_10292018",
+    "n_checked": 4,
+    "ungrounded": []
+   },
+   {
+    "meeting": "DenverCityCouncil_11182019",
+    "n_checked": 8,
+    "ungrounded": [
+     "二零二一",
+     "四五六零一",
+     "五百萬",
+     "CMX5"
+    ]
+   },
+   {
+    "meeting": "KingCountyCC_03172021",
+    "n_checked": 1,
+    "ungrounded": []
+   },
+   {
+    "meeting": "KingCountyCC_06162021",
+    "n_checked": 4,
+    "ungrounded": []
+   },
+   {
+    "meeting": "KingCountyCC_10202021",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "LongBeachCC_02052019",
+    "n_checked": 6,
+    "ungrounded": [
+     "1200000000"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_03172020",
+    "n_checked": 3,
+    "ungrounded": []
+   },
+   {
+    "meeting": "LongBeachCC_03182014",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "LongBeachCC_04032018",
+    "n_checked": 4,
+    "ungrounded": []
+   },
+   {
+    "meeting": "LongBeachCC_04072015",
+    "n_checked": 2,
+    "ungrounded": []
+   },
+   {
+    "meeting": "LongBeachCC_04172018",
+    "n_checked": 4,
+    "ungrounded": [
+     "TMobile5G"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_06152021",
+    "n_checked": 3,
+    "ungrounded": []
+   },
+   {
+    "meeting": "LongBeachCC_07052016",
+    "n_checked": 4,
+    "ungrounded": []
+   },
+   {
+    "meeting": "LongBeachCC_09072021",
+    "n_checked": 5,
+    "ungrounded": [
+     "三百一十八萬四千七百三十六"
+    ]
+   },
+   {
+    "meeting": "LongBeachCC_09202016",
+    "n_checked": 8,
+    "ungrounded": []
+   },
+   {
+    "meeting": "SeattleCityCouncil_02082021",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "SeattleCityCouncil_02222022",
+    "n_checked": 6,
+    "ungrounded": []
+   },
+   {
+    "meeting": "SeattleCityCouncil_02292016",
+    "n_checked": 7,
+    "ungrounded": []
+   },
+   {
+    "meeting": "SeattleCityCouncil_03232015",
+    "n_checked": 3,
+    "ungrounded": []
+   },
+   {
+    "meeting": "SeattleCityCouncil_04122022",
+    "n_checked": 2,
+    "ungrounded": []
+   },
+   {
+    "meeting": "SeattleCityCouncil_04182016",
+    "n_checked": 0,
+    "ungrounded": []
+   },
+   {
+    "meeting": "SeattleCityCouncil_05032022",
+    "n_checked": 6,
+    "ungrounded": []
+   },
+   {
+    "meeting": "SeattleCityCouncil_08052019",
+    "n_checked": 4,
+    "ungrounded": [
+     "70910"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_09062016",
+    "n_checked": 5,
+    "ungrounded": []
+   },
+   {
+    "meeting": "SeattleCityCouncil_09112017",
+    "n_checked": 8,
+    "ungrounded": []
+   },
+   {
+    "meeting": "SeattleCityCouncil_09282015",
+    "n_checked": 6,
+    "ungrounded": [
+     "2021"
+    ]
+   },
+   {
+    "meeting": "SeattleCityCouncil_09292020",
+    "n_checked": 11,
+    "ungrounded": []
+   },
+   {
+    "meeting": "SeattleCityCouncil_10292018",
+    "n_checked": 8,
+    "ungrounded": []
+   },
+   {
+    "meeting": "SeattleCityCouncil_11022020",
+    "n_checked": 9,
+    "ungrounded": []
+   }
+  ]
+ }
+}

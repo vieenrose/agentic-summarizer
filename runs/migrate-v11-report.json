@@ -1,0 +1,14 @@
+{
+ "reading_in": 4425,
+ "reading_out": 4141,
+ "revise_created": 247,
+ "churn_dropped": 0,
+ "map_rows_passed": 284,
+ "id_drops": 1828,
+ "prefix_unmatched": 1,
+ "non_reading_rows": 454,
+ "total_out": 4879,
+ "pool": "data/staging/sft_pool_spec.jsonl",
+ "out": "data/staging/sft_pool_v11.jsonl",
+ "prompt_version": "tools-v2"
+}
